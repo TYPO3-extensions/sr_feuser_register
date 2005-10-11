@@ -1,0 +1,10 @@
+2005-10-10  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Version 1.6.6
+	* Correction to the usergroup language overlay. Thanks to Rakowski Tomasz.
+	* Correction to TCA-driven select field with values from foreign table. Thanks to Rakowski Tomasz.
+	* Update to step 3 of the tutorial for the case of multiple selection fields.
+	* Change log added.
+
+2005-10-06  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Version 1.6.5
+	* Initial CVS upload.
