@@ -7,7 +7,6 @@ plugin.tx_srfeuserregister_pi1 {
 	color1.wrap = {$plugin.tx_srfeuserregister_pi1.color1}
 	color2.wrap = {$plugin.tx_srfeuserregister_pi1.color2}
 	color3.wrap = {$plugin.tx_srfeuserregister_pi1.color3}
-
 	icon_delete = {$plugin.tx_srfeuserregister_pi1.file.icon_delete}
 
 	pid = {$plugin.tx_srfeuserregister_pi1.pid}
@@ -23,7 +22,7 @@ plugin.tx_srfeuserregister_pi1 {
 
 	formName = {$plugin.tx_srfeuserregister_pi1.formName}
 	onChangeCountryAttribute = {$plugin.tx_srfeuserregister_pi1.onChangeCountryAttribute}
-
+	
 	allowMultipleUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowMultipleUserGroupSelection}
 
 	# you may modify here the conditions under which an attachment file will be added to the email
@@ -39,16 +38,19 @@ plugin.tx_srfeuserregister_pi1 {
 		required = {$plugin.tx_srfeuserregister_pi1.requiredFields}
 		useEmailAsUsername = {$plugin.tx_srfeuserregister_pi1.useEmailAsUsername}
 		allowUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowUserGroupSelection}
+
 		defaultValues {
 			module_sys_dmail_html = 1
 			module_sys_dmail_category = 1
 			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
 			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
 		}
+
 		overrideValues {
 			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
 			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
 		}
+
 		evalValues {
 			password = twice, atLeast[{$plugin.tx_srfeuserregister_pi1.passwordAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.passwordAtMost}]
 			username = uniqueLocal, atLeast[{$plugin.tx_srfeuserregister_pi1.usernameAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.usernameAtMost}]
@@ -81,8 +83,10 @@ plugin.tx_srfeuserregister_pi1 {
 		usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupAfterConfirmation}
 		disable = 0
 	}
+
 	enableAutoLoginOnConfirmation = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnConfirmation}
 	autoLoginRedirect_url = {$plugin.tx_srfeuserregister_pi1.autoLoginRedirect_url}
+
 	setfixed.DELETE {
 		_FIELDLIST = uid,pid
 	}
@@ -96,21 +100,25 @@ plugin.tx_srfeuserregister_pi1 {
 	edit {
 		preview = {$plugin.tx_srfeuserregister_pi1.enablePreviewEdit}
 		allowUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowUserGroupUpdate}
+
 		defaultValues {
 			disable = 0
 			usergroup >
 			module_sys_dmail_html >
 			module_sys_dmail_category >
 		}
+
 		overrideValues {
 			username = 
 			usergroup >
 			disable = 0
 		}
+
 		evalValues {
 			username = unsetEmpty
 			usergroup = unsetEmpty
 		}
+
 	}
 
 	infomail = 0
@@ -149,7 +157,6 @@ plugin.tx_srfeuserregister_pi1 {
 	email.field = email
 	email.HTMLMail =  {$plugin.tx_srfeuserregister_pi1.enableHTMLMail}
 	email.HTMLMailCSS =  {$plugin.tx_srfeuserregister_pi1.HTMLMailCSS}
-
 	email.CREATE_SAVED = {$plugin.tx_srfeuserregister_pi1.enableEmailOnRegister}
 	email.EDIT_SAVED = {$plugin.tx_srfeuserregister_pi1.enableEmailOnUpdate}
 	email.DELETE_SAVED =  {$plugin.tx_srfeuserregister_pi1.enableEmailOnDelete}
@@ -189,5 +196,4 @@ plugin.tx_srfeuserregister_pi1 {
 
  _DEFAULT_PI_VARS {
  }
-
 }

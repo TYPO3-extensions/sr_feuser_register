@@ -1775,7 +1775,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								if ($this->typoVersion >= 3006000 && $colConfig['foreign_table']) {
 									$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
 									$res = $TYPO3_DB->exec_SELECTquery($titleField, $colConfig['foreign_table'],
-										'uid IN ('.$dataArray[$colName].')');
+										'uid IN ('.implode(',', $valuesArray).')');
 									$i = 0;
 									while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
 										if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
@@ -2321,23 +2321,24 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$fe_groups_uid = $usergroup;
 					// Was the uid
 				}
-
+				
 				if (count($fieldArr)) {
 					$whereClause = 'fe_group=' . intval($fe_groups_uid) . ' ' .
 						'AND sys_language_uid='.intval($languageUid). ' ' .
 						$this->cObj->enableFields('fe_groups_language_overlay');
 					$res = $TYPO3_DB->exec_SELECTquery(implode(',', $fieldArr), 'fe_groups_language_overlay', $whereClause);
-					$row = $TYPO3_DB->sql_fetch_assoc($res);
+					if ($TYPO3_DB->sql_num_rows($res)) {
+						$row = $TYPO3_DB->sql_fetch_assoc($res);
+					}
 				}
 			}
-
-			// Create output:
+			
+				// Create output:
 			if (is_array($usergroup)) {
 				return is_array($row) ? array_merge($usergroup, $row) : $usergroup;
 				// If the input was an array, simply overlay the newfound array and return...
 			} else {
-				return is_array($row) ? $row :
-				array(); // always an array in return
+				return is_array($row) ? $row : array(); // always an array in return
 			}
 		}
 
