@@ -34,26 +34,25 @@
 
 class tx_srfeuserregister_hooksHandler {
 
-	function registrationProcess_afterSaveEdit($recordArray, $invokingObj) {
+	function registrationProcess_afterSaveEdit($recordArray, &$invokingObj) {
 		echo 'afterSaveEdit';
 	}
 
-	function registrationProcess_beforeSaveDelete($recordArray, $invokingObj) {
+	function registrationProcess_beforeSaveDelete($recordArray, &$invokingObj) {
 		echo 'beforeSaveDelete';
 	}
 
-	function registrationProcess_afterSaveCreate($recordArray, $invokingObj) {
+	function registrationProcess_afterSaveCreate($recordArray, &$invokingObj) {
 		echo 'afterSaveCreate';
 	}
 
-	function confirmRegistrationClass_preProcess($recordArray, $invokingObj) {
+	function confirmRegistrationClass_preProcess(&$recordArray, &$invokingObj) {
 			// in the case of this hook, the record array is passed by reference
-
 			// you may not see this echo if the page is redirected to auto-login
 		echo 'confirmRegistrationClass_preProcess';
 	}
 
-	function confirmRegistrationClass_postProcess($recordArray, $invokingObj) {
+	function confirmRegistrationClass_postProcess($recordArray, &$invokingObj) {
 
 			// you may not see this echo if the page is redirected to auto-login
 		echo 'confirmRegistrationClass_preProcess';

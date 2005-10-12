@@ -911,7 +911,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'] as $classRef) {
 							$hookObj= &t3lib_div::getUserObj($classRef);
 							if (method_exists($hookObj, 'registrationProcess_afterSaveCreate')) {
-								$hookObj->registrationProcess_afterSaveCreate($this->currentArr, &$this);
+								$hookObj->registrationProcess_afterSaveCreate($this->currentArr, $this);
 							}
 						}
 					}
@@ -1106,7 +1106,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'] as $classRef) {
 									$hookObj= &t3lib_div::getUserObj($classRef);
 									if (method_exists($hookObj, 'registrationProcess_beforeSaveDelete')) {
-										$hookObj->registrationProcess_beforeSaveDelete($origArr, &$this);
+										$hookObj->registrationProcess_beforeSaveDelete($origArr, $this);
 									}
 								}
 							}
@@ -1382,7 +1382,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							// Hook: confirmRegistrationClass_preProcess
 						foreach($hookObjectsArr as $hookObj)    {
 							if (method_exists($hookObj, 'confirmRegistrationClass_preProcess')) {
-								$hookObj->confirmRegistrationClass_preProcess(&$origArr, &$this);
+								$hookObj->confirmRegistrationClass_preProcess($origArr, $this);
 							}
 						}
 						$newFieldList = implode(array_intersect(t3lib_div::trimExplode(',', $this->fieldList), t3lib_div::trimExplode(',', implode($fieldArr, ','), 1)), ',');
@@ -1399,7 +1399,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							// Hook: confirmRegistrationClass_postProcess
 						foreach($hookObjectsArr as $hookObj)    {
 							if (method_exists($hookObj, 'confirmRegistrationClass_postProcess')) {
-								$hookObj->confirmRegistrationClass_postProcess($origArr, &$this);
+								$hookObj->confirmRegistrationClass_postProcess($origArr, $this);
 							}
 						} 
 					}
