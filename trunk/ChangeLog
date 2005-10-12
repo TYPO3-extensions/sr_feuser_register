@@ -1,3 +1,9 @@
+2005-10-12  Sebastian Roth <sebastian.roth@c-qube.com>
+	* fixed a possible problem with php and the option
+	  allow_call_time_pass_reference which will likely be removed in future
+	  versions of php and creats error messages. Thanks to Stefan Galinski
+	  for pointing that out.
+
 2005-10-10  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Version 1.6.6
 	* Correction to the usergroup language overlay. Thanks to Rakowski Tomasz.
