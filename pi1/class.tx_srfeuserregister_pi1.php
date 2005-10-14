@@ -851,7 +851,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'] as $classRef) {
 								$hookObj= &t3lib_div::getUserObj($classRef);
 								if (method_exists($hookObj, 'registrationProcess_afterSaveEdit')) {
-									$hookObj->registrationProcess_afterSaveEdit($this->currentArr, &$this);
+									$hookObj->registrationProcess_afterSaveEdit($this->currentArr, $this);
 								}
 							}
 						}
