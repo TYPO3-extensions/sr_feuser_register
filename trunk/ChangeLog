@@ -1,3 +1,6 @@
+2005-10-16  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Correction to the useEmailAsUsername feature.
+
 2005-10-13  Sebastian Roth <sebastian.roth@c-qube.com>
 	* Modified remaining function call with reference parameter, see
 	  last change at 2005-10-13.
@@ -5,7 +8,7 @@
 2005-10-12  Sebastian Roth <sebastian.roth@c-qube.com>
 	* fixed a possible problem with php and the option
 	  allow_call_time_pass_reference which will likely be removed in future
-	  versions of php and creats error messages. Thanks to Stefan Galinski
+	  versions of php and create error messages. Thanks to Stefan Galinski
 	  for pointing that out.
 
 2005-10-10  Stanislas Rolland  <stanislas.rolland@fructifor.ca>

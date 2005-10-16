@@ -190,7 +190,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$this->adminFieldList = implode(',', array_intersect( explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->adminFieldList, 1)));
 
 			if ($this->theTable == 'fe_users') { 
-				if (!$this->conf['useEmailAsUsername']) {
+				if (!$this->conf[$this->cmdKey.'.']['useEmailAsUsername']) {
 					$this->conf[$this->cmdKey.'.']['fields'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'] . ',username', 1));
 					$this->conf[$this->cmdKey.'.']['required'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'] . ',username', 1));
 				}
