@@ -370,7 +370,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$tempArr = array();
 			while (list(, $theField) = each($this->requiredArr)) {
 				if (!trim($this->dataArr[$theField])) {
-
 					$tempArr[] = $theField;
 				}
 			}
@@ -1253,6 +1252,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						// Processing records
 					if (is_array($DBrows))	{
 						$recipient = $DBrows[0][$this->conf['email.']['field']];
+						$this->dataArr = $DBrows[0];
 						$this->compileMail('INFOMAIL', $DBrows, trim($recipient), $this->conf['setfixed.']);
 					} elseif ($this->cObj->checkEmail($fetch)) {
 						$fetchArray = array( '0' => array( 'email' => $fetch));
@@ -1450,8 +1450,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$adminContent['all'] = '';
 			if (($this->conf['email.'][$key] ) || ($key == 'SETFIXED_CREATE' && $this->setfixedEnabled) || ($key == 'SETFIXED_INVITE' && $this->setfixedEnabled) ) {
 				$userContent['all'] = trim($this->cObj->getSubpart($this->templateCode, '###'.$this->emailMarkPrefix.$key.'###'));
-				$HTMLContent['all'] = ($this->HTMLMailEnabled && $this->dataArr['module_sys_dmail_html']) ? trim($this->cObj->getSubpart($this->templateCode, '###'.$this->emailMarkPrefix.$key.$this->emailMarkHTMLSuffix.'###')):
-				'';
+				$HTMLContent['all'] = ($this->HTMLMailEnabled && $this->dataArr['module_sys_dmail_html']) ? trim($this->cObj->getSubpart($this->templateCode, '###'.$this->emailMarkPrefix.$key.$this->emailMarkHTMLSuffix.'###')):'';
 			}
 			if ($this->conf['notify.'][$key] ) {
 				$adminContent['all'] = trim($this->cObj->getSubpart($this->templateCode, '###'.$this->emailMarkPrefix.$key.$this->emailMarkAdminSuffix.'###'));
@@ -1463,7 +1462,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			reset($DBrows);
 			while (list(, $r) = each($DBrows)) {
 				$markerArray = $this->cObj->fillInMarkerArray($this->markerArray, $r, '', 0);
-
 				$markerArray['###SYS_AUTHCODE###'] = $this->authCode($r);
 				$markerArray = $this->setfixed($markerArray, $setFixedConfig, $r);
 				$markerArray = $this->addLabelMarkers($markerArray, $r);
