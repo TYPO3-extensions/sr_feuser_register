@@ -1,5 +1,6 @@
 2005-10-16  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Correction to the useEmailAsUsername feature.
+	* Take into account the user preference regarding html emails when sending infomails (used by sr_email_subscribe).
 
 2005-10-13  Sebastian Roth <sebastian.roth@c-qube.com>
 	* Modified remaining function call with reference parameter, see
