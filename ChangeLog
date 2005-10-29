@@ -1,3 +1,11 @@
+2005-10-28  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Version 1.6.7
+	* Add a few labels.
+	* Add an 'en_US' localization for the frontend side of the extension.
+	* Manual reviewed for US market. Thanks to Alex Heizer.
+	* New TS constant salutation allows to switch salutation mode.
+	* New TS constant useMd5Password enables md5-hashed passwords when extension KB MD5 FE Password (kb_md5fepw) is installed. HTML templates should be updated with markers ###FORM_ONSUBMIT### and ###PASSWORD_ONCHANGE###. See the example HTML templates. ###HIDDENFIELDS### marker is also added to subparts ###TEMPLATE_CREATE_SAVED### and ###TEMPLATE_SETFIXED_OK###.
+
 2005-10-16  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Correction to the useEmailAsUsername feature.
 	* Take into account the user preference regarding html emails when sending infomails (used by sr_email_subscribe).

@@ -2,8 +2,8 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 1999-2003 Kasper Skårhøj (kasper@typo3.com)
-*  (c) 2004-2005 Stanislas Rolland (stanislas.rolland@fructifor.com)
+*  (c) 1999-2003 Kasper Skaarhoj (kasper@typo3.com)
+*  (c) 2004-2005 Stanislas Rolland (stanislas.rolland@fructifor.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -29,8 +29,8 @@
 * Front End creating/editing/deleting records authenticated by fe_user login.
 * A variant restricted to front end user self-registration and profile maintenance, with a number of enhancements (see the manual).
 *
-* @author Kasper Skårhøj <kasper@typo3.com>
-* @coauthor Stanislas Rolland <stanislas.rolland@fructifor.com>
+* @author Kasper Skaarhoj <kasper@typo3.com>
+* @author Stanislas Rolland <stanislas.rolland@fructifor.ca>
 */
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
@@ -69,7 +69,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		var $cmd;
 		var $setfixedEnabled = 1;
 		var $HTMLMailEnabled = 1;
-		var $preview;
+		var $incomingData = false;
 		var $previewLabel = '';
 		var $backURL;
 		var $recUid;
@@ -107,12 +107,12 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$this->pi_USER_INT_obj = 1;
 			$this->pi_setPiVarDefaults();
 			$this->site_url = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
-			 
+			
 				// get the table definition
 			$GLOBALS['TSFE']->includeTCA();
 			$GLOBALS['TCA'][$this->theTable]['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['uploadFolder'] ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['uploadFolder'] :  $GLOBALS['TCA'][$this->theTable]['columns']['image']['config']['uploadfolder'];
 			$this->TCA = $GLOBALS['TCA'][$this->theTable];
-
+			
 				// prepare for character set settings and conversions
 			$this->typoVersion = t3lib_div::int_from_ver($GLOBALS['TYPO_VERSION']);
 			if ($this->typoVersion >= 3006000 ) {
@@ -120,10 +120,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$this->charset = $GLOBALS['TSFE']->csConvObj->parse_charset($GLOBALS['TSFE']->metaCharset);
 				}
 			}
-
+			
 				// prepare for handling dates befor 1970
 			$this->adodbTime = t3lib_div::makeInstance('tx_srfeuserregister_pi1_adodb_time');
-			 
+			
 				// set the pid's and the title language overlay
 			$this->pidRecord = t3lib_div::makeInstance('t3lib_pageSelect');
 			$this->pidRecord->init(0);
@@ -146,57 +146,86 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			 
 				// Initialise fileFunc object
 			$this->fileFunc = t3lib_div::makeInstance('t3lib_basicFileFunctions');
-			 
+			
 				// Get post parameters
 			if ($this->typoVersion >= 3006000 ) {
 				$this->feUserData = t3lib_div::_GP($this->prefixId);
 				$fe = t3lib_div::_GP('FE');
+					// Establishing compatibility with Direct Mail extension
+				$this->feUserData['rU'] = t3lib_div::_GP('rU') ? t3lib_div::_GP('rU') : $this->feUserData['rU'];
+				$this->feUserData['aC'] = t3lib_div::_GP('aC') ? t3lib_div::_GP('aC') : $this->feUserData['aC'];
+				$this->feUserData['cmd'] = t3lib_div::_GP('cmd') ? t3lib_div::_GP('cmd') : $this->feUserData['cmd'];
+				$this->feUserData['sFK'] = t3lib_div::_GP('sFK') ? t3lib_div::_GP('sFK') : $this->feUserData['sFK'];
 			} else {
 				$this->feUserData = t3lib_div::slashArray(t3lib_div::GPvar($this->prefixId), 'strip');
 				$fe = t3lib_div::GPvar('FE');
+					// Establishing compatibility with Direct Mail extension
+				$this->feUserData['rU'] = t3lib_div::GPvar('rU') ? t3lib_div::GPvar('rU') : $this->feUserData['rU'];
+				$this->feUserData['aC'] = t3lib_div::GPvar('aC') ? t3lib_div::GPvar('aC') : $this->feUserData['aC'];
+				$this->feUserData['cmd'] = t3lib_div::GPvar('cmd') ? t3lib_div::GPvar('cmd') : $this->feUserData['cmd'];
+				$this->feUserData['sFK'] = t3lib_div::GPvar('sFK') ? t3lib_div::GPvar('sFK') : $this->feUserData['sFK'];
 			};
 			$this->dataArr = $fe[$this->theTable];
-
-				// Establishing compatibility with Direct Mail extension
-			$this->feUserData['rU'] = t3lib_div::GPvar('rU') ? t3lib_div::GPvar('rU') : $this->feUserData['rU'];
-			$this->feUserData['aC'] = t3lib_div::GPvar('aC') ? t3lib_div::GPvar('aC') : $this->feUserData['aC'];
-			$this->feUserData['cmd'] = t3lib_div::GPvar('cmd') ? t3lib_div::GPvar('cmd') : $this->feUserData['cmd'];
-
+			$this->incomingData = is_array($this->dataArr);
+			
 			$this->backURL = rawurldecode($this->feUserData['backURL']);
 			$this->recUid = intval($this->feUserData['rU']);
 			$this->authCode = $this->feUserData['aC'];
-			 
+			
 				// Setting cmd and various switches
 			if ( $this->theTable == 'fe_users' && $this->feUserData['cmd'] == 'login' ) {
 				unset($this->feUserData['cmd']);
 			}
 			$this->cmd = $this->feUserData['cmd'] ? $this->feUserData['cmd'] : strtolower($this->cObj->data['select_key']);
 			$this->cmd = $this->cmd ? $this->cmd : strtolower($this->conf['defaultCODE']) ;
-			if ($this->cmd == 'edit' ) {
+			if ($this->cmd == 'edit') {
 				$this->cmdKey = 'edit';
 			} else {
 				$this->cmdKey = 'create';
 			}
-			if (!($this->conf['setfixed'] == 1) ) {
+			if (!($this->conf['setfixed'] == 1)) {
 				$this->setfixedEnabled = 0;
 			}
-			if (!($this->conf['email.'][HTMLMail] == 1) ) {
+			if (!($this->conf['email.'][HTMLMail] == 1)) {
 				$this->HTMLMailEnabled = 0;
 			}
-			$this->preview = $this->feUserData['preview'];
-
+			
+				// Initialise password encryption
+			if ($this->theTable == 'fe_users' && $this->conf['useMd5Password'] && t3lib_extMgm::isLoaded('kb_md5fepw')) {
+				require_once(t3lib_extMgm::extPath('kb_md5fepw').'class.tx_kbmd5fepw_funcs.php');
+				$this->useMd5Password = true;
+				$this->conf['enableAutoLoginOnConfirmation'] = false;
+				/*
+				if ($this->cmd == 'edit' && $this->feUserData['doNotSave']) {
+					unset($this->dataArr['password']);
+					unset($this->dataArr['password_again']);
+				}
+				*/
+			}
+			
 				// Setting the list of fields allowed for editing and creation.
 			$this->fieldList = implode(',', t3lib_div::trimExplode(',', $GLOBALS['TCA'][$this->theTable]['feInterface']['fe_admin_fieldList'], 1));
 			$this->adminFieldList = implode(',', array_intersect( explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->adminFieldList, 1)));
+			if (trim($this->conf['addAdminFieldList'])) {
+				$this->adminFieldList .= ',' . trim($this->conf['addAdminFieldList']);
+			}
 
-			if ($this->theTable == 'fe_users') { 
-				if (!$this->conf[$this->cmdKey.'.']['useEmailAsUsername']) {
-					$this->conf[$this->cmdKey.'.']['fields'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'] . ',username', 1));
-					$this->conf[$this->cmdKey.'.']['required'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'] . ',username', 1));
+			if ($this->theTable == 'fe_users') {
+				$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'] . ',username', 1)));
+				$this->conf[$this->cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'] . ',username', 1)));
+				if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername']) {
+					$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('username')));
+					if ($this->cmdKey == 'create') {
+						$this->conf[$this->cmdKey.'.']['fields'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'] . ',email', 1));
+						$this->conf[$this->cmdKey.'.']['required'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'] . ',email', 1));
+					}
+					if ($this->cmdKey == 'edit' && $this->conf['setfixed']) {
+						$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('email')));
+					}
 				}
 				if ($this->conf[$this->cmdKey.'.']['allowUserGroupSelection']) {
-					$this->conf[$this->cmdKey.'.']['fields'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'] . ',usergroup', 1));
-					$this->conf[$this->cmdKey.'.']['required'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'] . ',usergroup', 1));
+					$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'] . ',usergroup', 1)));
+					$this->conf[$this->cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'] . ',usergroup', 1)));
 				} else {
 					$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('usergroup')));
 				}
@@ -204,11 +233,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				// Setting requiredArr to the fields in "required" intersected field the total field list in order to remove invalid fields.
 			$this->requiredArr = array_intersect(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'], 1),
 				t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1));
-
+				
 				// Setting the authCode length
 			$this->codeLength = intval($this->conf['authcodeFields.']['codeLength']) ? intval($this->conf['authcodeFields.']['codeLength']) : 8;
 
-				// Setting the record uid if a frontend user is logged in and we are nor trying to send an invitation
+				// Setting the record uid if a frontend user is logged in and we are not trying to send an invitation
 			if ($this->theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser && $this->cmd != 'invite') {
 				$this->recUid = $GLOBALS['TSFE']->fe_user->user['uid'];
 			}
@@ -241,7 +270,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$this->deleteRecord();
 			}
 				// Evaluate incoming data
-			if (is_array($this->dataArr)) {
+			if ($this->incomingData) {
 				$this->setName();
 				$this->parseValues();
 				$this->overrideValues();
@@ -252,7 +281,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						$this->dataArr = $this->userProcess('evalFunc', $this->dataArr);
 					}
 				} else {
-					//this is either a country change submitted through the onchange event! or a file deletion already processed by the parsing function
+					//this is either a country change submitted through the onchange event or a file deletion already processed by the parsing function
 					// we are going to redisplay
 					$this->evalValues();
 					$this->failure = 1;
@@ -284,7 +313,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$key = $this->setfixedPrefix.'INVITE';
 					break;
 					default:
-					if ($this->setfixedEnabled ) {
+					if ($this->setfixedEnabled) {
 						$key = $this->setfixedPrefix.'CREATE';
 					} else {
 						$key = 'CREATE'.$this->savedSuffix;
@@ -292,6 +321,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					break;
 				}
 					// Display confirmation message
+				if (!$this->setfixedEnabled && $this->cmd == 'create') {
+					$this->markerArray = $this->addMd5LoginMarkers($this->markerArray);
+					$this->currentArr['password'] = '';
+				}
 				$templateCode = $this->cObj->getSubpart($this->templateCode, '###TEMPLATE_'.$key.'###');
 				$markerArray = $this->cObj->fillInMarkerArray($this->markerArray, $this->currentArr);
 				$markerArray = $this->addStaticInfoMarkers($markerArray, $this->currentArr);
@@ -332,21 +365,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					break;
 					case 'edit':
 					$content = $this->displayEditScreen();
-					if($this->conf['useMd5Password']) { 
-						$GLOBALS['TSFE']->additionalHeaderData['MD5_script'] = '<script type="text/javascript" src="typo3/md5.js"></script>';
-					}
 					break;
 					case 'invite':
-					$content = $this->displayCreateScreen($this->cmd);
-					if($this->conf['useMd5Password']) { 
-						$GLOBALS['TSFE']->additionalHeaderData['MD5_script'] = '<script type="text/javascript" src="typo3/md5.js"></script>';
-					}
-					break;
 					case 'create':
 					$content = $this->displayCreateScreen($this->cmd);
-					if($this->conf['useMd5Password']) { 
-						$GLOBALS['TSFE']->additionalHeaderData['MD5_script'] = '<script type="text/javascript" src="typo3/md5.js"></script>';
-					}
 					break;
 					default:
 					if ($this->theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) {
@@ -394,6 +416,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				}
 				if($this->conf[$this->cmdKey.'.']['useEmailAsUsername']) {
 					unset($this->conf[$this->cmdKey.'.']['evalValues.']['username']);
+					if ($this->cmdKey == 'edit' && $this->conf['setfixed']) {
+						unset($this->conf[$this->cmdKey.'.']['evalValues.']['email']);
+					}
 				}
 				reset($this->conf[$this->cmdKey.'.']['evalValues.']);
 				while (list($theField, $theValue) = each($this->conf[$this->cmdKey.'.']['evalValues.'])) {
@@ -804,9 +829,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return void  done directly on array $this->dataArr
 		*/
 		function setUsername() {
-			if($this->theTable == "fe_users" && t3lib_div::inList($this->fieldList, 'username') && !in_array('username', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1))
-				&& in_array('email', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)) && $this->conf[$this->cmdKey.'.']['useEmailAsUsername']
-				&& !$this->failureMsg['email']) {
+			if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'] && $this->theTable == "fe_users" && t3lib_div::inList($this->fieldList, 'username') && !$this->failureMsg['email']) {
 				$this->dataArr['username'] = trim($this->dataArr['email']);
 			}
 		}
@@ -933,10 +956,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		*/
 		function removeRequired($templateCode, $failure) {
 			$includedFields = t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1);
-			if($this->cmdKey == 'edit' && $this->conf['setfixed'] && $this->conf[$this->cmdKey.'.']['useEmailAsUsername']) {
-				$includedFields = array_diff($includedFields, array('email'));
-				$this->requiredArr = array_diff($this->requiredArr, array('email'));
-			}
 			reset($this->requiredArr);
 			$infoFields = explode(',', $this->fieldList);
 
@@ -981,8 +1000,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		*/
 		function getPlainTemplate($key, $r = '') {
 			$templateCode = $this->cObj->getSubpart($this->templateCode, $key);
-			$markerArray = is_array($r) ? $this->cObj->fillInMarkerArray($this->markerArray, $r) :
-			$this->markerArray;
+			$markerArray = is_array($r) ? $this->cObj->fillInMarkerArray($this->markerArray, $r) : $this->markerArray;
 			$markerArray = $this->addStaticInfoMarkers($markerArray, $r);
 			$markerArray = $this->addTcaMarkers($markerArray, $r);
 			$markerArray = $this->addLabelMarkers($markerArray, $r);
@@ -1011,8 +1029,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			if (!$this->conf['linkToPID'] || !$this->conf['linkToPIDAddButton'] || !($this->previewLabel || !$this->conf['edit.']['preview'])) {
 				$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_LINKTOPID_ADD_BUTTON###', '');
 			}
-			$failure = t3lib_div::GPvar('noWarnings')?"":
-			$this->failure;
+			if ($this->typoVersion >= 3006000) {
+				$failure = t3lib_div::_GP('noWarnings') ? '': $this->failure;
+			} else {
+				$failure = t3lib_div::GPvar('noWarnings') ? '': $this->failure;
+			}
 			if (!$failure) {
 				$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
 			}
@@ -1023,17 +1044,24 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$markerArray = $this->addLabelMarkers($markerArray, $currentArr);
 			$markerArray = $this->addFileUploadMarkers('image', $markerArray, $currentArr);
 			$templateCode = $this->removeStaticInfoSubparts($templateCode, $markerArray);
-			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$this->theTable.'][uid]" value="'.$currentArr['uid'].'" />';
-			if ( $this->theTable != 'fe_users' ) {
-				$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$this->prefixId.'[aC]" value="'.$this->authCode($origArr).'" />';
-				$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$this->prefixId.'[cmd]" value="edit" />';
+			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][uid]" value="'.$currentArr['uid'].'" />';
+			if ($this->theTable != 'fe_users') {
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[aC]" value="'.$this->authCode($origArr).'" />';
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[cmd]" value="edit" />';
+			} elseif ($this->conf[$this->cmdKey.'.']['useEmailAsUsername']) {
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][username]" value="'.$currentArr['username'].'" />';
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][email]" value="'.$currentArr['email'].'" />';
 			}
 			if ($this->conf['edit.']['preview'] && !$this->previewLabel) {
-				$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$this->prefixId.'[preview]" value="1">';
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[preview]" value="1">';
 			}
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
-			// $content .= $this->cObj->getUpdateJS($this->modifyDataArrForFormUpdate($currentArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
-			$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($currentArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
+				// Corrected in TYPO3 4.0
+			if ($this->typoVersion >= 4000000) {
+				$content .= $this->cObj->getUpdateJS($this->modifyDataArrForFormUpdate($currentArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
+			} else {
+				$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($currentArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
+			}
 			return $content;
 		}
 		/**
@@ -1046,7 +1074,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				// If editing is enabled
 				$origArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $this->dataArr['uid']?$this->dataArr['uid']:$this->recUid);
 				if( $this->theTable != 'fe_users' && $this->conf['setfixed.']['edit.']['_FIELDLIST']) {
-					$fD = t3lib_div::GPvar('fD', 1);
+					if ($this->typoVersion >= 3006000) {
+						$fD = t3lib_div::_GP('fD', 1);
+					} else {
+						$fD = t3lib_div::GPvar('fD', 1);
+					}
 					$fieldArr = array();
 					if (is_array($fD)) {
 						reset($fD);
@@ -1062,6 +1094,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				if ( is_array($origArr) && ( ($this->theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $this->aCAuth($origArr) || !strcmp($this->authCode, $theCode) ) ) {
 					// Must be logged in OR be authenticated by the aC code in order to edit
 					// If the recUid selects a record.... (no check here)
+					$this->markerArray = $this->addMd5EventsMarkers($this->markerArray, 'edit');
 					if (is_array($origArr)) {
 						if ( !strcmp($this->authCode, $this->theCode) || $this->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($this->theTable, $origArr, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 							// Display the form, if access granted.
@@ -1070,7 +1103,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							// Else display error, that you could not edit that particular record...
 							$content = $this->getPlainTemplate('###TEMPLATE_NO_PERMISSIONS###');
 						}
-
 					}
 				} else {
 					// This is if there is no login user. This must tell that you must login. Perhaps link to a page with create-user or login information.
@@ -1213,8 +1245,13 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		function displayCreateScreen($cmd = 'create') {
 			if ($this->conf['create']) {
 				$key = ($cmd == 'invite') ? 'INVITE': 'CREATE';
+				$this->markerArray = $this->addMd5EventsMarkers($this->markerArray, 'create');
 				$templateCode = $this->cObj->getSubpart($this->templateCode, ((!($this->theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $cmd == 'invite') ? '###TEMPLATE_'.$key.$this->previewLabel.'###':'###TEMPLATE_CREATE_LOGIN###'));
-				$failure = t3lib_div::GPvar('noWarnings')?"":$this->failure;
+				if ($this->typoVersion >= 3006000) {
+					$failure = t3lib_div::_GP('noWarnings') ? '': $this->failure;
+				} else {
+					$failure = t3lib_div::GPvar('noWarnings') ? '': $this->failure;
+				}
 				if (!$failure) $templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
 				$templateCode = $this->removeRequired($templateCode, $failure);
 				$markerArray = $this->cObj->fillInMarkerArray($this->markerArray, $this->dataArr);
@@ -1227,8 +1264,12 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$this->prefixId.'[preview]" value="1">';
 				}
 				$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
-				// $content .= $this->cObj->getUpdateJS($this->modifyDataArrForFormUpdate($this->dataArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
-				$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($this->dataArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
+					// Corrected in TYPO3 4.0
+				if ($this->typoVersion >= 4000000) {
+					$content .= $this->cObj->getUpdateJS($this->modifyDataArrForFormUpdate($this->dataArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
+				} else {
+					$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($this->dataArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
+				}
 			}
 			return $content;
 		}
@@ -1337,7 +1378,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$origArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $this->recUid);
 				$origUsergroup = $origArr['usergroup'];
 				$setfixedUsergroup = '';
-				$fD = t3lib_div::GPvar('fD', 1);
+				if ($this->typoVersion >= 3006000) {
+					$fD = t3lib_div::_GP('fD', 1);
+				} else {
+					$fD = t3lib_div::GPvar('fD', 1);
+				}
 				$fieldArr = array();
 				if (is_array($fD)) {
 					reset($fD);
@@ -1367,7 +1412,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					} else {
 						if ($this->theTable == 'fe_users') {
 							if ($this->conf['create.']['allowUserGroupSelection']) {
-								$origArr['usergroup'] = implode(',', array_merge(array_diff(t3lib_div::trimExplode(',', $origUsergroup, 1), t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'], 1)), t3lib_div::trimExplode(',', $setfixedUsergroup, 1)));
+								$origArr['usergroup'] = implode(',', array_unique(array_merge(array_diff(t3lib_div::trimExplode(',', $origUsergroup, 1), t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'], 1)), t3lib_div::trimExplode(',', $setfixedUsergroup, 1))));
 							} elseif ($origUsergroup != $this->conf['create.']['overrideValues.']['usergroup']) {
 								$origArr['usergroup'] = $origUsergroup;
 							}
@@ -1405,6 +1450,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					}
 
 					// Outputting template
+					if ($this->feUserData['sFK'] == 'APPROVE') {
+						$this->markerArray = $this->addMd5LoginMarkers($this->markerArray);
+						$origArr['password'] = '';
+					}
 					$content = $this->getPlainTemplate('###TEMPLATE_SETFIXED_OK_'.$this->feUserData['sFK'].'###', $origArr);
 					if (!$content) {
 						$content = $this->getPlainTemplate('###TEMPLATE_SETFIXED_OK###', $origArr);
@@ -1669,8 +1718,14 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						$setfixedpiVars[$this->prefixId.'[aC]'] = $this->setfixedHash($recCopy, $data['_FIELDLIST']);
 						$linkPID = $this->confirmPID;
 					}
-					if (t3lib_div::GPvar('L') && !t3lib_div::inList($GLOBALS['TSFE']->config['config']['linkVars'], 'L')) {
-						$setfixedpiVars['L'] = t3lib_div::GPvar('L');
+					if ($this->typoVersion >= 3006000) {
+						if (t3lib_div::_GP('L') && !t3lib_div::inList($GLOBALS['TSFE']->config['config']['linkVars'], 'L')) {
+							$setfixedpiVars['L'] = t3lib_div::_GP('L');
+						}
+					} else {
+						if (t3lib_div::GPvar('L') && !t3lib_div::inList($GLOBALS['TSFE']->config['config']['linkVars'], 'L')) {
+							$setfixedpiVars['L'] = t3lib_div::GPvar('L');
+						}
 					}
 						// Find prefix for link
 					if ($GLOBALS['TSFE']->config['config']['baseURL']) {
@@ -1683,6 +1738,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			return $markerArray;
 		}
+		
 		/**
 		* Computes the setfixed hash
 		*
@@ -1771,9 +1827,13 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									}
 								} 
 								if ($this->typoVersion >= 3006000 && $colConfig['foreign_table']) {
+									$reservedValues = array();
+									if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
+										$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1));
+									}
 									$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
 									$res = $TYPO3_DB->exec_SELECTquery($titleField, $colConfig['foreign_table'],
-										'uid IN ('.implode(',', $valuesArray).')');
+										'uid IN ('.implode(',', array_diff($valuesArray, $reservedValues)).')');
 									$i = 0;
 									while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
 										if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
@@ -1993,7 +2053,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$markerArray['###SITE_EMAIL###'] = $this->conf['email.']['from'];
 
 			$markerArray['###HIDDENFIELDS###'] = '';
-			if( $this->theTable == 'fe_users' ) $markerArray['###HIDDENFIELDS###'] = ($this->cmd?'<input type="hidden" name="'.$this->prefixId.'[cmd]" value="'.$this->cmd.'">':''). ($this->authCode?'<input type="hidden" name="'.$this->prefixId.'[aC]" value="'.$this->authCode.'">':''). ($this->backURL?'<input type="hidden" name="'.$this->prefixId.'[backURL]" value="'.htmlspecialchars($this->backURL).'">':'');
+			if( $this->theTable == 'fe_users' ) {
+				$markerArray['###HIDDENFIELDS###'] = ($this->cmd?'<input type="hidden" name="'.$this->prefixId.'[cmd]" value="'.$this->cmd.'">':'');
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($this->authCode?'<input type="hidden" name="'.$this->prefixId.'[aC]" value="'.$this->authCode.'">':'');
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($this->backURL?'<input type="hidden" name="'.$this->prefixId.'[backURL]" value="'.htmlspecialchars($this->backURL).'">':'');
+			}
 			return $markerArray;
 		}
 		/**
@@ -2024,6 +2088,62 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			return $markerArray;
 		}
+		
+		/**
+		 * Adds md5 password create/edit form markers to a marker array
+		 *
+		 * @param array  $markerArray: the input marker array
+		 * @return array  the output marker array
+		 */
+		function addMd5EventsMarkers($markerArray,$cmd) {
+			$markerArray['###FORM_ONSUBMIT###'] = '';
+			$markerArray['###PASSWORD_ONCHANGE###'] = '';
+			if ($this->useMd5Password) {
+				$mode = $this->incomingData ? 'edit' : $cmd;
+				$GLOBALS['TSFE']->additionalHeaderData['MD5_script'] = '<script type="text/javascript" src="typo3/md5.js"></script>';
+				$GLOBALS['TSFE']->JSCode .= $this->getMD5Submit($mode);
+				$markerArray['###FORM_ONSUBMIT###'] = 'onSubmit="return enc_form(this);"';
+				if ($mode == 'edit') {
+					$markerArray['###PASSWORD_ONCHANGE###'] = 'onChange="pw_change=1; return true;"';
+				}
+			}
+			return $markerArray;
+		}
+		
+		/**
+		 * Adds md5 password login form markers to a marker array
+		 *
+		 * @param array  $markerArray: the input marker array
+		 * @return array  the output marker array
+		 */
+		function addMd5LoginMarkers($markerArray) {
+			if ($this->useMd5Password) {
+					// Hook (used by kb_md5fepw extension by Kraft Bernhard <kraftb@gmx.net>)
+					// This hook allows to call User JS functions.
+					// The methods should also set the required JS functions to get included
+				$onSubmit = '';
+				$extraHidden = '';
+				if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['newloginbox']['loginFormOnSubmitFuncs'])) {
+					$_params = array (); 
+					$onSubmitAr = array();
+					$extraHiddenAr = array();
+					foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['newloginbox']['loginFormOnSubmitFuncs'] as $funcRef) {
+						list($onSub, $hid) = t3lib_div::callUserFunction($funcRef, $_params, $this);
+						$onSubmitAr[] = $onSub;
+						$extraHiddenAr[] = $hid;
+					}
+				}
+				if (count($onSubmitAr)) {
+					$onSubmit = implode('; ', $onSubmitAr).'; return true;';
+					$onSubmit = strlen($onSubmit) ? ' onSubmit="'.$onSubmit.'"' : '';
+					$extraHidden = implode(chr(10), $extraHiddenAr);
+				}
+				$markerArray['###FORM_ONSUBMIT###'] = $onSubmit;
+				$markerArray['###HIDDENFIELDS###'] = $extraHidden;
+			}
+			return $markerArray;
+		}
+		
 		/**
 		* Removes irrelevant Static Info subparts (zone selection when the country has no zone)
 		*
@@ -2364,42 +2484,116 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				if (is_array($value)) {
 					reset($value);
 					while (list(, $Nvalue) = each($value)) {
-						if ($this->typoVersion >= 3006000 ) {
-							$convValue = $GLOBALS['TSFE']->csConvObj->conv($Nvalue, $this->charset, 'utf-8');
-						} elseif ($mbstring_is_available) {
-							$convValue = mb_convert_encoding ( $Nvalue, 'utf-8', $this->charset);
-						} elseif ($this->charset == 'iso-8859-1') {
-							$convValue = utf8_encode($Nvalue);
-						} else {
-							$convValue = $Nvalue;   // giving up!
-						}
 						$JSPart .= "
-							if (window.decodeURIComponent) { unesc = decodeURIComponent('".rawurlencode($convValue)."') } else { unesc = unescape('".rawurlencode($Nvalue)."') };
-							updateForm('".$formName."','".$arrPrefix."[".$fKey."][]',unesc);";
+		updateForm('".$formName."','".$arrPrefix."[".$fKey."][]',".$this->quoteJSvalue($Nvalue, true).")";
 					}
-					 
 				} else {
-					if ($this->typoVersion >= 3006000 ) {
-						$convValue = $GLOBALS['TSFE']->csConvObj->conv($value, $this->charset, 'utf-8');
-					} elseif ($mbstring_is_available) {
-						$convValue = mb_convert_encoding ( $value, 'utf-8', $this->charset);
-					} elseif ($this->charset == 'iso-8859-1') {
-						$convValue = utf8_encode($value);
-					} else {
-						$convValue = $value;  // giving up!
-					}
 					$JSPart .= "
-						if (window.decodeURIComponent) { unesc = decodeURIComponent('".rawurlencode($convValue)."') } else { unesc = unescape('".rawurlencode($value)."') };
-						updateForm('".$formName."','".$arrPrefix."[".$fKey."]',unesc);";
+		updateForm('".$formName."','".$arrPrefix."[".$fKey."]',".$this->quoteJSvalue($value, true).")";
 				}
 			}
 			$JSPart = '<script type="text/javascript">
-				/*<![CDATA[*/ '.$JSPart.'
-				/*]]>*/
-				</script>
-				';
-			$GLOBALS['TSFE']->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="'.$GLOBALS['TSFE']->absRefPrefix.'t3lib/jsfunc.updateform.js"></script>';
+	/*<![CDATA[*/ 
+<!--'.$JSPart.'
+// -->
+	/*]]>*/
+</script>';
+
+			$GLOBALS['TSFE']->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $GLOBALS['TSFE']->absRefPrefix . 't3lib/jsfunc.updateform.js"></script>';
 			return $JSPart;
+		}
+		
+		/**
+		 * Function imported from class.t3lib_div.php
+		 * See http://bugs.typo3.org/view.php?id=277
+		 */
+		function quoteJSvalue($value, $inScriptTags = false)	{
+			$value = addcslashes($value, '\'');
+			if (!$inScriptTags)	{
+				$value = htmlspecialchars($value);
+			}
+			return '\''.$value.'\'';
+		}		
+		
+		/**
+		 * From the 'KB MD5 FE Password (kb_md5fepw)' extension.
+		 *
+		 * @author	Kraft Bernhard <kraftb@gmx.net>
+		 */
+		function getMD5Submit($cmd) {
+			$JSPart = '
+				';
+			if ($cmd == 'edit') {
+				$JSPart .= "var pw_change = 0;
+				";
+			}
+			$JSPart .= "function enc_form(form) {
+					var pass = form['FE[" . $this->theTable . "][password]'].value;
+					var pass_again = form['FE[" . $this->theTable . "][password_again]'].value;
+					";
+			if ($cmd != 'edit') {
+				$JSPart .= "if (pass == '') {
+						alert('" . $this->pi_getLL('missing_password') . "');
+					}
+					";
+			}
+			$JSPart .= "if (pass != pass_again) {
+						alert('" . $this->pi_getLL('evalErrors_twice_password') . "');
+						form['FE[" . $this->theTable . "][password]'].select();
+						form['FE[" . $this->theTable . "][password]'].focus();
+						return false;
+					}
+					";
+			if ($cmd == 'edit') {
+				$JSPart .= "if (pw_change) {
+						";
+			}
+			$JSPart .= "var enc_pass = MD5(pass);
+						form['FE[" . $this->theTable . "][password]'].value = enc_pass;
+						form['FE[" . $this->theTable . "][password_again]'].value = enc_pass;
+					";
+			if ($cmd == 'edit') {
+				$JSPart .= "}
+					";
+			}
+			$JSPart .= "return true;
+				}";
+			return $JSPart;
+		}
+		
+		/**
+		 * From the 'salutationswitcher' extension.
+		 *
+		 * @author	Oliver Klee <typo-coding@oliverklee.de>
+		 */
+		    // list of allowed suffixes
+		var $allowedSuffixes = array('formal', 'informal');
+		
+		/**
+		 * Returns the localized label of the LOCAL_LANG key, $key
+		 * In $this->conf['salutation'], a suffix to the key may be set (which may be either 'formal' or 'informal').
+		 * If a corresponding key exists, the formal/informal localized string is used instead.
+		 * If the key doesn't exist, we just use the normal string.
+		 *
+		 * Example: key = 'greeting', suffix = 'informal'. If the key 'greeting_informal' exists, that string is used.
+		 * If it doesn't exist, we'll try to use the string with the key 'greeting'.
+		 *
+		 * Notice that for debugging purposes prefixes for the output values can be set with the internal vars ->LLtestPrefixAlt and ->LLtestPrefix
+		 *
+		 * @param    string        The key from the LOCAL_LANG array for which to return the value.
+		 * @param    string        Alternative string to return IF no value is found set for the key, neither for the local language nor the default.
+		 * @param    boolean        If true, the output label is passed through htmlspecialchars()
+		 * @return    string        The value from LOCAL_LANG.
+		 */
+		function pi_getLL($key, $alt = '', $hsc = FALSE) {
+				// If the suffix is allowed and we have a localized string for the desired salutation, we'll take that.
+			if (isset($this->conf['salutation']) && in_array($this->conf['salutation'], $this->allowedSuffixes, 1)) {
+				$expandedKey = $key.'_'.$this->conf['salutation'];
+				if (isset($this->LOCAL_LANG[$this->LLkey][$expandedKey])) {
+					$key = $expandedKey;
+				}
+			}
+			return parent::pi_getLL($key, $alt, $hsc);
 		}
 	}
 	if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php"]) {
