@@ -24,6 +24,8 @@ plugin.tx_srfeuserregister_pi1 {
 	onChangeCountryAttribute = {$plugin.tx_srfeuserregister_pi1.onChangeCountryAttribute}
 	
 	allowMultipleUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowMultipleUserGroupSelection}
+	useMd5Password = {$plugin.tx_srfeuserregister_pi1.useMd5Password}
+	salutation = {$plugin.tx_srfeuserregister_pi1.salutation}
 
 	# you may modify here the conditions under which an attachment file will be added to the email
 	addAttachment =  {$plugin.tx_srfeuserregister_pi1.enableEmailAttachment}
