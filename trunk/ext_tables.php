@@ -14,11 +14,14 @@ t3lib_extMgm::addPlugin(Array('LLL:EXT:sr_feuser_register/locallang_db.php:tt_co
  */
 t3lib_div::loadTCA('fe_users');
 $TCA['fe_users']['columns']['username']['config']['eval'] = 'nospace,uniqueInPid,required';
-if (strstr($TCA['fe_users']['columns']['password']['config']['eval'], 'md5')) {
+
+if (t3lib_extMgm::isLoaded('newloginbox') && t3lib_extMgm::isLoaded('kb_md5fepw') && strstr($TCA['fe_users']['columns']['password']['config']['eval'], 'md5')) {
 	$TCA['fe_users']['columns']['password']['config']['eval'] = 'nospace,required,md5,password';
 } else {
 	$TCA['fe_users']['columns']['password']['config']['eval'] = 'nospace,required';
 }
+
+
 $TCA['fe_users']['columns']['name']['config']['max'] = '100';
 $TCA['fe_users']['columns']['company']['config']['max'] = '50';
 $TCA['fe_users']['columns']['city']['config']['max'] = '40';
