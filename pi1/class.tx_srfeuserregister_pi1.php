@@ -191,16 +191,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			
 				// Initialise password encryption
-			if ($this->theTable == 'fe_users' && $this->conf['useMd5Password'] && t3lib_extMgm::isLoaded('kb_md5fepw')) {
+			if ($this->theTable == 'fe_users' && t3lib_extMgm::isLoaded('kb_md5fepw')) {
 				require_once(t3lib_extMgm::extPath('kb_md5fepw').'class.tx_kbmd5fepw_funcs.php');
 				$this->useMd5Password = true;
 				$this->conf['enableAutoLoginOnConfirmation'] = false;
-				/*
-				if ($this->cmd == 'edit' && $this->feUserData['doNotSave']) {
-					unset($this->dataArr['password']);
-					unset($this->dataArr['password_again']);
-				}
-				*/
 			}
 			
 				// Setting the list of fields allowed for editing and creation.
@@ -323,7 +317,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					// Display confirmation message
 				if (!$this->setfixedEnabled && $this->cmd == 'create') {
 					$this->markerArray = $this->addMd5LoginMarkers($this->markerArray);
-					$this->currentArr['password'] = '';
+					if($this->useMd5Password) {
+						$this->currentArr['password'] = '';
+					}
 				}
 				$templateCode = $this->cObj->getSubpart($this->templateCode, '###TEMPLATE_'.$key.'###');
 				$markerArray = $this->cObj->fillInMarkerArray($this->markerArray, $this->currentArr);
@@ -1452,7 +1448,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					// Outputting template
 					if ($this->feUserData['sFK'] == 'APPROVE') {
 						$this->markerArray = $this->addMd5LoginMarkers($this->markerArray);
-						$origArr['password'] = '';
+						if($this->useMd5Password) {
+							$origArr['password'] = '';
+						}
 					}
 					$content = $this->getPlainTemplate('###TEMPLATE_SETFIXED_OK_'.$this->feUserData['sFK'].'###', $origArr);
 					if (!$content) {
@@ -1763,7 +1761,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		/**
 		* Checks if preview display is on.
 		*
-
 		* @return boolean  true if preview display is on
 		*/
 		function isPreview() {
@@ -2006,7 +2003,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$markerArray['###LABEL_BUTTON_'.strtoupper($labelName).'###'] = $this->pi_getLL('button_'.$labelName);
 			}
 			// Labels possibly with variables
-			$otherLabelsList = 'yes,no,password_repeat,click_here_to_register,click_here_to_edit,click_here_to_delete,'. ',copy_paste_link,enter_account_info,enter_invitation_account_info,required_info_notice,excuse_us'. ',registration_problem,registration_sorry,registration_clicked_twice,registration_help,kind_regards'. ',v_verify_before_create,v_verify_invitation_before_create,v_verify_before_update,v_really_wish_to_delete,v_edit_your_account'. ',v_dear,v_now_enter_your_username,v_notification'. ',v_registration_created,v_registration_created_subject,v_registration_created_message1,v_registration_created_message2'. ',v_please_confirm,v_your_account_was_created,v_follow_instructions1,v_follow_instructions2'. ',v_invitation_confirm,v_invitation_account_was_created,v_invitation_instructions1'. ',v_registration_initiated,v_registration_initiated_subject,v_registration_initiated_message1,v_registration_initiated_message2'. ',v_registration_invited,v_registration_invited_subject,v_registration_invited_message1,v_registration_invited_message2'. ',v_registration_confirmed,v_registration_confirmed_subject,v_registration_confirmed_message1,v_registration_confirmed_message2'. ',v_registration_cancelled,v_registration_cancelled_subject,v_registration_cancelled_message1,v_registration_cancelled_message2'. ',v_registration_updated,v_registration_updated_subject,v_registration_updated_message1'. ',v_registration_deleted,v_registration_deleted_subject,v_registration_deleted_message1,v_registration_deleted_message2';
+			$otherLabelsList = 'yes,no,password_repeat,click_here_to_register,click_here_to_edit,click_here_to_delete,'. ',copy_paste_link,enter_account_info,enter_invitation_account_info,required_info_notice,excuse_us'. ',registration_problem,registration_sorry,registration_clicked_twice,registration_help,kind_regards,kind_regards_cre,kind_regards_del,kind_regards_ini,kind_regards_inv,kind_regards_upd'. ',v_verify_before_create,v_verify_invitation_before_create,v_verify_before_update,v_really_wish_to_delete,v_edit_your_account'. ',v_dear,v_now_enter_your_username,v_notification'. ',v_registration_created,v_registration_created_subject,v_registration_created_message1,v_registration_created_message2,v_registration_created_message3'. ',v_please_confirm,v_your_account_was_created,v_follow_instructions1,v_follow_instructions2'. ',v_invitation_confirm,v_invitation_account_was_created,v_invitation_instructions1'. ',v_registration_initiated,v_registration_initiated_subject,v_registration_initiated_message1,v_registration_initiated_message2,v_registration_initiated_message3'. ',v_registration_invited,v_registration_invited_subject,v_registration_invited_message1,v_registration_invited_message2'. ',v_registration_confirmed,v_registration_confirmed_subject,v_registration_confirmed_message1,v_registration_confirmed_message2'. ',v_registration_cancelled,v_registration_cancelled_subject,v_registration_cancelled_message1,v_registration_cancelled_message2'. ',v_registration_updated,v_registration_updated_subject,v_registration_updated_message1'. ',v_registration_deleted,v_registration_deleted_subject,v_registration_deleted_message1,v_registration_deleted_message2';
 			$otherLabels = t3lib_div::trimExplode(',', $otherLabelsList);
 			while (list(, $labelName) = each($otherLabels) ) {
 				$markerArray['###LABEL_'.strtoupper($labelName).'###'] = sprintf($this->pi_getLL($labelName), $this->thePidTitle, $dataArray['username'], $dataArray['name'], $dataArray['email'], $dataArray['password']); 
@@ -2053,7 +2050,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$markerArray['###SITE_EMAIL###'] = $this->conf['email.']['from'];
 
 			$markerArray['###HIDDENFIELDS###'] = '';
-			if( $this->theTable == 'fe_users' ) {
+			if($this->theTable == 'fe_users') {
 				$markerArray['###HIDDENFIELDS###'] = ($this->cmd?'<input type="hidden" name="'.$this->prefixId.'[cmd]" value="'.$this->cmd.'">':'');
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($this->authCode?'<input type="hidden" name="'.$this->prefixId.'[aC]" value="'.$this->authCode.'">':'');
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($this->backURL?'<input type="hidden" name="'.$this->prefixId.'[backURL]" value="'.htmlspecialchars($this->backURL).'">':'');
@@ -2117,12 +2114,12 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		 * @return array  the output marker array
 		 */
 		function addMd5LoginMarkers($markerArray) {
+			$onSubmit = '';
+			$extraHidden = '';
 			if ($this->useMd5Password) {
-					// Hook (used by kb_md5fepw extension by Kraft Bernhard <kraftb@gmx.net>)
+					// Hook used by kb_md5fepw extension by Kraft Bernhard <kraftb@gmx.net>
 					// This hook allows to call User JS functions.
 					// The methods should also set the required JS functions to get included
-				$onSubmit = '';
-				$extraHidden = '';
 				if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['newloginbox']['loginFormOnSubmitFuncs'])) {
 					$_params = array (); 
 					$onSubmitAr = array();
@@ -2138,9 +2135,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$onSubmit = strlen($onSubmit) ? ' onSubmit="'.$onSubmit.'"' : '';
 					$extraHidden = implode(chr(10), $extraHiddenAr);
 				}
-				$markerArray['###FORM_ONSUBMIT###'] = $onSubmit;
-				$markerArray['###HIDDENFIELDS###'] = $extraHidden;
+
 			}
+			$markerArray['###FORM_ONSUBMIT###'] = $onSubmit;
+			$markerArray['###HIDDENFIELDS###'] = $extraHidden;
 			return $markerArray;
 		}
 		
@@ -2472,13 +2470,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @param       string          A prefix for the data array
 		* @param       string          The list of fields which are loaded
 		* @return      string
-		* @access private
-		* @see user_feAdmin::displayCreateScreen()
 		*/
 		function getUpdateJS($dataArray, $formName, $arrPrefix, $fieldList) {
 			$JSPart = '';
 			$updateValues = t3lib_div::trimExplode(',', $fieldList);
-			$mbstring_is_available = in_array('mbstring', get_loaded_extensions());
 			while (list(, $fKey) = each($updateValues)) {
 				$value = $dataArray[$fKey];
 				if (is_array($value)) {
