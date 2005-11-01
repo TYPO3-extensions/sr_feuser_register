@@ -133,7 +133,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$this->thePidTitle = trim($this->conf['pidTitleOverride']) ? trim($this->conf['pidTitleOverride']) : $row['title'];
 			$this->registerPID = intval($this->conf['registerPID']) ? strval(intval($this->conf['registerPID'])) : $GLOBALS['TSFE']->id;
 			$this->editPID = intval($this->conf['editPID']) ? strval(intval($this->conf['editPID'])) : $GLOBALS['TSFE']->id;
+			$this->infomailPID = intval($this->conf['infomailPID']) ? strval(intval($this->conf['infomailPID'])) : $this->registerPID;
 			$this->confirmPID = intval($this->conf['confirmPID']) ? strval(intval($this->conf['confirmPID'])) : $this->registerPID;
+			$this->confirmInvitationPID = intval($this->conf['confirmInvitationPID']) ? strval(intval($this->conf['confirmInvitationPID'])) : $this->confirmPID;			
 			$this->confirmType = intval($this->conf['confirmType']) ? strval(intval($this->conf['confirmType'])) : $GLOBALS['TSFE']->type;
 			if ($this->conf['confirmType'] == '0' ) {
 				$this->confirmType = '0';
@@ -1715,6 +1717,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						}
 						$setfixedpiVars[$this->prefixId.'[aC]'] = $this->setfixedHash($recCopy, $data['_FIELDLIST']);
 						$linkPID = $this->confirmPID;
+						if ($this->cmd == 'invite') {
+							$linkPID = $this->confirmInvitationPID;
+						}
 					}
 					if ($this->typoVersion >= 3006000) {
 						if (t3lib_div::_GP('L') && !t3lib_div::inList($GLOBALS['TSFE']->config['config']['linkVars'], 'L')) {
@@ -1787,159 +1792,164 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		function addTcaMarkers($markerArray, $dataArray = '') {
 			if ($this->typoVersion >= 3006000) global $TYPO3_DB;
 			foreach ($this->TCA['columns'] as $colName => $colSettings) {
-				$colConfig = $colSettings['config'];
-				$colContent = '';
-				if ($this->previewLabel) {
-					// Configure preview based on input type
-					switch ($colConfig['type']) {
-						//case 'input':
-						case 'text':
-							$colContent = $dataArray[$colName];
-							break;
-						case 'check':
-							// <Ries van Twisk added support for multiple checkboxes>
-							if (is_array($colConfig['items'])) {
-								$colContent = '<ul class="tx-srfeuserregister-multiple-checked-values">';
-								foreach ($colConfig['items'] AS $key => $value) {
-									$checked = ($dataArray[$colName] & (1 << $key)) ? 'checked' : '';
-									$colContent .= $checked ? '<li>' . $this->getLLFromString($colConfig['items'][$key][0]) . '</li>' : '';
-								}
-								$colContent .= '</ul>';
-							// </Ries van Twisk added support for multiple checkboxes>
-							} else {
-								$colContent = $dataArray[$colName] ? 'checked' : 'not checked';
-							}
-							break;
-						case 'radio':
-							if ($dataArray[$colName] != '') {
-								$colContent = $this->getLLFromString($colConfig['items'][$dataArray[$colName]][0]);
-							}
-							break;
-						case 'select':
-							if ($dataArray[$colName] != '') {
-								$valuesArray = is_array($dataArray[$colName]) ? $dataArray[$colName] : explode(',',$dataArray[$colName]);
+				if (t3lib_div::inList($this->conf[$this->cmdKey.'.']['fields'], $colName)) {
+					$colConfig = $colSettings['config'];
+					$colContent = '';
+					if ($this->previewLabel) {
+						// Configure preview based on input type
+						switch ($colConfig['type']) {
+							//case 'input':
+							case 'text':
+								$colContent = $dataArray[$colName];
+								break;
+							case 'check':
+								// <Ries van Twisk added support for multiple checkboxes>
 								if (is_array($colConfig['items'])) {
-									for ($i = 0; $i < count ($valuesArray); $i++) {
-										$colContent .= ($i ? '<br />': '') . $this->getLLFromString($colConfig['items'][$valuesArray[$i]][0]);
+									$colContent = '<ul class="tx-srfeuserregister-multiple-checked-values">';
+									foreach ($colConfig['items'] AS $key => $value) {
+										$checked = ($dataArray[$colName] & (1 << $key)) ? 'checked' : '';
+										$colContent .= $checked ? '<li>' . $this->getLLFromString($colConfig['items'][$key][0]) . '</li>' : '';
 									}
-								} 
-								if ($this->typoVersion >= 3006000 && $colConfig['foreign_table']) {
-									$reservedValues = array();
-									if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
-										$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1));
-									}
-									$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
-									$res = $TYPO3_DB->exec_SELECTquery($titleField, $colConfig['foreign_table'],
-										'uid IN ('.implode(',', array_diff($valuesArray, $reservedValues)).')');
-									$i = 0;
-									while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
-										if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
-											$row = $this->getUsergroupOverlay($row);
+									$colContent .= '</ul>';
+									// </Ries van Twisk added support for multiple checkboxes>
+								} else {
+									$colContent = $dataArray[$colName] ? 'checked' : 'not checked';
+								}
+								break;
+							case 'radio':
+								if ($dataArray[$colName] != '') {
+									$colContent = $this->getLLFromString($colConfig['items'][$dataArray[$colName]][0]);
+								}
+								break;
+							case 'select':
+								if ($dataArray[$colName] != '') {
+									$valuesArray = is_array($dataArray[$colName]) ? $dataArray[$colName] : explode(',',$dataArray[$colName]);
+									if (is_array($colConfig['items'])) {
+										for ($i = 0; $i < count ($valuesArray); $i++) {
+											$colContent .= ($i ? '<br />': '') . $this->getLLFromString($colConfig['items'][$valuesArray[$i]][0]);
 										}
-										$colContent .= ($i++ ? '<br />': '') . $row[$titleField];
-									}
-								}
-							}
-							break;
-						default:
-							// unsupported input type
-							$colContent .= $colConfig['type'].':'.$this->pi_getLL('unsupported');
-					}
-				} else {
-					// Configure inputs based on TCA type
-					switch ($colConfig['type']) {
-/*
-						case 'input':
-							$colContent = '<input type="input" name="FE['.$this->theTable.']['.$colName.']"'.
-								' size="'.($colConfig['size']?$colConfig['size']:30).'"';
-							if ($colConfig['max']) {
-								$colContent .= ' maxlength="'.$colConfig['max'].'"';
-							}
-							if ($colConfig['default']) {
-								$colContent .= ' value="'.$this->getLLFromString($colConfig['default']).'"';
-							}
-							$colContent .= ' />';
-							break;
-*/
-						case 'text':
-							$colContent = '<textarea name="FE['.$this->theTable.']['.$colName.']"'.
-								' cols="'.($colConfig['cols']?$colConfig['cols']:30).'"'.
-								' rows="'.($colConfig['rows']?$colConfig['rows']:5).'"'.
-								' wrap="'.($colConfig['wrap']?$colConfig['wrap']:'virtual').'"'.
-								'>'.($colConfig['default']?$this->getLLFromString($colConfig['default']):'').'</textarea>';
-							break;
-						case 'check':
-							if (is_array($colConfig['items'])) {
-							// <Ries van Twisk added support for multiple checkboxes>
-								$colContent  = '<ul class="tx-srfeuserregister-multiple-checkboxes">';
-								foreach ($colConfig['items'] AS $key => $value) {
-									$checked = ($dataArray[$colName] & (1 << $key))?'checked':'';
-									$colContent .= '<li><input type="checkbox" name="FE['.$this->theTable.']['.$colName.'][]" value="'.$key.'" '.$checked.'/><label>'.$this->getLLFromString($colConfig['items'][$key][0]).'</label></li>';					
-								}
-								$colContent .= '</ul>';
-							// </Ries van Twisk added support for multiple checkboxes>
- 							} else {
- 								$colContent = '<input type="checkbox" name="FE['.$this->theTable.']['.$colName.']"' . ' value="1" />';
- 							}
-							break;
-						case 'radio':
-							for ($i = 0; $i < count ($colConfig['items']); $i++) {
-								$colContent .= '<input type="radio" name="FE['.$this->theTable.']['.$colName.']"'.
-										' value="'.$i.'" '.($i==0?'checked':'').' />'.
-										$this->getLLFromString($colConfig['items'][$i][0]).' ';
-							}
-							break;
-						case 'select':
-							if ($colConfig['MM']) {
-								$colContent = 'MM ' . $this->pi_getLL('unsupported');
-							} else {
-								$valuesArray = is_array($dataArray[$colName]) ? $dataArray[$colName] : explode(',',$dataArray[$colName]);
-								$multiple = ($colConfig['maxitems'] > 1) ? '[]" multiple="multiple' : '';
-								if ($this->theTable == 'fe_users' && $colName == 'usergroup' && !$this->conf['allowMultipleUsergroupSelection']) {
-									$multiple = '';
-								}
-								$colContent = '<select name="FE['.$this->theTable.']['.$colName.']' . $multiple . '">';
-								if (is_array($colConfig['items'])) {
-									for ($i = 0; $i < count ($colConfig['items']); $i++) {
-										$colContent .= '<option value="'.$colConfig['items'][$i][1]. '" ' . (in_array($colConfig['items'][$i][1], $valuesArray) ? 'selected="selected"' : '') . '>' . $this->getLLFromString($colConfig['items'][$i][0]).'</option>';
-									}
-								}
-								if ($this->typoVersion >= 3006000 && $colConfig['foreign_table']) {
-									$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
-									if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
-										$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1));
-										$selectedValue = false;
-									}
-									$whereClause = ($this->theTable == 'fe_users' && $colName == 'usergroup') ? ' pid='.$this->thePid.' ' : ' 1=1 ';
-									$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
-									$res = $TYPO3_DB->exec_SELECTquery('uid,'.$titleField, $colConfig['foreign_table'], $whereClause);
-									if(!in_array($colName, $this->requiredArr)) {
-										$colContent .= '<option value="" ' . ($valuesArray[0] ? '' : 'selected="selected"') . '></option>';
-									}
-									while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
+									} 
+									if ($this->typoVersion >= 3006000 && $colConfig['foreign_table']) {
+										$reservedValues = array();
 										if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
-											if (!in_array($row['uid'], $reservedValues)) {
-												$row = $this->getUsergroupOverlay($row);
-												$selected = (in_array($row['uid'], $valuesArray) ? 'selected="selected"' : '');
-												if(!$this->conf['allowMultipleUsergroupSelection'] && $selectedValue) {
-													$selected = '';
+											$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1));
+										}
+										$valuesArray = array_diff($valuesArray, $reservedValues);
+										if (!empty($valuesArray)) {
+											$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
+											$res = $TYPO3_DB->exec_SELECTquery($titleField, $colConfig['foreign_table'],
+												'uid IN ('.implode(',', $valuesArray).')');
+											$i = 0;
+											while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
+												if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
+													$row = $this->getUsergroupOverlay($row);
 												}
-												$selectedValue = $selected ? true: $selectedValue;
-												$colContent .= '<option value="'.$row['uid'].'"' . $selected . '>'.$row[$titleField].'</option>';
+												$colContent .= ($i++ ? '<br />': '') . $row[$titleField];
 											}
-										} else {
-											$colContent .= '<option value="'.$row['uid'].'"' . (in_array($row['uid'], $valuesArray) ? 'selected="selected"' : '') . '>'.$row[$titleField].'</option>';
 										}
 									}
 								}
-								$colContent .= '</select>';
-							}
-							break;
-						default:
-							$colContent .= $colConfig['type'].':'.$this->pi_getLL('unsupported');
+								break;
+							default:
+								// unsupported input type
+								$colContent .= $colConfig['type'].':'.$this->pi_getLL('unsupported');
+						}
+					} else {
+						// Configure inputs based on TCA type
+						switch ($colConfig['type']) {
+/*
+							case 'input':
+								$colContent = '<input type="input" name="FE['.$this->theTable.']['.$colName.']"'.
+									' size="'.($colConfig['size']?$colConfig['size']:30).'"';
+								if ($colConfig['max']) {
+										$colContent .= ' maxlength="'.$colConfig['max'].'"';
+								}
+								if ($colConfig['default']) {
+									$colContent .= ' value="'.$this->getLLFromString($colConfig['default']).'"';
+								}
+								$colContent .= ' />';
+								break;
+*/
+							case 'text':
+								$colContent = '<textarea name="FE['.$this->theTable.']['.$colName.']"'.
+									' cols="'.($colConfig['cols']?$colConfig['cols']:30).'"'.
+									' rows="'.($colConfig['rows']?$colConfig['rows']:5).'"'.
+									' wrap="'.($colConfig['wrap']?$colConfig['wrap']:'virtual').'"'.
+									'>'.($colConfig['default']?$this->getLLFromString($colConfig['default']):'').'</textarea>';
+								break;
+							case 'check':
+								if (is_array($colConfig['items'])) {
+									// <Ries van Twisk added support for multiple checkboxes>
+									$colContent  = '<ul class="tx-srfeuserregister-multiple-checkboxes">';
+									foreach ($colConfig['items'] AS $key => $value) {
+										$checked = ($dataArray[$colName] & (1 << $key))?'checked':'';
+										$colContent .= '<li><input type="checkbox" name="FE['.$this->theTable.']['.$colName.'][]" value="'.$key.'" '.$checked.'/><label>'.$this->getLLFromString($colConfig['items'][$key][0]).'</label></li>';					
+									}
+									$colContent .= '</ul>';
+									// </Ries van Twisk added support for multiple checkboxes>
+								} else {
+									$colContent = '<input type="checkbox" name="FE['.$this->theTable.']['.$colName.']"' . ' value="1" />';
+								}
+								break;
+							case 'radio':
+								for ($i = 0; $i < count ($colConfig['items']); $i++) {
+									$colContent .= '<input type="radio" name="FE['.$this->theTable.']['.$colName.']"'.
+											' value="'.$i.'" '.($i==0?'checked':'').' />'.
+											$this->getLLFromString($colConfig['items'][$i][0]).' ';
+								}
+								break;
+							case 'select':
+								if ($colConfig['MM']) {
+									$colContent = 'MM ' . $this->pi_getLL('unsupported');
+								} else {
+									$valuesArray = is_array($dataArray[$colName]) ? $dataArray[$colName] : explode(',',$dataArray[$colName]);
+									$multiple = ($colConfig['maxitems'] > 1) ? '[]" multiple="multiple' : '';
+									if ($this->theTable == 'fe_users' && $colName == 'usergroup' && !$this->conf['allowMultipleUsergroupSelection']) {
+										$multiple = '';
+									}
+									$colContent = '<select name="FE['.$this->theTable.']['.$colName.']' . $multiple . '">';
+									if (is_array($colConfig['items'])) {
+										for ($i = 0; $i < count ($colConfig['items']); $i++) {
+											$colContent .= '<option value="'.$colConfig['items'][$i][1]. '" ' . (in_array($colConfig['items'][$i][1], $valuesArray) ? 'selected="selected"' : '') . '>' . $this->getLLFromString($colConfig['items'][$i][0]).'</option>';
+										}
+									}
+									if ($this->typoVersion >= 3006000 && $colConfig['foreign_table']) {
+										$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
+										if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
+											$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1));
+											$selectedValue = false;
+										}
+										$whereClause = ($this->theTable == 'fe_users' && $colName == 'usergroup') ? ' pid='.$this->thePid.' ' : ' 1=1 ';
+										$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
+										$res = $TYPO3_DB->exec_SELECTquery('uid,'.$titleField, $colConfig['foreign_table'], $whereClause);
+										if(!in_array($colName, $this->requiredArr)) {
+											$colContent .= '<option value="" ' . ($valuesArray[0] ? '' : 'selected="selected"') . '></option>';
+										}
+										while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
+											if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
+												if (!in_array($row['uid'], $reservedValues)) {
+													$row = $this->getUsergroupOverlay($row);
+													$selected = (in_array($row['uid'], $valuesArray) ? 'selected="selected"' : '');
+													if(!$this->conf['allowMultipleUsergroupSelection'] && $selectedValue) {
+														$selected = '';
+													}
+													$selectedValue = $selected ? true: $selectedValue;
+													$colContent .= '<option value="'.$row['uid'].'"' . $selected . '>'.$row[$titleField].'</option>';
+												}
+											} else {
+												$colContent .= '<option value="'.$row['uid'].'"' . (in_array($row['uid'], $valuesArray) ? 'selected="selected"' : '') . '>'.$row[$titleField].'</option>';
+											}
+										}
+									}
+									$colContent .= '</select>';
+								}
+								break;
+							default:
+								$colContent .= $colConfig['type'].':'.$this->pi_getLL('unsupported');
+						}
 					}
+					$markerArray['###TCA_INPUT_'.$colName.'###'] = $colContent;
 				}
-				$markerArray['###TCA_INPUT_'.$colName.'###'] = $colContent;
 			}
 			return $markerArray;
 		}
@@ -2039,7 +2049,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$vars['cmd'] = 'login';
 			$markerArray['###LOGIN_FORM###'] = $this->get_url('', $this->loginPID.','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
 			$vars['cmd'] = 'infomail';
-			$markerArray['###INFOMAIL_URL###'] = $this->get_url('', $this->registerPID.','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
+			$markerArray['###INFOMAIL_URL###'] = $this->get_url('', $this->infomailPID.','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
 			 
 			$markerArray['###THE_PID###'] = $this->thePid;
 			$markerArray['###THE_PID_TITLE###'] = $this->thePidTitle;
