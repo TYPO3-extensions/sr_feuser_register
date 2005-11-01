@@ -56,6 +56,9 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Confirmation page PID: PID of the page on which the plugin is inserted with the intent of serving as the front end user confirmation page (or setfixed page!).
   confirmPID =
 
+    # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Confirmation of invitation page PID: PID of the page on which the plugin is inserted with the intent of serving as the front end user confirmation page (or setfixed page!) when replying to an invitation.
+  confirmInvitationPID =
+
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Confirmation page Type: Type (or pageNum) of the confirmation page.
   confirmType = 0
 
