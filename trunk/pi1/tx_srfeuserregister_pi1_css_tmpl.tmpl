@@ -1,0 +1,2722 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Frond End User Registration Template</title>
+</head>
+<body>
+
+<h1>FRONTEND USER REGISTRATION</h1>
+<h2>EXAMPLE</h2>
+
+<h2>'CREATE' TEMPLATES:</h2>
+
+<hr />
+
+<p><em>Form for the registration of a frontend user:</em></p>
+
+<!-- ###TEMPLATE_CREATE### begin -->
+<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+	<h4> ###LABEL_ENTER_ACCOUNT_INFO### </h4>
+	<p class="form_notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
+
+	<!-- ###SUB_INCLUDED_FIELD_username### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="username">###LABEL_USERNAME###</label>
+			<span class="form_required">###REQUIRED_USERNAME###</span>
+		</p> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_username### -->
+			<p class="error">###MISSING_USERNAME###</p>
+			<p>###EVAL_ERROR_FIELD_username###</p>
+			<!-- ###SUB_REQUIRED_FIELD_username### -->
+			<input id="username" type="text" name="FE[fe_users][username]" class="textinput" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_username### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_password### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="password">###LABEL_PASSWORD###</label>
+			<span class="form_required">###REQUIRED_PASSWORD###</span>
+		</p>
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_password### -->
+			<p class="error">###MISSING_PASSWORD###</p>
+			<p>###EVAL_ERROR_FIELD_password###</p>
+			<!-- ###SUB_REQUIRED_FIELD_password### -->
+			<input id="password" type="password" name="FE[fe_users][password]" class="passwordinput" />
+		</div> 
+	</div>
+	<div class="item"> 
+		<p class="form_label">
+			<label for="password_repeat">###LABEL_PASSWORD_REPEAT###</label>
+			<span class="form_required">###REQUIRED_PASSWORD###</span>
+		</p>
+		<div class="form_field">
+			<input id="password_repeat" type="password" name="FE[fe_users][password_again]" class="passwordinput" />
+		</div> 
+	</div>	
+	<!-- ###SUB_INCLUDED_FIELD_password### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_gender### -->
+	<div class="item"> 
+		<p class="form_label">
+			###LABEL_GENDER###
+			<span class="form_required">###REQUIRED_GENDER###</span>
+		</p> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_gender###</p>
+			<!-- ###SUB_REQUIRED_FIELD_gender### -->
+			<p class="error">###MISSING_GENDER###</p>
+			<!-- ###SUB_REQUIRED_FIELD_gender### -->
+			###TCA_INPUT_gender###
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_gender### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_name### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="name">###LABEL_NAME###</label>
+			<span class="form_required">###REQUIRED_NAME###</span>
+		</p> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_name###</p>
+			<!-- ###SUB_REQUIRED_FIELD_name### -->
+			<p class="error">###MISSING_NAME###</p>
+			<!-- ###SUB_REQUIRED_FIELD_name### -->
+			<input id="name" type="text" name="FE[fe_users][name]" class="textinput" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="first_name">###LABEL_FIRST_NAME###</label>
+			<span class="form_required">###REQUIRED_FIRST_NAME###</span>
+		</p> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_first_name###</p>
+			<!-- ###SUB_REQUIRED_FIELD_first_name### -->
+			<p class="error">###MISSING_FIRST_NAME###</p>
+			<!-- ###SUB_REQUIRED_FIELD_first_name### -->
+			<input id="first_name" type="text" name="FE[fe_users][first_name]" class="textinput" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="last_name">###LABEL_LAST_NAME###</label>
+			<span class="form_required">###REQUIRED_LAST_NAME###</span>
+		</p> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_last_name###</p>
+			<!-- ###SUB_REQUIRED_FIELD_last_name### -->
+			<p class="error">###MISSING_LAST_NAME###</p>
+			<!-- ###SUB_REQUIRED_FIELD_last_name### -->
+			<input id="last_name" type="text" name="FE[fe_users][last_name]" class="textinput" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_status### -->
+	<div class="item"> 
+		<p class="form_label">
+			###LABEL_STATUS###
+			<span class="form_required">###REQUIRED_STATUS###</span>
+		</p> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_status###</p>
+			<!-- ###SUB_REQUIRED_FIELD_status### -->
+			<p class="error">###MISSING_STATUS###</p>
+			<!-- ###SUB_REQUIRED_FIELD_status### -->
+			###TCA_INPUT_status###
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_status### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="date_of_birth">###LABEL_DATE_OF_BIRTH###</label>
+			<span class="form_required">###REQUIRED_DATE_OF_BIRTH###</span>
+		</p> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_date_of_birth###</p>
+			<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
+			<p class="error">###MISSING_DATE_OF_BIRTH###</p>
+			<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
+			<input id="date_of_birth" type="text" name="FE[fe_users][date_of_birth]" class="textinput" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_title### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="title">###LABEL_TITLE###</label>
+			<span class="form_required">###REQUIRED_TITLE###</span>
+		</p> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_title###</p>
+			<!-- ###SUB_REQUIRED_FIELD_title### -->
+			<p class="error">###MISSING_TITLE###</p>
+			<!-- ###SUB_REQUIRED_FIELD_title### -->
+			<input id="title" type="text" name="FE[fe_users][title]" class="textinput" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_title### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_company### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="company">###LABEL_COMPANY###</label>
+			<span class="form_required">###REQUIRED_COMPANY###</span>
+		</p> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_company###</p>
+			<!-- ###SUB_REQUIRED_FIELD_company### -->
+			<p class="error">###MISSING_COMPANY###</p>
+			<!-- ###SUB_REQUIRED_FIELD_company### -->
+			<input id="company" type="text" name="FE[fe_users][company]" class="textinput" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_company### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_address### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="address">###LABEL_ADDRESS###</label>
+			<span class="form_required">###REQUIRED_ADDRESS###</span>
+		</p> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_address###</p>
+			<!-- ###SUB_REQUIRED_FIELD_address### -->
+			<p class="error">###MISSING_ADDRESS###</p>
+			<!-- ###SUB_REQUIRED_FIELD_address### -->
+			<input id="address" type="text" name="FE[fe_users][address]" class="textinput" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_address### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_city### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="city">###LABEL_CITY###</label>
+			<span class="form_required">###REQUIRED_CITY###</span>
+		</p> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_city###</p>
+			<!-- ###SUB_REQUIRED_FIELD_city### -->
+			<p class="error">###MISSING_CITY###</p>
+			<!-- ###SUB_REQUIRED_FIELD_city### -->
+			<input id="city" type="text" name="FE[fe_users][city]" class="textinput" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_city### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_country### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="country">###LABEL_COUNTRY###</label>
+			<span class="form_required">###REQUIRED_COUNTRY###</span>
+		</p> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_country###</p>
+			<!-- ###SUB_REQUIRED_FIELD_country### -->
+			<p class="error">###MISSING_COUNTRY###</p>
+			<!-- ###SUB_REQUIRED_FIELD_country### -->
+			<input id="country" type="text" name="FE[fe_users][country]" class="textinput" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_country### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+	<div class="item"> 
+		<p class="form_label">
+			###LABEL_COUNTRY###
+			<span class="form_required">###REQUIRED_STATIC_INFO_COUNTRY###</span>
+		</p> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
+			<p class="error">###MISSING_STATIC_INFO_COUNTRY###</p>
+			<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
+			###SELECTOR_STATIC_INFO_COUNTRY###
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_zone### -->
+	<div class="item"> 
+		<p class="form_label">
+			###LABEL_ZONE###
+			<span class="form_required">###REQUIRED_ZONE###</span>
+		</p> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_zone### -->
+			<p class="error">###MISSING_ZONE###</p>
+			<!-- ###SUB_REQUIRED_FIELD_zone### -->
+			###SELECTOR_ZONE###
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_zone### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_zip### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="zip">###LABEL_ZIP###</label>
+			<span class="form_required">###REQUIRED_ZIP###</span>
+		</p> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_zip###</p>
+			<!-- ###SUB_REQUIRED_FIELD_zip### -->
+			<p class="error">###MISSING_ZIP###</p>
+			<!-- ###SUB_REQUIRED_FIELD_zip### -->
+			<input id="zip" type="text" name="FE[fe_users][zip]" class="textinput" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_zip### -->
+
+
+	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="telephone">###LABEL_TELEPHONE###</label>
+			<span class="form_required">###REQUIRED_TELEPHONE###</span>
+		</p> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_telephone###</p>
+			<!-- ###SUB_REQUIRED_FIELD_telephone### -->
+			<p class="error">###MISSING_TELEPHONE###</p>
+			<!-- ###SUB_REQUIRED_FIELD_telephone### -->
+			<input id="telephone" type="text" name="FE[fe_users][telephone]" class="textinput" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_fax### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="fax">###LABEL_FAX###</label>
+			<span class="form_required">###REQUIRED_FAX###</span>
+		</p> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_fax###</p>
+			<!-- ###SUB_REQUIRED_FIELD_fax### -->
+			<p class="error">###MISSING_FAX###</p>
+			<!-- ###SUB_REQUIRED_FIELD_fax### -->
+			<input id="fax" type="text" name="FE[fe_users][fax]" class="textinput" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_fax### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_email### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="email">###LABEL_EMAIL###</label>
+			<span class="form_required">###REQUIRED_EMAIL###</span>
+		</p> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_email###</p>
+			<!-- ###SUB_REQUIRED_FIELD_email### -->
+			<p class="error">###MISSING_EMAIL###</p>
+			<!-- ###SUB_REQUIRED_FIELD_email### -->
+			<input id="email" type="text" name="FE[fe_users][email]" class="textinput" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_email### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+	<div class="item"> 
+		<p class="form_label">
+			###LABEL_USERGROUP###
+			<span class="form_required">###REQUIRED_USERGROUP###</span>
+		</p> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_usergroup###</p>
+			<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
+			<p class="error">###MISSING_USERGROUP###</p>
+			<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
+			###TCA_INPUT_usergroup###
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+	<div class="item"> 
+		<p class="form_label">
+			###LABEL_MODULE_SYS_DMAIL_CATEGORY###
+			<span class="form_required">###REQUIRED_MODULE_SYS_DMAIL_CATEGORY###</span>
+		</p> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_module_sys_dmail_category###</p>
+			<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
+			<p class="error">###MISSING_MODULE_SYS_DMAIL_CATEGORY###</p>
+			<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
+			###TCA_INPUT_module_sys_dmail_category###
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="module_sys_dmail_html">###LABEL_MODULE_SYS_DMAIL_HTML###</label>
+			<span class="form_required">###REQUIRED_MODULE_SYS_DMAIL_HTML###</span>
+		</p> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
+			<p class="error">###MISSING_MODULE_SYS_DMAIL_HTML###</p>
+			<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
+			<input id="module_sys_dmail_html" type="checkbox" name="FE[fe_users][module_sys_dmail_html]" value="1" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_language### -->
+	<div class="item"> 
+		<p class="form_label">
+			###LABEL_LANGUAGE###
+			<span class="form_required">###REQUIRED_LANGUAGE###</span>
+		</p> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_language### -->
+			<p class="error">###MISSING_LANGUAGE###</p>
+			<!-- ###SUB_REQUIRED_FIELD_language### -->
+			###SELECTOR_LANGUAGE###
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_language### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_www### -->
+	<div class="item"> 
+		<p class="form_label">
+			<label for="www">###LABEL_WWW###</label>
+			<span class="form_required">###REQUIRED_WWW###</span>
+		</p> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_www###</p>
+			<!-- ###SUB_REQUIRED_FIELD_www### -->
+			<p class="error">###MISSING_WWW###</p>
+			<!-- ###SUB_REQUIRED_FIELD_www### -->
+			<input id="www" type="text" name="FE[fe_users][www]" class="textinput" />
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_www### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_image### -->
+	<div class="item"> 
+		<p class="form_label">
+			###LABEL_IMAGE###
+			<span class="form_required">###REQUIRED_IMAGE###</span>
+		</p> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_image###</p>
+			<!-- ###SUB_REQUIRED_FIELD_image### -->
+			<p class="error">###MISSING_IMAGE###</p>
+			<!-- ###SUB_REQUIRED_FIELD_image### -->
+			###UPLOAD_image###
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_image### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_comments### -->
+	<div class="item"> 
+		<p class="form_label">
+			###LABEL_COMMENTS###
+			<span class="form_required">###REQUIRED_COMMENTS###</span>
+		</p> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_comments###</p>
+			<!-- ###SUB_REQUIRED_FIELD_comments### -->
+			<p class="error">###MISSING_COMMENTS###</p>
+			<!-- ###SUB_REQUIRED_FIELD_comments### -->
+			###TCA_INPUT_comments###
+		</div> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_comments### -->
+
+	###HIDDENFIELDS###
+	<p class="form_submit">
+		<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_REGISTER###" />
+	</p>
+</form>
+<!-- ###TEMPLATE_CREATE### end -->
+
+
+
+<p style="margin-top: 20px"><em>Here the user information is preview before final submission:</em></p>
+
+<!-- ###TEMPLATE_CREATE_PREVIEW### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p class="form_notice">###LABEL_V_VERIFY_BEFORE_CREATE###</p>
+
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_username### </p>
+	<p class="form_label"> ###LABEL_USERNAME### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+<div class="item">
+	<p class="form_preview"> ###TCA_INPUT_gender### </p>
+	<p class="form_label"> ###LABEL_GENDER### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_name### </p>
+	<p class="form_label"> ###LABEL_NAME### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_first_name### </p>
+	<p class="form_label"> ###LABEL_FIRST_NAME### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_last_name### </p>
+	<p class="form_label"> ###LABEL_LAST_NAME### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+<div class="item">
+	<p class="form_preview"> ###TCA_INPUT_status### </p>
+	<p class="form_label"> ###LABEL_STATUS### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_date_of_birth### </p>
+	<p class="form_label"> ###LABEL_DATE_OF_BIRTH### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_title### </p>
+	<p class="form_label"> ###LABEL_TITLE### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_company### </p>
+	<p class="form_label"> ###LABEL_COMPANY### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_address### </p>
+	<p class="form_label"> ###LABEL_ADDRESS### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_city### </p>
+	<p class="form_label"> ###LABEL_CITY### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_zone### </p>
+	<p class="form_label"> ###LABEL_ZONE### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_country### </p>
+	<p class="form_label"> ###LABEL_COUNTRY### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_static_info_country### </p>
+	<p class="form_label"> ###LABEL_STATIC_INFO_COUNTRY### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_zip### </p>
+	<p class="form_label"> ###LABEL_ZIP### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_telephone### </p>
+	<p class="form_label"> ###LABEL_TELEPHONE### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_fax### </p>
+	<p class="form_label"> ###LABEL_FAX### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_email### </p>
+	<p class="form_label"> ###LABEL_EMAIL### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_usergroup### </p>
+	<p class="form_label"> ###LABEL_USERGROUP### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+<div class="item">
+	<p class="form_preview"> ###TCA_INPUT_module_sys_dmail_category### </p>
+	<p class="form_label"> ###LABEL_MODULE_SYS_DMAIL_CATEGORY### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+<div class="item">
+	<p class="form_preview"> ###LABEL_module_sys_dmail_html_CHECKED### </p>
+	<p class="form_label"> ###LABEL_MODULE_SYS_DMAIL_HTML### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_language### </p>
+	<p class="form_label"> ###LABEL_LANGUAGE### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_www### </p>
+	<p class="form_label"> ###LABEL_WWW### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+<div class="item">
+	<p class="form_preview"> ###UPLOAD_PREVIEW_image### </p>
+	<p class="form_label"> ###LABEL_IMAGE### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+<div class="item">
+	<p class="form_preview"> ###TCA_INPUT_comments### </p>
+	<p class="form_label"> ###LABEL_COMMENTS### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+
+<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
+	<input type="hidden" name="FE[fe_users][username]" />
+	<input type="hidden" name="FE[fe_users][password]" />
+	<input type="hidden" name="FE[fe_users][password_again]" />
+	<input type="hidden" name="FE[fe_users][gender]" />
+	<input type="hidden" name="FE[fe_users][name]" />
+	<input type="hidden" name="FE[fe_users][first_name]" />
+	<input type="hidden" name="FE[fe_users][last_name]" />
+	<input type="hidden" name="FE[fe_users][status]" />
+	<input type="hidden" name="FE[fe_users][date_of_birth]" />
+	<input type="hidden" name="FE[fe_users][address]" />
+	<input type="hidden" name="FE[fe_users][city]" />
+	<input type="hidden" name="FE[fe_users][zone]" />
+	<input type="hidden" name="FE[fe_users][country]" />
+	<input type="hidden" name="FE[fe_users][static_info_country]" />
+	<input type="hidden" name="FE[fe_users][zip]" />
+	<input type="hidden" name="FE[fe_users][telephone]" />
+	<input type="hidden" name="FE[fe_users][fax]" />
+	<input type="hidden" name="FE[fe_users][email]" />
+	<input type="hidden" name="FE[fe_users][usergroup]" />
+	<input type="hidden" name="FE[fe_users][module_sys_dmail_category]" />
+	<input type="hidden" name="FE[fe_users][module_sys_dmail_html]" />
+	<input type="hidden" name="FE[fe_users][language]" />
+	<input type="hidden" name="FE[fe_users][title]" />
+	<input type="hidden" name="FE[fe_users][company]" />
+	<input type="hidden" name="FE[fe_users][www]" />
+	<input type="hidden" name="FE[fe_users][image]" />
+	<input type="hidden" name="FE[fe_users][comments]" />
+	###HIDDENFIELDS###	
+
+	<div class="item">
+		<p class="form_preview">
+			<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_REGISTER###" />
+		</p>
+		<p class="form_label">
+			<input type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_BACK_TO_FORM###" />
+		</p>	
+	</div>
+</form>
+<!-- ###TEMPLATE_CREATE_PREVIEW### end -->
+
+
+
+<p style="margin-top: 20px"><em>Template, displayed if the user is already logged in.</em></p>
+
+<!-- ###TEMPLATE_CREATE_LOGIN### begin-->
+<p><a href="###EDIT_URL###">###LABEL_CLICK_HERE_TO_EDIT###</a></p>
+<!-- ###TEMPLATE_CREATE_LOGIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is shown when the user is created(without auto-login).</em></p>
+
+<!-- ###TEMPLATE_CREATE_SAVED### begin-->
+<h4>###LABEL_V_DEAR###</h4> 
+<p>###LABEL_V_REGISTRATION_CREATED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CREATED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_CREATED_MESSAGE2###</p>
+<p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
+
+<form name="###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
+	<div class="item"> 
+		<p class="form_field">
+			<input type="text" name="user" value="###FIELD_username###" />
+		</p> 
+		<p class="form_label">###LABEL_USERNAME###</p>
+	</div>
+
+	<div class="item"> 
+		<p class="form_field">
+			<input type="password" name="pass" value="###FIELD_password###" />
+		</p> 
+		<p class="form_label">###LABEL_PASSWORD###</p>
+	</div>
+
+	<p class="form_submit">
+		<input type="submit" name="submit" value="###LABEL_BUTTON_ENTER###" />
+	</p>
+
+	<input type="hidden" name="logintype" value="login" />
+	<input type="hidden" name="pid" value="###THE_PID###" />
+	<input type="hidden" name="redirect_url" value="" />
+	###HIDDENFIELDS###
+</form>
+<!-- ###TEMPLATE_CREATE_SAVED### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is shown when the user is created and the option setfixed is configured.
+The user is informed that a message has been sent to his email address and that he needs to confirm his registration.</em></p>
+
+<!-- ###TEMPLATE_SETFIXED_CREATE### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_PLEASE_CONFIRM###</p>
+<p>###LABEL_V_YOUR_ACCOUNT_WAS_CREATED###</p>
+<p>###LABEL_V_FOLLOW_INSTRUCTIONS1###</p>
+<p>###LABEL_V_FOLLOW_INSTRUCTIONS2###</p>
+<p>###LABEL_KIND_REGARDS###<br />
+<p>###SITE_NAME###</p> <!-- TODO -->
+<!-- ###TEMPLATE_SETFIXED_CREATE### end-->
+
+
+
+
+
+
+<h2>'INVITE' TEMPLATES:</h2>
+
+<hr />
+
+<p style="margin-top: 20px"><em>Form for the registration of an invited frontend user:</em></p>
+
+<!-- ###TEMPLATE_INVITE### begin -->
+<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+	<h4>###LABEL_ENTER_INVITATION_ACCOUNT_INFO###</h4>
+	<p class="form_notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
+
+	<!-- ###SUB_INCLUDED_FIELD_username### -->
+	<div class="item"> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_username### -->
+			<p class="error">###MISSING_USERNAME###</p>
+			<p>###EVAL_ERROR_FIELD_username###</p>
+			<!-- ###SUB_REQUIRED_FIELD_username### -->
+			<input id="username" type="text" name="FE[fe_users][username]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="username">###LABEL_USERNAME###</label>
+			<span class="form_required">###REQUIRED_USERNAME###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_username### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_password### -->
+	<div class="item"> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_password### -->
+			<p class="error">###MISSING_PASSWORD###</p>
+			<p>###EVAL_ERROR_FIELD_password###</p>
+			<!-- ###SUB_REQUIRED_FIELD_password### -->
+			<input id="password" type="password" name="FE[fe_users][password]" class="passwordinput" />
+			<label for="password_repeat">###LABEL_PASSWORD_REPEAT###</label>
+			<input id="password_repeat" type="password" name="FE[fe_users][password_again]" class="passwordinput" />
+		</div> 
+		<p class="form_label">
+			<label for="password">###LABEL_PASSWORD###</label>
+			<span class="form_required">###REQUIRED_PASSWORD###</span>
+		</p>
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_password### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_gender### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_gender###</p>
+			<!-- ###SUB_REQUIRED_FIELD_gender### -->
+			<p class="error">###MISSING_GENDER###</p>
+			<!-- ###SUB_REQUIRED_FIELD_gender### -->
+			###TCA_INPUT_gender###
+		</div> 
+		<p class="form_label">
+			###LABEL_GENDER###
+			<span class="form_required">###REQUIRED_GENDER###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_gender### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_name### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_name###</p>
+			<!-- ###SUB_REQUIRED_FIELD_name### -->
+			<p class="error">###MISSING_NAME###</p>
+			<!-- ###SUB_REQUIRED_FIELD_name### -->
+			<input id="name" type="text" name="FE[fe_users][name]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="name">###LABEL_NAME###</label>
+			<span class="form_required">###REQUIRED_NAME###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_first_name###</p>
+			<!-- ###SUB_REQUIRED_FIELD_first_name### -->
+			<p class="error">###MISSING_FIRST_NAME###</p>
+			<!-- ###SUB_REQUIRED_FIELD_first_name### -->
+			<input id="first_name" type="text" name="FE[fe_users][first_name]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="first_name">###LABEL_FIRST_NAME###</label>
+			<span class="form_required">###REQUIRED_FIRST_NAME###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_last_name###</p>
+			<!-- ###SUB_REQUIRED_FIELD_last_name### -->
+			<p class="error">###MISSING_LAST_NAME###</p>
+			<!-- ###SUB_REQUIRED_FIELD_last_name### -->
+			<input id="last_name" type="text" name="FE[fe_users][last_name]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="last_name">###LABEL_LAST_NAME###</label>
+			<span class="form_required">###REQUIRED_LAST_NAME###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_status### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_status###</p>
+			<!-- ###SUB_REQUIRED_FIELD_status### -->
+			<p class="error">###MISSING_STATUS###</p>
+			<!-- ###SUB_REQUIRED_FIELD_status### -->
+			###TCA_INPUT_status###
+		</div> 
+		<p class="form_label">
+			###LABEL_STATUS###
+			<span class="form_required">###REQUIRED_STATUS###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_status### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_date_of_birth###</p>
+			<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
+			<p class="error">###MISSING_DATE_OF_BIRTH###</p>
+			<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
+			<input id="date_of_birth" type="text" name="FE[fe_users][date_of_birth]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="date_of_birth">###LABEL_DATE_OF_BIRTH###</label>
+			<span class="form_required">###REQUIRED_DATE_OF_BIRTH###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_title### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_title###</p>
+			<!-- ###SUB_REQUIRED_FIELD_title### -->
+			<p class="error">###MISSING_TITLE###</p>
+			<!-- ###SUB_REQUIRED_FIELD_title### -->
+			<input id="title" type="text" name="FE[fe_users][title]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="title">###LABEL_TITLE###</label>
+			<span class="form_required">###REQUIRED_TITLE###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_title### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_company### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_company###</p>
+			<!-- ###SUB_REQUIRED_FIELD_company### -->
+			<p class="error">###MISSING_COMPANY###</p>
+			<!-- ###SUB_REQUIRED_FIELD_company### -->
+			<input id="company" type="text" name="FE[fe_users][company]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="company">###LABEL_COMPANY###</label>
+			<span class="form_required">###REQUIRED_COMPANY###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_company### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_address### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_address###</p>
+			<!-- ###SUB_REQUIRED_FIELD_address### -->
+			<p class="error">###MISSING_ADDRESS###</p>
+			<!-- ###SUB_REQUIRED_FIELD_address### -->
+			<input id="address" type="text" name="FE[fe_users][address]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="address">###LABEL_ADDRESS###</label>
+			<span class="form_required">###REQUIRED_ADDRESS###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_address### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_city### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_city###</p>
+			<!-- ###SUB_REQUIRED_FIELD_city### -->
+			<p class="error">###MISSING_CITY###</p>
+			<!-- ###SUB_REQUIRED_FIELD_city### -->
+			<input id="city" type="text" name="FE[fe_users][city]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="city">###LABEL_CITY###</label>
+			<span class="form_required">###REQUIRED_CITY###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_city### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_country### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_country###</p>
+			<!-- ###SUB_REQUIRED_FIELD_country### -->
+			<p class="error">###MISSING_COUNTRY###</p>
+			<!-- ###SUB_REQUIRED_FIELD_country### -->
+			<input id="country" type="text" name="FE[fe_users][country]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="country">###LABEL_COUNTRY###</label>
+			<span class="form_required">###REQUIRED_COUNTRY###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_country### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+	<div class="item"> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
+			<p class="error">###MISSING_STATIC_INFO_COUNTRY###</p>
+			<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
+			###SELECTOR_STATIC_INFO_COUNTRY###
+		</div> 
+		<p class="form_label">
+			###LABEL_COUNTRY###
+			<span class="form_required">###REQUIRED_STATIC_INFO_COUNTRY###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_zone### -->
+	<div class="item"> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_zone### -->
+			<p class="error">###MISSING_ZONE###</p>
+			<!-- ###SUB_REQUIRED_FIELD_zone### -->
+			###SELECTOR_ZONE###
+		</div> 
+		<p class="form_label">
+			###LABEL_ZONE###
+			<span class="form_required">###REQUIRED_ZONE###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_zone### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_zip### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_zip###</p>
+			<!-- ###SUB_REQUIRED_FIELD_zip### -->
+			<p class="error">###MISSING_ZIP###</p>
+			<!-- ###SUB_REQUIRED_FIELD_zip### -->
+			<input id="zip" type="text" name="FE[fe_users][zip]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="zip">###LABEL_ZIP###</label>
+			<span class="form_required">###REQUIRED_ZIP###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_zip### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_telephone###</p>
+			<!-- ###SUB_REQUIRED_FIELD_telephone### -->
+			<p class="error">###MISSING_TELEPHONE###</p>
+			<!-- ###SUB_REQUIRED_FIELD_telephone### -->
+			<input id="telephone" type="text" name="FE[fe_users][telephone]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="telephone">###LABEL_TELEPHONE###</label>
+			<span class="form_required">###REQUIRED_TELEPHONE###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_fax### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_fax###</p>
+			<!-- ###SUB_REQUIRED_FIELD_fax### -->
+			<p class="error">###MISSING_FAX###</p>
+			<!-- ###SUB_REQUIRED_FIELD_fax### -->
+			<input id="fax" type="text" name="FE[fe_users][fax]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="fax">###LABEL_FAX###</label>
+			<span class="form_required">###REQUIRED_FAX###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_fax### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_email### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_email###</p>
+			<!-- ###SUB_REQUIRED_FIELD_email### -->
+			<p class="error">###MISSING_EMAIL###</p>
+			<!-- ###SUB_REQUIRED_FIELD_email### -->
+			<input id="email" type="text" name="FE[fe_users][email]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="email">###LABEL_EMAIL###</label>
+			<span class="form_required">###REQUIRED_EMAIL###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_email### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_usergroup###</p>
+			<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
+			<p class="error">###MISSING_USERGROUP###</p>
+			<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
+			###TCA_INPUT_usergroup###
+		</div> 
+		<p class="form_label">
+			###LABEL_USERGROUP###
+			<span class="form_required">###REQUIRED_USERGROUP###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_module_sys_dmail_category###</p>
+			<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
+			<p class="error">###MISSING_MODULE_SYS_DMAIL_CATEGORY###</p>
+			<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
+			###TCA_INPUT_module_sys_dmail_category###
+		</div> 
+		<p class="form_label">
+			###LABEL_MODULE_SYS_DMAIL_CATEGORY###
+			<span class="form_required">###REQUIRED_MODULE_SYS_DMAIL_CATEGORY###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+	<div class="item"> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
+			<p class="error">###MISSING_MODULE_SYS_DMAIL_HTML###</p>
+			<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
+			<input id="module_sys_dmail_html" type="checkbox" name="FE[fe_users][module_sys_dmail_html]" value="1" />
+		</div> 
+		<p class="form_label">
+			<label for="module_sys_dmail_html">###LABEL_MODULE_SYS_DMAIL_HTML###</label>
+			<span class="form_required">###REQUIRED_MODULE_SYS_DMAIL_HTML###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_language### -->
+	<div class="item"> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_language### -->
+			<p class="error">###MISSING_LANGUAGE###</p>
+			<!-- ###SUB_REQUIRED_FIELD_language### -->
+			###SELECTOR_LANGUAGE###
+		</div> 
+		<p class="form_label">
+			###LABEL_LANGUAGE###
+			<span class="form_required">###REQUIRED_LANGUAGE###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_language### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_www### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_www###</p>
+			<!-- ###SUB_REQUIRED_FIELD_www### -->
+			<p class="error">###MISSING_WWW###</p>
+			<!-- ###SUB_REQUIRED_FIELD_www### -->
+			<input id="www" type="text" name="FE[fe_users][www]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="www">###LABEL_WWW###</label>
+			<span class="form_required">###REQUIRED_WWW###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_www### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_image### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_image###</p>
+			<!-- ###SUB_REQUIRED_FIELD_image### -->
+			<p class="error">###MISSING_IMAGE###</p>
+			<!-- ###SUB_REQUIRED_FIELD_image### -->
+			###UPLOAD_image###
+		</div> 
+		<p class="form_label">
+			###LABEL_IMAGE###
+			<span class="form_required">###REQUIRED_IMAGE###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_image### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_comments### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_comments###</p>
+			<!-- ###SUB_REQUIRED_FIELD_comments### -->
+			<p class="error">###MISSING_COMMENTS###</p>
+			<!-- ###SUB_REQUIRED_FIELD_comments### -->
+			###TCA_INPUT_comments###
+		</div> 
+		<p class="form_label">
+			###LABEL_COMMENTS###
+			<span class="form_required">###REQUIRED_COMMENTS###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_comments### -->
+
+	###HIDDENFIELDS###
+	<p class="form_submit">
+		<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_REGISTER###" />
+	</p>
+</form>
+<!-- ###TEMPLATE_INVITE### end-->
+
+
+
+<p style="margin-top: 20px"><em>Here the invited user information is previewed before final submission:</em></p>
+
+<!-- ###TEMPLATE_INVITE_PREVIEW### begin -->
+<p>###LABEL_V_VERIFY_INVITATION_BEFORE_CREATE###</p>
+
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_username### </p>
+	<p class="form_label"> ###LABEL_USERNAME### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+<div class="item">
+	<p class="form_preview"> ###TCA_INPUT_gender### </p>
+	<p class="form_label"> ###LABEL_GENDER### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_name### </p>
+	<p class="form_label"> ###LABEL_NAME### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_first_name### </p>
+	<p class="form_label"> ###LABEL_FIRST_NAME### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_last_name### </p>
+	<p class="form_label"> ###LABEL_LAST_NAME### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+<div class="item">
+	<p class="form_preview"> ###TCA_INPUT_status### </p>
+	<p class="form_label"> ###LABEL_STATUS### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_date_of_birth### </p>
+	<p class="form_label"> ###LABEL_DATE_OF_BIRTH### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_title### </p>
+	<p class="form_label"> ###LABEL_TITLE### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_company### </p>
+	<p class="form_label"> ###LABEL_COMPANY### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_address### </p>
+	<p class="form_label"> ###LABEL_ADDRESS### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_city### </p>
+	<p class="form_label"> ###LABEL_CITY### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_zone### </p>
+	<p class="form_label"> ###LABEL_ZONE### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_country### </p>
+	<p class="form_label"> ###LABEL_COUNTRY### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_static_info_country### </p>
+	<p class="form_label"> ###LABEL_STATIC_INFO_COUNTRY### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_zip### </p>
+	<p class="form_label"> ###LABEL_ZIP### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_telephone### </p>
+	<p class="form_label"> ###LABEL_TELEPHONE### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_fax### </p>
+	<p class="form_label"> ###LABEL_FAX### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_email### </p>
+	<p class="form_label"> ###LABEL_EMAIL### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_usergroup### </p>
+	<p class="form_label"> ###LABEL_USERGROUP### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+<div class="item">
+	<p class="form_preview"> ###TCA_INPUT_module_sys_dmail_category### </p>
+	<p class="form_label"> ###LABEL_MODULE_SYS_DMAIL_CATEGORY### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+<div class="item">
+	<p class="form_preview"> ###LABEL_module_sys_dmail_html_CHECKED### </p>
+	<p class="form_label"> ###LABEL_MODULE_SYS_DMAIL_HTML### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_language### </p>
+	<p class="form_label"> ###LABEL_LANGUAGE### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_www### </p>
+	<p class="form_label"> ###LABEL_WWW### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+<div class="item">
+	<p class="form_preview"> ###UPLOAD_PREVIEW_image### </p>
+	<p class="form_label"> ###LABEL_IMAGE### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+<div class="item">
+	<p class="form_preview"> ###TCA_INPUT_comments### </p>
+	<p class="form_label"> ###LABEL_COMMENTS### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+
+<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
+	<input type="hidden" name="FE[fe_users][username]" />
+	<input type="hidden" name="FE[fe_users][password]" />
+	<input type="hidden" name="FE[fe_users][password_again]" />
+	<input type="hidden" name="FE[fe_users][gender]" />
+	<input type="hidden" name="FE[fe_users][name]" />
+	<input type="hidden" name="FE[fe_users][first_name]" />
+	<input type="hidden" name="FE[fe_users][last_name]" />
+	<input type="hidden" name="FE[fe_users][status]" />
+	<input type="hidden" name="FE[fe_users][date_of_birth]" />
+	<input type="hidden" name="FE[fe_users][address]" />
+	<input type="hidden" name="FE[fe_users][city]" />
+	<input type="hidden" name="FE[fe_users][zone]" />
+	<input type="hidden" name="FE[fe_users][country]" />
+	<input type="hidden" name="FE[fe_users][static_info_country]" />
+	<input type="hidden" name="FE[fe_users][zip]" />
+	<input type="hidden" name="FE[fe_users][telephone]" />
+	<input type="hidden" name="FE[fe_users][fax]" />
+	<input type="hidden" name="FE[fe_users][email]" />
+	<input type="hidden" name="FE[fe_users][usergroup]" />
+	<input type="hidden" name="FE[fe_users][module_sys_dmail_category]" />
+	<input type="hidden" name="FE[fe_users][module_sys_dmail_html]" />
+	<input type="hidden" name="FE[fe_users][language]" />
+	<input type="hidden" name="FE[fe_users][title]" />
+	<input type="hidden" name="FE[fe_users][company]" />
+	<input type="hidden" name="FE[fe_users][www]" />
+	<input type="hidden" name="FE[fe_users][image]" />
+	<input type="hidden" name="FE[fe_users][comments]" />
+	###HIDDENFIELDS###	
+
+	<div class="item">
+		<p class="form_preview">
+			<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_REGISTER###" />
+		</p>
+		<p class="form_label">
+			<input type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_BACK_TO_FORM###" />
+		</p>	
+	</div>
+</form>
+<!-- ###TEMPLATE_INVITE_PREVIEW### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is shown when the invited user is created and the option setfixed is configured, which should be the case if invitations are to be sent!
+The user is informed that a message has been sent to the email address and that the invited user will need to accept/confirm his registration.</em></p>
+
+<!-- ###TEMPLATE_SETFIXED_INVITE### begin -->
+<p>###LABEL_V_INVITATION_CONFIRM###</p>
+<p>###LABEL_V_INVITATION_ACCOUNT_WAS_CREATED###</p>
+<p>###LABEL_V_INVITATION_INSTRUCTIONS1###</p>
+<p>###LABEL_KIND_REGARDS###<br />
+###GW1B######SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_INVITE### end-->
+
+
+
+
+
+<h2>'EDIT' TEMPLATES:</h2>
+
+<hr />
+
+<p style="margin-top: 20px"><em>Form for editing of a fe_users record:</em></p>
+
+<!-- ###TEMPLATE_EDIT### begin -->
+<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+	<h4>###LABEL_V_DEAR###</h4>
+	<p>###LABEL_V_EDIT_YOUR_ACCOUNT###</p>
+	<p class="form_notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
+
+	<p class="trash">
+		<a href="###DELETE_URL###">
+			###LABEL_CLICK_HERE_TO_DELETE###
+		</a>
+	</p>
+
+	<!-- ###SUB_INCLUDED_FIELD_password### -->
+	<div class="item"> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_password### -->
+			<p class="error">###MISSING_PASSWORD###</p>
+			<p>###EVAL_ERROR_FIELD_password###</p>
+			<!-- ###SUB_REQUIRED_FIELD_password### -->
+			<input id="password" type="password" name="FE[fe_users][password]" class="passwordinput" ###PASSWORD_ONCHANGE### />
+			<label for="password_repeat">###LABEL_PASSWORD_REPEAT###</label>
+			<input id="password_repeat" type="password" name="FE[fe_users][password_again]" class="passwordinput" ###PASSWORD_ONCHANGE### />
+		</div> 
+		<p class="form_label">
+			<label for="password">###LABEL_PASSWORD###</label>
+			<span class="form_required">###REQUIRED_PASSWORD###</span>
+		</p>
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_password### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_gender### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_gender###</p>
+			<!-- ###SUB_REQUIRED_FIELD_gender### -->
+			<p class="error">###MISSING_GENDER###</p>
+			<!-- ###SUB_REQUIRED_FIELD_gender### -->
+			###TCA_INPUT_gender###
+		</div> 
+		<p class="form_label">
+			###LABEL_GENDER###
+			<span class="form_required">###REQUIRED_GENDER###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_gender### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_name### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_name###</p>
+			<!-- ###SUB_REQUIRED_FIELD_name### -->
+			<p class="error">###MISSING_NAME###</p>
+			<!-- ###SUB_REQUIRED_FIELD_name### -->
+			<input id="name" type="text" name="FE[fe_users][name]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="name">###LABEL_NAME###</label>
+			<span class="form_required">###REQUIRED_NAME###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_first_name###</p>
+			<!-- ###SUB_REQUIRED_FIELD_first_name### -->
+			<p class="error">###MISSING_FIRST_NAME###</p>
+			<!-- ###SUB_REQUIRED_FIELD_first_name### -->
+			<input id="first_name" type="text" name="FE[fe_users][first_name]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="first_name">###LABEL_FIRST_NAME###</label>
+			<span class="form_required">###REQUIRED_FIRST_NAME###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_last_name###</p>
+			<!-- ###SUB_REQUIRED_FIELD_last_name### -->
+			<p class="error">###MISSING_LAST_NAME###</p>
+			<!-- ###SUB_REQUIRED_FIELD_last_name### -->
+			<input id="last_name" type="text" name="FE[fe_users][last_name]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="last_name">###LABEL_LAST_NAME###</label>
+			<span class="form_required">###REQUIRED_LAST_NAME###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_status### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_status###</p>
+			<!-- ###SUB_REQUIRED_FIELD_status### -->
+			<p class="error">###MISSING_STATUS###</p>
+			<!-- ###SUB_REQUIRED_FIELD_status### -->
+			###TCA_INPUT_status###
+		</div> 
+		<p class="form_label">
+			###LABEL_STATUS###
+			<span class="form_required">###REQUIRED_STATUS###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_status### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_date_of_birth###</p>
+			<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
+			<p class="error">###MISSING_DATE_OF_BIRTH###</p>
+			<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
+			<input id="date_of_birth" type="text" name="FE[fe_users][date_of_birth]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="date_of_birth">###LABEL_DATE_OF_BIRTH###</label>
+			<span class="form_required">###REQUIRED_DATE_OF_BIRTH###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_title### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_title###</p>
+			<!-- ###SUB_REQUIRED_FIELD_title### -->
+			<p class="error">###MISSING_TITLE###</p>
+			<!-- ###SUB_REQUIRED_FIELD_title### -->
+			<input id="title" type="text" name="FE[fe_users][title]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="title">###LABEL_TITLE###</label>
+			<span class="form_required">###REQUIRED_TITLE###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_title### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_company### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_company###</p>
+			<!-- ###SUB_REQUIRED_FIELD_company### -->
+			<p class="error">###MISSING_COMPANY###</p>
+			<!-- ###SUB_REQUIRED_FIELD_company### -->
+			<input id="company" type="text" name="FE[fe_users][company]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="company">###LABEL_COMPANY###</label>
+			<span class="form_required">###REQUIRED_COMPANY###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_company### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_address### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_address###</p>
+			<!-- ###SUB_REQUIRED_FIELD_address### -->
+			<p class="error">###MISSING_ADDRESS###</p>
+			<!-- ###SUB_REQUIRED_FIELD_address### -->
+			<input id="address" type="text" name="FE[fe_users][address]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="address">###LABEL_ADDRESS###</label>
+			<span class="form_required">###REQUIRED_ADDRESS###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_address### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_city### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_city###</p>
+			<!-- ###SUB_REQUIRED_FIELD_city### -->
+			<p class="error">###MISSING_CITY###</p>
+			<!-- ###SUB_REQUIRED_FIELD_city### -->
+			<input id="city" type="text" name="FE[fe_users][city]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="city">###LABEL_CITY###</label>
+			<span class="form_required">###REQUIRED_CITY###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_city### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_country### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_country###</p>
+			<!-- ###SUB_REQUIRED_FIELD_country### -->
+			<p class="error">###MISSING_COUNTRY###</p>
+			<!-- ###SUB_REQUIRED_FIELD_country### -->
+			<input id="country" type="text" name="FE[fe_users][country]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="country">###LABEL_COUNTRY###</label>
+			<span class="form_required">###REQUIRED_COUNTRY###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_country### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+	<div class="item"> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
+			<p class="error">###MISSING_STATIC_INFO_COUNTRY###</p>
+			<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
+			###SELECTOR_STATIC_INFO_COUNTRY###
+		</div> 
+		<p class="form_label">
+			###LABEL_COUNTRY###
+			<span class="form_required">###REQUIRED_STATIC_INFO_COUNTRY###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_zone### -->
+	<div class="item"> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_zone### -->
+			<p class="error">###MISSING_ZONE###</p>
+			<!-- ###SUB_REQUIRED_FIELD_zone### -->
+			###SELECTOR_ZONE###
+		</div> 
+		<p class="form_label">
+			###LABEL_ZONE###
+			<span class="form_required">###REQUIRED_ZONE###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_zone### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_zip### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_zip###</p>
+			<!-- ###SUB_REQUIRED_FIELD_zip### -->
+			<p class="error">###MISSING_ZIP###</p>
+			<!-- ###SUB_REQUIRED_FIELD_zip### -->
+			<input id="zip" type="text" name="FE[fe_users][zip]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="zip">###LABEL_ZIP###</label>
+			<span class="form_required">###REQUIRED_ZIP###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_zip### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_telephone###</p>
+			<!-- ###SUB_REQUIRED_FIELD_telephone### -->
+			<p class="error">###MISSING_TELEPHONE###</p>
+			<!-- ###SUB_REQUIRED_FIELD_telephone### -->
+			<input id="telephone" type="text" name="FE[fe_users][telephone]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="telephone">###LABEL_TELEPHONE###</label>
+			<span class="form_required">###REQUIRED_TELEPHONE###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_fax### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_fax###</p>
+			<!-- ###SUB_REQUIRED_FIELD_fax### -->
+			<p class="error">###MISSING_FAX###</p>
+			<!-- ###SUB_REQUIRED_FIELD_fax### -->
+			<input id="fax" type="text" name="FE[fe_users][fax]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="fax">###LABEL_FAX###</label>
+			<span class="form_required">###REQUIRED_FAX###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_fax### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_email### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_email###</p>
+			<!-- ###SUB_REQUIRED_FIELD_email### -->
+			<p class="error">###MISSING_EMAIL###</p>
+			<!-- ###SUB_REQUIRED_FIELD_email### -->
+			<input id="email" type="text" name="FE[fe_users][email]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="email">###LABEL_EMAIL###</label>
+			<span class="form_required">###REQUIRED_EMAIL###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_email### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_usergroup###</p>
+			<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
+			<p class="error">###MISSING_USERGROUP###</p>
+			<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
+			###TCA_INPUT_usergroup###
+		</div> 
+		<p class="form_label">
+			###LABEL_USERGROUP###
+			<span class="form_required">###REQUIRED_USERGROUP###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_module_sys_dmail_category###</p>
+			<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
+			<p class="error">###MISSING_MODULE_SYS_DMAIL_CATEGORY###</p>
+			<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
+			###TCA_INPUT_module_sys_dmail_category###
+		</div> 
+		<p class="form_label">
+			###LABEL_MODULE_SYS_DMAIL_CATEGORY###
+			<span class="form_required">###REQUIRED_MODULE_SYS_DMAIL_CATEGORY###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+	<div class="item"> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
+			<p class="error">###MISSING_MODULE_SYS_DMAIL_HTML###</p>
+			<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
+			<input id="module_sys_dmail_html" type="checkbox" name="FE[fe_users][module_sys_dmail_html]" value="1" />
+		</div> 
+		<p class="form_label">
+			<label for="module_sys_dmail_html">###LABEL_MODULE_SYS_DMAIL_HTML###</label>
+			<span class="form_required">###REQUIRED_MODULE_SYS_DMAIL_HTML###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_language### -->
+	<div class="item"> 
+		<div class="form_field">
+			<!-- ###SUB_REQUIRED_FIELD_language### -->
+			<p class="error">###MISSING_LANGUAGE###</p>
+			<!-- ###SUB_REQUIRED_FIELD_language### -->
+			###SELECTOR_LANGUAGE###
+		</div> 
+		<p class="form_label">
+			###LABEL_LANGUAGE###
+			<span class="form_required">###REQUIRED_LANGUAGE###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_language### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_www### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p>###EVAL_ERROR_FIELD_www###</p>
+			<!-- ###SUB_REQUIRED_FIELD_www### -->
+			<p class="error">###MISSING_WWW###</p>
+			<!-- ###SUB_REQUIRED_FIELD_www### -->
+			<input id="www" type="text" name="FE[fe_users][www]" class="textinput" />
+		</div> 
+		<p class="form_label">
+			<label for="www">###LABEL_WWW###</label>
+			<span class="form_required">###REQUIRED_WWW###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_www### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_image### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_image###</p>
+			<!-- ###SUB_REQUIRED_FIELD_image### -->
+			<p class="error">###MISSING_IMAGE###</p>
+			<!-- ###SUB_REQUIRED_FIELD_image### -->
+			###UPLOAD_image###
+		</div> 
+		<p class="form_label">
+			###LABEL_IMAGE###
+			<span class="form_required">###REQUIRED_IMAGE###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_image### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_comments### -->
+	<div class="item"> 
+		<div class="form_field">
+			<p class="error">###EVAL_ERROR_FIELD_comments###</p>
+			<!-- ###SUB_REQUIRED_FIELD_comments### -->
+			<p class="error">###MISSING_COMMENTS###</p>
+			<!-- ###SUB_REQUIRED_FIELD_comments### -->
+			###TCA_INPUT_comments###
+		</div> 
+		<p class="form_label">
+			###LABEL_COMMENTS###
+			<span class="form_required">###REQUIRED_COMMENTS###</span>
+		</p> 
+	</div>
+	<!-- ###SUB_INCLUDED_FIELD_comments### -->
+
+	###HIDDENFIELDS###
+	<div class="item">
+		<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
+		<p class="form_peview">
+			<input type="submit" name="tx_srfeuserregister_pi1[linkToPID]" value="###LABEL_BUTTON_UPDATE_AND_MORE###" />
+		</p>	
+		<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
+		<p class="form_label">
+			<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_UPDATE###" />
+		</p>
+	</div>
+</form>
+<!-- ###TEMPLATE_EDIT### end-->
+
+
+
+<p style="margin-top: 20px"><em>Here the user information is preview before final submission:</em></p>
+
+<!-- ###TEMPLATE_EDIT_PREVIEW### begin-->
+<h4>###LABEL_V_DEAR###</h4>
+<p class="form_notice">###LABEL_V_VERIFY_BEFORE_UPDATE###</p>
+
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_username### </p>
+	<p class="form_label"> ###LABEL_USERNAME### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+<div class="item">
+	<p class="form_preview"> ###TCA_INPUT_gender### </p>
+	<p class="form_label"> ###LABEL_GENDER### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_name### </p>
+	<p class="form_label"> ###LABEL_NAME### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_first_name### </p>
+	<p class="form_label"> ###LABEL_FIRST_NAME### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_last_name### </p>
+	<p class="form_label"> ###LABEL_LAST_NAME### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+<div class="item">
+	<p class="form_preview"> ###TCA_INPUT_status### </p>
+	<p class="form_label"> ###LABEL_STATUS### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_date_of_birth### </p>
+	<p class="form_label"> ###LABEL_DATE_OF_BIRTH### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_title### </p>
+	<p class="form_label"> ###LABEL_TITLE### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_company### </p>
+	<p class="form_label"> ###LABEL_COMPANY### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_address### </p>
+	<p class="form_label"> ###LABEL_ADDRESS### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_city### </p>
+	<p class="form_label"> ###LABEL_CITY### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_zone### </p>
+	<p class="form_label"> ###LABEL_ZONE### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_country### </p>
+	<p class="form_label"> ###LABEL_COUNTRY### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_static_info_country### </p>
+	<p class="form_label"> ###LABEL_STATIC_INFO_COUNTRY### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_zip### </p>
+	<p class="form_label"> ###LABEL_ZIP### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_telephone### </p>
+	<p class="form_label"> ###LABEL_TELEPHONE### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_fax### </p>
+	<p class="form_label"> ###LABEL_FAX### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_email### </p>
+	<p class="form_label"> ###LABEL_EMAIL### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_usergroup### </p>
+	<p class="form_label"> ###LABEL_USERGROUP### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+<div class="item">
+	<p class="form_preview"> ###TCA_INPUT_module_sys_dmail_category### </p>
+	<p class="form_label"> ###LABEL_MODULE_SYS_DMAIL_CATEGORY### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+<div class="item">
+	<p class="form_preview"> ###LABEL_module_sys_dmail_html_CHECKED### </p>
+	<p class="form_label"> ###LABEL_MODULE_SYS_DMAIL_HTML### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_language### </p>
+	<p class="form_label"> ###LABEL_LANGUAGE### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+<div class="item">
+	<p class="form_preview"> ###FIELD_www### </p>
+	<p class="form_label"> ###LABEL_WWW### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+<div class="item">
+	<p class="form_preview"> ###UPLOAD_PREVIEW_image### </p>
+	<p class="form_label"> ###LABEL_IMAGE### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+<div class="item">
+	<p class="form_preview"> ###TCA_INPUT_comments### </p>
+	<p class="form_label"> ###LABEL_COMMENTS### </p>
+</div>
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+
+<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
+	<input type="hidden" name="FE[fe_users][username]" />
+	<input type="hidden" name="FE[fe_users][password]" />
+	<input type="hidden" name="FE[fe_users][password_again]" />
+	<input type="hidden" name="FE[fe_users][gender]" />
+	<input type="hidden" name="FE[fe_users][name]" />
+	<input type="hidden" name="FE[fe_users][first_name]" />
+	<input type="hidden" name="FE[fe_users][last_name]" />
+	<input type="hidden" name="FE[fe_users][status]" />
+	<input type="hidden" name="FE[fe_users][date_of_birth]" />
+	<input type="hidden" name="FE[fe_users][address]" />
+	<input type="hidden" name="FE[fe_users][city]" />
+	<input type="hidden" name="FE[fe_users][zone]" />
+	<input type="hidden" name="FE[fe_users][country]" />
+	<input type="hidden" name="FE[fe_users][static_info_country]" />
+	<input type="hidden" name="FE[fe_users][zip]" />
+	<input type="hidden" name="FE[fe_users][telephone]" />
+	<input type="hidden" name="FE[fe_users][fax]" />
+	<input type="hidden" name="FE[fe_users][email]" />
+	<input type="hidden" name="FE[fe_users][usergroup]" />
+	<input type="hidden" name="FE[fe_users][module_sys_dmail_category]" />
+	<input type="hidden" name="FE[fe_users][module_sys_dmail_html]" />
+	<input type="hidden" name="FE[fe_users][language]" />
+	<input type="hidden" name="FE[fe_users][title]" />
+	<input type="hidden" name="FE[fe_users][company]" />
+	<input type="hidden" name="FE[fe_users][www]" />
+	<input type="hidden" name="FE[fe_users][image]" />
+	<input type="hidden" name="FE[fe_users][comments]" />
+	###HIDDENFIELDS###	
+
+	<div class="item">
+		<p class="form_preview">
+			<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_UPDATE###" />
+		</p>
+		<p class="form_label">
+			<input type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_BACK_TO_FORM###" />
+		</p>	
+	</div>
+
+	<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
+	<div class="form_submit">
+		<p><input type="submit" name="tx_srfeuserregister_pi1[linkToPID]" value="###LABEL_BUTTON_UPDATE_AND_MORE###" /></p>
+	</div>
+	<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
+</form>
+<!-- ###TEMPLATE_EDIT_PREVIEW### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is shown when the user profile has been updated</em></p>
+
+<!-- ###TEMPLATE_EDIT_SAVED### begin-->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_UPDATED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_UPDATED_MESSAGE1###</p>
+<p>###LABEL_KIND_REGARDS###<br />
+###GW1B######SITE_NAME###</h4>
+<!-- ###TEMPLATE_EDIT_SAVED### end-->
+
+
+
+
+
+<h2>'DELETE' TEMPLATES:</h2>
+
+<hr />
+
+<p style="margin-top: 20px"><em>This template is the response page when a user has deleted himself.</em></p>
+
+<!-- ###TEMPLATE_DELETE_SAVED### begin-->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_DELETED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_DELETED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_DELETED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS###<br />
+###GW1B######SITE_NAME###</h4>
+<!-- ###TEMPLATE_DELETE_SAVED### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is the verification page before the user finally deletes himself.</em></p>
+
+<!-- ###TEMPLATE_DELETE_PREVIEW### begin-->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REALLY_WISH_TO_DELETE###</p>
+<form name="###FORM_NAME###" method="post" action="###FORM_URL###">
+	###HIDDENFIELDS###
+	<input type="hidden" name="FE[fe_users][module_sys_dmail_html]" value="###FIELD_module_sys_dmail_html###" />
+	<p>
+		<input type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_CANCEL_DELETE###" onclick="document.location='###BACK_URL###'; return false;" />
+		<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_DELETE###" />
+	</p>
+</form>
+<!-- ###TEMPLATE_DELETE_PREVIEW### end-->
+
+
+
+
+
+<h2>'SETFIXED' TEMPLATES</h2>
+
+<hr />
+
+<p style="margin-top: 20px"><em>This template is the response page when the user approves his subscription(without auto-login).</em></p>
+
+<!-- ###TEMPLATE_SETFIXED_OK### begin -->
+<h4>###LABEL_V_DEAR###</h4> 
+<p>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE2###</p>
+<p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
+<form name="###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
+	<div class="item"> 
+		<p class="form_field">
+			<input type="text" name="user" value="###FIELD_username###" />
+		</p> 
+		<p class="form_label">###LABEL_USERNAME###</p>
+	</div>
+
+	<div class="item"> 
+		<p class="form_field">
+			<input type="password" name="pass" value="###FIELD_password###" />
+		</p> 
+		<p class="form_label">###LABEL_PASSWORD###</p>
+	</div>
+
+	<p class="form_submit">
+		<input type="submit" name="submit" value="###LABEL_BUTTON_ENTER###" />
+	</p>
+
+	<input type="hidden" name="logintype" value="login" />
+	<input type="hidden" name="pid" value="###THE_PID###" />
+	<input type="hidden" name="redirect_url" value="" />
+	###HIDDENFIELDS###
+</form>
+<!-- ###TEMPLATE_SETFIXED_OK### end-->
+
+ 
+<p style="margin-top: 20px"><em>This template is the response page when a user deleted his subscription.</em></p>
+ 
+<!-- ###TEMPLATE_SETFIXED_OK_DELETE### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_CANCELLED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CANCELLED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_CANCELLED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS_DEL###<br />
+###GW1B######SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_OK_DELETE### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is the response page when a user has clicked a setfixed link, but the link failed.</em></p>
+
+<!-- ###TEMPLATE_SETFIXED_FAILED### begin -->
+<h4>###LABEL_REGISTRATION_PROBLEM###</h4>
+<p>###LABEL_REGISTRATION_SORRY###</p>
+<p>###LABEL_REGISTRATION_CLICKED_TWICE###</p>
+<p>###LABEL_REGISTRATION_HELP### <a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<p>###LABEL_KIND_REGARDS###<br />
+###GW1B######SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_FAILED### end-->
+
+
+
+
+
+<h2>'Authentication' templates:</h2>
+
+<hr />
+
+<p style="margin-top: 20px"><em>	Authentication failed message.</em></p>
+
+<!-- ###TEMPLATE_AUTH### begin -->
+<p><a href="###REGISTER_URL###">###LABEL_CLICK_HERE_TO_REGISTER###</a></p>
+<!-- ###TEMPLATE_AUTH### end-->
+
+
+
+<p style="margin-top: 20px"><em>No permission template</em></p>
+
+<!-- ###TEMPLATE_NO_PERMISSIONS### begin-->
+<h4>###LABEL_REGISTRATION_PROBLEM###</h4>
+<p>###LABEL_REGISTRATION_SORRY###</p>
+<p>###LABEL_REGISTRATION_HELP### <a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<p>###LABEL_KIND_REGARDS###<br />
+###GW1B######SITE_NAME###</h4>
+<!-- ###TEMPLATE_NO_PERMISSIONS### end-->
+
+
+
+
+<h1>EMAIL TEMPLATES:</h1>
+
+<hr />
+
+<p style="margin-top: 20px">In these plain text email templates the first line with content is used as subject in the mails.</p>
+
+<p><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
+<!-- ###EMAIL_TEMPLATE_CREATE_SAVED_HTML### begin -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<STYLE TYPE="text/css">
+<!--
+###CSS_STYLES###
+-->
+</STYLE>
+<title>###LABEL_V_REGISTRATION_CREATED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="Typo 3.5 CMS">
+</head>
+<body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_CREATED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CREATED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_CREATED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS###<br />
+###GW1B######SITE_NAME######GW1E###<br /> <br />
+<a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_CREATE_SAVED_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_CREATE_SAVED### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CREATED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_CREATED_SUBJECT###
+###LABEL_V_REGISTRATION_CREATED_MESSAGE1###
+###LABEL_V_REGISTRATION_CREATED_MESSAGE2###
+
+###LABEL_KIND_REGARDS_CRE###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_CREATE_SAVED### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon creation of a user account.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_CREATE_SAVED_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CREATED###
+###LABEL_V_REGISTRATION_CREATED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_CREATE_SAVED_ADMIN### end-->
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_EDIT_SAVED_HTML### begin -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<STYLE TYPE="text/css">
+<!--
+###CSS_STYLES###
+-->
+</STYLE>
+<title>###LABEL_V_REGISTRATION_UPDATED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="Typo 3.5 CMS">
+</head>
+<body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_UPDATED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_UPDATED_MESSAGE1###</p>
+<p>###LABEL_KIND_REGARDS###<br />
+###GW1B######SITE_NAME######GW1E###<br /> <br />
+<a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_EDIT_SAVED_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_EDIT_SAVED### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_UPDATED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_UPDATED_SUBJECT###
+###LABEL_V_REGISTRATION_UPDATED_MESSAGE1###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_EDIT_SAVED### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon update of a user profile.></em></p>
+
+<!-- ###EMAIL_TEMPLATE_EDIT_SAVED_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_UPDATED###
+
+###LABEL_V_REGISTRATION_UPDATED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_EDIT_SAVED_ADMIN### end-->
+
+
+<p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_HTML### begin -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<STYLE TYPE="text/css">
+<!--
+###CSS_STYLES###
+-->
+</STYLE>
+<title>###LABEL_V_REGISTRATION_INITIATED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="Typo 3.5 CMS">
+</head>
+<body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE1###<br/>
+<a href="###SETFIXED_APPROVE_URL###">###SETFIXED_APPROVE_URL###</a><br />
+###LABEL_COPY_PASTE_LINK###</p>
+<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE2###<br/>
+<a href="###SETFIXED_DELETE_URL###">###SETFIXED_DELETE_URL###</a><br />
+###LABEL_COPY_PASTE_LINK###<br />
+###LABEL_EXCUSE_US###</p>
+<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE3### <a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<p>###LABEL_KIND_REGARDS_INI###<br />
+###GW1B######SITE_NAME######GW1E###<br /> <br />
+<a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account.
+     You can use the newly created record as markers on the format ###FIELD_[fieldname]### </em></p>
+
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_INITIATED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_INITIATED_MESSAGE1###
+###SETFIXED_APPROVE_URL###
+###LABEL_COPY_PASTE_LINK###
+
+###LABEL_V_REGISTRATION_INITIATED_MESSAGE2###
+###SETFIXED_DELETE_URL###
+###LABEL_COPY_PASTE_LINK###
+###LABEL_EXCUSE_US###
+
+###LABEL_KIND_REGARDS_INI###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon a new user registration.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_INITIATED###
+###LABEL_V_REGISTRATION_INITIATED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS_INI###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE_HTML### begin -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<STYLE TYPE="text/css">
+<!--
+###CSS_STYLES###
+-->
+</STYLE>
+<title>###LABEL_V_REGISTRATION_INVITED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="Typo 3.5 CMS">
+</head>
+<body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_INVITED_MESSAGE1###<br/>
+<a href="###SETFIXED_APPROVE_URL###">###SETFIXED_APPROVE_URL###</a><br />
+###LABEL_COPY_PASTE_LINK###</p>
+<p>###LABEL_V_REGISTRATION_INVITED_MESSAGE2###<br/>
+<a href="###SETFIXED_DELETE_URL###">###SETFIXED_DELETE_URL###</a><br />
+###LABEL_COPY_PASTE_LINK###<br />
+###LABEL_EXCUSE_US###</p>
+<p>###LABEL_KIND_REGARDS_INV###<br />
+###GW1B######SITE_NAME######GW1E###<br /> <br />
+<a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account.
+     You can use the newly created record as markers on the format ###FIELD_[fieldname]### </em></p>
+
+<!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_INVITED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_INVITED_MESSAGE1###
+###SETFIXED_APPROVE_URL###
+###LABEL_COPY_PASTE_LINK###
+
+###LABEL_V_REGISTRATION_INVITED_MESSAGE2###
+###SETFIXED_DELETE_URL###
+###LABEL_COPY_PASTE_LINK###
+###LABEL_EXCUSE_US###
+
+###LABEL_KIND_REGARDS_INV###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon a new user registration.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_INVITED###
+###LABEL_V_REGISTRATION_INVITED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS_INV###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_HTML### begin -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<STYLE TYPE="text/css">
+<!--
+###CSS_STYLES###
+-->
+</STYLE>
+<title>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="Typo 3.5 CMS">
+</head>
+<body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS_CRE###<br />
+###GW1B######SITE_NAME######GW1E###<br /> <br />
+<a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to send a welcome email when a person has confirmed his(her) registration.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###
+###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE1###
+###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE2###
+
+###LABEL_KIND_REGARDS_CRE###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon user confirmation of his registration.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CONFIRMED###
+###LABEL_V_REGISTRATION_CONFIRMED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS_CRE###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_ADMIN### end-->
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has cancelles his registration.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_HTML### begin -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<STYLE TYPE="text/css">
+<!--
+###CSS_STYLES###
+-->
+</STYLE>
+<title>###LABEL_V_REGISTRATION_CANCELLED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="Typo 3.5 CMS">
+</head>
+<body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_CANCELLED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CANCELLED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_CANCELLED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS_DEL###<br />
+###GW1B######SITE_NAME######GW1E###<br /> <br />
+<a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CANCELLED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_CANCELLED_SUBJECT###
+###LABEL_V_REGISTRATION_CANCELLED_MESSAGE1###
+###LABEL_V_REGISTRATION_CANCELLED_MESSAGE2###
+
+###LABEL_KIND_REGARDS_DEL###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon user refusal to confirm his registration.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CANCELLED###
+###LABEL_V_REGISTRATION_CANCELLED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS_DEL###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_DELETE_SAVED_HTML### begin -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<STYLE TYPE="text/css">
+<!--
+###CSS_STYLES###
+-->
+</STYLE>
+<title>###LABEL_V_REGISTRATION_DELETED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="Typo 3.5 CMS">
+</head>
+<body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_DELETED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_DELETED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_DELETED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS_DEL###<br />
+###GW1B######SITE_NAME######GW1E###<br /> <br />
+<a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_DELETE_SAVED_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_DELETE_SAVED### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_DELETED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_DELETED_SUBJECT###
+###LABEL_V_REGISTRATION_DELETED_MESSAGE1###
+###LABEL_V_REGISTRATION_DELETED_MESSAGE2###
+
+###LABEL_KIND_REGARDS_DEL###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_DELETE_SAVED### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon deletion of a user account.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_DELETE_SAVED_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_DELETED###
+###LABEL_V_REGISTRATION_DELETED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS_DEL###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_DELETE_SAVED_ADMIN### end-->
+
+</body>
+</html>
+
