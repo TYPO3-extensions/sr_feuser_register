@@ -1,9 +1,14 @@
+2005-11-02  Sebastian Roth <sebastian.roth@c-qube.com>
+	* Added basic template using CSS. Please note that it's not useable
+	  at the moment. We still zap our gremlins with it.
+	* Cleaned up some other stuff like css & typoscript.
+
 2005-11-01  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Version 1.6.8
 	* Corrections to a few glitches introduced in version 1.6.7.
 	* Update to the Russian translation.
 	* New TS constant confirmInvitationPID.
-	
+
 2005-10-28  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Version 1.6.7
 	* Add a few labels.

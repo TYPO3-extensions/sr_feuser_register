@@ -158,11 +158,13 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Maximun name length: The maximum number of characters that the name of the front end user may contain.
   nameAtMost = 80
 
+/DELETE WHEN CSS BASED VERSION GETS DEFAULT
+
     # cat=plugin.tx_srfeuserregister_pi1/typo; type=wrap; label= Wrap 1:  In the default HTML template file, this wraps highlights some major prompts.
-  wrap1 = <b> | </b>
+  wrap1 = <strong> | </strong>
 
     # cat=plugin.tx_srfeuserregister_pi1/typo; type=wrap; label= Wrap 2:  In the default HTML template file, this wraps the error messages.
-  wrap2 = <font color="red" ><b> | </b></font>
+  wrap2 = <span class="error" ><strong> | </strong></span>
 
     # cat=plugin.tx_srfeuserregister_pi1/typo; type=wrap; label= Wrap 3:  In the default HTML template file, this wraps some notices.
   wrap3 = <em> | </em>
