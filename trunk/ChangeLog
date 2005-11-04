@@ -1,6 +1,8 @@
+2005-11-04  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Restructured the extension with two Static Templates: Old Style and CSS-styled. One static template must be added to the TS template after extension installation.
+
 2005-11-02  Sebastian Roth <sebastian.roth@c-qube.com>
-	* Added basic template using CSS. Please note that it's not useable
-	  at the moment. We still zap our gremlins with it.
+	* Added basic template using CSS. Please note that it's not useable at the moment. We still zap our gremlins with it.
 	* Cleaned up some other stuff like css & typoscript.
 
 2005-11-01  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
