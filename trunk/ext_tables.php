@@ -1,10 +1,11 @@
 <?php
-
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
+
+t3lib_extMgm::addStaticFile($_EXTKEY, 'static/css_styled/', 'FE User Registration CSS-styled');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'static/old_style/', 'FE User Registration Old Style');
 
 t3lib_div::loadTCA('tt_content');
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi1'] = 'layout';
-
 t3lib_extMgm::addPlugin(Array('LLL:EXT:sr_feuser_register/locallang_db.php:tt_content.list_type', $_EXTKEY.'_pi1'),'list_type');
 
 /**
@@ -21,7 +22,6 @@ if (t3lib_extMgm::isLoaded('newloginbox') && t3lib_extMgm::isLoaded('kb_md5fepw'
 	$TCA['fe_users']['columns']['password']['config']['eval'] = 'nospace,required';
 }
 
-
 $TCA['fe_users']['columns']['name']['config']['max'] = '100';
 $TCA['fe_users']['columns']['company']['config']['max'] = '50';
 $TCA['fe_users']['columns']['city']['config']['max'] = '40';
@@ -35,7 +35,6 @@ $TCA['fe_users']['columns']['fax']['config']['max'] = '25';
 $TCA['fe_users']['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['uploadFolder'];
 $TCA['fe_users']['columns']['image']['config']['max_size'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['imageMaxSize'];
 $TCA['fe_users']['columns']['image']['config']['allowed'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['imageTypes'];
-
 
 if(!is_array($TCA['fe_users']['columns']['module_sys_dmail_html'])) { $TCA['fe_users']['columns']['module_sys_dmail_html'] = array();}
 $TCA['fe_users']['columns']['module_sys_dmail_html']['exclude'] = 0;
@@ -198,7 +197,6 @@ $TCA['fe_users']['types']['0']['showitem'] = str_replace('www', 'www,comments', 
 
 $TCA['fe_users']['palettes']['2']['showitem'] = str_replace('title', 'gender,first_name,last_name,title', $TCA['fe_users']['palettes']['2']['showitem']);
 
-
 $TCA['fe_groups_language_overlay'] = Array (
 	'ctrl' => Array (
 	'title' => 'LLL:EXT:' . $_EXTKEY . '/locallang_db.php:fe_groups_language_overlay',
@@ -213,7 +211,6 @@ $TCA['fe_groups_language_overlay'] = Array (
 		'iconfile' => 'gfx/i/fe_groups.gif',
 		)
 );
-	 
 t3lib_extMgm::allowTableOnStandardPages('fe_groups_language_overlay');
 t3lib_extMgm::addToInsertRecords('fe_groups_language_overlay');
 

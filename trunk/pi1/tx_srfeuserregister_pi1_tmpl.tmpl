@@ -2111,14 +2111,14 @@ In these plain text email templates the first line with content is used as subje
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<STYLE TYPE="text/css">
+<style type="text/css">
 <!--
 ###CSS_STYLES###
 -->
-</STYLE>
+</style>
 <title>###LABEL_V_REGISTRATION_CREATED_SUBJECT###</title>
 <meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
-<meta name="generator" content="Typo 3.5 CMS">
+<meta name="generator" content="TYPO3 CMS">
 </head>
 <body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
 <!--###SUB_RECORD###-->
@@ -2189,14 +2189,14 @@ In these plain text email templates the first line with content is used as subje
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<STYLE TYPE="text/css">
+<style type="text/css">
 <!--
 ###CSS_STYLES###
 -->
-</STYLE>
+</style>
 <title>###LABEL_V_REGISTRATION_UPDATED_SUBJECT###</title>
 <meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
-<meta name="generator" content="Typo 3.5 CMS">
+<meta name="generator" content="TYPO3 CMS">
 </head>
 <body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
 <!--###SUB_RECORD###-->
@@ -2265,14 +2265,14 @@ In these plain text email templates the first line with content is used as subje
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<STYLE TYPE="text/css">
+<style type="text/css">
 <!--
 ###CSS_STYLES###
 -->
-</STYLE>
+</style>
 <title>###LABEL_V_REGISTRATION_INITIATED_SUBJECT###</title>
 <meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
-<meta name="generator" content="Typo 3.5 CMS">
+<meta name="generator" content="TYPO3 CMS">
 </head>
 <body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
 <!--###SUB_RECORD###-->
@@ -2339,10 +2339,71 @@ In these plain text email templates the first line with content is used as subje
 ###LABEL_EMAIL### ###FIELD_email###
 ###LABEL_USERNAME### ###FIELD_username###
 
-###LABEL_KIND_REGARDS_INI###
+###LABEL_KIND_REGARDS###
 ###SITE_NAME###
 <!--###SUB_RECORD###-->
 <!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_ADMIN### end-->
+
+
+
+<br /><br /><br /><br /><hr /><br /><br /><br />
+<em>This template is used to notify admin by email that a person has approved his/her registration and requires accept/refuse decision.</em>
+<br />
+<br />
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW_HTML### begin -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<style type="text/css">
+<!--
+###CSS_STYLES###
+-->
+</style>
+<title>###LABEL_V_REGISTRATION_REVIEW_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
+<!--###SUB_RECORD###-->
+	<p>###GW1B######LABEL_V_TO_THE_ADMINISTRATOR######GW1E###</p>
+	<p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE3###</p>
+	<p>###LABEL_NAME### ###FIELD_name###<br />
+	###LABEL_EMAIL### ###FIELD_email###<br />
+	###LABEL_USERNAME### ###FIELD_username###</p>
+	<p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE1###<br/>
+	<a href="###SETFIXED_ACCEPT_URL###">###SETFIXED_ACCEPT_URL###</a></p>
+	<p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE2###<br/>
+	<a href="###SETFIXED_REFUSE_URL###">###SETFIXED_REFUSE_URL###</a></p>
+	<p>###LABEL_KIND_REGARDS###<br />
+	###GW1B######SITE_NAME######GW1E###</p>
+<!--###SUB_RECORD###-->
+</body></html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW_HTML### end-->
+
+
+
+<br /><br /><br /><br /><hr /><br /><br /><br />
+<em>This template is used to notify admin by email that a person has approved his/her registration and requires accept/refuse decision.
+     You can use the newly created record as markers on the format ###FIELD_[fieldname]### </em>
+<br />
+<br />
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW### begin -->
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_REVIEW_SUBJECT###
+
+###LABEL_V_TO_THE_ADMINISTRATOR###
+
+###LABEL_V_REGISTRATION_REVIEW_MESSAGE3###
+
+###LABEL_V_REGISTRATION_REVIEW_MESSAGE1###
+###SETFIXED_ACCEPT_URL###
+
+###LABEL_V_REGISTRATION_REVIEW_MESSAGE2###
+###SETFIXED_REFUSE_URL###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!--###SUB_RECORD###-->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW### end-->
 
 
 
@@ -2354,14 +2415,14 @@ In these plain text email templates the first line with content is used as subje
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<STYLE TYPE="text/css">
+<style type="text/css">
 <!--
 ###CSS_STYLES###
 -->
-</STYLE>
+</style>
 <title>###LABEL_V_REGISTRATION_INVITED_SUBJECT###</title>
 <meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
-<meta name="generator" content="Typo 3.5 CMS">
+<meta name="generator" content="TYPO3 CMS">
 </head>
 <body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
 <!--###SUB_RECORD###-->
@@ -2427,7 +2488,7 @@ In these plain text email templates the first line with content is used as subje
 ###LABEL_EMAIL### ###FIELD_email###
 ###LABEL_USERNAME### ###FIELD_username###
 
-###LABEL_KIND_REGARDS_INV###
+###LABEL_KIND_REGARDS###
 ###SITE_NAME###
 <!--###SUB_RECORD###-->
 <!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE_ADMIN### end-->
@@ -2435,21 +2496,21 @@ In these plain text email templates the first line with content is used as subje
 
 
 <br /><br /><br /><br /><hr /><br /><br /><br />
-<em>This template is used to confirm to a person by email that he has deleted his account.</em>
+<em>This template is used to send a welcome email when a person has confirmed his(her) registration.</em>
 <br />
 <br />
 <!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_HTML### begin -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<STYLE TYPE="text/css">
+<style type="text/css">
 <!--
 ###CSS_STYLES###
 -->
-</STYLE>
+</style>
 <title>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</title>
 <meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
-<meta name="generator" content="Typo 3.5 CMS">
+<meta name="generator" content="TYPO3 CMS">
 </head>
 <body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
 <!--###SUB_RECORD###-->
@@ -2505,7 +2566,7 @@ In these plain text email templates the first line with content is used as subje
 ###LABEL_EMAIL### ###FIELD_email###
 ###LABEL_USERNAME### ###FIELD_username###
 
-###LABEL_KIND_REGARDS_CRE###
+###LABEL_KIND_REGARDS###
 ###SITE_NAME###
 <!--###SUB_RECORD###-->
 <!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_ADMIN### end-->
@@ -2520,14 +2581,14 @@ In these plain text email templates the first line with content is used as subje
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<STYLE TYPE="text/css">
+<style type="text/css">
 <!--
 ###CSS_STYLES###
 -->
-</STYLE>
+</style>
 <title>###LABEL_V_REGISTRATION_CANCELLED_SUBJECT###</title>
 <meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
-<meta name="generator" content="Typo 3.5 CMS">
+<meta name="generator" content="TYPO3 CMS">
 </head>
 <body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
 <!--###SUB_RECORD###-->
@@ -2583,7 +2644,7 @@ In these plain text email templates the first line with content is used as subje
 ###LABEL_EMAIL### ###FIELD_email###
 ###LABEL_USERNAME### ###FIELD_username###
 
-###LABEL_KIND_REGARDS_DEL###
+###LABEL_KIND_REGARDS###
 ###SITE_NAME###
 <!--###SUB_RECORD###-->
 <!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_ADMIN### end-->
@@ -2598,14 +2659,14 @@ In these plain text email templates the first line with content is used as subje
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<STYLE TYPE="text/css">
+<style type="text/css">
 <!--
 ###CSS_STYLES###
 -->
-</STYLE>
+</style>
 <title>###LABEL_V_REGISTRATION_DELETED_SUBJECT###</title>
 <meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
-<meta name="generator" content="Typo 3.5 CMS">
+<meta name="generator" content="TYPO3 CMS">
 </head>
 <body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
 <!--###SUB_RECORD###-->
@@ -2661,7 +2722,7 @@ In these plain text email templates the first line with content is used as subje
 ###LABEL_EMAIL### ###FIELD_email###
 ###LABEL_USERNAME### ###FIELD_username###
 
-###LABEL_KIND_REGARDS_DEL###
+###LABEL_KIND_REGARDS###
 ###SITE_NAME###
 <!--###SUB_RECORD###-->
 <!-- ###EMAIL_TEMPLATE_DELETE_SAVED_ADMIN### end-->

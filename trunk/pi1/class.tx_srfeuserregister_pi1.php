@@ -242,13 +242,15 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 
 				// Set globally substituted markers, fonts and colors.
-			$splitMark = md5(microtime());
-			list($this->markerArray['###GW1B###'], $this->markerArray['###GW1E###']) = explode($splitMark, $this->cObj->stdWrap($splitMark, $this->conf['wrap1.']));
-			list($this->markerArray['###GW2B###'], $this->markerArray['###GW2E###']) = explode($splitMark, $this->cObj->stdWrap($splitMark, $this->conf['wrap2.']));
-			list($this->markerArray['###GW3B###'], $this->markerArray['###GW3E###']) = explode($splitMark, $this->cObj->stdWrap($splitMark, $this->conf['wrap3.']));
-			$this->markerArray['###GC1###'] = $this->cObj->stdWrap($this->conf['color1'], $this->conf['color1.']);
-			$this->markerArray['###GC2###'] = $this->cObj->stdWrap($this->conf['color2'], $this->conf['color2.']);
-			$this->markerArray['###GC3###'] = $this->cObj->stdWrap($this->conf['color3'], $this->conf['color3.']);
+			if ($this->conf['templateStyle'] != 'css-styled') {
+				$splitMark = md5(microtime());
+				list($this->markerArray['###GW1B###'], $this->markerArray['###GW1E###']) = explode($splitMark, $this->cObj->stdWrap($splitMark, $this->conf['wrap1.']));
+				list($this->markerArray['###GW2B###'], $this->markerArray['###GW2E###']) = explode($splitMark, $this->cObj->stdWrap($splitMark, $this->conf['wrap2.']));
+				list($this->markerArray['###GW3B###'], $this->markerArray['###GW3E###']) = explode($splitMark, $this->cObj->stdWrap($splitMark, $this->conf['wrap3.']));
+				$this->markerArray['###GC1###'] = $this->cObj->stdWrap($this->conf['color1'], $this->conf['color1.']);
+				$this->markerArray['###GC2###'] = $this->cObj->stdWrap($this->conf['color2'], $this->conf['color2.']);
+				$this->markerArray['###GC3###'] = $this->cObj->stdWrap($this->conf['color3'], $this->conf['color3.']);
+			}
 			$this->markerArray['###CHARSET###'] = $this->charset;
 			$this->markerArray['###PREFIXID###'] = $this->prefixId;
 
@@ -1448,7 +1450,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					}
 
 					// Outputting template
-					if ($this->feUserData['sFK'] == 'APPROVE') {
+					if ($this->theTable == 'fe_users' && $this->feUserData['sFK'] == 'APPROVE') {
 						$this->markerArray = $this->addMd5LoginMarkers($this->markerArray);
 						if($this->useMd5Password) {
 							$origArr['password'] = '';
@@ -1465,17 +1467,26 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						array($origArr),
 						$origArr[$this->conf['email.']['field']],
 						$this->conf['setfixed.'] );
-					 
-					// Auto-login on confirmation
-					if ($this->theTable == 'fe_users' && $this->feUserData['sFK'] == 'APPROVE' && $this->conf['enableAutoLoginOnConfirmation']) {
-						$loginVars = array();
-						$loginVars['user'] = $origArr['username'];
-						$loginVars['pass'] = $origArr['password'];
-						$loginVars['pid'] = $this->thePid;
-						$loginVars['logintype'] = 'login';
-						$loginVars['redirect_url'] = htmlspecialchars(trim($this->conf['autoLoginRedirect_url']));
-						header('Location: '.t3lib_div::locationHeaderUrl($this->site_url.$this->cObj->getTypoLink_URL($this->loginPID.','.$GLOBALS['TSFE']->type, $loginVars)));
-						exit;
+					
+					if ($this->theTable == 'fe_users' && $this->feUserData['sFK'] == 'APPROVE') {
+							// If applicable, send admin a request to review the registration request
+						if ($this->conf['enableAdminReview']) {
+							$this->compileMail(
+								$this->setfixedPrefix.'REVIEW',
+								array($origArr),
+								$this->conf['email.']['admin'],
+								$this->conf['setfixed.'] );
+							// Auto-login on confirmation
+						} elseif ($this->conf['enableAutoLoginOnConfirmation']) {
+							$loginVars = array();
+							$loginVars['user'] = $origArr['username'];
+							$loginVars['pass'] = $origArr['password'];
+							$loginVars['pid'] = $this->thePid;
+							$loginVars['logintype'] = 'login';
+							$loginVars['redirect_url'] = htmlspecialchars(trim($this->conf['autoLoginRedirect_url']));
+							header('Location: '.t3lib_div::locationHeaderUrl($this->site_url.$this->cObj->getTypoLink_URL($this->loginPID.','.$GLOBALS['TSFE']->type, $loginVars)));
+							exit;
+						}
 					}
 				} else {
 					$content = $this->getPlainTemplate('###TEMPLATE_SETFIXED_FAILED###');
@@ -1497,7 +1508,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$userContent['all'] = '';
 			$HTMLContent['all'] = '';
 			$adminContent['all'] = '';
-			if (($this->conf['email.'][$key] ) || ($key == 'SETFIXED_CREATE' && $this->setfixedEnabled) || ($key == 'SETFIXED_INVITE' && $this->setfixedEnabled) ) {
+			if ($this->conf['email.'][$key] || ($this->setfixedEnabled && ($key == 'SETFIXED_CREATE' || $key == 'SETFIXED_INVITE' || $key == 'SETFIXED_ADMIN'))) {
 				$userContent['all'] = trim($this->cObj->getSubpart($this->templateCode, '###'.$this->emailMarkPrefix.$key.'###'));
 				$HTMLContent['all'] = ($this->HTMLMailEnabled && $this->dataArr['module_sys_dmail_html']) ? trim($this->cObj->getSubpart($this->templateCode, '###'.$this->emailMarkPrefix.$key.$this->emailMarkHTMLSuffix.'###')):'';
 			}
@@ -1550,6 +1561,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			$this->sendMail($recipient, $this->conf['email.']['admin'], $userContent['final'], $adminContent['final'], $HTMLContent['final'], $file);
 		}
+		
 		/**
 		* Dispatches the email messsage
 		*
@@ -1573,6 +1585,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$this->cObj->sendNotifyEmail($content, $recipient, '', $this->conf['email.']['from'], $this->conf['email.']['fromName']);
 			}
 		}
+		
 		/**
 		* Invokes the HTML mailing class
 		*
@@ -2013,7 +2026,22 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$markerArray['###LABEL_BUTTON_'.strtoupper($labelName).'###'] = $this->pi_getLL('button_'.$labelName);
 			}
 			// Labels possibly with variables
-			$otherLabelsList = 'yes,no,password_repeat,click_here_to_register,click_here_to_edit,click_here_to_delete,'. ',copy_paste_link,enter_account_info,enter_invitation_account_info,required_info_notice,excuse_us'. ',registration_problem,registration_sorry,registration_clicked_twice,registration_help,kind_regards,kind_regards_cre,kind_regards_del,kind_regards_ini,kind_regards_inv,kind_regards_upd'. ',v_verify_before_create,v_verify_invitation_before_create,v_verify_before_update,v_really_wish_to_delete,v_edit_your_account'. ',v_dear,v_now_enter_your_username,v_notification'. ',v_registration_created,v_registration_created_subject,v_registration_created_message1,v_registration_created_message2,v_registration_created_message3'. ',v_please_confirm,v_your_account_was_created,v_follow_instructions1,v_follow_instructions2'. ',v_invitation_confirm,v_invitation_account_was_created,v_invitation_instructions1'. ',v_registration_initiated,v_registration_initiated_subject,v_registration_initiated_message1,v_registration_initiated_message2,v_registration_initiated_message3'. ',v_registration_invited,v_registration_invited_subject,v_registration_invited_message1,v_registration_invited_message2'. ',v_registration_confirmed,v_registration_confirmed_subject,v_registration_confirmed_message1,v_registration_confirmed_message2'. ',v_registration_cancelled,v_registration_cancelled_subject,v_registration_cancelled_message1,v_registration_cancelled_message2'. ',v_registration_updated,v_registration_updated_subject,v_registration_updated_message1'. ',v_registration_deleted,v_registration_deleted_subject,v_registration_deleted_message1,v_registration_deleted_message2';
+			$otherLabelsList = 'yes,no,password_repeat,click_here_to_register,click_here_to_edit,click_here_to_delete,'.
+				',copy_paste_link,enter_account_info,enter_invitation_account_info,required_info_notice,excuse_us,'.
+				',registration_problem,registration_sorry,registration_clicked_twice,registration_help,kind_regards,kind_regards_cre,kind_regards_del,kind_regards_ini,kind_regards_inv,kind_regards_upd'.
+				',v_verify_before_create,v_verify_invitation_before_create,v_verify_before_update,v_really_wish_to_delete,v_edit_your_account'.
+				',v_dear,v_now_enter_your_username,v_notification'.
+				',v_registration_created,v_registration_created_subject,v_registration_created_message1,v_registration_created_message2,v_registration_created_message3'.
+				',v_to_the_administrator'.
+				',v_registration_review_subject,v_registration_review_message1,v_registration_review_message2,v_registration_review_message3'.
+				',v_please_confirm,v_your_account_was_created,v_follow_instructions1,v_follow_instructions2'.
+				',v_invitation_confirm,v_invitation_account_was_created,v_invitation_instructions1'.
+				',v_registration_initiated,v_registration_initiated_subject,v_registration_initiated_message1,v_registration_initiated_message2,v_registration_initiated_message3'.
+				',v_registration_invited,v_registration_invited_subject,v_registration_invited_message1,v_registration_invited_message2'.
+				',v_registration_confirmed,v_registration_confirmed_subject,v_registration_confirmed_message1,v_registration_confirmed_message2'.
+				',v_registration_cancelled,v_registration_cancelled_subject,v_registration_cancelled_message1,v_registration_cancelled_message2'.
+				',v_registration_updated,v_registration_updated_subject,v_registration_updated_message1'.
+				',v_registration_deleted,v_registration_deleted_subject,v_registration_deleted_message1,v_registration_deleted_message2';
 			$otherLabels = t3lib_div::trimExplode(',', $otherLabelsList);
 			while (list(, $labelName) = each($otherLabels) ) {
 				$markerArray['###LABEL_'.strtoupper($labelName).'###'] = sprintf($this->pi_getLL($labelName), $this->thePidTitle, $dataArray['username'], $dataArray['name'], $dataArray['email'], $dataArray['password']); 
