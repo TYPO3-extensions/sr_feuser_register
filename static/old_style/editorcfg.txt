@@ -32,3 +32,5 @@ plugin.tx_srfeuserregister_pi1.CSS_editor.ch {
 	TEXTAREA.exampleStop = 1
 	TEXTAREA.attribs = TEXT,background-color,width
 }
+
+tt_content.CSS_editor.ch.tx_srfeuserregister_pi1 = < plugin.tx_srfeuserregister_pi1.CSS_editor
