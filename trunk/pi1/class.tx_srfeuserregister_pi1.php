@@ -1884,7 +1884,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								break;
 */
 							case 'text':
-								$colContent = '<textarea name="FE['.$this->theTable.']['.$colName.']"'.
+								$colContent = '<textarea id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']"'.
 									' cols="'.($colConfig['cols']?$colConfig['cols']:30).'"'.
 									' rows="'.($colConfig['rows']?$colConfig['rows']:5).'"'.
 									' wrap="'.($colConfig['wrap']?$colConfig['wrap']:'virtual').'"'.
@@ -1893,10 +1893,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							case 'check':
 								if (is_array($colConfig['items'])) {
 									// <Ries van Twisk added support for multiple checkboxes>
-									$colContent  = '<ul class="tx-srfeuserregister-multiple-checkboxes">';
+									$colContent  = '<ul id="'. $this->pi_getClassName($colName) . '" class="tx-srfeuserregister-multiple-checkboxes">';
 									foreach ($colConfig['items'] AS $key => $value) {
 										$checked = ($dataArray[$colName] & (1 << $key))?'checked':'';
-										$colContent .= '<li><input type="checkbox" name="FE['.$this->theTable.']['.$colName.'][]" value="'.$key.'" '.$checked.'/><label>'.$this->getLLFromString($colConfig['items'][$key][0]).'</label></li>';					
+										$colContent .= '<li><input type="checkbox" id="' . $this->pi_getClassName($colName) . '-' . $key .  '" name="FE['.$this->theTable.']['.$colName.'][]" value="'.$key.'" '.$checked.'/><label>'.$this->getLLFromString($colConfig['items'][$key][0]).'</label></li>';					
 									}
 									$colContent .= '</ul>';
 									// </Ries van Twisk added support for multiple checkboxes>
@@ -1906,7 +1906,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								break;
 							case 'radio':
 								for ($i = 0; $i < count ($colConfig['items']); $i++) {
-									$colContent .= '<input type="radio" name="FE['.$this->theTable.']['.$colName.']"'.
+									$colContent .= '<input type="radio" id="'. $this->pi_getClassName($colName) . '-' . $i . '" name="FE['.$this->theTable.']['.$colName.']"'.
 											' value="'.$i.'" '.($i==0?'checked':'').' />'.
 											$this->getLLFromString($colConfig['items'][$i][0]).' ';
 								}
@@ -1920,7 +1920,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									if ($this->theTable == 'fe_users' && $colName == 'usergroup' && !$this->conf['allowMultipleUsergroupSelection']) {
 										$multiple = '';
 									}
-									$colContent = '<select name="FE['.$this->theTable.']['.$colName.']' . $multiple . '">';
+									$colContent = '<select id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']' . $multiple . '">';
 									if (is_array($colConfig['items'])) {
 										for ($i = 0; $i < count ($colConfig['items']); $i++) {
 											$colContent .= '<option value="'.$colConfig['items'][$i][1]. '" ' . (in_array($colConfig['items'][$i][1], $valuesArray) ? 'selected="selected"' : '') . '>' . $this->getLLFromString($colConfig['items'][$i][0]).'</option>';
@@ -2253,46 +2253,43 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			return $markerArray;
 		}
+		
 		/**
-		* Builds a file uploader
-		*
-		* @param string  $fName: the field name
-		* @param array  $config: the field TCA config
-		* @param array  $filenames: array of uploaded file names
-		* @param string  $prefix: the field name prefix
-		* @return string  generated HTML uploading tags
-		*/
+		 * Builds a file uploader
+		 *
+		 * @param string  $fName: the field name
+		 * @param array  $config: the field TCA config
+		 * @param array  $filenames: array of uploaded file names
+		 * @param string  $prefix: the field name prefix
+		 * @return string  generated HTML uploading tags
+		 */
 		function buildFileUploader($fName, $config, $filenames = array(), $prefix) {
 
 			$HTMLContent = '';
 			$size = $config['maxitems'];
 			$cmdParts = split('\[|\]', $this->conf[$this->cmdKey.'.']['evalValues.'][$fName]);
-
 			if(!empty($cmdParts[1])) $size = min($size, intval($cmdParts[1]));
 			$size = $size ? $size : 1;
 			$number = $size - sizeof($filenames);
 			$dir = $config['uploadfolder'];
-			 
+			
 			if ($this->previewLabel ) {
 				for($i = 0; $i < sizeof($filenames); $i++) {
 					$HTMLContent .= $filenames[$i] . '&nbsp;&nbsp;<small><a href="' . $dir.'/' . $filenames[$i] . '" target="_blank">' . $this->pi_getLL('file_view') . '</a></small><br />';
 				}
 			} else {
-
 				for($i = 0; $i < sizeof($filenames); $i++) {
 					$HTMLContent .= $filenames[$i] . '&nbsp;&nbsp;<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="'.$prefix.'['.$fName.']['.$i.'][submit_delete]" value="1" title="'.$this->pi_getLL('icon_delete').'" alt="' . $this->pi_getLL('icon_delete'). '"' . $this->pi_classParam('icon') . ' onclick=\'if(confirm("' . $this->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' />&nbsp;&nbsp;<small><a href="' . $dir.'/' . $filenames[$i] . '" target="_blank">' . $this->pi_getLL('file_view') . '</a></small><br />';
 					$HTMLContent .= '<input type="hidden" name="' . $prefix . '[' . $fName . '][' . $i . '][name]' . '" value="' . $filenames[$i] . '" />';
 				}
 				for($i = sizeof($filenames); $i < $number + sizeof($filenames); $i++) {
-
-
-					$HTMLContent .= '<input name="'.$prefix.'['.$fName.']['.$i.']'.'" type="file" '.$this->pi_classParam('uploader').' /><br />';
+					$HTMLContent .= '<input id="'. $this->pi_getClassName($fName) . '-' . ($i-sizeof($filenames)) . '" name="'.$prefix.'['.$fName.']['.$i.']'.'" type="file" '.$this->pi_classParam('uploader').' /><br />';
 				}
 			}
-			 
-
+			
 			return $HTMLContent;
 		}
+		
 		/**
 		* Generates a pibase-compliant typolink
 		*
