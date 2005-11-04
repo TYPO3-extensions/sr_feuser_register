@@ -3,7 +3,8 @@
 	* Add label tag on all form fields in css-styled html template
 	* Prefix all field ids with tx-srfeuserregister-pi1- in css-styled html template
 	* Generate field ids for all TCA-driven fields
-
+	* Small adjustments to locallang and html template files
+	
 2005-11-02  Sebastian Roth <sebastian.roth@c-qube.com>
 	* Added basic template using CSS. Please note that it's not useable at the moment. We still zap our gremlins with it.
 	* Cleaned up some other stuff like css & typoscript.
