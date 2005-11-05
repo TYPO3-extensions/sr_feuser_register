@@ -1056,12 +1056,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[preview]" value="1">';
 			}
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
-				// Corrected in TYPO3 4.0
-			if ($this->typoVersion >= 4000000) {
-				$content .= $this->cObj->getUpdateJS($this->modifyDataArrForFormUpdate($currentArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
-			} else {
-				$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($currentArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
-			}
+			$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($currentArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
 			return $content;
 		}
 		/**
@@ -1264,12 +1259,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$this->prefixId.'[preview]" value="1">';
 				}
 				$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
-					// Corrected in TYPO3 4.0
-				if ($this->typoVersion >= 4000000) {
-					$content .= $this->cObj->getUpdateJS($this->modifyDataArrForFormUpdate($this->dataArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
-				} else {
-					$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($this->dataArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
-				}
+				$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($this->dataArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
 			}
 			return $content;
 		}
@@ -1508,7 +1498,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$userContent['all'] = '';
 			$HTMLContent['all'] = '';
 			$adminContent['all'] = '';
-			if ($this->conf['email.'][$key] || ($this->setfixedEnabled && ($key == 'SETFIXED_CREATE' || $key == 'SETFIXED_INVITE' || $key == 'SETFIXED_ADMIN'))) {
+			if ($this->conf['email.'][$key] || ($this->setfixedEnabled && ($key == 'SETFIXED_CREATE' || $key == 'SETFIXED_INVITE' || $key == 'SETFIXED_REVIEW'))) {
 				$userContent['all'] = trim($this->cObj->getSubpart($this->templateCode, '###'.$this->emailMarkPrefix.$key.'###'));
 				$HTMLContent['all'] = ($this->HTMLMailEnabled && $this->dataArr['module_sys_dmail_html']) ? trim($this->cObj->getSubpart($this->templateCode, '###'.$this->emailMarkPrefix.$key.$this->emailMarkHTMLSuffix.'###')):'';
 			}
@@ -2199,19 +2189,29 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			return $templateCode;
 		}
+		
 		/**
-		* Adds CSS styles marker to a marker array for substitution in an HTML email message
-		*
-		* @param array  $markerArray: the input marker array
-		* @return array  the output marker array
-		*/
+		 * Adds CSS styles marker to a marker array for substitution in an HTML email message
+		 *
+		 * @param array  $markerArray: the input marker array
+		 * @return array  the output marker array
+		 */
 		function addCSSStyleMarkers($markerArray) {
-			 
 			if ($this->HTMLMailEnabled ) {
-				$markerArray['###CSS_STYLES###'] = $this->cObj->fileResource($this->conf['email.']['HTMLMailCSS']);
+				if ($this->conf['templateStyle'] == 'css-styled') {
+					$markerArray['###CSS_STYLES###'] = '	/*<![CDATA[*/
+	<!--';
+					$markerArray['###CSS_STYLES###'] .= $this->cObj->fileResource($this->conf['email.']['HTMLMailCSS']);
+					$markerArray['###CSS_STYLES###'] .= '
+	-->
+	/*]]>*/';
+				} else {
+					$markerArray['###CSS_STYLES###'] = $this->cObj->fileResource($this->conf['email.']['HTMLMailCSS']);
+				}
 			}
 			return $markerArray;
 		}
+		
 		/**
 		* Checks the error value from the upload $_FILES array.
 		*
@@ -2509,17 +2509,22 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		function getUpdateJS($dataArray, $formName, $arrPrefix, $fieldList) {
 			$JSPart = '';
 			$updateValues = t3lib_div::trimExplode(',', $fieldList);
+			if ($this->conf['templateStyle'] == 'css-styled') {
+				$form = $this->pi_getClassName($formName);
+			} else {
+				$form = $formName;
+			}
 			while (list(, $fKey) = each($updateValues)) {
 				$value = $dataArray[$fKey];
 				if (is_array($value)) {
 					reset($value);
 					while (list(, $Nvalue) = each($value)) {
 						$JSPart .= "
-		updateForm('".$formName."','".$arrPrefix."[".$fKey."][]',".$this->quoteJSvalue($Nvalue, true).")";
+		updateForm('".$form."','".$arrPrefix."[".$fKey."][]',".$this->quoteJSvalue($Nvalue, true).")";
 					}
 				} else {
 					$JSPart .= "
-		updateForm('".$formName."','".$arrPrefix."[".$fKey."]',".$this->quoteJSvalue($value, true).")";
+		updateForm('".$form."','".$arrPrefix."[".$fKey."]',".$this->quoteJSvalue($value, true).")";
 				}
 			}
 			$JSPart = '<script type="text/javascript">
@@ -2528,8 +2533,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 // -->
 	/*]]>*/
 </script>';
-
-			$GLOBALS['TSFE']->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $GLOBALS['TSFE']->absRefPrefix . 't3lib/jsfunc.updateform.js"></script>';
+			if ($this->conf['templateStyle'] == 'css-styled') {
+				$GLOBALS['TSFE']->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $GLOBALS['TSFE']->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
+			} else {
+				$GLOBALS['TSFE']->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $GLOBALS['TSFE']->absRefPrefix . 't3lib/jsfunc.updateform.js"></script>';
+			}
 			return $JSPart;
 		}
 		
