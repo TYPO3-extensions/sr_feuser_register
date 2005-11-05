@@ -5,7 +5,9 @@
 	* Generate field ids for all TCA-driven fields
 	* Small adjustments to locallang and html template files
 	* Addition of scripts folder and elimination of name attribute on form tags in css-styled template
-	* Adjustments to css inclusion in html emails in css-styled template
+	* Adjustments to css inclusion in html emails in css-styled template and addition of css file
+	* Remove attributes from the body tags of html emails in css-styled template
+	* Change doctype declararation in html emails in css-styled template
 	
 2005-11-02  Sebastian Roth <sebastian.roth@c-qube.com>
 	* Added basic template using CSS. Please note that it's not useable at the moment. We still zap our gremlins with it.
