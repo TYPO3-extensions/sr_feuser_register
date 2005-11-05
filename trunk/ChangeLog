@@ -1,3 +1,6 @@
+2005-11-05  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Adding some new subparts for the administrative review process (work in progress).
+
 2005-11-04  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Restructure the extension with two Static Templates: Old Style and CSS-styled. One static template must be added to the TS template after extension installation.
 	* Add label tag on all form fields in css-styled html template

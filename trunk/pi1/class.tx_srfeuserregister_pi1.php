@@ -185,10 +185,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			} else {
 				$this->cmdKey = 'create';
 			}
-			if (!($this->conf['setfixed'] == 1)) {
+			if ($this->conf['setfixed'] != 1) {
 				$this->setfixedEnabled = 0;
 			}
-			if (!($this->conf['email.'][HTMLMail] == 1)) {
+			if ($this->conf['email.'][HTMLMail] != 1) {
 				$this->HTMLMailEnabled = 0;
 			}
 			
@@ -2030,6 +2030,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				',v_registration_invited,v_registration_invited_subject,v_registration_invited_message1,v_registration_invited_message2'.
 				',v_registration_confirmed,v_registration_confirmed_subject,v_registration_confirmed_message1,v_registration_confirmed_message2'.
 				',v_registration_cancelled,v_registration_cancelled_subject,v_registration_cancelled_message1,v_registration_cancelled_message2'.
+				',v_registration_accepted,v_registration_accepted_subject,v_registration_accepted_message1,v_registration_accepted_message2'.
+				',v_registration_refused,v_registration_refused_subject,v_registration_refused_message1,v_registration_refused_message2'.
 				',v_registration_updated,v_registration_updated_subject,v_registration_updated_message1'.
 				',v_registration_deleted,v_registration_deleted_subject,v_registration_deleted_message1,v_registration_deleted_message2';
 			$otherLabels = t3lib_div::trimExplode(',', $otherLabelsList);

@@ -10,10 +10,8 @@
 
 <h2>'CREATE' TEMPLATES:</h2>
 
-<hr />
 
 <p><em>Form for the registration of a frontend user:</em></p>
-
 <!-- ###TEMPLATE_CREATE### begin -->
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 	<h4> ###LABEL_ENTER_ACCOUNT_INFO### </h4>
@@ -393,7 +391,6 @@
 
 
 <p style="margin-top: 20px"><em>Here the user information is preview before final submission:</em></p>
-
 <!-- ###TEMPLATE_CREATE_PREVIEW### begin -->
 <h4>###LABEL_V_DEAR###</h4>
 <p class="form_notice">###LABEL_V_VERIFY_BEFORE_CREATE###</p>
@@ -568,7 +565,6 @@
 
 
 <p style="margin-top: 20px"><em>Template, displayed if the user is already logged in.</em></p>
-
 <!-- ###TEMPLATE_CREATE_LOGIN### begin-->
 <p><a href="###EDIT_URL###">###LABEL_CLICK_HERE_TO_EDIT###</a></p>
 <!-- ###TEMPLATE_CREATE_LOGIN### end-->
@@ -576,7 +572,6 @@
 
 
 <p style="margin-top: 20px"><em>This is shown when the user is created(without auto-login).</em></p>
-
 <!-- ###TEMPLATE_CREATE_SAVED### begin-->
 <h4>###LABEL_V_DEAR###</h4>
 <p>###LABEL_V_REGISTRATION_CREATED_SUBJECT###</p>
@@ -608,7 +603,6 @@
 
 <p style="margin-top: 20px"><em>This is shown when the user is created and the option setfixed is configured.
 The user is informed that a message has been sent to his email address and that he needs to confirm his registration.</em></p>
-
 <!-- ###TEMPLATE_SETFIXED_CREATE### begin -->
 <h4>###LABEL_V_DEAR###</h4>
 <p>###LABEL_V_PLEASE_CONFIRM###</p>
@@ -621,15 +615,11 @@ The user is informed that a message has been sent to his email address and that 
 
 
 
-
-
-
 <h2>'INVITE' TEMPLATES:</h2>
 
-<hr />
+
 
 <p style="margin-top: 20px"><em>Form for the registration of an invited frontend user:</em></p>
-
 <!-- ###TEMPLATE_INVITE### begin -->
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 	<h4>###LABEL_ENTER_INVITATION_ACCOUNT_INFO###</h4>
@@ -1009,7 +999,6 @@ The user is informed that a message has been sent to his email address and that 
 
 
 <p style="margin-top: 20px"><em>Here the invited user information is previewed before final submission:</em></p>
-
 <!-- ###TEMPLATE_INVITE_PREVIEW### begin -->
 <p>###LABEL_V_VERIFY_INVITATION_BEFORE_CREATE###</p>
 
@@ -1185,7 +1174,6 @@ The user is informed that a message has been sent to his email address and that 
 
 <p style="margin-top: 20px"><em>This is shown when the invited user is created and the option setfixed is configured, which should be the case if invitations are to be sent!
 The user is informed that a message has been sent to the email address and that the invited user will need to accept/confirm his registration.</em></p>
-
 <!-- ###TEMPLATE_SETFIXED_INVITE### begin -->
 <p>###LABEL_V_INVITATION_CONFIRM###</p>
 <p>###LABEL_V_INVITATION_ACCOUNT_WAS_CREATED###</p>
@@ -1203,7 +1191,6 @@ The user is informed that a message has been sent to the email address and that 
 <hr />
 
 <p style="margin-top: 20px"><em>Form for editing of a fe_users record:</em></p>
-
 <!-- ###TEMPLATE_EDIT### begin -->
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 	<h4>###LABEL_V_DEAR###</h4>
@@ -1579,7 +1566,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>Here the user information is preview before final submission:</em></p>
-
 <!-- ###TEMPLATE_EDIT_PREVIEW### begin-->
 <h4>###LABEL_V_DEAR###</h4>
 <p class="form_notice">###LABEL_V_VERIFY_BEFORE_UPDATE###</p>
@@ -1760,7 +1746,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This is shown when the user profile has been updated</em></p>
-
 <!-- ###TEMPLATE_EDIT_SAVED### begin-->
 <h4>###LABEL_V_DEAR###</h4>
 <p>###LABEL_V_REGISTRATION_UPDATED_SUBJECT###</p>
@@ -1771,14 +1756,11 @@ The user is informed that a message has been sent to the email address and that 
 
 
 
-
-
 <h2>'DELETE' TEMPLATES:</h2>
 
 <hr />
 
 <p style="margin-top: 20px"><em>This template is the response page when a user has deleted himself.</em></p>
-
 <!-- ###TEMPLATE_DELETE_SAVED### begin-->
 <h4>###LABEL_V_DEAR###</h4>
 <p>###LABEL_V_REGISTRATION_DELETED_SUBJECT###</p>
@@ -1791,7 +1773,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This template is the verification page before the user finally deletes himself.</em></p>
-
 <!-- ###TEMPLATE_DELETE_PREVIEW### begin-->
 <h4>###LABEL_V_DEAR###</h4>
 <p>###LABEL_V_REALLY_WISH_TO_DELETE###</p>
@@ -1807,14 +1788,11 @@ The user is informed that a message has been sent to the email address and that 
 
 
 
-
-
 <h2>'SETFIXED' TEMPLATES</h2>
 
 <hr />
 
 <p style="margin-top: 20px"><em>This template is the response page when the user approves his subscription(without auto-login).</em></p>
-
 <!-- ###TEMPLATE_SETFIXED_OK### begin -->
 <h4>###LABEL_V_DEAR###</h4>
 <p>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</p>
@@ -1842,8 +1820,32 @@ The user is informed that a message has been sent to the email address and that 
 <!-- ###TEMPLATE_SETFIXED_OK### end-->
 
 
-<p style="margin-top: 20px"><em>This template is the response page when a user deleted his subscription.</em></p>
 
+<p style="margin-top: 20px"><em>This template is the response page when the administrator accepts the account registration.</em></p>
+<!-- ###TEMPLATE_SETFIXED_OK_ACCEPT### begin -->
+<h4>###LABEL_V_TO_THE_ADMINISTRATOR###</h4>
+<p>###LABEL_V_REGISTRATION_ACCEPTED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_OK_ACCEPT### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is the response page when the administrator refuses the account registration.</em></p>
+<!-- ###TEMPLATE_SETFIXED_OK_REFUSE### begin -->
+<h4>###LABEL_V_TO_THE_ADMINISTRATOR###</h4>
+<p>###LABEL_V_REGISTRATION_REFUSED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_REFUSED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_REFUSED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_OK_REFUSE### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is the response page when a user deleted his account.</em></p>
 <!-- ###TEMPLATE_SETFIXED_OK_DELETE### begin -->
 <h4>###LABEL_V_DEAR###</h4>
 <p>###LABEL_V_REGISTRATION_CANCELLED_SUBJECT###</p>
@@ -1856,7 +1858,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This template is the response page when a user has clicked a setfixed link, but the link failed.</em></p>
-
 <!-- ###TEMPLATE_SETFIXED_FAILED### begin -->
 <h4>###LABEL_REGISTRATION_PROBLEM###</h4>
 <p>###LABEL_REGISTRATION_SORRY###</p>
@@ -1868,14 +1869,11 @@ The user is informed that a message has been sent to the email address and that 
 
 
 
-
-
 <h2>'Authentication' templates:</h2>
 
 <hr />
 
-<p style="margin-top: 20px"><em>	Authentication failed message.</em></p>
-
+<p style="margin-top: 20px"><em>Authentication failed message.</em></p>
 <!-- ###TEMPLATE_AUTH### begin -->
 <p><a href="###REGISTER_URL###">###LABEL_CLICK_HERE_TO_REGISTER###</a></p>
 <!-- ###TEMPLATE_AUTH### end-->
@@ -1883,7 +1881,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>No permission template</em></p>
-
 <!-- ###TEMPLATE_NO_PERMISSIONS### begin-->
 <h4>###LABEL_REGISTRATION_PROBLEM###</h4>
 <p>###LABEL_REGISTRATION_SORRY###</p>
@@ -1900,7 +1897,6 @@ The user is informed that a message has been sent to the email address and that 
 <hr />
 
 <p style="margin-top: 20px">In these plain text email templates the first line with content is used as subject in the mails.</p>
-
 <p><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
 <!-- ###EMAIL_TEMPLATE_CREATE_SAVED_HTML### begin -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -1931,7 +1927,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_CREATE_SAVED### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CREATED_SUBJECT###
 
@@ -1951,7 +1946,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon creation of a user account.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_CREATE_SAVED_ADMIN### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CREATED###
 ###LABEL_V_REGISTRATION_CREATED###
@@ -1968,7 +1962,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_EDIT_SAVED_HTML### begin -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
@@ -1997,7 +1990,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_EDIT_SAVED### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_UPDATED_SUBJECT###
 
@@ -2016,7 +2008,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon update of a user profile.></em></p>
-
 <!-- ###EMAIL_TEMPLATE_EDIT_SAVED_ADMIN### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_UPDATED###
 
@@ -2033,7 +2024,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_HTML### begin -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
@@ -2067,9 +2057,7 @@ The user is informed that a message has been sent to the email address and that 
 
 
 
-<p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account.
-     You can use the newly created record as markers on the format ###FIELD_[fieldname]### </em></p>
-
+<p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account.</em></p>
 <!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_INITIATED_SUBJECT###
 
@@ -2095,7 +2083,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon a new user registration.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_ADMIN### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_INITIATED###
 ###LABEL_V_REGISTRATION_INITIATED###
@@ -2112,7 +2099,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This template is used to notify admin by email that a person has approved his/her registration and requires accept/refuse decision.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW_HTML### begin -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
@@ -2144,7 +2130,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This template is used to notify admin by email that a person has approved his/her registration and requires accept/refuse decision.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW### begin -->
 <!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_REVIEW_SUBJECT###
 
@@ -2165,8 +2150,7 @@ The user is informed that a message has been sent to the email address and that 
 
 
 
-<p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account.</em></p>
-
+<p style="margin-top: 20px"><em>This template is used to notify an invited person by email that an account has been created for him/her.</em></p>
 <!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE_HTML### begin -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
@@ -2199,9 +2183,7 @@ The user is informed that a message has been sent to the email address and that 
 
 
 
-<p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account.
-     You can use the newly created record as markers on the format ###FIELD_[fieldname]### </em></p>
-
+<p style="margin-top: 20px"><em>This template is used to notify an invited person by email that an account has been created for him/her.</em></p>
 <!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_INVITED_SUBJECT###
 
@@ -2226,7 +2208,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon a new user registration.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE_ADMIN### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_INVITED###
 ###LABEL_V_REGISTRATION_INVITED###
@@ -2243,7 +2224,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_HTML### begin -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
@@ -2273,7 +2253,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This template is used to send a welcome email when a person has confirmed his(her) registration.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###
 
@@ -2293,7 +2272,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon user confirmation of his registration.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_ADMIN### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CONFIRMED###
 ###LABEL_V_REGISTRATION_CONFIRMED###
@@ -2309,7 +2287,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has cancelles his registration.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_HTML### begin -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
@@ -2339,7 +2316,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CANCELLED_SUBJECT###
 
@@ -2359,7 +2335,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon user refusal to confirm his registration.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_ADMIN### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CANCELLED###
 ###LABEL_V_REGISTRATION_CANCELLED###
@@ -2376,7 +2351,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_DELETE_SAVED_HTML### begin -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
@@ -2406,7 +2380,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_DELETE_SAVED### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_DELETED_SUBJECT###
 
@@ -2426,7 +2399,6 @@ The user is informed that a message has been sent to the email address and that 
 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon deletion of a user account.</em></p>
-
 <!-- ###EMAIL_TEMPLATE_DELETE_SAVED_ADMIN### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_DELETED###
 ###LABEL_V_REGISTRATION_DELETED###
@@ -2442,4 +2414,3 @@ The user is informed that a message has been sent to the email address and that 
 
 </body>
 </html>
-
