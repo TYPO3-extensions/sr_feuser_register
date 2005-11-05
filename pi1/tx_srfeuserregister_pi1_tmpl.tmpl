@@ -2365,17 +2365,17 @@ In these plain text email templates the first line with content is used as subje
 </head>
 <body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
 <!--###SUB_RECORD###-->
-	<p>###GW1B######LABEL_V_TO_THE_ADMINISTRATOR######GW1E###</p>
-	<p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE3###</p>
-	<p>###LABEL_NAME### ###FIELD_name###<br />
-	###LABEL_EMAIL### ###FIELD_email###<br />
-	###LABEL_USERNAME### ###FIELD_username###</p>
-	<p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE1###<br/>
-	<a href="###SETFIXED_ACCEPT_URL###">###SETFIXED_ACCEPT_URL###</a></p>
-	<p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE2###<br/>
-	<a href="###SETFIXED_REFUSE_URL###">###SETFIXED_REFUSE_URL###</a></p>
-	<p>###LABEL_KIND_REGARDS###<br />
-	###GW1B######SITE_NAME######GW1E###</p>
+<p>###GW1B######LABEL_V_TO_THE_ADMINISTRATOR######GW1E###</p>
+<p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE3###</p>
+<p>###LABEL_NAME### ###FIELD_name###<br />
+###LABEL_EMAIL### ###FIELD_email###<br />
+###LABEL_USERNAME### ###FIELD_username###</p>
+<p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE1###<br/>
+<a href="###SETFIXED_ACCEPT_URL###">###SETFIXED_ACCEPT_URL###</a></p>
+<p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE2###<br/>
+<a href="###SETFIXED_REFUSE_URL###">###SETFIXED_REFUSE_URL###</a></p>
+<p>###LABEL_KIND_REGARDS###<br />
+###GW1B######SITE_NAME######GW1E###</p>
 <!--###SUB_RECORD###-->
 </body></html>
 <!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW_HTML### end-->
@@ -2651,10 +2651,8 @@ In these plain text email templates the first line with content is used as subje
 
 
 
-<br /><br /><br /><br /><hr /><br /><br /><br />
-<em>This template is used to confirm to a person by email that he has deleted his account.</em>
-<br />
-<br />
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
+
 <!-- ###EMAIL_TEMPLATE_DELETE_SAVED_HTML### begin -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
@@ -2688,10 +2686,8 @@ In these plain text email templates the first line with content is used as subje
 
 
 
-<br /><br /><br /><br /><hr /><br /><br /><br />
-<em>This template is used to confirm to a person by email that he has deleted his account.</em>
-<br />
-<br />
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
+
 <!-- ###EMAIL_TEMPLATE_DELETE_SAVED### begin -->
 <!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_DELETED_SUBJECT###
 
@@ -2710,12 +2706,10 @@ In these plain text email templates the first line with content is used as subje
 
 
 
-<br /><br /><br /><br /><hr /><br /><br /><br />
-<em>This is the template used for the administrator notification email upon deletion of a user account.</em>
-<br>
-<br>
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon deletion of a user account.</em></p>
+
 <!-- ###EMAIL_TEMPLATE_DELETE_SAVED_ADMIN### begin -->
-<!--###SUB_RECORD###-->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_DELETED###
+<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_DELETED###
 ###LABEL_V_REGISTRATION_DELETED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2724,9 +2718,8 @@ In these plain text email templates the first line with content is used as subje
 
 ###LABEL_KIND_REGARDS###
 ###SITE_NAME###
-<!--###SUB_RECORD###-->
+<!-- ###SUB_RECORD### -->
 <!-- ###EMAIL_TEMPLATE_DELETE_SAVED_ADMIN### end-->
-
 
 </body>
 </html>

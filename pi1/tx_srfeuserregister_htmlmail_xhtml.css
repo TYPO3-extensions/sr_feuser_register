@@ -1,0 +1,10 @@
+/* Default stylesheet for the html mails of tx_feuser_register extension */
+body { background:#ffffff none; margin: 10px; }
+.tx-srfeuserregister-pi1 p, .tx-srfeuserregister-pi1 h4 { font-family:Verdana, sans-serif; font-size: 12px; line-height: 125%; color: #35006d; margin: 0; padding: 0 3px; text-indent: 0px; }
+.tx-srfeuserregister-pi1 p { margin-top: 8px; }
+.tx-srfeuserregister-pi1 h4 { font-weight:bold; }
+.tx-srfeuserregister-pi1 a { background-color:transparent; font-weight:bold; text-decoration: none; }
+.tx-srfeuserregister-pi1 a:link { color:navy; }
+.tx-srfeuserregister-pi1 a:visited { color:navy; }
+.tx-srfeuserregister-pi1 a:hover { color:#333333; }
+.tx-srfeuserregister-pi1 a:active { color:navy; }

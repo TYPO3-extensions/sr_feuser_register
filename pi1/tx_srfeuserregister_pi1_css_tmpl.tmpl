@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>Frond End User Registration Template</title>
@@ -15,7 +15,7 @@
 <p><em>Form for the registration of a frontend user:</em></p>
 
 <!-- ###TEMPLATE_CREATE### begin -->
-<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 	<h4> ###LABEL_ENTER_ACCOUNT_INFO### </h4>
 	<p class="form_notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
 
@@ -398,7 +398,7 @@
 <h4>###LABEL_V_DEAR###</h4>
 <p class="form_notice">###LABEL_V_VERIFY_BEFORE_CREATE###</p>
 
-<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
+<form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
 
 <dl>
 <!-- ###SUB_INCLUDED_FIELD_username### -->
@@ -584,7 +584,7 @@
 <p>###LABEL_V_REGISTRATION_CREATED_MESSAGE2###</p>
 <p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
 
-<form name="###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
+<form id="tx-srfeuserregister-pi1-###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
 <dl>
 	<dt>###LABEL_USERNAME###</dt>
 	<dd> <input type="text" name="user" value="###FIELD_username###" /> </dd>
@@ -631,7 +631,7 @@ The user is informed that a message has been sent to his email address and that 
 <p style="margin-top: 20px"><em>Form for the registration of an invited frontend user:</em></p>
 
 <!-- ###TEMPLATE_INVITE### begin -->
-<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 	<h4>###LABEL_ENTER_INVITATION_ACCOUNT_INFO###</h4>
 	<p class="form_notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
 
@@ -1013,7 +1013,7 @@ The user is informed that a message has been sent to his email address and that 
 <!-- ###TEMPLATE_INVITE_PREVIEW### begin -->
 <p>###LABEL_V_VERIFY_INVITATION_BEFORE_CREATE###</p>
 
-<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
+<form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
 
 <dl>
 <!-- ###SUB_INCLUDED_FIELD_username### -->
@@ -1205,7 +1205,7 @@ The user is informed that a message has been sent to the email address and that 
 <p style="margin-top: 20px"><em>Form for editing of a fe_users record:</em></p>
 
 <!-- ###TEMPLATE_EDIT### begin -->
-<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 	<h4>###LABEL_V_DEAR###</h4>
 	<p>###LABEL_V_EDIT_YOUR_ACCOUNT###</p>
 	<p class="form_notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
@@ -1584,7 +1584,7 @@ The user is informed that a message has been sent to the email address and that 
 <h4>###LABEL_V_DEAR###</h4>
 <p class="form_notice">###LABEL_V_VERIFY_BEFORE_UPDATE###</p>
 
-<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
+<form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
 
 <dl>
 <!-- ###SUB_INCLUDED_FIELD_username### -->
@@ -1795,7 +1795,7 @@ The user is informed that a message has been sent to the email address and that 
 <!-- ###TEMPLATE_DELETE_PREVIEW### begin-->
 <h4>###LABEL_V_DEAR###</h4>
 <p>###LABEL_V_REALLY_WISH_TO_DELETE###</p>
-<form name="###FORM_NAME###" method="post" action="###FORM_URL###">
+<form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###">
 	###HIDDENFIELDS###
 	<input type="hidden" name="FE[fe_users][module_sys_dmail_html]" value="###FIELD_module_sys_dmail_html###" />
 	<p>
@@ -1821,7 +1821,7 @@ The user is informed that a message has been sent to the email address and that 
 <p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE1###</p>
 <p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE2###</p>
 <p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
-<form name="###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
+<form id="tx-srfeuserregister-pi1-###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
 <dl>
 	<dt><label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME###</label></dt>
 	<dd> <input type="text" id="tx-srfeuserregister-pi1-username" name="user" value="###FIELD_username###" /> </dd>
@@ -1903,17 +1903,15 @@ The user is informed that a message has been sent to the email address and that 
 
 <p><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
 <!-- ###EMAIL_TEMPLATE_CREATE_SAVED_HTML### begin -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<STYLE TYPE="text/css">
-<!--
+<style type="text/css">
 ###CSS_STYLES###
--->
-</STYLE>
+</style>
 <title>###LABEL_V_REGISTRATION_CREATED_SUBJECT###</title>
 <meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
-<meta name="generator" content="Typo 3.5 CMS">
+<meta name="generator" content="TYPO3 CMS">
 </head>
 <body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
 <!-- ###SUB_RECORD### -->
@@ -1968,20 +1966,19 @@ The user is informed that a message has been sent to the email address and that 
 <!-- ###EMAIL_TEMPLATE_CREATE_SAVED_ADMIN### end-->
 
 
+
 <p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
 
 <!-- ###EMAIL_TEMPLATE_EDIT_SAVED_HTML### begin -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<STYLE TYPE="text/css">
-<!--
+<style type="text/css">
 ###CSS_STYLES###
--->
-</STYLE>
+</style>
 <title>###LABEL_V_REGISTRATION_UPDATED_SUBJECT###</title>
 <meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
-<meta name="generator" content="Typo 3.5 CMS">
+<meta name="generator" content="TYPO3 CMS">
 </head>
 <body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
 <!-- ###SUB_RECORD### -->
@@ -2038,25 +2035,23 @@ The user is informed that a message has been sent to the email address and that 
 <p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account.</em></p>
 
 <!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_HTML### begin -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<STYLE TYPE="text/css">
-<!--
+<style type="text/css">
 ###CSS_STYLES###
--->
-</STYLE>
+</style>
 <title>###LABEL_V_REGISTRATION_INITIATED_SUBJECT###</title>
 <meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
-<meta name="generator" content="Typo 3.5 CMS">
+<meta name="generator" content="TYPO3 CMS">
 </head>
 <body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
 <!-- ###SUB_RECORD### -->
 <h4>###LABEL_V_DEAR###</h4>
-<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE1###<br/>
+<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE1###<br />
 <a href="###SETFIXED_APPROVE_URL###">###SETFIXED_APPROVE_URL###</a><br />
 ###LABEL_COPY_PASTE_LINK###</p>
-<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE2###<br/>
+<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE2###<br />
 <a href="###SETFIXED_DELETE_URL###">###SETFIXED_DELETE_URL###</a><br />
 ###LABEL_COPY_PASTE_LINK###<br />
 ###LABEL_EXCUSE_US###</p>
@@ -2116,28 +2111,80 @@ The user is informed that a message has been sent to the email address and that 
 
 
 
+<p style="margin-top: 20px"><em>This template is used to notify admin by email that a person has approved his/her registration and requires accept/refuse decision.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_REVIEW_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
+<!--###SUB_RECORD###-->
+<h4>###LABEL_V_TO_THE_ADMINISTRATOR###</h4>
+<p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE3###</p>
+<p>###LABEL_NAME### ###FIELD_name###<br />
+###LABEL_EMAIL### ###FIELD_email###<br />
+###LABEL_USERNAME### ###FIELD_username###</p>
+<p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE1###<br />
+<a href="###SETFIXED_ACCEPT_URL###">###SETFIXED_ACCEPT_URL###</a></p>
+<p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE2###<br />
+<a href="###SETFIXED_REFUSE_URL###">###SETFIXED_REFUSE_URL###</a></p>
+<p>###LABEL_KIND_REGARDS###<br />
+<h4>###SITE_NAME###</h4>
+<!--###SUB_RECORD###-->
+</body></html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to notify admin by email that a person has approved his/her registration and requires accept/refuse decision.</em></p>
+
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW### begin -->
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_REVIEW_SUBJECT###
+
+###LABEL_V_TO_THE_ADMINISTRATOR###
+
+###LABEL_V_REGISTRATION_REVIEW_MESSAGE3###
+
+###LABEL_V_REGISTRATION_REVIEW_MESSAGE1###
+###SETFIXED_ACCEPT_URL###
+
+###LABEL_V_REGISTRATION_REVIEW_MESSAGE2###
+###SETFIXED_REFUSE_URL###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!--###SUB_RECORD###-->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW### end-->
+
+
+
 <p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account.</em></p>
 
 <!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE_HTML### begin -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<STYLE TYPE="text/css">
-<!--
+<style type="text/css">
 ###CSS_STYLES###
--->
-</STYLE>
+</style>
 <title>###LABEL_V_REGISTRATION_INVITED_SUBJECT###</title>
 <meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
-<meta name="generator" content="Typo 3.5 CMS">
+<meta name="generator" content="TYPO3 CMS">
 </head>
 <body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
 <!-- ###SUB_RECORD### -->
 <h4>###LABEL_V_DEAR###</h4>
-<p>###LABEL_V_REGISTRATION_INVITED_MESSAGE1###<br/>
+<p>###LABEL_V_REGISTRATION_INVITED_MESSAGE1###<br />
 <a href="###SETFIXED_APPROVE_URL###">###SETFIXED_APPROVE_URL###</a><br />
 ###LABEL_COPY_PASTE_LINK###</p>
-<p>###LABEL_V_REGISTRATION_INVITED_MESSAGE2###<br/>
+<p>###LABEL_V_REGISTRATION_INVITED_MESSAGE2###<br />
 <a href="###SETFIXED_DELETE_URL###">###SETFIXED_DELETE_URL###</a><br />
 ###LABEL_COPY_PASTE_LINK###<br />
 ###LABEL_EXCUSE_US###</p>
@@ -2198,17 +2245,15 @@ The user is informed that a message has been sent to the email address and that 
 <p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
 
 <!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_HTML### begin -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<STYLE TYPE="text/css">
-<!--
+<style type="text/css">
 ###CSS_STYLES###
--->
-</STYLE>
+</style>
 <title>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</title>
 <meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
-<meta name="generator" content="Typo 3.5 CMS">
+<meta name="generator" content="TYPO3 CMS">
 </head>
 <body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
 <!-- ###SUB_RECORD### -->
@@ -2266,17 +2311,15 @@ The user is informed that a message has been sent to the email address and that 
 <p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has cancelles his registration.</em></p>
 
 <!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_HTML### begin -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<STYLE TYPE="text/css">
-<!--
+<style type="text/css">
 ###CSS_STYLES###
--->
-</STYLE>
+</style>
 <title>###LABEL_V_REGISTRATION_CANCELLED_SUBJECT###</title>
 <meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
-<meta name="generator" content="Typo 3.5 CMS">
+<meta name="generator" content="TYPO3 CMS">
 </head>
 <body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
 <!-- ###SUB_RECORD### -->
@@ -2335,17 +2378,15 @@ The user is informed that a message has been sent to the email address and that 
 <p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
 
 <!-- ###EMAIL_TEMPLATE_DELETE_SAVED_HTML### begin -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<STYLE TYPE="text/css">
-<!--
+<style type="text/css">
 ###CSS_STYLES###
--->
-</STYLE>
+</style>
 <title>###LABEL_V_REGISTRATION_DELETED_SUBJECT###</title>
 <meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
-<meta name="generator" content="Typo 3.5 CMS">
+<meta name="generator" content="TYPO3 CMS">
 </head>
 <body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
 <!-- ###SUB_RECORD### -->

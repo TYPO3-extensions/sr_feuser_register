@@ -13,7 +13,7 @@ plugin.tx_srfeuserregister_pi1 {
   file.icon_delete = EXT:sr_feuser_register/pi1/icon_delete.gif
 
     # cat=plugin.tx_srfeuserregister_pi1/file; type=file[css]; label= HTML emails stylesheet: If HTML emails are enabled, this file contains the CSS stylesheet to be incorporated in these mails.
-  HTMLMailCSS = EXT:sr_feuser_register/pi1/tx_srfeuserregister_htmlmail.css
+  HTMLMailCSS = EXT:sr_feuser_register/pi1/tx_srfeuserregister_htmlmail_xhtml.css
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Administration email: Enter the administration email address here. This email address will be the sender email and also receive administration notifications.
   email = MyTypo3Site@mydomain.org
