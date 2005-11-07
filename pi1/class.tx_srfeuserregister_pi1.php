@@ -313,6 +313,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					default:
 					if ($this->setfixedEnabled) {
 						$key = $this->setfixedPrefix.'CREATE';
+						if ($this->conf['enableAdminReview']) {
+							$key .= '_REVIEW';
+						}
 					} else {
 						$key = 'CREATE'.$this->savedSuffix;
 					}
@@ -1387,7 +1390,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				
 				$theCode = $this->setfixedHash($origArr, $origArr['_FIELDLIST']);
 				if (!strcmp($this->authCode, $theCode)) {
-					if ($this->feUserData['sFK'] == 'DELETE') {
+					if ($this->feUserData['sFK'] == 'DELETE' || $this->feUserData['sFK'] == 'REFUSE') {
 						if (!$this->TCA['ctrl']['delete'] || $this->conf['forceFileDelete']) {
 							// If the record is fully deleted... then remove the image attached.
 							$this->deleteFilesFromRecord($this->recUid);
@@ -1440,34 +1443,39 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					}
 
 					// Outputting template
-					if ($this->theTable == 'fe_users' && $this->feUserData['sFK'] == 'APPROVE') {
+					if ($this->theTable == 'fe_users' && ($this->feUserData['sFK'] == 'APPROVE' || $this->feUserData['sFK'] == 'ENTER')) {
 						$this->markerArray = $this->addMd5LoginMarkers($this->markerArray);
 						if($this->useMd5Password) {
 							$origArr['password'] = '';
 						}
 					}
-					$content = $this->getPlainTemplate('###TEMPLATE_SETFIXED_OK_'.$this->feUserData['sFK'].'###', $origArr);
+					$setfixedSufffix = $this->feUserData['sFK'];
+					if ($this->conf['enableAdminReview'] && $this->feUserData['sFK'] == 'APPROVE') {
+						$setfixedSufffix .= '_REVIEW';
+					}
+					$content = $this->getPlainTemplate('###TEMPLATE_' . $this->setfixedPrefix . 'OK_' . $setfixedSufffix . '###', $origArr);
 					if (!$content) {
-						$content = $this->getPlainTemplate('###TEMPLATE_SETFIXED_OK###', $origArr);
+						$content = $this->getPlainTemplate('###TEMPLATE_' . $this->setfixedPrefix .'OK###', $origArr);
 					}
 					// Compiling email
 					$this->dataArr = $origArr;
 					$this->compileMail(
-					$this->setfixedPrefix.$this->feUserData['sFK'],
+					$this->setfixedPrefix.$setfixedSufffix,
 						array($origArr),
 						$origArr[$this->conf['email.']['field']],
 						$this->conf['setfixed.'] );
 					
-					if ($this->theTable == 'fe_users' && $this->feUserData['sFK'] == 'APPROVE') {
+					if ($this->theTable == 'fe_users') { 
 							// If applicable, send admin a request to review the registration request
-						if ($this->conf['enableAdminReview']) {
+						if ($this->conf['enableAdminReview'] && $this->feUserData['sFK'] == 'APPROVE') {
 							$this->compileMail(
 								$this->setfixedPrefix.'REVIEW',
 								array($origArr),
 								$this->conf['email.']['admin'],
 								$this->conf['setfixed.'] );
+						}
 							// Auto-login on confirmation
-						} elseif ($this->conf['enableAutoLoginOnConfirmation']) {
+						if ($this->conf['enableAutoLoginOnConfirmation'] && ($this->feUserData['sFK'] == 'APPROVE' || $this->feUserData['sFK'] == 'ENTER')) {
 							$loginVars = array();
 							$loginVars['user'] = $origArr['username'];
 							$loginVars['pass'] = $origArr['password'];
@@ -1498,7 +1506,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$userContent['all'] = '';
 			$HTMLContent['all'] = '';
 			$adminContent['all'] = '';
-			if ($this->conf['email.'][$key] || ($this->setfixedEnabled && ($key == 'SETFIXED_CREATE' || $key == 'SETFIXED_INVITE' || $key == 'SETFIXED_REVIEW'))) {
+			if ($this->conf['email.'][$key] || ($this->setfixedEnabled && ($key == 'SETFIXED_CREATE' || $key == 'SETFIXED_CREATE_REVIEW' || $key == 'SETFIXED_INVITE' || $key == 'SETFIXED_REVIEW'))) {
 				$userContent['all'] = trim($this->cObj->getSubpart($this->templateCode, '###'.$this->emailMarkPrefix.$key.'###'));
 				$HTMLContent['all'] = ($this->HTMLMailEnabled && $this->dataArr['module_sys_dmail_html']) ? trim($this->cObj->getSubpart($this->templateCode, '###'.$this->emailMarkPrefix.$key.$this->emailMarkHTMLSuffix.'###')):'';
 			}
@@ -1682,14 +1690,20 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		function setfixed($markerArray, $setfixed, $r) {
 			if ($this->setfixedEnabled && is_array($setfixed) ) {
 				$setfixedpiVars = array();
-				 
+				
+					// Find prefix for links
+				if ($GLOBALS['TSFE']->config['config']['baseURL']) {
+					$urlPrefix = intval($GLOBALS['TSFE']->config['config']['baseURL']) ? $this->site_url : $GLOBALS['TSFE']->config['config']['baseURL'];
+				} else {
+					$urlPrefix = $GLOBALS['TSFE']->absRefPrefix ? $GLOBALS['TSFE']->absRefPrefix : $this->site_url;
+				}
+				
 				reset($setfixed);
 				while (list($theKey, $data) = each($setfixed)) {
 					if (strstr($theKey, '.') ) {
 						$theKey = substr($theKey, 0, -1);
 					}
 					unset($setfixedpiVars);
-					 
 					$recCopy = $r;
 					$setfixedpiVars[$this->prefixId.'[rU]'] = $r[uid];
 
@@ -1732,12 +1746,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						if (t3lib_div::GPvar('L') && !t3lib_div::inList($GLOBALS['TSFE']->config['config']['linkVars'], 'L')) {
 							$setfixedpiVars['L'] = t3lib_div::GPvar('L');
 						}
-					}
-						// Find prefix for link
-					if ($GLOBALS['TSFE']->config['config']['baseURL']) {
-						$urlPrefix = intval($GLOBALS['TSFE']->config['config']['baseURL']) ? $this->site_url : $GLOBALS['TSFE']->config['config']['baseURL'];
-					} else {
-						$urlPrefix = $GLOBALS['TSFE']->absRefPrefix ? $GLOBALS['TSFE']->absRefPrefix : $this->site_url;
 					}
 					$markerArray['###SETFIXED_'.strtoupper($theKey).'_URL###'] = $urlPrefix . $this->cObj->getTypoLink_URL($linkPID.','.$this->confirmType, $setfixedpiVars);
 				}
@@ -2024,14 +2032,17 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				',v_registration_created,v_registration_created_subject,v_registration_created_message1,v_registration_created_message2,v_registration_created_message3'.
 				',v_to_the_administrator'.
 				',v_registration_review_subject,v_registration_review_message1,v_registration_review_message2,v_registration_review_message3'.
-				',v_please_confirm,v_your_account_was_created,v_follow_instructions1,v_follow_instructions2'.
+				',v_please_confirm,v_your_account_was_created,v_follow_instructions1,v_follow_instructions2,v_follow_instructions_review1,v_follow_instructions_review2'.
 				',v_invitation_confirm,v_invitation_account_was_created,v_invitation_instructions1'.
-				',v_registration_initiated,v_registration_initiated_subject,v_registration_initiated_message1,v_registration_initiated_message2,v_registration_initiated_message3'.
+				',v_registration_initiated,v_registration_initiated_subject,v_registration_initiated_message1,v_registration_initiated_message2,v_registration_initiated_message3,v_registration_initiated_review1,v_registration_initiated_review2'.
 				',v_registration_invited,v_registration_invited_subject,v_registration_invited_message1,v_registration_invited_message2'.
-				',v_registration_confirmed,v_registration_confirmed_subject,v_registration_confirmed_message1,v_registration_confirmed_message2'.
+				',v_registration_confirmed,v_registration_confirmed_subject,v_registration_confirmed_message1,v_registration_confirmed_message2,v_registration_confirmed_review1,v_registration_confirmed_review2'.
 				',v_registration_cancelled,v_registration_cancelled_subject,v_registration_cancelled_message1,v_registration_cancelled_message2'.
 				',v_registration_accepted,v_registration_accepted_subject,v_registration_accepted_message1,v_registration_accepted_message2'.
 				',v_registration_refused,v_registration_refused_subject,v_registration_refused_message1,v_registration_refused_message2'.
+				',v_registration_accepted_subject2,v_registration_accepted_message3,v_registration_accepted_message4'.
+				',v_registration_refused_subject2,v_registration_refused_message3,v_registration_refused_message4'.
+				',v_registration_entered_subject,v_registration_entered_message1,v_registration_entered_message2'.
 				',v_registration_updated,v_registration_updated_subject,v_registration_updated_message1'.
 				',v_registration_deleted,v_registration_deleted_subject,v_registration_deleted_message1,v_registration_deleted_message2';
 			$otherLabels = t3lib_div::trimExplode(',', $otherLabelsList);
@@ -2095,7 +2106,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return array  the output marker array
 		*/
 		function addStaticInfoMarkers($markerArray, $dataArray = '') {
-			 
 			if ($this->previewLabel ) {
 				$markerArray['###FIELD_static_info_country###'] = $this->staticInfo->getStaticInfoName('COUNTRIES', is_array($dataArray)?$dataArray['static_info_country']:'');
 				$markerArray['###FIELD_zone###'] = $this->staticInfo->getStaticInfoName('SUBDIVISIONS', is_array($dataArray)?$dataArray['zone']:'', is_array($dataArray)?$dataArray['static_info_country']:'');
