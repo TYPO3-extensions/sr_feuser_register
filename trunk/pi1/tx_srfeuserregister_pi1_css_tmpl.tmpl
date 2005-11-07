@@ -615,6 +615,20 @@ The user is informed that a message has been sent to his email address and that 
 
 
 
+<p style="margin-top: 20px"><em>This is shown when the user is created, the option setfixed is configured and administrative review is required.
+The user is informed that a message has been sent to his email address and that he needs to confirm his registration.</em></p>
+<!-- ###TEMPLATE_SETFIXED_CREATE_REVIEW### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_PLEASE_CONFIRM###</p>
+<p>###LABEL_V_YOUR_ACCOUNT_WAS_CREATED###</p>
+<p>###LABEL_V_FOLLOW_INSTRUCTIONS_REVIEW1###</p>
+<p>###LABEL_V_FOLLOW_INSTRUCTIONS_REVIEW2###</p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_CREATE_REVIEW### end-->
+
+
+
 <h2>'INVITE' TEMPLATES:</h2>
 
 
@@ -1792,7 +1806,7 @@ The user is informed that a message has been sent to the email address and that 
 
 <hr />
 
-<p style="margin-top: 20px"><em>This template is the response page when the user approves his subscription(without auto-login).</em></p>
+<p style="margin-top: 20px"><em>This template is the response page when the user confirms his subscription(without auto-login and without adminstrative review).</em></p>
 <!-- ###TEMPLATE_SETFIXED_OK### begin -->
 <h4>###LABEL_V_DEAR###</h4>
 <p>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</p>
@@ -1821,6 +1835,18 @@ The user is informed that a message has been sent to the email address and that 
 
 
 
+<p style="margin-top: 20px"><em>This template is the response page when the user confirms his/her subscription, but it must be accepted by admin.</em></p>
+<!-- ###TEMPLATE_SETFIXED_OK_APPROVE_REVIEW### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_REVIEW1###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_REVIEW2###</p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_OK_APPROVE_REVIEW### end-->
+
+
+
 <p style="margin-top: 20px"><em>This template is the response page when the administrator accepts the account registration.</em></p>
 <!-- ###TEMPLATE_SETFIXED_OK_ACCEPT### begin -->
 <h4>###LABEL_V_TO_THE_ADMINISTRATOR###</h4>
@@ -1830,6 +1856,35 @@ The user is informed that a message has been sent to the email address and that 
 <p>###LABEL_KIND_REGARDS###</p>
 <h4>###SITE_NAME###</h4>
 <!-- ###TEMPLATE_SETFIXED_OK_ACCEPT### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is the response page when the user clicks on the link in the acceptation email (without auto-login).</em></p>
+<!-- ###TEMPLATE_SETFIXED_OK_ENTER### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_ENTERED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE2###</p>
+<p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
+<form id="tx-srfeuserregister-pi1-###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
+<dl>
+	<dt><label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME###</label></dt>
+	<dd> <input type="text" id="tx-srfeuserregister-pi1-username" name="user" value="###FIELD_username###" /> </dd>
+
+	<dt><label for="tx-srfeuserregister-pi1-pass">###LABEL_PASSWORD###</label></dt>
+	<dd> <input type="password" id="tx-srfeuserregister-pi1-pass" name="pass" value="###FIELD_password###" /> </dd>
+</dl>
+
+	<p class="form_submit">
+		<button type="submit" name="submit" value="submit">###LABEL_BUTTON_ENTER###</button>
+	</p>
+
+	<input type="hidden" name="logintype" value="login" />
+	<input type="hidden" name="pid" value="###THE_PID###" />
+	<input type="hidden" name="redirect_url" value="" />
+	###HIDDENFIELDS###
+</form>
+<!-- ###TEMPLATE_SETFIXED_OK_ENTER### end-->
 
 
 
@@ -2098,6 +2153,84 @@ The user is informed that a message has been sent to the email address and that 
 
 
 
+<p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account, he needs to confirm and administrative review is required.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_INITIATED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_INITIATED_REVIEW1###<br />
+<a href="###SETFIXED_APPROVE_URL###">###SETFIXED_APPROVE_URL###</a><br />
+###LABEL_COPY_PASTE_LINK###</p>
+<p>###LABEL_V_REGISTRATION_INITIATED_REVIEW2###</p>
+<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE2###<br />
+<a href="###SETFIXED_DELETE_URL###">###SETFIXED_DELETE_URL###</a><br />
+###LABEL_COPY_PASTE_LINK###<br />
+###LABEL_EXCUSE_US###</p>
+<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE3### <a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<p>###LABEL_KIND_REGARDS_INI###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account, he needs to confirm and administrative review is required.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_INITIATED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_INITIATED_MESSAGE1###
+###SETFIXED_APPROVE_URL###
+###LABEL_COPY_PASTE_LINK###
+
+###LABEL_V_REGISTRATION_INITIATED_REVIEW1###
+
+###LABEL_V_REGISTRATION_INITIATED_MESSAGE2###
+###SETFIXED_DELETE_URL###
+###LABEL_COPY_PASTE_LINK###
+###LABEL_EXCUSE_US###
+
+###LABEL_KIND_REGARDS_INI###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon a new user registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_INITIATED###
+###LABEL_V_REGISTRATION_INITIATED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW_ADMIN### end-->
+
+
+
 <p style="margin-top: 20px"><em>This template is used to notify admin by email that a person has approved his/her registration and requires accept/refuse decision.</em></p>
 <!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW_HTML### begin -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -2114,9 +2247,131 @@ The user is informed that a message has been sent to the email address and that 
 <!--###SUB_RECORD###-->
 <h4>###LABEL_V_TO_THE_ADMINISTRATOR###</h4>
 <p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE3###</p>
-<p>###LABEL_NAME### ###FIELD_name###<br />
-###LABEL_EMAIL### ###FIELD_email###<br />
-###LABEL_USERNAME### ###FIELD_username###</p>
+<dl>
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+<dt> ###LABEL_USERNAME### </dt>
+<dd>###FIELD_username### </dd>
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+<dt> ###LABEL_GENDER### </dt>
+<dd>###TCA_INPUT_gender### </dd>
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+<dt> ###LABEL_NAME### </dt>
+<dd>###FIELD_name### </dd>
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+<dt> ###LABEL_FIRST_NAME### </dt>
+<dd>###FIELD_first_name### </dd>
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+<dt> ###LABEL_LAST_NAME### </dt>
+<dd>###FIELD_last_name### </dd>
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+<dt> ###LABEL_STATUS### </dt>
+<dd>###TCA_INPUT_status### </dd>
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+<dt> ###LABEL_DATE_OF_BIRTH### </dt>
+<dd>###FIELD_date_of_birth### </dd>
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+<dt> ###LABEL_TITLE### </dt>
+<dd>###FIELD_title### </dd>
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+<dt> ###LABEL_COMPANY### </dt>
+<dd>###FIELD_company### </dd>
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+<dt> ###LABEL_ADDRESS### </dt>
+<dd>###FIELD_address### </dd>
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+<dt> ###LABEL_CITY### </dt>
+<dd>###FIELD_city### </dd>
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+<dt> ###LABEL_ZONE### </dt>
+<dd>###FIELD_zone### </dd>
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+<dt> ###LABEL_COUNTRY### </dt>
+<dd>###FIELD_country### </dd>
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+<dt> ###LABEL_STATIC_INFO_COUNTRY### </dt>
+<dd>###FIELD_static_info_country### </dd>
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+<dt> ###LABEL_ZIP### </dt>
+<dd>###FIELD_zip### </dd>
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+<dt> ###LABEL_TELEPHONE### </dt>
+<dd>###FIELD_telephone### </dd>
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+<dt> ###LABEL_FAX### </dt>
+<dd>###FIELD_fax### </dd>
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+<dt> ###LABEL_EMAIL### </dt>
+<dd>###FIELD_email### </dd>
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+<dt> ###LABEL_USERGROUP### </dt>
+<dd>###TCA_INPUT_usergroup### </dd>
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+<dt> ###LABEL_MODULE_SYS_DMAIL_CATEGORY### </dt>
+<dd>###TCA_INPUT_module_sys_dmail_category### </dd>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+<dt> ###LABEL_MODULE_SYS_DMAIL_HTML### </dt>
+<dd>###LABEL_module_sys_dmail_html_CHECKED### </dd>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+<dt> ###LABEL_LANGUAGE### </dt>
+<dd>###FIELD_language### </dd>
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+<dt> ###LABEL_WWW### </dt>
+<dd>###FIELD_www### </dd>
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+<dt> ###LABEL_IMAGE### </dt>
+<dd>###UPLOAD_PREVIEW_image### </dd>
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+<dt> ###LABEL_COMMENTS### </dt>
+<dd>###TCA_INPUT_comments### </dd>
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
 <p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE1###<br />
 <a href="###SETFIXED_ACCEPT_URL###">###SETFIXED_ACCEPT_URL###</a></p>
 <p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE2###<br />
@@ -2223,7 +2478,7 @@ The user is informed that a message has been sent to the email address and that 
 
 
 
-<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
+<p style="margin-top: 20px"><em>This template is used to send a welcome email when a person has confirmed his(her) registration.</em></p>
 <!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_HTML### begin -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
@@ -2284,6 +2539,203 @@ The user is informed that a message has been sent to the email address and that 
 ###SITE_NAME###
 <!-- ###SUB_RECORD### -->
 <!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to send a welcome email when a person has confirmed his(her) registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_REVIEW_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_REVIEW1###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_REVIEW2###</p>
+<p>###LABEL_KIND_REGARDS_CRE###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_REVIEW_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to send a welcome email when a person has confirmed his(her) registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_REVIEW### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###
+###LABEL_V_REGISTRATION_CONFIRMED_REVIEW1###
+###LABEL_V_REGISTRATION_CONFIRMED_REVIEW2###
+
+###LABEL_KIND_REGARDS_CRE###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_REVIEW### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon user confirmation of his registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_REVIEW_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CONFIRMED###
+###LABEL_V_REGISTRATION_CONFIRMED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_REVIEW_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to send a welcome email when the registration of a person was confirmed.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_ACCEPT_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_ACCEPTED_SUBJECT2###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_ACCEPTED_SUBJECT2###</p>
+<p>###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE3###</p>
+<p>###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE4### <a href="###SETFIXED_ENTER_URL###">###SETFIXED_ENTER_URL###</a></p>
+<p>###LABEL_KIND_REGARDS_CRE###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_ACCEPT_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to send a welcome email when the registration of a person was confirmed.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_ACCEPT### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_ACCEPTED_SUBJECT2###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_ACCEPTED_SUBJECT2###
+
+###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE3###
+
+###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE4### ###SETFIXED_ENTER_URL###
+
+###LABEL_KIND_REGARDS_CRE###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_ACCEPT### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon acceptation of the user registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_ACCEPT_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_ACCEPTED###
+###LABEL_V_REGISTRATION_ACCEPTED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_ACCEPT_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to send a welcome email when the registration of a person was confirmed.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REFUSE_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_REFUSED_SUBJECT2###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_REFUSED_SUBJECT2###</p>
+<p>###LABEL_V_REGISTRATION_REFUSED_MESSAGE3###</p>
+<p>###LABEL_V_REGISTRATION_REFUSED_MESSAGE4### <a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<p>###LABEL_KIND_REGARDS_DEL###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REFUSE_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to send a welcome email when the registration of a person was confirmed.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_ACCEPT### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_REFUSED_SUBJECT2###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_REFUSED_SUBJECT2###
+
+###LABEL_V_REGISTRATION_REFUSED_MESSAGE3###
+
+###LABEL_V_REGISTRATION_REFUSED_MESSAGE4### ###SITE_EMAIL###
+
+###LABEL_KIND_REGARDS_DEL###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REFUSE### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon acceptation of the user registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REFUSE_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_REFUSED###
+###LABEL_V_REGISTRATION_REFUSED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REFUSE_ADMIN### end-->
+
 
 
 <p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has cancelles his registration.</em></p>

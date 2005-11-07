@@ -99,6 +99,7 @@ plugin.tx_srfeuserregister_pi1 {
 	enableAdminReview = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
 	setfixed.ACCEPT < .setfixed.APPROVE
 	setfixed.REFUSE < .setfixed.DELETE
+	setfixed.ENTER < .setfixed.ACCEPT
 	
 	invite < .create
 
@@ -167,6 +168,7 @@ plugin.tx_srfeuserregister_pi1 {
 	email.EDIT_SAVED = {$plugin.tx_srfeuserregister_pi1.enableEmailOnUpdate}
 	email.DELETE_SAVED =  {$plugin.tx_srfeuserregister_pi1.enableEmailOnDelete}
 	email.SETFIXED_APPROVE =  {$plugin.tx_srfeuserregister_pi1.enableEmailOnApprove}
+	email.SETFIXED_APPROVE_REVIEW =  {$plugin.tx_srfeuserregister_pi1.enableEmailOnApprove}
 	email.SETFIXED_DELETE =  {$plugin.tx_srfeuserregister_pi1.enableEmailOnRefuse}
 	email.SETFIXED_ACCEPT =  {$plugin.tx_srfeuserregister_pi1.enableEmailOnApprove}
 	email.SETFIXED_REFUSE =  {$plugin.tx_srfeuserregister_pi1.enableEmailOnRefuse}
@@ -175,8 +177,10 @@ plugin.tx_srfeuserregister_pi1 {
 	notify.EDIT_SAVED = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnUpdate}
 	notify.DELETE_SAVED =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnDelete}
 	notify.SETFIXED_CREATE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyConfirmation}
+	notify.SETFIXED_CREATE_REVIEW = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyConfirmation}
 	notify.SETFIXED_INVITE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyConfirmation}
 	notify.SETFIXED_APPROVE =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnApprove}
+	notify.SETFIXED_APPROVE_REVIEW =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnApprove}
 	notify.SETFIXED_DELETE =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnRefuse}
 	notify.SETFIXED_ACCEPT =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnApprove}
 	notify.SETFIXED_REFUSE =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnRefuse}
