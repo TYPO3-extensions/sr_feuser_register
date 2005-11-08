@@ -157,18 +157,6 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 				'maxitems' => 1,
 			)
 		),
-/*
-		'status' => Array (
-			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.usergroup',
-			'config' => Array (
-				'type' => 'select',
-				foreign_table => fe_groups,
-				'size' => 1,
-				'maxitems' => 1,
-			)
-		),
-*/
 		'comments' => Array (
 			'exclude' => 0,
 			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.comments',
