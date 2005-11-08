@@ -949,7 +949,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* Removes required parts
 		*
 		* Works like this:
-		* - Insert subparts like this ###SUB_REQUIRED_FIELD_".$theField."### that tells that the field is reuqires, if it's not correctly filled in.
+		* - Insert subparts like this ###SUB_REQUIRED_FIELD_".$theField."### that tells that the field is required, if it's not correctly filled in.
 		* - These subparts are all removed, except if the field is listed in $failure string!
 		* and remove also the parts of non-included fields, using a similar scheme!
 		*
@@ -957,7 +957,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @param string  $failure: the list of fiels with errors
 		* @return string  the template with susbstituted parts
 		*/
-		function removeRequired($templateCode, $failure) {
+		function removeRequired($templateCode, $failure = '') {
 			$includedFields = t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1);
 			reset($this->requiredArr);
 			$infoFields = explode(',', $this->fieldList);
@@ -1055,13 +1055,14 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][username]" value="'.$currentArr['username'].'" />';
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][email]" value="'.$currentArr['email'].'" />';
 			}
-			if ($this->conf['edit.']['preview'] && !$this->previewLabel) {
-				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[preview]" value="1">';
-			}
+			$markerArray = $this->addHiddenFieldsMarkers($markerArray, $currentArr);
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
-			$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($currentArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
+			if ($this->conf['templateStyle'] != 'css-styled' || !$this->previewLabel) {
+				$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($currentArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
+			}
 			return $content;
 		}
+		
 		/**
 		* Checks if the edit form may be displayed; if not, a link to login
 		*
@@ -1258,11 +1259,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$markerArray = $this->addFileUploadMarkers('image', $markerArray, $this->dataArr);
 				$markerArray = $this->addLabelMarkers($markerArray, $this->dataArr);
 				$templateCode = $this->removeStaticInfoSubparts($templateCode, $markerArray);
-				if ($this->conf['create.']['preview'] && !$this->previewLabel) {
-					$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$this->prefixId.'[preview]" value="1">';
-				}
+				$markerArray = $this->addHiddenFieldsMarkers($markerArray, $this->dataArr);
 				$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
-				$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($this->dataArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
+				if ($this->conf['templateStyle'] != 'css-styled' || !$this->previewLabel) {
+					$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($this->dataArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
+				}
 			}
 			return $content;
 		}
@@ -1492,26 +1493,31 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			return $content;
 		}
+		
 		/**
-		* Prepares an email message
-		*
-		* @param string  $key: template key
-		* @param array  $DBrows: invoked with just one row of fe_users!!
-		* @param string  $recipient: an email or the id of a front user
-		* @param array  $setFixedConfig: a setfixed TS config array
-		* @return void
-		*/
+		 * Prepares an email message
+		 *
+		 * @param string  $key: template key
+		 * @param array  $DBrows: invoked with just one row of fe_users!!
+		 * @param string  $recipient: an email or the id of a front user
+		 * @param array  $setFixedConfig: a setfixed TS config array
+		 * @return void
+		 */
 		function compileMail($key, $DBrows, $recipient, $setFixedConfig = array()) {
+			$viewOnly = true;
 			$mailContent = '';
 			$userContent['all'] = '';
 			$HTMLContent['all'] = '';
 			$adminContent['all'] = '';
 			if ($this->conf['email.'][$key] || ($this->setfixedEnabled && ($key == 'SETFIXED_CREATE' || $key == 'SETFIXED_CREATE_REVIEW' || $key == 'SETFIXED_INVITE' || $key == 'SETFIXED_REVIEW'))) {
 				$userContent['all'] = trim($this->cObj->getSubpart($this->templateCode, '###'.$this->emailMarkPrefix.$key.'###'));
+				$userContent['all'] = $this->removeRequired($userContent['all']);
 				$HTMLContent['all'] = ($this->HTMLMailEnabled && $this->dataArr['module_sys_dmail_html']) ? trim($this->cObj->getSubpart($this->templateCode, '###'.$this->emailMarkPrefix.$key.$this->emailMarkHTMLSuffix.'###')):'';
+				$HTMLContent['all'] = $this->removeRequired($HTMLContent['all']);
 			}
 			if ($this->conf['notify.'][$key] ) {
 				$adminContent['all'] = trim($this->cObj->getSubpart($this->templateCode, '###'.$this->emailMarkPrefix.$key.$this->emailMarkAdminSuffix.'###'));
+				$adminContent['all'] = $this->removeRequired($adminContent['all']);
 			}
 			$userContent['rec'] = $this->cObj->getSubpart($userContent['all'], '###SUB_RECORD###');
 			$HTMLContent['rec'] = $this->cObj->getSubpart($HTMLContent['all'], '###SUB_RECORD###');
@@ -1522,21 +1528,31 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$markerArray = $this->cObj->fillInMarkerArray($this->markerArray, $r, '', 0);
 				$markerArray['###SYS_AUTHCODE###'] = $this->authCode($r);
 				$markerArray = $this->setfixed($markerArray, $setFixedConfig, $r);
+				$markerArray = $this->addStaticInfoMarkers($markerArray, $r, $viewOnly);
+				$markerArray = $this->addTcaMarkers($markerArray, $r, $viewOnly);
+				$markerArray = $this->addFileUploadMarkers('image', $markerArray, $r, $viewOnly);
 				$markerArray = $this->addLabelMarkers($markerArray, $r);
 				if ($userContent['rec']) {
+					$userContent['rec'] = $this->removeStaticInfoSubparts($userContent['rec'], $markerArray, $viewOnly);
 					$userContent['accum'] .= $this->cObj->substituteMarkerArray($userContent['rec'], $markerArray);
 				}
 
 				if ($HTMLContent['rec']) {
+					$HTMLContent['rec'] = $this->removeStaticInfoSubparts($HTMLContent['rec'], $markerArray, $viewOnly);
 					$HTMLContent['accum'] .= $this->cObj->substituteMarkerArray($HTMLContent['rec'], $markerArray);
 				}
 				if ($adminContent['rec']) {
+					$adminContent['rec'] = $this->removeStaticInfoSubparts($adminContent['rec'], $markerArray, $viewOnly);
 					$adminContent['accum'] .= $this->cObj->substituteMarkerArray($adminContent['rec'], $markerArray);
 
 				}
 			}
+			
+				// Substitute the markers and eliminate HTML markup from plain text versions
 			if ($userContent['all']) {
 				$userContent['final'] .= strip_tags($this->cObj->substituteSubpart($userContent['all'], '###SUB_RECORD###', $userContent['accum']));
+				$userContent['final'] = $this->removeHTMLComments($userContent['final']);
+				$userContent['final'] = $this->replaceHTMLBr($userContent['final']);
 			}
 			if ($HTMLContent['all']) {
 				$HTMLContent['final'] .= $this->cObj->substituteSubpart($HTMLContent['all'], '###SUB_RECORD###', $this->pi_wrapInBaseClass($HTMLContent['accum']));
@@ -1544,20 +1560,29 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			if ($adminContent['all']) {
 				$adminContent['final'] .= $this->cObj->substituteSubpart($adminContent['all'], '###SUB_RECORD###', $adminContent['accum']);
-				 
+				$adminContent['final'] = $this->removeHTMLComments($adminContent['final']);
+				$adminContent['final'] = $this->replaceHTMLBr($adminContent['final']);
 			}
 			 
 			if (t3lib_div::testInt($recipient)) {
 				$fe_userRec = $GLOBALS['TSFE']->sys_page->getRawRecord('fe_users', $recipient);
 				$recipient = $fe_userRec['email'];
 			}
-			 
-			// Check if we need to add an attachment
+			
+				// Check if we need to add an attachment
 			if ($this->conf['addAttachment'] && $this->conf['addAttachment.']['cmd'] == $this->cmd && $this->conf['addAttachment.']['sFK'] == $this->feUserData['sFK']) {
 				$file = ($this->conf['addAttachment.']['file']) ? $GLOBALS['TSFE']->tmpl->getFileName($this->conf['addAttachment.']['file']):
 				'';
 			}
 			$this->sendMail($recipient, $this->conf['email.']['admin'], $userContent['final'], $adminContent['final'], $HTMLContent['final'], $file);
+		}
+		
+		function removeHTMLComments($content) {
+			return preg_replace('/<!(?:--[\s\S]*?--\s*)?>[\t\v\n\r\f]*/','',$content);
+		}
+		
+		function replaceHTMLBr($content) {
+			return preg_replace('/<br\s?\/>/',chr(10),$content);
 		}
 		
 		/**
@@ -1800,18 +1825,18 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @param array  $dataArray: the record array
 		* @return array  the output marker array
 		*/
-		function addTcaMarkers($markerArray, $dataArray = '') {
+		function addTcaMarkers($markerArray, $dataArray = '', $viewOnly = false) {
 			if ($this->typoVersion >= 3006000) global $TYPO3_DB;
 			foreach ($this->TCA['columns'] as $colName => $colSettings) {
 				if (t3lib_div::inList($this->conf[$this->cmdKey.'.']['fields'], $colName)) {
 					$colConfig = $colSettings['config'];
 					$colContent = '';
-					if ($this->previewLabel) {
+					if ($this->previewLabel || $viewOnly) {
 						// Configure preview based on input type
 						switch ($colConfig['type']) {
 							//case 'input':
 							case 'text':
-								$colContent = $dataArray[$colName];
+								$colContent = str_replace(chr(10), '<br />', $dataArray[$colName]);
 								break;
 							case 'check':
 								// <Ries van Twisk added support for multiple checkboxes>
@@ -2105,8 +2130,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @param array  $dataArray: the record array
 		* @return array  the output marker array
 		*/
-		function addStaticInfoMarkers($markerArray, $dataArray = '') {
-			if ($this->previewLabel ) {
+		function addStaticInfoMarkers($markerArray, $dataArray = '', $viewOnly = false) {
+			if ($this->previewLabel || $viewOnly) {
 				$markerArray['###FIELD_static_info_country###'] = $this->staticInfo->getStaticInfoName('COUNTRIES', is_array($dataArray)?$dataArray['static_info_country']:'');
 				$markerArray['###FIELD_zone###'] = $this->staticInfo->getStaticInfoName('SUBDIVISIONS', is_array($dataArray)?$dataArray['zone']:'', is_array($dataArray)?$dataArray['static_info_country']:'');
 				if (!$markerArray['###FIELD_zone###'] ) {
@@ -2189,14 +2214,14 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @param array  $markerArray: the marker array
 		* @return string  the output template
 		*/
-		function removeStaticInfoSubparts($templateCode, $markerArray) {
-			if ($this->previewLabel ) {
+		function removeStaticInfoSubparts($templateCode, $markerArray, $viewOnly = false) {
+			if ($this->previewLabel || $viewOnly) {
 				if (!$markerArray['###FIELD_zone###'] ) {
-					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_zone###', '');
+					return $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_zone###', '');
 				}
 			} else {
 				if (!$markerArray['###SELECTOR_ZONE###'] ) {
-					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_zone###', ''); 
+					return $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_zone###', ''); 
 				}
 			}
 			return $templateCode;
@@ -2253,13 +2278,13 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @param array  $dataArray: the record array
 		* @return array  the output marker array
 		*/
-		function addFileUploadMarkers($theField, $markerArray, $dataArr = array()) {
+		function addFileUploadMarkers($theField, $markerArray, $dataArr = array(), $viewOnly = false) {
 			$filenames = array();
 			if ($dataArr[$theField]) {
 				$filenames = explode(',', $dataArr[$theField]);
 			}
-			if ($this->previewLabel ) {
-				$markerArray['###UPLOAD_PREVIEW_' . $theField . '###'] = $this->buildFileUploader($theField, $this->TCA['columns'][$theField]['config'], $filenames, 'FE['.$this->theTable.']');
+			if ($this->previewLabel || $viewOnly) {
+				$markerArray['###UPLOAD_PREVIEW_' . $theField . '###'] = $this->buildFileUploader($theField, $this->TCA['columns'][$theField]['config'], $filenames, 'FE['.$this->theTable.']', true);
 			} else {
 				$markerArray['###UPLOAD_' . $theField . '###'] = $this->buildFileUploader($theField, $this->TCA['columns'][$theField]['config'], $filenames, 'FE['.$this->theTable.']');
 			}
@@ -2275,7 +2300,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		 * @param string  $prefix: the field name prefix
 		 * @return string  generated HTML uploading tags
 		 */
-		function buildFileUploader($fName, $config, $filenames = array(), $prefix) {
+		function buildFileUploader($fName, $config, $filenames = array(), $prefix, $viewOnly = false) {
 
 			$HTMLContent = '';
 			$size = $config['maxitems'];
@@ -2285,7 +2310,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$number = $size - sizeof($filenames);
 			$dir = $config['uploadfolder'];
 			
-			if ($this->previewLabel ) {
+			if ($this->previewLabel || $viewOnly) {
 				for($i = 0; $i < sizeof($filenames); $i++) {
 					$HTMLContent .= $filenames[$i] . '&nbsp;&nbsp;<small><a href="' . $dir.'/' . $filenames[$i] . '" target="_blank">' . $this->pi_getLL('file_view') . '</a></small><br />';
 				}
@@ -2300,6 +2325,23 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			
 			return $HTMLContent;
+		}
+		
+		function addHiddenFieldsMarkers($markerArray, $dataArr = array()) {
+			if ($this->conf[$this->cmdKey.'.']['preview'] && !$this->previewLabel) {
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[preview]" value="1">';
+			}
+			if ($this->previewLabel && $this->conf['templateStyle'] == 'css-styled') {
+				$fields = explode(',', $this->conf[$this->cmdKey.'.']['fields']);
+				$fields = array_diff($fields, array( 'hidden', 'disable'));
+				if ($this->theTable == 'fe_users') {
+					$fields[] = 'password_again';
+				}
+				while (list(, $fName) = each($fields) ) {
+					$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.']['.$fName.']" value="'. htmlspecialchars($dataArr[$fName]).'">';
+				}
+			}
+			return $markerArray;
 		}
 		
 		/**
@@ -2556,14 +2598,15 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		/**
 		 * Function imported from class.t3lib_div.php
 		 * See http://bugs.typo3.org/view.php?id=277
+		 * NOTE: chr(10) and chr(13) also need to be escaped for textarea elements
 		 */
 		function quoteJSvalue($value, $inScriptTags = false)	{
-			$value = addcslashes($value, '\'');
+			$value = addcslashes($value, '\''.chr(10).chr(13));
 			if (!$inScriptTags)	{
 				$value = htmlspecialchars($value);
 			}
 			return '\''.$value.'\'';
-		}		
+		}
 		
 		/**
 		 * From the 'KB MD5 FE Password (kb_md5fepw)' extension.

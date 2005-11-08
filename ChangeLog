@@ -1,3 +1,12 @@
+2005-11-08  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Rename tx_srfeuserregister_pi1_css_tmpl.tmpl to tx_srfeuserregister_pi1_css_tmpl.html
+	* Correctly display all data fields in email messages in css-styled template.
+	* Correct error when entering multiple lines in a textarea field.
+	* Correct country onChange handler in css-styled template
+	* Remove updateForm JavaScript from preview screens in css-styled template.
+	* New constants and setup to configure the administrative review process (in css-styled template).
+	* Further adjustments to the html template for the administrative review process (in css-styled template).
+
 2005-11-07  Sebastian Roth <sebastian.roth@c-qube.com>
 	* Bugfixing.
 

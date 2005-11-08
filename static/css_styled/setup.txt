@@ -83,7 +83,7 @@ plugin.tx_srfeuserregister_pi1 {
 	setfixed.APPROVE {
 		_FIELDLIST = uid,pid,usergroup
 		usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupAfterConfirmation}
-		disable = 0
+		disable = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
 	}
 
 	enableAutoLoginOnConfirmation = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnConfirmation}
@@ -97,7 +97,11 @@ plugin.tx_srfeuserregister_pi1 {
 	authcodeFields.codeLength = {$plugin.tx_srfeuserregister_pi1.codeLength}
 
 	enableAdminReview = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
-	setfixed.ACCEPT < .setfixed.APPROVE
+	setfixed.ACCEPT {
+		_FIELDLIST = uid,pid,usergroup
+		usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupAfterAcceptation}
+		disable = 0
+	}
 	setfixed.REFUSE < .setfixed.DELETE
 	setfixed.ENTER < .setfixed.ACCEPT
 	
@@ -215,7 +219,7 @@ plugin.tx_srfeuserregister_pi1 {
 		.tx-srfeuserregister-pi1 .trash { margin-bottom: 20px; }
 		.tx-srfeuserregister-pi1 .passwordinput { width: 120px; }
 		.tx-srfeuserregister-pi1 .error { color: #FF0000; font-weight: bold; }
-		.tx-srfeuserregister-pi1 dt,dd { padding-bottom: 5px; }
+		.tx-srfeuserregister-pi1 dt, .tx-srfeuserregister-pi1 dd { padding-bottom: 5px; }
 		.tx-srfeuserregister-pi1 dt { font-weight: bold; float: left; clear: both; width: 30%; }
 	)
 
