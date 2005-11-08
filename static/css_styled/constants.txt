@@ -1,7 +1,7 @@
 plugin.tx_srfeuserregister_pi1 {
 
     # cat=plugin.tx_srfeuserregister_pi1/file; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template file 
-  file.templateFile = EXT:sr_feuser_register/pi1/tx_srfeuserregister_pi1_css_tmpl.tmpl
+  file.templateFile = EXT:sr_feuser_register/pi1/tx_srfeuserregister_pi1_css_tmpl.html
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Force file deletion: On record deletion, related images and files will be deleted even if the record is only marked 'deleted'
   forceFileDelete = 1
@@ -40,7 +40,7 @@ plugin.tx_srfeuserregister_pi1 {
   formName = fe_users_form
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Country onchange attribute: Javascript to execute when the selected country is changed in the country selector box.
-  onChangeCountryAttribute = javascript:window.document.forms['fe_users_form'].submit();
+  onChangeCountryAttribute = javascript:window.document.getElementById('tx-srfeuserregister-pi1-fe_users_form').submit();
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Front end user records PID: If the records edited/created are located in another page than the current, enter the PID of that page here.
   pid =
@@ -137,6 +137,9 @@ plugin.tx_srfeuserregister_pi1 {
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= User group(s) after confirmation: The value of the user group(s) assigned to the front end user after receipt of his(her) confirmation.
   userGroupAfterConfirmation = 
+  
+      # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= User group(s) after acceptation: The value of the user group(s) assigned to the front end user after acceptation of his(her) registration when the administrative review is enabled.
+  userGroupAfterAcceptation = 
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Allow selection of usergroup on registration: If set, the user may select to adhere to user group(s) when registrating.
   allowUserGroupSelection = 0
