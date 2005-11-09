@@ -1,4 +1,8 @@
 2005-11-08  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Correction to reserved user groups when the administrative review is enabled (in css-styled template).
+	* Addition of id attribute on select tags produced by sr_static_info: version 1.4.7 of sr_static_info is now required to use css-styled template.
+
+2005-11-08  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Rename tx_srfeuserregister_pi1_css_tmpl.tmpl to tx_srfeuserregister_pi1_css_tmpl.html
 	* Correctly display all data fields in email messages in css-styled template.
 	* Correct error when entering multiple lines in a textarea field.
