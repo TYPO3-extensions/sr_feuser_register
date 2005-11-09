@@ -1868,7 +1868,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									if ($this->typoVersion >= 3006000 && $colConfig['foreign_table']) {
 										$reservedValues = array();
 										if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
-											$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1));
+											$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
 										}
 										$valuesArray = array_diff($valuesArray, $reservedValues);
 										if (!empty($valuesArray)) {
@@ -1952,7 +1952,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									if ($this->typoVersion >= 3006000 && $colConfig['foreign_table']) {
 										$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
 										if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
-											$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1));
+											$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
 											$selectedValue = false;
 										}
 										$whereClause = ($this->theTable == 'fe_users' && $colName == 'usergroup') ? ' pid='.$this->thePid.' ' : ' 1=1 ';
@@ -2123,13 +2123,14 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			return $markerArray;
 		}
+		
 		/**
-		* Adds Static Info markers to a marker array
-		*
-		* @param array  $markerArray: the input marker array
-		* @param array  $dataArray: the record array
-		* @return array  the output marker array
-		*/
+		 * Adds Static Info markers to a marker array
+		 *
+		 * @param array  $markerArray: the input marker array
+		 * @param array  $dataArray: the record array
+		 * @return array  the output marker array
+		 */
 		function addStaticInfoMarkers($markerArray, $dataArray = '', $viewOnly = false) {
 			if ($this->previewLabel || $viewOnly) {
 				$markerArray['###FIELD_static_info_country###'] = $this->staticInfo->getStaticInfoName('COUNTRIES', is_array($dataArray)?$dataArray['static_info_country']:'');
@@ -2139,14 +2140,21 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				}
 				$markerArray['###FIELD_language###'] = $this->staticInfo->getStaticInfoName('LANGUAGES', is_array($dataArray)?$dataArray['language']:'');
 			} else {
-				 
-				$markerArray['###SELECTOR_STATIC_INFO_COUNTRY###'] = $this->staticInfo->buildStaticInfoSelector('COUNTRIES', 'FE['.$this->theTable.']'.'[static_info_country]', '', is_array($dataArray)?$dataArray['static_info_country']:'', '', $this->conf['onChangeCountryAttribute']);
-
-				$markerArray['###SELECTOR_ZONE###'] = $this->staticInfo->buildStaticInfoSelector('SUBDIVISIONS', 'FE['.$this->theTable.']'.'[zone]', '', is_array($dataArray)?$dataArray['zone']:'', is_array($dataArray)?$dataArray['static_info_country']:'');
-				if (!$markerArray['###SELECTOR_ZONE###'] ) {
-					$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$this->theTable.'][zone]" value="">';
+				if ($this->conf['templateStyle'] == 'css-styled') {
+					$markerArray['###SELECTOR_STATIC_INFO_COUNTRY###'] = $this->staticInfo->buildStaticInfoSelector('COUNTRIES', 'FE['.$this->theTable.']'.'[static_info_country]', '', is_array($dataArray)?$dataArray['static_info_country']:'', '', $this->conf['onChangeCountryAttribute'], $this->pi_getClassName('static_info_country'));
+					$markerArray['###SELECTOR_ZONE###'] = $this->staticInfo->buildStaticInfoSelector('SUBDIVISIONS', 'FE['.$this->theTable.']'.'[zone]', '', is_array($dataArray)?$dataArray['zone']:'', is_array($dataArray)?$dataArray['static_info_country']:'', '', $this->pi_getClassName('zone'));
+					if (!$markerArray['###SELECTOR_ZONE###'] ) {
+						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$this->theTable.'][zone]" value="">';
+					}
+					$markerArray['###SELECTOR_LANGUAGE###'] = $this->staticInfo->buildStaticInfoSelector('LANGUAGES', 'FE['.$this->theTable.']'.'[language]', '', is_array($dataArray)?$dataArray['language']:'', '', '', $this->pi_getClassName('language'));
+				} else {
+					$markerArray['###SELECTOR_STATIC_INFO_COUNTRY###'] = $this->staticInfo->buildStaticInfoSelector('COUNTRIES', 'FE['.$this->theTable.']'.'[static_info_country]', '', is_array($dataArray)?$dataArray['static_info_country']:'', '', $this->conf['onChangeCountryAttribute']);
+					$markerArray['###SELECTOR_ZONE###'] = $this->staticInfo->buildStaticInfoSelector('SUBDIVISIONS', 'FE['.$this->theTable.']'.'[zone]', '', is_array($dataArray)?$dataArray['zone']:'', is_array($dataArray)?$dataArray['static_info_country']:'');
+					if (!$markerArray['###SELECTOR_ZONE###'] ) {
+						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$this->theTable.'][zone]" value="">';
+					}
+					$markerArray['###SELECTOR_LANGUAGE###'] = $this->staticInfo->buildStaticInfoSelector('LANGUAGES', 'FE['.$this->theTable.']'.'[language]', '', is_array($dataArray)?$dataArray['language']:'');
 				}
-				$markerArray['###SELECTOR_LANGUAGE###'] = $this->staticInfo->buildStaticInfoSelector('LANGUAGES', 'FE['.$this->theTable.']'.'[language]', '', is_array($dataArray)?$dataArray['language']:'');
 			}
 			return $markerArray;
 		}
