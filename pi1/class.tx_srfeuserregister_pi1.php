@@ -1918,7 +1918,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									// <Ries van Twisk added support for multiple checkboxes>
 									$colContent  = '<ul id="'. $this->pi_getClassName($colName) . '" class="tx-srfeuserregister-multiple-checkboxes">';
 									foreach ($colConfig['items'] AS $key => $value) {
-										$checked = ($dataArray[$colName] & (1 << $key))?'checked':'';
+										$checked = ($dataArray[$colName] & (1 << $key))?'checked="checked"':'';
 										$colContent .= '<li><input type="checkbox" id="' . $this->pi_getClassName($colName) . '-' . $key .  '" name="FE['.$this->theTable.']['.$colName.'][]" value="'.$key.'" '.$checked.'/><label>'.$this->getLLFromString($colConfig['items'][$key][0]).'</label></li>';					
 									}
 									$colContent .= '</ul>';
@@ -1927,13 +1927,15 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									$colContent = '<input type="checkbox" name="FE['.$this->theTable.']['.$colName.']"' . ' value="1" />';
 								}
 								break;
+
 							case 'radio':
-								for ($i = 0; $i < count ($colConfig['items']); $i++) {
+								for ($i = 0; $i < count ($colConfig['items']); ++$i) {
 									$colContent .= '<input type="radio" id="'. $this->pi_getClassName($colName) . '-' . $i . '" name="FE['.$this->theTable.']['.$colName.']"'.
-											' value="'.$i.'" '.($i==0?'checked':'').' />'.
-											$this->getLLFromString($colConfig['items'][$i][0]).' ';
+											' value="' . $i . '" ' . ($i == 0 ? 'checked="checked"' : '') . ' />'.
+											$this->getLLFromString($colConfig['items'][$i][0]) . ' ';
 								}
 								break;
+
 							case 'select':
 								if ($colConfig['MM']) {
 									$colContent = 'MM ' . $this->pi_getLL('unsupported');
