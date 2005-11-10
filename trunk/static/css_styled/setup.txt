@@ -219,6 +219,7 @@ plugin.tx_srfeuserregister_pi1 {
 		.tx-srfeuserregister-pi1 .trash { margin-bottom: 20px; }
 		.tx-srfeuserregister-pi1 .passwordinput { width: 120px; }
 		.tx-srfeuserregister-pi1 .error { color: #FF0000; font-weight: bold; }
+		.tx-srfeuserregister-pi1 dl { width: 100%; }
 		.tx-srfeuserregister-pi1 dt, .tx-srfeuserregister-pi1 dd { padding-bottom: 5px; }
 		.tx-srfeuserregister-pi1 dt { font-weight: bold; float: left; clear: both; width: 30%; }
 	)
