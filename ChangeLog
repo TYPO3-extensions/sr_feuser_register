@@ -1,7 +1,10 @@
+2005-11-12  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Further adjustments to default css (in css-styled template).
+
 2005-11-10  Sebastian Roth <sebastian.roth@c-qube.com>
 	* Current merge from Stefan Galinski.
-	  - zapped some bugs in css styled template
-	  - improved xhtml compliance
+	* Zapped some bugs in css styled template
+	* Improved xhtml compliance
 
 2005-11-08  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Correction to reserved user groups when the administrative review is enabled (in css-styled template).
