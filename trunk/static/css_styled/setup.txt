@@ -197,11 +197,10 @@ plugin.tx_srfeuserregister_pi1 {
 		.tx-srfeuserregister-pi1 a:hover { color:#333333; }
 		.tx-srfeuserregister-pi1 a:active { color:navy; }
 		.tx-srfeuserregister-pi1 label { margin-left: 0; padding-left: 0; }
-		.tx-srfeuserregister-pi1 input { font-size: 10px;  background-color: #35006d; color: #ffffff; font-weight:bold; }
+		.tx-srfeuserregister-pi1 input { font-size: 10px;  background-color: #35006d; color: #ffffff; font-weight: bold; }
 		.tx-srfeuserregister-pi1 input[type=radio], .tx-srfeuserregister-pi1 input[type=checkbox] { margin-right: .5em; background-color: transparent; color: #35006d; vertical-align: middle; }
 		* html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-radio, * html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-checkbox { margin-right: .5em; background-color: transparent; color: #35006d; vertical-align: middle; }
-		/*.tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-uploader { font-size:10px;  background-color:#35006d; }*/
-		.tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-icon { font-size:10px;  background-color:transparent;}
+		.tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-icon { font-size:10px;  background-color:transparent; }
 		.tx-srfeuserregister-pi1 select { font-size: 10px;  background-color: #35006d; color: #ffffff; font-weight: bold; }
 		.tx-srfeuserregister-pi1 textarea { font-size: 10px;  background-color: #35006d; color: #ffffff; font-weight: bold; }
 		.tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checkboxes { list-style-type: none; list-style-image: none; list-style-position: inside; font-size: 1em; }
