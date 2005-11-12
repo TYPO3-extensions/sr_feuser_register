@@ -1,6 +1,6 @@
 plugin.tx_srfeuserregister_pi1 {
 
-    # cat=plugin.tx_srfeuserregister_pi1/file; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template file 
+    # cat=plugin.tx_srfeuserregister_pi1/file; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template file
   file.templateFile = EXT:sr_feuser_register/pi1/tx_srfeuserregister_pi1_css_tmpl.html
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Force file deletion: On record deletion, related images and files will be deleted even if the record is only marked 'deleted'
