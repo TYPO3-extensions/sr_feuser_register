@@ -1919,7 +1919,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									$colContent  = '<ul id="'. $this->pi_getClassName($colName) . '" class="tx-srfeuserregister-multiple-checkboxes">';
 									foreach ($colConfig['items'] AS $key => $value) {
 										$checked = ($dataArray[$colName] & (1 << $key))?'checked="checked"':'';
-										$colContent .= '<li><input type="checkbox"' . $this->pi_classParam('checkbox') . 'id="' . $this->pi_getClassName($colName) . '-' . $key .  '" name="FE['.$this->theTable.']['.$colName.'][]" value="'.$key.'" '.$checked.'/><label for="' . $this->pi_getClassName($colName) . '-' . $key .  '">'.$this->getLLFromString($colConfig['items'][$key][0]).'</label></li>';					
+										$colContent .= '<li><input type="checkbox"' . $this->pi_classParam('checkbox') . 'id="' . $this->pi_getClassName($colName) . '-' . $key .  '" name="FE['.$this->theTable.']['.$colName.'][]" value="'.$key.'" '.$checked.' /><label for="' . $this->pi_getClassName($colName) . '-' . $key .  '">'.$this->getLLFromString($colConfig['items'][$key][0]).'</label></li>';					
 									}
 									$colContent .= '</ul>';
 									// </Ries van Twisk added support for multiple checkboxes>

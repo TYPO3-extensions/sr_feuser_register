@@ -379,12 +379,14 @@
 		###TCA_INPUT_comments###
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_comments### -->
-</dl>
-
-	<p class="form_submit">
+	
+	<dt></dt>
+	<dd>
 		###HIDDENFIELDS###
 		<button type="submit" name="tx_srfeuserregister_pi1[submit]" value="submit">###LABEL_BUTTON_REGISTER###</button>
-	</p>
+	</dd>
+</dl>
+<div class="clear-float"></div>
 </form>
 <!-- ###TEMPLATE_CREATE### end -->
 
@@ -523,17 +525,14 @@
 <dd> ###TCA_INPUT_comments### </dd>
 <!-- ###SUB_INCLUDED_FIELD_comments### -->
 
-<dt>
-	<button type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="submit">###LABEL_BUTTON_BACK_TO_FORM###</button>
-</dt>
+<dt></dt>
 <dd>
+	###HIDDENFIELDS###
 	<button type="submit" name="tx_srfeuserregister_pi1[submit]" value="submit">###LABEL_BUTTON_CONFIRM_REGISTER###</button>
+	<button type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="submit">###LABEL_BUTTON_BACK_TO_FORM###</button>
 </dd>
-
 </dl>
-
-<p>###HIDDENFIELDS###</p>
-
+<div class="clear-float"></div>
 </form>
 <!-- ###TEMPLATE_CREATE_PREVIEW### end -->
 
@@ -558,18 +557,20 @@
 <dl>
 	<dt>###LABEL_USERNAME###</dt>
 	<dd><input type="text" name="user" value="###FIELD_username###" /></dd>
-
+	
 	<dt>###LABEL_PASSWORD###</dt>
 	<dd><input type="password" name="pass" value="###FIELD_password###" /></dd>
-</dl>
-
-	<p class="form_submit">
-		<button type="submit" name="submit" value="submit">###LABEL_BUTTON_ENTER###</button>
+	
+	<dt></dt>
+	<dd>
 		<input type="hidden" name="logintype" value="login" />
 		<input type="hidden" name="pid" value="###THE_PID###" />
 		<input type="hidden" name="redirect_url" value="" />
 		###HIDDENFIELDS###
-	</p>
+		<button type="submit" name="submit" value="submit">###LABEL_BUTTON_ENTER###</button>
+	</dd>
+</dl>
+<div class="clear-float"></div>
 </form>
 <!-- ###TEMPLATE_CREATE_SAVED### end-->
 
@@ -975,12 +976,14 @@ The user is informed that a message has been sent to his email address and that 
 		###TCA_INPUT_comments###
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_comments### -->
-</dl>
 
-	<p class="form_submit">
+	<dd></dd>
+	<dt>
 		###HIDDENFIELDS###
 		<button type="submit" name="tx_srfeuserregister_pi1[submit]" value="submit">###LABEL_BUTTON_REGISTER###</button>
-	</p>
+	</dt>
+</dl>
+<div class="clear-float"></div>
 </form>
 <!-- ###TEMPLATE_INVITE### end-->
 
@@ -1118,17 +1121,15 @@ The user is informed that a message has been sent to his email address and that 
 <dd>###TCA_INPUT_comments###</dd>
 <!-- ###SUB_INCLUDED_FIELD_comments### -->
 
-<dt>
-	<button type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="submit">###LABEL_BUTTON_BACK_TO_FORM###</button>
-</dt>
+<dt></dt>
 <dd>
+	###HIDDENFIELDS###
 	<button type="submit" name="tx_srfeuserregister_pi1[submit]" value="submit">###LABEL_BUTTON_CONFIRM_REGISTER###</button>
+	<button type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="submit">###LABEL_BUTTON_BACK_TO_FORM###</button>
 </dd>
 
 </dl>
-
-<p>###HIDDENFIELDS###</p>
-
+<div class="clear-float"></div>
 </form>
 <!-- ###TEMPLATE_INVITE_PREVIEW### end-->
 
@@ -1507,18 +1508,16 @@ The user is informed that a message has been sent to the email address and that 
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_comments### -->
 
-	<dt>
-		<button type="submit" name="tx_srfeuserregister_pi1[submit]" value="submit">###LABEL_BUTTON_CONFIRM_UPDATE###</button>
-	</dt>
-	<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
+	<dt></dt>
 	<dd>
+		###HIDDENFIELDS###
+		<button type="submit" name="tx_srfeuserregister_pi1[submit]" value="submit">###LABEL_BUTTON_CONFIRM_UPDATE###</button>
+		<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
 		<button type="submit" name="tx_srfeuserregister_pi1[linkToPID]" value="submit">###LABEL_BUTTON_UPDATE_AND_MORE###</button>
+		<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
 	</dd>
-	<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
 </dl>
-
-<p>###HIDDENFIELDS###</p>
-
+<div class="clear-float"></div>
 </form>
 <!-- ###TEMPLATE_EDIT### end-->
 
@@ -1657,23 +1656,17 @@ The user is informed that a message has been sent to the email address and that 
 <dd>###TCA_INPUT_comments###</dd>
 <!-- ###SUB_INCLUDED_FIELD_comments### -->
 
-<dt>
-	<button type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="submit">###LABEL_BUTTON_BACK_TO_FORM###</button>
-</dt>
+<dt></dt>
 <dd>
+	###HIDDENFIELDS###
 	<button type="submit" name="tx_srfeuserregister_pi1[submit]" value="submit">###LABEL_BUTTON_CONFIRM_UPDATE###</button>
-</dd>
-
-</dl>
-
-<p>###HIDDENFIELDS###</p>
-
-<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
-<p class="form_submit">
+	<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
 	<button type="submit" name="tx_srfeuserregister_pi1[linkToPID]" value="submit">###LABEL_BUTTON_UPDATE_AND_MORE###</button>
-</p>
-<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
-
+	<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
+	<button type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="submit">###LABEL_BUTTON_BACK_TO_FORM###</button>
+</dd>
+</dl>
+<div class="clear-float"></div>
 </form>
 <!-- ###TEMPLATE_EDIT_PREVIEW### end-->
 
@@ -1740,15 +1733,17 @@ The user is informed that a message has been sent to the email address and that 
 
 	<dt><label for="tx-srfeuserregister-pi1-pass">###LABEL_PASSWORD###</label></dt>
 	<dd> <input type="password" id="tx-srfeuserregister-pi1-pass" name="pass" value="###FIELD_password###" /> </dd>
-</dl>
 
-	<p class="form_submit">
+	<dt></dt>
+	<dd>
 		<button type="submit" name="submit" value="submit">###LABEL_BUTTON_ENTER###</button>
 		<input type="hidden" name="logintype" value="login" />
 		<input type="hidden" name="pid" value="###THE_PID###" />
 		<input type="hidden" name="redirect_url" value="" />
 		###HIDDENFIELDS###
-	</p>
+	</dd>
+</dl>
+<div class="clear-float"></div>
 </form>
 <!-- ###TEMPLATE_SETFIXED_OK### end-->
 
@@ -1792,15 +1787,17 @@ The user is informed that a message has been sent to the email address and that 
 
 		<dt><label for="tx-srfeuserregister-pi1-pass">###LABEL_PASSWORD###</label></dt>
 		<dd><input type="password" id="tx-srfeuserregister-pi1-pass" name="pass" value="###FIELD_password###" /></dd>
-</dl>
 
-		<p class="form_submit">
+		<dt></dt>
+		<dd>
 			<button type="submit" name="submit" value="submit">###LABEL_BUTTON_ENTER###</button>
 			<input type="hidden" name="logintype" value="login" />
 			<input type="hidden" name="pid" value="###THE_PID###" />
 			<input type="hidden" name="redirect_url" value="" />
 			###HIDDENFIELDS###
-		</p>
+		</dd>
+</dl>
+<div class="clear-float"></div>
 </form>
 <!-- ###TEMPLATE_SETFIXED_OK_ENTER### end-->
 
