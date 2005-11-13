@@ -1,10 +1,14 @@
-2005-11-12  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+2005-11-13  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Further adjustments to default css (in css-styled template).
+	* Adding label tags for radio and checkbox values of TCA-driven fields.
+	* Further adjustments to default css for email messages in css-styled template.
+	* Adjustments to the html template for the administrative review process.
+	* Correction: the multiple user group selection feature did not work.
 
 2005-11-10  Sebastian Roth <sebastian.roth@c-qube.com>
 	* Current merge from Stefan Galinski.
-	* Zapped some bugs in css styled template
-	* Improved xhtml compliance
+	* Zapped some bugs in css styled template.
+	* Improved xhtml compliance.
 
 2005-11-08  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Correction to reserved user groups when the administrative review is enabled (in css-styled template).
@@ -14,7 +18,7 @@
 	* Rename tx_srfeuserregister_pi1_css_tmpl.tmpl to tx_srfeuserregister_pi1_css_tmpl.html
 	* Correctly display all data fields in email messages in css-styled template.
 	* Correct error when entering multiple lines in a textarea field.
-	* Correct country onChange handler in css-styled template
+	* Correct country onChange handler in css-styled template.
 	* Remove updateForm JavaScript from preview screens in css-styled template.
 	* New constants and setup to configure the administrative review process (in css-styled template).
 	* Further adjustments to the html template for the administrative review process (in css-styled template).

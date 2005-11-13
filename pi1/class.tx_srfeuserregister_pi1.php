@@ -1941,8 +1941,12 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									$colContent = 'MM ' . $this->pi_getLL('unsupported');
 								} else {
 									$valuesArray = is_array($dataArray[$colName]) ? $dataArray[$colName] : explode(',',$dataArray[$colName]);
-									$multiple = ($colConfig['maxitems'] > 1) ? '[]" multiple="multiple' : '';
-									if ($this->theTable == 'fe_users' && $colName == 'usergroup' && !$this->conf['allowMultipleUsergroupSelection']) {
+									if ($colConfig['maxitems'] > 1) {
+										$multiple = '[]" multiple="multiple';
+									} else {
+										$multiple = '';
+									}
+									if ($this->theTable == 'fe_users' && $colName == 'usergroup' && !$this->conf['allowMultipleUserGroupSelection']) {
 										$multiple = '';
 									}
 									$colContent = '<select id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']' . $multiple . '">';
@@ -1968,7 +1972,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 												if (!in_array($row['uid'], $reservedValues)) {
 													$row = $this->getUsergroupOverlay($row);
 													$selected = (in_array($row['uid'], $valuesArray) ? 'selected="selected"' : '');
-													if(!$this->conf['allowMultipleUsergroupSelection'] && $selectedValue) {
+													if(!$this->conf['allowMultipleUserGroupSelection'] && $selectedValue) {
 														$selected = '';
 													}
 													$selectedValue = $selected ? true: $selectedValue;
