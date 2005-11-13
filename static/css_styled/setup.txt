@@ -197,7 +197,8 @@ plugin.tx_srfeuserregister_pi1 {
 		.tx-srfeuserregister-pi1 a:hover { color:#333333; }
 		.tx-srfeuserregister-pi1 a:active { color:navy; }
 		.tx-srfeuserregister-pi1 label { margin-left: 0; padding-left: 0; }
-		.tx-srfeuserregister-pi1 input { font-size: 10px;  background-color: #35006d; color: #ffffff; font-weight: bold; }
+		.tx-srfeuserregister-pi1 input, .tx-srfeuserregister-pi1 button { font-size: 10px;  background-color: #35006d; color: #ffffff; font-weight: bold; }
+		.tx-srfeuserregister-pi1 button { -moz-border-radius: 3px; }
 		.tx-srfeuserregister-pi1 input[type=radio], .tx-srfeuserregister-pi1 input[type=checkbox] { margin-right: .5em; background-color: transparent; color: #35006d; vertical-align: middle; }
 		* html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-radio, * html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-checkbox { margin-right: .5em; background-color: transparent; color: #35006d; vertical-align: middle; }
 		.tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-icon { font-size:10px;  background-color:transparent; }
@@ -222,6 +223,7 @@ plugin.tx_srfeuserregister_pi1 {
 		.tx-srfeuserregister-pi1 dt { float: left; clear: both; width: 25%; text-align: right; }
 		.tx-srfeuserregister-pi1 dd { text-align: left; float: right; clear: right; width: 73%; font-weight: bold; }
 		.tx-srfeuserregister-pi1 dd p { margin-top: 0; }
+		.tx-srfeuserregister-pi1 .clear-float { clear: both; }
 	)
 
 	_DEFAULT_PI_VARS {

@@ -11,6 +11,6 @@ body { background:#ffffff none; margin: 0; padding: 1em; font-family:Verdana, sa
 .tx-srfeuserregister-pi1 dt, .tx-srfeuserregister-pi1 dd { padding-bottom: .5em; }
 .tx-srfeuserregister-pi1 dt { float: left; clear: both; width: 20%; text-align: right; }
 .tx-srfeuserregister-pi1 dd { text-align: left; float: right; clear: right; width: 78%; }
-.tx-srfeuserregister-pi1 div.clear-float { clear: left; }
+.tx-srfeuserregister-pi1 div.clear-float { clear: both; }
 .tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checked-values { list-style-type: square; list-style-image: none; list-style-position: inside; }
 .tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checked-values li { float: left; margin: 0 1em 0 0; }
