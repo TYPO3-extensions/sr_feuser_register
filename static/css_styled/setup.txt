@@ -196,12 +196,17 @@ plugin.tx_srfeuserregister_pi1 {
 		.tx-srfeuserregister-pi1 a:visited { color:navy; }
 		.tx-srfeuserregister-pi1 a:hover { color:#333333; }
 		.tx-srfeuserregister-pi1 a:active { color:navy; }
-		.tx-srfeuserregister-pi1 label { margin-left: 0; padding-left: 0; }
-		.tx-srfeuserregister-pi1 input, .tx-srfeuserregister-pi1 button { font-size: 10px;  background-color: #35006d; color: #ffffff; font-weight: bold; }
-		.tx-srfeuserregister-pi1 button { -moz-border-radius: 3px; }
-		.tx-srfeuserregister-pi1 input[type=radio], .tx-srfeuserregister-pi1 input[type=checkbox] { margin-right: .5em; background-color: transparent; color: #35006d; vertical-align: middle; }
-		* html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-radio, * html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-checkbox { margin-right: .5em; background-color: transparent; color: #35006d; vertical-align: middle; }
-		.tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-icon { font-size:10px;  background-color:transparent; }
+		.tx-srfeuserregister-pi1 label { margin: 0; padding: 0; }
+		.tx-srfeuserregister-pi1 input { font-size: 10px;  background-color: #35006d; color: #ffffff; font-weight: bold; margin: 0; padding: 0 .5em 0 0; }
+		.tx-srfeuserregister-pi1 input[type=text]  { width: 25em; }
+		* html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-text  { width: 25em; }
+		.tx-srfeuserregister-pi1 input[type=password] { width: 13em; margin-right: 2em; }
+		* html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-password { width: 13em; margin-right: 2em; }
+		.tx-srfeuserregister-pi1 input[type=radio], .tx-srfeuserregister-pi1 input[type=checkbox] { background-color: transparent; color: #35006d; }
+		* html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-radio, * html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-checkbox { background-color: transparent; color: #35006d; }
+		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-delete-icon { height: 12px; width: 12px; margin: 0 0 0 .6em; border-style: none; vertical-align: middle; background-color: transparent; background-repeat: no-repeat; background-position: center; }
+		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-delete-icon:hover { cursor: pointer; }
+		.tx-srfeuserregister-pi1 a.tx-srfeuserregister-pi1-file-view { font-size: .8em; margin-left: .6em; }
 		.tx-srfeuserregister-pi1 select { font-size: 10px;  background-color: #35006d; color: #ffffff; font-weight: bold; }
 		.tx-srfeuserregister-pi1 textarea { font-size: 10px;  background-color: #35006d; color: #ffffff; font-weight: bold; }
 		.tx-srfeuserregister-pi1 ul { margin: 0; padding: 0; }
@@ -210,19 +215,16 @@ plugin.tx_srfeuserregister_pi1 {
 		.tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checkboxes li label { margin: 0; padding: 0 0 0 .5em; font-size: 1em; }
 		.tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checked-values { list-style-type: square; list-style-image: none; list-style-position: inside; margin: 0; font-size: 1em; }
 		.tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checked-values li { float: left; margin: 0 2em 0 0;}
-		
-		.tx-srfeuserregister-pi1 .form_notice { margin-bottom: 10px; font-style: italic; }
-		.tx-srfeuserregister-pi1 .form_required { color: #FF0000; }
-		.tx-srfeuserregister-pi1 .form_submit { clear: both; }
-		.tx-srfeuserregister-pi1 .textinput { width: 250px; }
-		.tx-srfeuserregister-pi1 .trash { margin-bottom: 2em; }
-		.tx-srfeuserregister-pi1 .passwordinput { width: 120px; }
-		.tx-srfeuserregister-pi1 .error { color: #FF0000; font-weight: bold; margin-top: 0; }
+		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-notice { margin-bottom: 1em; font-style: italic; }
+		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-required { color: #FF0000; }
+		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-error { color: #FF0000; font-weight: bold; }
+		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-trash { margin-bottom: 2em; }
 		.tx-srfeuserregister-pi1 dl { margin: 0 5%; padding: 1em 0 0 0; }
 		.tx-srfeuserregister-pi1 dt, .tx-srfeuserregister-pi1 dd { margin: 0; padding: 0 0 1em 0; }
 		.tx-srfeuserregister-pi1 dt { float: left; clear: both; width: 25%; text-align: right; }
 		.tx-srfeuserregister-pi1 dd { text-align: left; float: right; clear: right; width: 73%; font-weight: bold; }
-		.tx-srfeuserregister-pi1 dd p { margin-top: 0; }
+		.tx-srfeuserregister-pi1 dd p { margin-top: 0; margin-bottom: .5em; padding: 0; }
+		.tx-srfeuserregister-pi1 dd label { padding: 0 1em 0 .5em; }		
 		.tx-srfeuserregister-pi1 .clear-float { clear: both; }
 	)
 

@@ -951,6 +951,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* Works like this:
 		* - Insert subparts like this ###SUB_REQUIRED_FIELD_".$theField."### that tells that the field is required, if it's not correctly filled in.
 		* - These subparts are all removed, except if the field is listed in $failure string!
+		* - Subparts like ###SUB_ERROR_FIELD_".$theField."### are also removed if there is no error on the field
 		* and remove also the parts of non-included fields, using a similar scheme!
 		*
 		* @param string  $templateCode: the content of the HTML template
@@ -966,12 +967,16 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				if (in_array(trim($fName), $this->requiredArr) ) {
 					if (!t3lib_div::inList($failure, $fName)) {
 						$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_'.$fName.'###', '');
+						$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_'.$fName.'###', '');
 					}
 				} else {
-					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_'.$fName.'###', '');
 					if (!in_array(trim($fName), $includedFields) ) {
 						$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_'.$fName.'###', '');
 					} else {
+						$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_'.$fName.'###', '');
+						if (!t3lib_div::inList($failure, $fName)) {
+							$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_'.$fName.'###', '');
+						}
 						if (is_array($this->conf['parseValues.']) && strstr($this->conf['parseValues.'][$fName],'checkArray')) {
 							$listOfCommands = t3lib_div::trimExplode(',', $this->conf['parseValues.'][$fName], 1);
 								while (list(, $cmd) = each($listOfCommands)) {
@@ -2023,6 +2028,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$infoFields = explode(',', $this->fieldList);
 			while (list(, $fName) = each($infoFields) ) {
 				$markerArray['###LABEL_'.strtoupper($fName).'###'] = $this->pi_getLL($fName) ? $this->pi_getLL($fName) : $this->getLLFromString($this->TCA['columns'][$fName]['label']);
+				$markerArray['###TOOLTIP_'.strtoupper($fName).'###'] = $this->pi_getLL('tooltip_' . $fName);
 				// <Ries van Twisk added support for multiple checkboxes>
 				if (is_array($dataArray[$fName])) {
 					$colContent = '';
@@ -2325,15 +2331,27 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$dir = $config['uploadfolder'];
 			
 			if ($this->previewLabel || $viewOnly) {
-				for($i = 0; $i < sizeof($filenames); $i++) {
-					$HTMLContent .= $filenames[$i] . '&nbsp;&nbsp;<small><a href="' . $dir.'/' . $filenames[$i] . '" target="_blank">' . $this->pi_getLL('file_view') . '</a></small><br />';
+				for ($i = 0; $i < sizeof($filenames); $i++) {
+					if ($this->conf['templateStyle'] == 'css-styled') {
+						$HTMLContent .= $filenames[$i] . '<a href="' . $dir.'/' . $filenames[$i] . '"' . $this->pi_classParam('file-view') . '" target="_blank" title="' . $this->pi_getLL('file_view') . '">' . $this->pi_getLL('file_view') . '</a><br />';
+					} else {
+						$HTMLContent .= $filenames[$i] . '&nbsp;&nbsp;<small><a href="' . $dir.'/' . $filenames[$i] . '" target="_blank">' . $this->pi_getLL('file_view') . '</a></small><br />';
+					}
 				}
 			} else {
+					// Dynamically generate some CSS selectors
+				if ($this->conf['templateStyle'] == 'css-styled') {
+					$GLOBALS['TSFE']->additionalCSS['css-' . $this->pi_getClassName('delete-icon')] = '.' . $this->pi_getClassName('delete-icon') . ' { background-image: url("'. $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '"); }';
+				}
 				for($i = 0; $i < sizeof($filenames); $i++) {
-					$HTMLContent .= $filenames[$i] . '&nbsp;&nbsp;<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="'.$prefix.'['.$fName.']['.$i.'][submit_delete]" value="1" title="'.$this->pi_getLL('icon_delete').'" alt="' . $this->pi_getLL('icon_delete'). '"' . $this->pi_classParam('icon') . ' onclick=\'if(confirm("' . $this->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' />&nbsp;&nbsp;<small><a href="' . $dir.'/' . $filenames[$i] . '" target="_blank">' . $this->pi_getLL('file_view') . '</a></small><br />';
+					if ($this->conf['templateStyle'] == 'css-styled') {
+						$HTMLContent .= $filenames[$i] . '<button type="submit" name="'.$prefix.'['.$fName.']['.$i.'][submit_delete]" value="1" title="'.$this->pi_getLL('icon_delete').'"' . $this->pi_classParam('delete-icon') . ' onclick=\'if(confirm("' . $this->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' ></button><a href="' . $dir.'/' . $filenames[$i] . '"' . $this->pi_classParam('file-view') . 'target="_blank" title="' . $this->pi_getLL('file_view') . '">' . $this->pi_getLL('file_view') . '</a><br />';
+					} else {
+						$HTMLContent .= $filenames[$i] . '&nbsp;&nbsp;<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="'.$prefix.'['.$fName.']['.$i.'][submit_delete]" value="1" title="'.$this->pi_getLL('icon_delete').'" alt="' . $this->pi_getLL('icon_delete'). '"' . $this->pi_classParam('icon') . ' onclick=\'if(confirm("' . $this->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' />&nbsp;&nbsp;<small><a href="' . $dir.'/' . $filenames[$i] . '" target="_blank">' . $this->pi_getLL('file_view') . '</a></small><br />';
+					}
 					$HTMLContent .= '<input type="hidden" name="' . $prefix . '[' . $fName . '][' . $i . '][name]' . '" value="' . $filenames[$i] . '" />';
 				}
-				for($i = sizeof($filenames); $i < $number + sizeof($filenames); $i++) {
+				for ($i = sizeof($filenames); $i < $number + sizeof($filenames); $i++) {
 					$HTMLContent .= '<input id="'. $this->pi_getClassName($fName) . '-' . ($i-sizeof($filenames)) . '" name="'.$prefix.'['.$fName.']['.$i.']'.'" type="file" '.$this->pi_classParam('uploader').' /><br />';
 				}
 			}

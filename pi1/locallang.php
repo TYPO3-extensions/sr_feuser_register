@@ -12,6 +12,8 @@ $LOCAL_LANG = Array (
 	'default' => Array (
 		'unsupported' => 'unsupported',
 		'username' => 'Preferred username:',
+		'tooltip_username' => 'Enter the username you want to use to login.',
+		'tooltip_username_informal' => 'Enter the username you want to use to login.',
 		'missing_username' => 'Please try again!',
 		'missing_username_informal' => 'Please try again!',
 		'evalErrors_uniqueGlobal_username' => 'This username already exist. Please enter a different username.',
@@ -1027,6 +1029,8 @@ If you wish to accept our invitation and confirm your registration in <b>%1$s</b
 	'fr' => Array (
 		'unsupported' => 'Ce type de champ n\'est pas supporté',
 		'username' => 'Nom d\'utilisateur:',
+		'tooltip_username' => 'Écrivez le nom d\'utilisateur que vous utiliserez pour vous identifier.',
+		'tooltip_username_informal' => 'Écris le nom d\'utilisateur que tu utiliseras pour t\'identifier.',
 		'missing_username' => 'Veuillez essayer de nouveau.',
 		'missing_username_informal' => 'Essaie de nouveau.',
 		'evalErrors_uniqueGlobal_username' => 'Ce nom d\'utilisateur existe déjà. Veuillez choisir un nom d\'utilisateur différent.',
@@ -1182,7 +1186,7 @@ If you wish to accept our invitation and confirm your registration in <b>%1$s</b
 		'v_edit_your_account' => 'Veuillez mettre à jour les informations de votre compte <b>%2$s</b>:',
 		'v_edit_your_account_informal' => 'Mets à jour les informations de ton compte <b>%2$s</b>:',
 		'v_verify_before_update' => 'Veuillez vérifier que les informations sont correctes avant que votre compte <b>%2$s</b> ne soit mis à jour:',
-		'v_verify_before_update_informal' => 'Vérifier bien les informations avant que ton compte <b>%2$s</b> ne soit mis à jour:',
+		'v_verify_before_update_informal' => 'Vérifie bien les informations avant que ton compte <b>%2$s</b> ne soit mis à jour:',
 		'v_dear' => 'Cher (chère) %3$s,',
 		'v_dear_informal' => 'Bonjour %3$s,',
 		'v_to_the_administrator' => 'À l\'administrateur des enregistrements auprès de %1$s:',

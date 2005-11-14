@@ -4,6 +4,9 @@
 	* Further adjustments to default css for email messages in css-styled template.
 	* Adjustments to the html template for the administrative review process.
 	* Correction: the multiple user group selection feature did not work.
+	* Standardizing names of css selectors.
+	* New markers to erase any error markups when there is no error on an input field.
+	* Delete icon specified in style tag.
 
 2005-11-10  Sebastian Roth <sebastian.roth@c-qube.com>
 	* Current merge from Stefan Galinski.

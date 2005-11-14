@@ -15,48 +15,54 @@
 <!-- ###TEMPLATE_CREATE### begin -->
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 	<h4> ###LABEL_ENTER_ACCOUNT_INFO### </h4>
-	<p class="form_notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
+	<p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
 
 <dl>
 	<!-- ###SUB_INCLUDED_FIELD_username### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME###</label>
-		<span class="form_required">###REQUIRED_USERNAME###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_USERNAME###</span>
 	</dt>
 	<dd>
+		<!-- ###SUB_ERROR_FIELD_username### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_username###</p>
+		<!-- ###SUB_ERROR_FIELD_username### -->
 		<!-- ###SUB_REQUIRED_FIELD_username### -->
-		<p class="error">###MISSING_USERNAME###</p>
-		<p>###EVAL_ERROR_FIELD_username###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_USERNAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_username### -->
-		<input id="tx-srfeuserregister-pi1-username" type="text" name="FE[fe_users][username]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-username" type="text" title="###TOOLTIP_USERNAME###" name="FE[fe_users][username]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_username### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_password### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-password">###LABEL_PASSWORD###</label>
-		<span class="form_required">###REQUIRED_PASSWORD###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_PASSWORD###</span>
 	</dt>
 	<dd>
+		<!-- ###SUB_ERROR_FIELD_password### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_password###</p>
+		<!-- ###SUB_ERROR_FIELD_password### -->
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<p class="error">###MISSING_PASSWORD###</p>
-		<p>###EVAL_ERROR_FIELD_password###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<input id="tx-srfeuserregister-pi1-password" type="password" name="FE[fe_users][password]" class="passwordinput" />
+		<input id="tx-srfeuserregister-pi1-password" type="password" name="FE[fe_users][password]" class="tx-srfeuserregister-pi1-password" />
 		<label for="tx-srfeuserregister-pi1-password_again">###LABEL_PASSWORD_REPEAT###</label>
-		<input id="tx-srfeuserregister-pi1-password_again" type="password" name="FE[fe_users][password_again]" class="passwordinput" />
+		<input id="tx-srfeuserregister-pi1-password_again" type="password" name="FE[fe_users][password_again]" class="tx-srfeuserregister-pi1-password" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_password### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_gender### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-gender">###LABEL_GENDER###</label>
-		<span class="form_required">###REQUIRED_GENDER###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_GENDER###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_gender###</p>
+		<!-- ###SUB_ERROR_FIELD_gender### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_gender###</p>
+		<!-- ###SUB_ERROR_FIELD_gender### -->
 		<!-- ###SUB_REQUIRED_FIELD_gender### -->
-		<p class="error">###MISSING_GENDER###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_GENDER###</p>
 		<!-- ###SUB_REQUIRED_FIELD_gender### -->
 		###TCA_INPUT_gender###
 	</dd>
@@ -65,54 +71,62 @@
 	<!-- ###SUB_INCLUDED_FIELD_name### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-name">###LABEL_NAME###</label>
-		<span class="form_required">###REQUIRED_NAME###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_NAME###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_name###</p>
+		<!-- ###SUB_ERROR_FIELD_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_name###</p>
+		<!-- ###SUB_ERROR_FIELD_name### -->
 		<!-- ###SUB_REQUIRED_FIELD_name### -->
-		<p class="error">###MISSING_NAME###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_name### -->
-		<input id="tx-srfeuserregister-pi1-name" type="text" name="FE[fe_users][name]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-name" type="text" name="FE[fe_users][name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_name### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-first_name">###LABEL_FIRST_NAME###</label>
-		<span class="form_required">###REQUIRED_FIRST_NAME###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_FIRST_NAME###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_first_name###</p>
+		<!-- ###SUB_ERROR_FIELD_first_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_first_name###</p>
+		<!-- ###SUB_ERROR_FIELD_first_name### -->
 		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
-		<p class="error">###MISSING_FIRST_NAME###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_FIRST_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
-		<input id="tx-srfeuserregister-pi1-first_name" type="text" name="FE[fe_users][first_name]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-first_name" type="text" name="FE[fe_users][first_name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-last_name">###LABEL_LAST_NAME###</label>
-		<span class="form_required">###REQUIRED_LAST_NAME###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_LAST_NAME###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_last_name###</p>
+		<!-- ###SUB_ERROR_FIELD_last_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_last_name###</p>
+		<!-- ###SUB_ERROR_FIELD_last_name### -->
 		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
-		<p class="error">###MISSING_LAST_NAME###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_LAST_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
-		<input id="tx-srfeuserregister-pi1-last_name" type="text" name="FE[fe_users][last_name]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-last_name" type="text" name="FE[fe_users][last_name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_status### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-status">###LABEL_STATUS###</label>
-		<span class="form_required">###REQUIRED_STATUS###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_STATUS###</span>
 	</dt>
 	<dd>
-		<p class="error">###EVAL_ERROR_FIELD_status###</p>
+		<!-- ###SUB_ERROR_FIELD_status### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_status###</p>
+		<!-- ###SUB_ERROR_FIELD_status### -->
 		<!-- ###SUB_REQUIRED_FIELD_status### -->
-		<p class="error">###MISSING_STATUS###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_STATUS###</p>
 		<!-- ###SUB_REQUIRED_FIELD_status### -->
 		###TCA_INPUT_status###
 	</dd>
@@ -121,95 +135,107 @@
 	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-date_of_birth">###LABEL_DATE_OF_BIRTH###</label>
-		<span class="form_required">###REQUIRED_DATE_OF_BIRTH###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_DATE_OF_BIRTH###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_date_of_birth###</p>
+		<!-- ###SUB_ERROR_FIELD_date_of_birth### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_date_of_birth###</p>
+		<!-- ###SUB_ERROR_FIELD_date_of_birth### -->
 		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
-		<p class="error">###MISSING_DATE_OF_BIRTH###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_DATE_OF_BIRTH###</p>
 		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
-		<input id="tx-srfeuserregister-pi1-date_of_birth" type="text" name="FE[fe_users][date_of_birth]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-date_of_birth" type="text" name="FE[fe_users][date_of_birth]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_title### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-title">###LABEL_TITLE###</label>
-		<span class="form_required">###REQUIRED_TITLE###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_TITLE###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_title###</p>
+		<!-- ###SUB_ERROR_FIELD_title### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_title###</p>
+		<!-- ###SUB_ERROR_FIELD_title### -->
 		<!-- ###SUB_REQUIRED_FIELD_title### -->
-		<p class="error">###MISSING_TITLE###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_TITLE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_title### -->
-		<input id="tx-srfeuserregister-pi1-title" type="text" name="FE[fe_users][title]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-title" type="text" name="FE[fe_users][title]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_title### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_company### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-company">###LABEL_COMPANY###</label>
-		<span class="form_required">###REQUIRED_COMPANY###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_COMPANY###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_company###</p>
+		<!-- ###SUB_ERROR_FIELD_company### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_company###</p>
+		<!-- ###SUB_ERROR_FIELD_company### -->
 		<!-- ###SUB_REQUIRED_FIELD_company### -->
-		<p class="error">###MISSING_COMPANY###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COMPANY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_company### -->
-		<input id="tx-srfeuserregister-pi1-company" type="text" name="FE[fe_users][company]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-company" type="text" name="FE[fe_users][company]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_company### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_address### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-address">###LABEL_ADDRESS###</label>
-		<span class="form_required">###REQUIRED_ADDRESS###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_ADDRESS###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_address###</p>
+		<!-- ###SUB_ERROR_FIELD_address### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_address###</p>
+		<!-- ###SUB_ERROR_FIELD_address### -->
 		<!-- ###SUB_REQUIRED_FIELD_address### -->
-		<p class="error">###MISSING_ADDRESS###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ADDRESS###</p>
 		<!-- ###SUB_REQUIRED_FIELD_address### -->
-		<input id="tx-srfeuserregister-pi1-address" type="text" name="FE[fe_users][address]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-address" type="text" name="FE[fe_users][address]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_address### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_city### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-city">###LABEL_CITY###</label>
-		<span class="form_required">###REQUIRED_CITY###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_CITY###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_city###</p>
+		<!-- ###SUB_ERROR_FIELD_city### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_city###</p>
+		<!-- ###SUB_ERROR_FIELD_city### -->
 		<!-- ###SUB_REQUIRED_FIELD_city### -->
-		<p class="error">###MISSING_CITY###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_CITY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_city### -->
-		<input id="tx-srfeuserregister-pi1-city" type="text" name="FE[fe_users][city]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-city" type="text" name="FE[fe_users][city]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_city### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_country### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-country">###LABEL_COUNTRY###</label>
-		<span class="form_required">###REQUIRED_COUNTRY###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_COUNTRY###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_country###</p>
+		<!-- ###SUB_ERROR_FIELD_country### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_country###</p>
+		<!-- ###SUB_ERROR_FIELD_country### -->
 		<!-- ###SUB_REQUIRED_FIELD_country### -->
-		<p class="error">###MISSING_COUNTRY###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COUNTRY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_country### -->
-		<input id="tx-srfeuserregister-pi1-country" type="text" name="FE[fe_users][country]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-country" type="text" name="FE[fe_users][country]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_country### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-static_info_country">###LABEL_COUNTRY###</label>
-		<span class="form_required">###REQUIRED_STATIC_INFO_COUNTRY###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_STATIC_INFO_COUNTRY###</span>
 	</dt>
 	<dd>
 		<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
-		<p class="error">###MISSING_STATIC_INFO_COUNTRY###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_STATIC_INFO_COUNTRY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
 		###SELECTOR_STATIC_INFO_COUNTRY###
 	</dd>
@@ -218,11 +244,11 @@
 	<!-- ###SUB_INCLUDED_FIELD_zone### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-zone">###LABEL_ZONE###</label>
-		<span class="form_required">###REQUIRED_ZONE###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_ZONE###</span>
 	</dt>
 	<dd>
 		<!-- ###SUB_REQUIRED_FIELD_zone### -->
-		<p class="error">###MISSING_ZONE###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ZONE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_zone### -->
 		###SELECTOR_ZONE###
 	</dd>
@@ -231,68 +257,78 @@
 	<!-- ###SUB_INCLUDED_FIELD_zip### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-zip">###LABEL_ZIP###</label>
-		<span class="form_required">###REQUIRED_ZIP###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_ZIP###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_zip###</p>
+		<!-- ###SUB_ERROR_FIELD_zip### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_zip###</p>
+		<!-- ###SUB_ERROR_FIELD_zip### -->
 		<!-- ###SUB_REQUIRED_FIELD_zip### -->
-		<p class="error">###MISSING_ZIP###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ZIP###</p>
 		<!-- ###SUB_REQUIRED_FIELD_zip### -->
-		<input id="tx-srfeuserregister-pi1-zip" type="text" name="FE[fe_users][zip]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-zip" type="text" name="FE[fe_users][zip]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_zip### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-telephone">###LABEL_TELEPHONE###</label>
-		<span class="form_required">###REQUIRED_TELEPHONE###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_TELEPHONE###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_telephone###</p>
+		<!-- ###SUB_ERROR_FIELD_telephone### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_telephone###</p>
+		<!-- ###SUB_ERROR_FIELD_telephone### -->
 		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
-		<p class="error">###MISSING_TELEPHONE###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_TELEPHONE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
-		<input id="tx-srfeuserregister-pi1-telephone" type="text" name="FE[fe_users][telephone]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-telephone" type="text" name="FE[fe_users][telephone]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_fax### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-fax">###LABEL_FAX###</label>
-		<span class="form_required">###REQUIRED_FAX###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_FAX###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_fax###</p>
+		<!-- ###SUB_ERROR_FIELD_fax### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_fax###</p>
+		<!-- ###SUB_ERROR_FIELD_fax### -->
 		<!-- ###SUB_REQUIRED_FIELD_fax### -->
-		<p class="error">###MISSING_FAX###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_FAX###</p>
 		<!-- ###SUB_REQUIRED_FIELD_fax### -->
-		<input id="tx-srfeuserregister-pi1-fax" type="text" name="FE[fe_users][fax]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-fax" type="text" name="FE[fe_users][fax]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_fax### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_email### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-email">###LABEL_EMAIL###</label>
-		<span class="form_required">###REQUIRED_EMAIL###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_EMAIL###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_email###</p>
+		<!-- ###SUB_ERROR_FIELD_email### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_email###</p>
+		<!-- ###SUB_ERROR_FIELD_email### -->
 		<!-- ###SUB_REQUIRED_FIELD_email### -->
-		<p class="error">###MISSING_EMAIL###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_EMAIL###</p>
 		<!-- ###SUB_REQUIRED_FIELD_email### -->
-		<input id="tx-srfeuserregister-pi1-email" type="text" name="FE[fe_users][email]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-email" type="text" name="FE[fe_users][email]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_email### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-usergroup">###LABEL_USERGROUP###</label>
-		<span class="form_required">###REQUIRED_USERGROUP###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_USERGROUP###</span>
 	</dt>
 	<dd>
-		<p class="error">###EVAL_ERROR_FIELD_usergroup###</p>
+		<!-- ###SUB_ERROR_FIELD_usergroup### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_usergroup###</p>
+		<!-- ###SUB_ERROR_FIELD_usergroup### -->
 		<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
-		<p class="error">###MISSING_USERGROUP###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_USERGROUP###</p>
 		<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
 		###TCA_INPUT_usergroup###
 	</dd>
@@ -301,12 +337,14 @@
 	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-module_sys_dmail_category">###LABEL_MODULE_SYS_DMAIL_CATEGORY###</label>
-		<span class="form_required">###REQUIRED_MODULE_SYS_DMAIL_CATEGORY###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_MODULE_SYS_DMAIL_CATEGORY###</span>
 	</dt>
 	<dd>
-		<p class="error">###EVAL_ERROR_FIELD_module_sys_dmail_category###</p>
+		<!-- ###SUB_ERROR_FIELD_module_sys_dmail_category### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_module_sys_dmail_category###</p>
+		<!-- ###SUB_ERROR_FIELD_module_sys_dmail_category### -->
 		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
-		<p class="error">###MISSING_MODULE_SYS_DMAIL_CATEGORY###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MODULE_SYS_DMAIL_CATEGORY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
 		###TCA_INPUT_module_sys_dmail_category###
 	</dd>
@@ -315,11 +353,11 @@
 	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-module_sys_dmail_html">###LABEL_MODULE_SYS_DMAIL_HTML###</label>
-		<span class="form_required">###REQUIRED_MODULE_SYS_DMAIL_HTML###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_MODULE_SYS_DMAIL_HTML###</span>
 	</dt>
 	<dd>
 		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
-		<p class="error">###MISSING_MODULE_SYS_DMAIL_HTML###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MODULE_SYS_DMAIL_HTML###</p>
 		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
 		<input id="tx-srfeuserregister-pi1-module_sys_dmail_html" type="checkbox" name="FE[fe_users][module_sys_dmail_html]" value="1" />
 	</dd>
@@ -328,11 +366,11 @@
 	<!-- ###SUB_INCLUDED_FIELD_language### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-language">###LABEL_LANGUAGE###</label>
-		<span class="form_required">###REQUIRED_LANGUAGE###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_LANGUAGE###</span>
 	</dt>
 	<dd>
 		<!-- ###SUB_REQUIRED_FIELD_language### -->
-		<p class="error">###MISSING_LANGUAGE###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_LANGUAGE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_language### -->
 		###SELECTOR_LANGUAGE###
 	</dd>
@@ -341,26 +379,30 @@
 	<!-- ###SUB_INCLUDED_FIELD_www### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-www">###LABEL_WWW###</label>
-		<span class="form_required">###REQUIRED_WWW###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_WWW###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_www###</p>
+		<!-- ###SUB_ERROR_FIELD_www### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_www###</p>
+		<!-- ###SUB_ERROR_FIELD_www### -->
 		<!-- ###SUB_REQUIRED_FIELD_www### -->
-		<p class="error">###MISSING_WWW###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_WWW###</p>
 		<!-- ###SUB_REQUIRED_FIELD_www### -->
-		<input id="tx-srfeuserregister-pi1-www" type="text" name="FE[fe_users][www]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-www" type="text" name="FE[fe_users][www]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_www### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_image### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-image-0">###LABEL_IMAGE###</label>
-		<span class="form_required">###REQUIRED_IMAGE###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_IMAGE###</span>
 	</dt>
 	<dd>
-		<p class="error">###EVAL_ERROR_FIELD_image###</p>
+		<!-- ###SUB_ERROR_FIELD_image### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_image###</p>
+		<!-- ###SUB_ERROR_FIELD_image### -->
 		<!-- ###SUB_REQUIRED_FIELD_image### -->
-		<p class="error">###MISSING_IMAGE###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_IMAGE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_image### -->
 		###UPLOAD_image###
 	</dd>
@@ -369,12 +411,14 @@
 	<!-- ###SUB_INCLUDED_FIELD_comments### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-comments">###LABEL_COMMENTS###</label>
-		<span class="form_required">###REQUIRED_COMMENTS###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_COMMENTS###</span>
 	</dt>
 	<dd>
-		<p class="error">###EVAL_ERROR_FIELD_comments###</p>
+		<!-- ###SUB_ERROR_FIELD_comments### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_comments###</p>
+		<!-- ###SUB_ERROR_FIELD_comments### -->
 		<!-- ###SUB_REQUIRED_FIELD_comments### -->
-		<p class="error">###MISSING_COMMENTS###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COMMENTS###</p>
 		<!-- ###SUB_REQUIRED_FIELD_comments### -->
 		###TCA_INPUT_comments###
 	</dd>
@@ -395,7 +439,7 @@
 <p style="margin-top: 20px"><em>Here the user information is preview before final submission:</em></p>
 <!-- ###TEMPLATE_CREATE_PREVIEW### begin -->
 <h4>###LABEL_V_DEAR###</h4>
-<p class="form_notice">###LABEL_V_VERIFY_BEFORE_CREATE###</p>
+<p class="tx-srfeuserregister-pi1-notice">###LABEL_V_VERIFY_BEFORE_CREATE###</p>
 
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
 
@@ -612,48 +656,54 @@ The user is informed that a message has been sent to his email address and that 
 <!-- ###TEMPLATE_INVITE### begin -->
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 	<h4>###LABEL_ENTER_INVITATION_ACCOUNT_INFO###</h4>
-	<p class="form_notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
+	<p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
 
 <dl>
 	<!-- ###SUB_INCLUDED_FIELD_username### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME###</label>
-		<span class="form_required">###REQUIRED_USERNAME###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_USERNAME###</span>
 	</dt>
 	<dd>
+		<!-- ###SUB_ERROR_FIELD_username### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_username###</p>
+		<!-- ###SUB_ERROR_FIELD_username### -->
 		<!-- ###SUB_REQUIRED_FIELD_username### -->
-		<p class="error">###MISSING_USERNAME###</p>
-		<p>###EVAL_ERROR_FIELD_username###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_USERNAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_username### -->
-		<input id="tx-srfeuserregister-pi1-username" type="text" name="FE[fe_users][username]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-username" type="text" name="FE[fe_users][username]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_username### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_password### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-password">###LABEL_PASSWORD###</label>
-		<span class="form_required">###REQUIRED_PASSWORD###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_PASSWORD###</span>
 	</dt>
 	<dd>
+		<!-- ###SUB_ERROR_FIELD_password### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_password###</p>
+		<!-- ###SUB_ERROR_FIELD_password### -->
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<p class="error">###MISSING_PASSWORD###</p>
-		<p>###EVAL_ERROR_FIELD_password###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<input id="tx-srfeuserregister-pi1-password" type="password" name="FE[fe_users][password]" class="passwordinput" />
+		<input id="tx-srfeuserregister-pi1-password" type="password" name="FE[fe_users][password]" class="tx-srfeuserregister-pi1-password" />
 		<label for="tx-srfeuserregister-pi1-password_again">###LABEL_PASSWORD_REPEAT###</label>
-		<input id="tx-srfeuserregister-pi1-password_again" type="password" name="FE[fe_users][password_again]" class="passwordinput" />
+		<input id="tx-srfeuserregister-pi1-password_again" type="password" name="FE[fe_users][password_again]" class="tx-srfeuserregister-pi1-password" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_password### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_gender### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-gender">###LABEL_GENDER###</label>
-		<span class="form_required">###REQUIRED_GENDER###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_GENDER###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_gender###</p>
+		<!-- ###SUB_ERROR_FIELD_gender### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_gender###</p>
+		<!-- ###SUB_ERROR_FIELD_gender### -->
 		<!-- ###SUB_REQUIRED_FIELD_gender### -->
-		<p class="error">###MISSING_GENDER###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_GENDER###</p>
 		<!-- ###SUB_REQUIRED_FIELD_gender### -->
 		###TCA_INPUT_gender###
 	</dd>
@@ -662,54 +712,62 @@ The user is informed that a message has been sent to his email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_name### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-name">###LABEL_NAME###</label>
-		<span class="form_required">###REQUIRED_NAME###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_NAME###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_name###</p>
+		<!-- ###SUB_ERROR_FIELD_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_name###</p>
+		<!-- ###SUB_ERROR_FIELD_name### -->
 		<!-- ###SUB_REQUIRED_FIELD_name### -->
-		<p class="error">###MISSING_NAME###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_name### -->
-		<input id="tx-srfeuserregister-pi1-name" type="text" name="FE[fe_users][name]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-name" type="text" name="FE[fe_users][name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_name### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-first_name">###LABEL_FIRST_NAME###</label>
-		<span class="form_required">###REQUIRED_FIRST_NAME###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_FIRST_NAME###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_first_name###</p>
+		<!-- ###SUB_ERROR_FIELD_first_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_first_name###</p>
+		<!-- ###SUB_ERROR_FIELD_first_name### -->
 		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
-		<p class="error">###MISSING_FIRST_NAME###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_FIRST_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
-		<input id="tx-srfeuserregister-pi1-first_name" type="text" name="FE[fe_users][first_name]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-first_name" type="text" name="FE[fe_users][first_name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-last_name">###LABEL_LAST_NAME###</label>
-		<span class="form_required">###REQUIRED_LAST_NAME###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_LAST_NAME###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_last_name###</p>
+		<!-- ###SUB_ERROR_FIELD_last_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_last_name###</p>
+		<!-- ###SUB_ERROR_FIELD_last_name### -->
 		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
-		<p class="error">###MISSING_LAST_NAME###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_LAST_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
-		<input id="tx-srfeuserregister-pi1-last_name" type="text" name="FE[fe_users][last_name]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-last_name" type="text" name="FE[fe_users][last_name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_status### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-status">###LABEL_STATUS###</label>
-		<span class="form_required">###REQUIRED_STATUS###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_STATUS###</span>
 	</dt>
 	<dd>
-		<p class="error">###EVAL_ERROR_FIELD_status###</p>
+		<!-- ###SUB_ERROR_FIELD_status### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_status###</p>
+		<!-- ###SUB_ERROR_FIELD_status### -->
 		<!-- ###SUB_REQUIRED_FIELD_status### -->
-		<p class="error">###MISSING_STATUS###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_STATUS###</p>
 		<!-- ###SUB_REQUIRED_FIELD_status### -->
 		###TCA_INPUT_status###
 	</dd>
@@ -718,95 +776,107 @@ The user is informed that a message has been sent to his email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-date_of_birth">###LABEL_DATE_OF_BIRTH###</label>
-		<span class="form_required">###REQUIRED_DATE_OF_BIRTH###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_DATE_OF_BIRTH###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_date_of_birth###</p>
+		<!-- ###SUB_ERROR_FIELD_date_of_birth### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_date_of_birth###</p>
+		<!-- ###SUB_ERROR_FIELD_date_of_birth### -->
 		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
-		<p class="error">###MISSING_DATE_OF_BIRTH###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_DATE_OF_BIRTH###</p>
 		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
-		<input id="tx-srfeuserregister-pi1-date_of_birth" type="text" name="FE[fe_users][date_of_birth]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-date_of_birth" type="text" name="FE[fe_users][date_of_birth]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_title### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-title">###LABEL_TITLE###</label>
-		<span class="form_required">###REQUIRED_TITLE###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_TITLE###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_title###</p>
+		<!-- ###SUB_ERROR_FIELD_title### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_title###</p>
+		<!-- ###SUB_ERROR_FIELD_title### -->
 		<!-- ###SUB_REQUIRED_FIELD_title### -->
-		<p class="error">###MISSING_TITLE###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_TITLE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_title### -->
-		<input id="tx-srfeuserregister-pi1-title" type="text" name="FE[fe_users][title]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-title" type="text" name="FE[fe_users][title]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_title### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_company### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-company">###LABEL_COMPANY###</label>
-		<span class="form_required">###REQUIRED_COMPANY###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_COMPANY###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_company###</p>
+		<!-- ###SUB_ERROR_FIELD_company### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_company###</p>
+		<!-- ###SUB_ERROR_FIELD_company### -->
 		<!-- ###SUB_REQUIRED_FIELD_company### -->
-		<p class="error">###MISSING_COMPANY###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COMPANY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_company### -->
-		<input id="tx-srfeuserregister-pi1-company" type="text" name="FE[fe_users][company]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-company" type="text" name="FE[fe_users][company]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_company### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_address### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-address">###LABEL_ADDRESS###</label>
-		<span class="form_required">###REQUIRED_ADDRESS###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_ADDRESS###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_address###</p>
+		<!-- ###SUB_ERROR_FIELD_address### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_address###</p>
+		<!-- ###SUB_ERROR_FIELD_address### -->
 		<!-- ###SUB_REQUIRED_FIELD_address### -->
-		<p class="error">###MISSING_ADDRESS###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ADDRESS###</p>
 		<!-- ###SUB_REQUIRED_FIELD_address### -->
-		<input id="tx-srfeuserregister-pi1-address" type="text" name="FE[fe_users][address]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-address" type="text" name="FE[fe_users][address]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_address### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_city### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-city">###LABEL_CITY###</label>
-		<span class="form_required">###REQUIRED_CITY###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_CITY###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_city###</p>
+		<!-- ###SUB_ERROR_FIELD_city### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_city###</p>
+		<!-- ###SUB_ERROR_FIELD_city### -->
 		<!-- ###SUB_REQUIRED_FIELD_city### -->
-		<p class="error">###MISSING_CITY###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_CITY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_city### -->
-		<input id="tx-srfeuserregister-pi1-city" type="text" name="FE[fe_users][city]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-city" type="text" name="FE[fe_users][city]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_city### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_country### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-country">###LABEL_COUNTRY###</label>
-		<span class="form_required">###REQUIRED_COUNTRY###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_COUNTRY###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_country###</p>
+		<!-- ###SUB_ERROR_FIELD_country### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_country###</p>
+		<!-- ###SUB_ERROR_FIELD_country### -->
 		<!-- ###SUB_REQUIRED_FIELD_country### -->
-		<p class="error">###MISSING_COUNTRY###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COUNTRY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_country### -->
-		<input id="tx-srfeuserregister-pi1-country" type="text" name="FE[fe_users][country]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-country" type="text" name="FE[fe_users][country]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_country### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-static_info_country">###LABEL_COUNTRY###</label>
-		<span class="form_required">###REQUIRED_STATIC_INFO_COUNTRY###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_STATIC_INFO_COUNTRY###</span>
 	</dt>
 	<dd>
 		<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
-		<p class="error">###MISSING_STATIC_INFO_COUNTRY###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_STATIC_INFO_COUNTRY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
 		###SELECTOR_STATIC_INFO_COUNTRY###
 	</dd>
@@ -815,11 +885,11 @@ The user is informed that a message has been sent to his email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_zone### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-zone">###LABEL_ZONE###</label>
-		<span class="form_required">###REQUIRED_ZONE###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_ZONE###</span>
 	</dt>
 	<dd>
 		<!-- ###SUB_REQUIRED_FIELD_zone### -->
-		<p class="error">###MISSING_ZONE###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ZONE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_zone### -->
 		###SELECTOR_ZONE###
 	</dd>
@@ -828,68 +898,78 @@ The user is informed that a message has been sent to his email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_zip### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-zip">###LABEL_ZIP###</label>
-		<span class="form_required">###REQUIRED_ZIP###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_ZIP###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_zip###</p>
+		<!-- ###SUB_ERROR_FIELD_zip### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_zip###</p>
+		<!-- ###SUB_ERROR_FIELD_zip### -->
 		<!-- ###SUB_REQUIRED_FIELD_zip### -->
-		<p class="error">###MISSING_ZIP###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ZIP###</p>
 		<!-- ###SUB_REQUIRED_FIELD_zip### -->
-		<input id="tx-srfeuserregister-pi1-zip" type="text" name="FE[fe_users][zip]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-zip" type="text" name="FE[fe_users][zip]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_zip### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-telephone">###LABEL_TELEPHONE###</label>
-		<span class="form_required">###REQUIRED_TELEPHONE###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_TELEPHONE###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_telephone###</p>
+		<!-- ###SUB_ERROR_FIELD_telephone### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_telephone###</p>
+		<!-- ###SUB_ERROR_FIELD_telephone### -->
 		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
-		<p class="error">###MISSING_TELEPHONE###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_TELEPHONE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
-		<input id="tx-srfeuserregister-pi1-telephone" type="text" name="FE[fe_users][telephone]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-telephone" type="text" name="FE[fe_users][telephone]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_fax### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-fax">###LABEL_FAX###</label>
-		<span class="form_required">###REQUIRED_FAX###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_FAX###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_fax###</p>
+		<!-- ###SUB_ERROR_FIELD_fax### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_fax###</p>
+		<!-- ###SUB_ERROR_FIELD_fax### -->
 		<!-- ###SUB_REQUIRED_FIELD_fax### -->
-		<p class="error">###MISSING_FAX###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_FAX###</p>
 		<!-- ###SUB_REQUIRED_FIELD_fax### -->
-		<input id="tx-srfeuserregister-pi1-fax" type="text" name="FE[fe_users][fax]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-fax" type="text" name="FE[fe_users][fax]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_fax### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_email### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-email">###LABEL_EMAIL###</label>
-		<span class="form_required">###REQUIRED_EMAIL###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_EMAIL###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_email###</p>
+		<!-- ###SUB_ERROR_FIELD_email### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_email###</p>
+		<!-- ###SUB_ERROR_FIELD_email### -->
 		<!-- ###SUB_REQUIRED_FIELD_email### -->
-		<p class="error">###MISSING_EMAIL###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_EMAIL###</p>
 		<!-- ###SUB_REQUIRED_FIELD_email### -->
-		<input id="tx-srfeuserregister-pi1-email" type="text" name="FE[fe_users][email]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-email" type="text" name="FE[fe_users][email]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_email### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-usergroup">###LABEL_USERGROUP###</label>
-		<span class="form_required">###REQUIRED_USERGROUP###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_USERGROUP###</span>
 	</dt>
 	<dd>
-		<p class="error">###EVAL_ERROR_FIELD_usergroup###</p>
+		<!-- ###SUB_ERROR_FIELD_usergroup### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_usergroup###</p>
+		<!-- ###SUB_ERROR_FIELD_usergroup### -->
 		<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
-		<p class="error">###MISSING_USERGROUP###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_USERGROUP###</p>
 		<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
 		###TCA_INPUT_usergroup###
 	</dd>
@@ -898,12 +978,14 @@ The user is informed that a message has been sent to his email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-module_sys_dmail_category">###LABEL_MODULE_SYS_DMAIL_CATEGORY###</label>
-		<span class="form_required">###REQUIRED_MODULE_SYS_DMAIL_CATEGORY###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_MODULE_SYS_DMAIL_CATEGORY###</span>
 	</dt>
 	<dd>
-		<p class="error">###EVAL_ERROR_FIELD_module_sys_dmail_category###</p>
+		<!-- ###SUB_ERROR_FIELD_module_sys_dmail_category### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_module_sys_dmail_category###</p>
+		<!-- ###SUB_ERROR_FIELD_module_sys_dmail_category### -->
 		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
-		<p class="error">###MISSING_MODULE_SYS_DMAIL_CATEGORY###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MODULE_SYS_DMAIL_CATEGORY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
 		###TCA_INPUT_module_sys_dmail_category###
 	</dd>
@@ -912,11 +994,11 @@ The user is informed that a message has been sent to his email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-module_sys_dmail_html">###LABEL_MODULE_SYS_DMAIL_HTML###</label>
-		<span class="form_required">###REQUIRED_MODULE_SYS_DMAIL_HTML###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_MODULE_SYS_DMAIL_HTML###</span>
 	</dt>
 	<dd>
 		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
-		<p class="error">###MISSING_MODULE_SYS_DMAIL_HTML###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MODULE_SYS_DMAIL_HTML###</p>
 		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
 		<input id="tx-srfeuserregister-pi1-module_sys_dmail_html" type="checkbox" name="FE[fe_users][module_sys_dmail_html]" value="1" />
 	</dd>
@@ -925,11 +1007,11 @@ The user is informed that a message has been sent to his email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_language### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-language">###LABEL_LANGUAGE###</label>
-		<span class="form_required">###REQUIRED_LANGUAGE###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_LANGUAGE###</span>
 	</dt>
 	<dd>
 		<!-- ###SUB_REQUIRED_FIELD_language### -->
-		<p class="error">###MISSING_LANGUAGE###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_LANGUAGE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_language### -->
 		###SELECTOR_LANGUAGE###
 	</dd>
@@ -938,26 +1020,30 @@ The user is informed that a message has been sent to his email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_www### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-www">###LABEL_WWW###</label>
-		<span class="form_required">###REQUIRED_WWW###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_WWW###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_www###</p>
+		<!-- ###SUB_ERROR_FIELD_www### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_www###</p>
+		<!-- ###SUB_ERROR_FIELD_www### -->
 		<!-- ###SUB_REQUIRED_FIELD_www### -->
-		<p class="error">###MISSING_WWW###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_WWW###</p>
 		<!-- ###SUB_REQUIRED_FIELD_www### -->
-		<input id="tx-srfeuserregister-pi1-www" type="text" name="FE[fe_users][www]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-www" type="text" name="FE[fe_users][www]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_www### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_image### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-image-0">###LABEL_IMAGE###</label>
-		<span class="form_required">###REQUIRED_IMAGE###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_IMAGE###</span>
 	</dt>
 	<dd>
-		<p class="error">###EVAL_ERROR_FIELD_image###</p>
+		<!-- ###SUB_ERROR_FIELD_image### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_image###</p>
+		<!-- ###SUB_ERROR_FIELD_image### -->
 		<!-- ###SUB_REQUIRED_FIELD_image### -->
-		<p class="error">###MISSING_IMAGE###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_IMAGE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_image### -->
 		###UPLOAD_image###
 	</dd>
@@ -966,12 +1052,14 @@ The user is informed that a message has been sent to his email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_comments### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-comments">###LABEL_COMMENTS###</label>
-		<span class="form_required">###REQUIRED_COMMENTS###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_COMMENTS###</span>
 	</dt>
 	<dd>
-		<p class="error">###EVAL_ERROR_FIELD_comments###</p>
+		<!-- ###SUB_ERROR_FIELD_comments### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_comments###</p>
+		<!-- ###SUB_ERROR_FIELD_comments### -->
 		<!-- ###SUB_REQUIRED_FIELD_comments### -->
-		<p class="error">###MISSING_COMMENTS###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COMMENTS###</p>
 		<!-- ###SUB_REQUIRED_FIELD_comments### -->
 		###TCA_INPUT_comments###
 	</dd>
@@ -1156,35 +1244,39 @@ The user is informed that a message has been sent to the email address and that 
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 	<h4>###LABEL_V_DEAR###</h4>
 	<p>###LABEL_V_EDIT_YOUR_ACCOUNT###</p>
-	<p class="form_notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
-	<p class="trash"><a href="###DELETE_URL###">###LABEL_CLICK_HERE_TO_DELETE###</a></p>
+	<p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
+	<p class="tx-srfeuserregister-pi1-trash"><a href="###DELETE_URL###">###LABEL_CLICK_HERE_TO_DELETE###</a></p>
 
 <dl>
 	<!-- ###SUB_INCLUDED_FIELD_password### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-password">###LABEL_PASSWORD###</label>
-		<span class="form_required">###REQUIRED_PASSWORD###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_PASSWORD###</span>
 	</dt>
 	<dd>
+		<!-- ###SUB_ERROR_FIELD_password### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_password###</p>
+		<!-- ###SUB_ERROR_FIELD_password### -->
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<p class="error">###MISSING_PASSWORD###</p>
-		<p>###EVAL_ERROR_FIELD_password###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<input id="tx-srfeuserregister-pi1-password" type="password" name="FE[fe_users][password]" class="passwordinput" ###PASSWORD_ONCHANGE### />
+		<input id="tx-srfeuserregister-pi1-password" type="password" name="FE[fe_users][password]" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
 		<label for="tx-srfeuserregister-pi1-password_again">###LABEL_PASSWORD_REPEAT###</label>
-		<input id="tx-srfeuserregister-pi1-password_again" type="password" name="FE[fe_users][password_again]" class="passwordinput" ###PASSWORD_ONCHANGE### />
+		<input id="tx-srfeuserregister-pi1-password_again" type="password" name="FE[fe_users][password_again]" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_password### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_gender### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-gender">###LABEL_GENDER###</label>
-		<span class="form_required">###REQUIRED_GENDER###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_GENDER###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_gender###</p>
+		<!-- ###SUB_ERROR_FIELD_gender### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_gender###</p>
+		<!-- ###SUB_ERROR_FIELD_gender### -->
 		<!-- ###SUB_REQUIRED_FIELD_gender### -->
-		<p class="error">###MISSING_GENDER###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_GENDER###</p>
 		<!-- ###SUB_REQUIRED_FIELD_gender### -->
 		###TCA_INPUT_gender###
 	</dd>
@@ -1193,54 +1285,62 @@ The user is informed that a message has been sent to the email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_name### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-name">###LABEL_NAME###</label>
-		<span class="form_required">###REQUIRED_NAME###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_NAME###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_name###</p>
+		<!-- ###SUB_ERROR_FIELD_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_name###</p>
+		<!-- ###SUB_ERROR_FIELD_name### -->
 		<!-- ###SUB_REQUIRED_FIELD_name### -->
-		<p class="error">###MISSING_NAME###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_name### -->
-		<input id="tx-srfeuserregister-pi1-name" type="text" name="FE[fe_users][name]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-name" type="text" name="FE[fe_users][name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_name### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-first_name">###LABEL_FIRST_NAME###</label>
-		<span class="form_required">###REQUIRED_FIRST_NAME###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_FIRST_NAME###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_first_name###</p>
+		<!-- ###SUB_ERROR_FIELD_first_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_first_name###</p>
+		<!-- ###SUB_ERROR_FIELD_first_name### -->
 		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
-		<p class="error">###MISSING_FIRST_NAME###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_FIRST_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
-		<input id="tx-srfeuserregister-pi1-first_name" type="text" name="FE[fe_users][first_name]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-first_name" type="text" name="FE[fe_users][first_name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-last_name">###LABEL_LAST_NAME###</label>
-		<span class="form_required">###REQUIRED_LAST_NAME###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_LAST_NAME###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_last_name###</p>
+		<!-- ###SUB_ERROR_FIELD_last_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_last_name###</p>
+		<!-- ###SUB_ERROR_FIELD_last_name### -->
 		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
-		<p class="error">###MISSING_LAST_NAME###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_LAST_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
-		<input id="tx-srfeuserregister-pi1-last_name" type="text" name="FE[fe_users][last_name]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-last_name" type="text" name="FE[fe_users][last_name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_status### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-status">###LABEL_STATUS###</label>
-		<span class="form_required">###REQUIRED_STATUS###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_STATUS###</span>
 	</dt>
 	<dd>
-		<p class="error">###EVAL_ERROR_FIELD_status###</p>
+		<!-- ###SUB_ERROR_FIELD_status### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_status###</p>
+		<!-- ###SUB_ERROR_FIELD_status### -->
 		<!-- ###SUB_REQUIRED_FIELD_status### -->
-		<p class="error">###MISSING_STATUS###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_STATUS###</p>
 		<!-- ###SUB_REQUIRED_FIELD_status### -->
 		###TCA_INPUT_status###
 	</dd>
@@ -1249,95 +1349,107 @@ The user is informed that a message has been sent to the email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-date_of_birth">###LABEL_DATE_OF_BIRTH###</label>
-		<span class="form_required">###REQUIRED_DATE_OF_BIRTH###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_DATE_OF_BIRTH###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_date_of_birth###</p>
+		<!-- ###SUB_ERROR_FIELD_date_of_birth### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_date_of_birth###</p>
+		<!-- ###SUB_ERROR_FIELD_date_of_birth### -->
 		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
-		<p class="error">###MISSING_DATE_OF_BIRTH###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_DATE_OF_BIRTH###</p>
 		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
-		<input id="tx-srfeuserregister-pi1-date_of_birth" type="text" name="FE[fe_users][date_of_birth]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-date_of_birth" type="text" name="FE[fe_users][date_of_birth]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_title### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-title">###LABEL_TITLE###</label>
-		<span class="form_required">###REQUIRED_TITLE###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_TITLE###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_title###</p>
+		<!-- ###SUB_ERROR_FIELD_title### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_title###</p>
+		<!-- ###SUB_ERROR_FIELD_title### -->
 		<!-- ###SUB_REQUIRED_FIELD_title### -->
-		<p class="error">###MISSING_TITLE###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_TITLE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_title### -->
-		<input id="tx-srfeuserregister-pi1-title" type="text" name="FE[fe_users][title]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-title" type="text" name="FE[fe_users][title]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_title### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_company### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-company">###LABEL_COMPANY###</label>
-		<span class="form_required">###REQUIRED_COMPANY###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_COMPANY###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_company###</p>
+		<!-- ###SUB_ERROR_FIELD_company### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_company###</p>
+		<!-- ###SUB_ERROR_FIELD_company### -->
 		<!-- ###SUB_REQUIRED_FIELD_company### -->
-		<p class="error">###MISSING_COMPANY###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COMPANY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_company### -->
-		<input id="tx-srfeuserregister-pi1-company" type="text" name="FE[fe_users][company]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-company" type="text" name="FE[fe_users][company]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_company### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_address### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-address">###LABEL_ADDRESS###</label>
-		<span class="form_required">###REQUIRED_ADDRESS###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_ADDRESS###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_address###</p>
+		<!-- ###SUB_ERROR_FIELD_address### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_address###</p>
+		<!-- ###SUB_ERROR_FIELD_address### -->
 		<!-- ###SUB_REQUIRED_FIELD_address### -->
-		<p class="error">###MISSING_ADDRESS###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ADDRESS###</p>
 		<!-- ###SUB_REQUIRED_FIELD_address### -->
-		<input id="tx-srfeuserregister-pi1-address" type="text" name="FE[fe_users][address]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-address" type="text" name="FE[fe_users][address]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_address### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_city### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-city">###LABEL_CITY###</label>
-		<span class="form_required">###REQUIRED_CITY###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_CITY###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_city###</p>
+		<!-- ###SUB_ERROR_FIELD_city### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_city###</p>
+		<!-- ###SUB_ERROR_FIELD_city### -->
 		<!-- ###SUB_REQUIRED_FIELD_city### -->
-		<p class="error">###MISSING_CITY###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_CITY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_city### -->
-		<input id="tx-srfeuserregister-pi1-city" type="text" name="FE[fe_users][city]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-city" type="text" name="FE[fe_users][city]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_city### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_country### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-country">###LABEL_COUNTRY###</label>
-		<span class="form_required">###REQUIRED_COUNTRY###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_COUNTRY###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_country###</p>
+		<!-- ###SUB_ERROR_FIELD_country### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_country###</p>
+		<!-- ###SUB_ERROR_FIELD_country### -->
 		<!-- ###SUB_REQUIRED_FIELD_country### -->
-		<p class="error">###MISSING_COUNTRY###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COUNTRY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_country### -->
-		<input id="tx-srfeuserregister-pi1-country" type="text" name="FE[fe_users][country]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-country" type="text" name="FE[fe_users][country]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_country### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-static_info_country">###LABEL_COUNTRY###</label>
-		<span class="form_required">###REQUIRED_STATIC_INFO_COUNTRY###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_STATIC_INFO_COUNTRY###</span>
 	</dt>
 	<dd>
 		<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
-		<p class="error">###MISSING_STATIC_INFO_COUNTRY###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_STATIC_INFO_COUNTRY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
 		###SELECTOR_STATIC_INFO_COUNTRY###
 	</dd>
@@ -1346,11 +1458,11 @@ The user is informed that a message has been sent to the email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_zone### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-zone">###LABEL_ZONE###</label>
-		<span class="form_required">###REQUIRED_ZONE###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_ZONE###</span>
 	</dt>
 	<dd>
 		<!-- ###SUB_REQUIRED_FIELD_zone### -->
-		<p class="error">###MISSING_ZONE###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ZONE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_zone### -->
 		###SELECTOR_ZONE###
 	</dd>
@@ -1359,68 +1471,78 @@ The user is informed that a message has been sent to the email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_zip### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-zip">###LABEL_ZIP###</label>
-		<span class="form_required">###REQUIRED_ZIP###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_ZIP###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_zip###</p>
+		<!-- ###SUB_ERROR_FIELD_zip### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_zip###</p>
+		<!-- ###SUB_ERROR_FIELD_zip### -->
 		<!-- ###SUB_REQUIRED_FIELD_zip### -->
-		<p class="error">###MISSING_ZIP###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ZIP###</p>
 		<!-- ###SUB_REQUIRED_FIELD_zip### -->
-		<input id="tx-srfeuserregister-pi1-zip" type="text" name="FE[fe_users][zip]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-zip" type="text" name="FE[fe_users][zip]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_zip### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-telephone">###LABEL_TELEPHONE###</label>
-		<span class="form_required">###REQUIRED_TELEPHONE###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_TELEPHONE###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_telephone###</p>
+		<!-- ###SUB_ERROR_FIELD_telephone### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_telephone###</p>
+		<!-- ###SUB_ERROR_FIELD_telephone### -->
 		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
-		<p class="error">###MISSING_TELEPHONE###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_TELEPHONE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
-		<input id="tx-srfeuserregister-pi1-telephone" type="text" name="FE[fe_users][telephone]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-telephone" type="text" name="FE[fe_users][telephone]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_fax### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-fax">###LABEL_FAX###</label>
-		<span class="form_required">###REQUIRED_FAX###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_FAX###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_fax###</p>
+		<!-- ###SUB_ERROR_FIELD_fax### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_fax###</p>
+		<!-- ###SUB_ERROR_FIELD_fax### -->
 		<!-- ###SUB_REQUIRED_FIELD_fax### -->
-		<p class="error">###MISSING_FAX###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_FAX###</p>
 		<!-- ###SUB_REQUIRED_FIELD_fax### -->
-		<input id="tx-srfeuserregister-pi1-fax" type="text" name="FE[fe_users][fax]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-fax" type="text" name="FE[fe_users][fax]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_fax### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_email### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-email">###LABEL_EMAIL###</label>
-		<span class="form_required">###REQUIRED_EMAIL###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_EMAIL###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_email###</p>
+		<!-- ###SUB_ERROR_FIELD_email### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_email###</p>
+		<!-- ###SUB_ERROR_FIELD_email### -->
 		<!-- ###SUB_REQUIRED_FIELD_email### -->
-		<p class="error">###MISSING_EMAIL###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_EMAIL###</p>
 		<!-- ###SUB_REQUIRED_FIELD_email### -->
-		<input id="tx-srfeuserregister-pi1-email" type="text" name="FE[fe_users][email]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-email" type="text" name="FE[fe_users][email]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_email### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-usergroup">###LABEL_USERGROUP###</label>
-		<span class="form_required">###REQUIRED_USERGROUP###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_USERGROUP###</span>
 	</dt>
 	<dd>
-		<p class="error">###EVAL_ERROR_FIELD_usergroup###</p>
+		<!-- ###SUB_ERROR_FIELD_usergroup### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_usergroup###</p>
+		<!-- ###SUB_ERROR_FIELD_usergroup### -->
 		<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
-		<p class="error">###MISSING_USERGROUP###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_USERGROUP###</p>
 		<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
 		###TCA_INPUT_usergroup###
 	</dd>
@@ -1429,12 +1551,14 @@ The user is informed that a message has been sent to the email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-module_sys_dmail_category">###LABEL_MODULE_SYS_DMAIL_CATEGORY###</label>
-		<span class="form_required">###REQUIRED_MODULE_SYS_DMAIL_CATEGORY###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_MODULE_SYS_DMAIL_CATEGORY###</span>
 	</dt>
 	<dd>
-		<p class="error">###EVAL_ERROR_FIELD_module_sys_dmail_category###</p>
+		<!-- ###SUB_ERROR_FIELD_module_sys_dmail_category### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_module_sys_dmail_category###</p>
+		<!-- ###SUB_ERROR_FIELD_module_sys_dmail_category### -->
 		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
-		<p class="error">###MISSING_MODULE_SYS_DMAIL_CATEGORY###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MODULE_SYS_DMAIL_CATEGORY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
 		###TCA_INPUT_module_sys_dmail_category###
 	</dd>
@@ -1443,11 +1567,11 @@ The user is informed that a message has been sent to the email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-module_sys_dmail_html">###LABEL_MODULE_SYS_DMAIL_HTML###</label>
-		<span class="form_required">###REQUIRED_MODULE_SYS_DMAIL_HTML###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_MODULE_SYS_DMAIL_HTML###</span>
 	</dt>
 	<dd>
 		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
-		<p class="error">###MISSING_MODULE_SYS_DMAIL_HTML###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MODULE_SYS_DMAIL_HTML###</p>
 		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
 		<input id="tx-srfeuserregister-pi1-module_sys_dmail_html" type="checkbox" name="FE[fe_users][module_sys_dmail_html]" value="1" />
 	</dd>
@@ -1456,11 +1580,11 @@ The user is informed that a message has been sent to the email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_language### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-language">###LABEL_LANGUAGE###</label>
-		<span class="form_required">###REQUIRED_LANGUAGE###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_LANGUAGE###</span>
 	</dt>
 	<dd>
 		<!-- ###SUB_REQUIRED_FIELD_language### -->
-		<p class="error">###MISSING_LANGUAGE###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_LANGUAGE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_language### -->
 		###SELECTOR_LANGUAGE###
 	</dd>
@@ -1469,26 +1593,30 @@ The user is informed that a message has been sent to the email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_www### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-www">###LABEL_WWW###</label>
-		<span class="form_required">###REQUIRED_WWW###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_WWW###</span>
 	</dt>
 	<dd>
-		<p>###EVAL_ERROR_FIELD_www###</p>
+		<!-- ###SUB_ERROR_FIELD_www### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_www###</p>
+		<!-- ###SUB_ERROR_FIELD_www### -->
 		<!-- ###SUB_REQUIRED_FIELD_www### -->
-		<p class="error">###MISSING_WWW###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_WWW###</p>
 		<!-- ###SUB_REQUIRED_FIELD_www### -->
-		<input id="tx-srfeuserregister-pi1-www" type="text" name="FE[fe_users][www]" class="textinput" />
+		<input id="tx-srfeuserregister-pi1-www" type="text" name="FE[fe_users][www]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_www### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_image### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-image-0">###LABEL_IMAGE###</label>
-		<span class="form_required">###REQUIRED_IMAGE###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_IMAGE###</span>
 	</dt>
 	<dd>
-		<p class="error">###EVAL_ERROR_FIELD_image###</p>
+		<!-- ###SUB_ERROR_FIELD_image### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_image###</p>
+		<!-- ###SUB_ERROR_FIELD_image### -->
 		<!-- ###SUB_REQUIRED_FIELD_image### -->
-		<p class="error">###MISSING_IMAGE###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_IMAGE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_image### -->
 		###UPLOAD_image###
 	</dd>
@@ -1497,12 +1625,14 @@ The user is informed that a message has been sent to the email address and that 
 	<!-- ###SUB_INCLUDED_FIELD_comments### -->
 	<dt>
 		<label for="tx-srfeuserregister-pi1-comments">###LABEL_COMMENTS###</label>
-		<span class="form_required">###REQUIRED_COMMENTS###</span>
+		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_COMMENTS###</span>
 	</dt>
 	<dd>
-		<p class="error">###EVAL_ERROR_FIELD_comments###</p>
+		<!-- ###SUB_ERROR_FIELD_comments### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_comments###</p>
+		<!-- ###SUB_ERROR_FIELD_comments### -->
 		<!-- ###SUB_REQUIRED_FIELD_comments### -->
-		<p class="error">###MISSING_COMMENTS###</p>
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COMMENTS###</p>
 		<!-- ###SUB_REQUIRED_FIELD_comments### -->
 		###TCA_INPUT_comments###
 	</dd>
@@ -1526,7 +1656,7 @@ The user is informed that a message has been sent to the email address and that 
 <p style="margin-top: 20px"><em>Here the user information is preview before final submission:</em></p>
 <!-- ###TEMPLATE_EDIT_PREVIEW### begin-->
 <h4>###LABEL_V_DEAR###</h4>
-<p class="form_notice">###LABEL_V_VERIFY_BEFORE_UPDATE###</p>
+<p class="tx-srfeuserregister-pi1-notice">###LABEL_V_VERIFY_BEFORE_UPDATE###</p>
 
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
 
