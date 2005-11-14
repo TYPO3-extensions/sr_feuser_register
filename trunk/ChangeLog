@@ -1,3 +1,7 @@
+2005-11-14  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Finalizing css styling (css-styled template).
+	* Working around varions IE css bugs and label on select bug.
+
 2005-11-13  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Further adjustments to default css (in css-styled template).
 	* Adding label tags for radio and checkbox values of TCA-driven fields.
