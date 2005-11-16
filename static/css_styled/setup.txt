@@ -212,10 +212,12 @@ plugin.tx_srfeuserregister_pi1 {
 		.tx-srfeuserregister-pi1 a:active { color: navy; background-repeat: no-repeat; }
 		.tx-srfeuserregister-pi1 label { margin: 0; padding: 0; font-size: 1em; }
 		.tx-srfeuserregister-pi1 input { font-size: 10px;  background-color: #35006d; color: #ffffff; font-weight: bold; margin: 0; padding: 0 .5em 0 0; }
-		.tx-srfeuserregister-pi1 input[type=text]  { width: 25em; }
-		* html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-text  { width: 25em; }
-		.tx-srfeuserregister-pi1 input[type=password] { width: 13em; margin-right: 2em; }
-		* html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-password { width: 13em; margin-right: 2em; }
+		.tx-srfeuserregister-pi1 input[type=text]  { }
+		* html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-text { }
+		.tx-srfeuserregister-pi1 input[type=file]  { font-weight: bold; }
+		* html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-uploader { font-weight: bold; }
+		.tx-srfeuserregister-pi1 input[type=password] { margin-right: 2em; }
+		* html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-password { margin-right: 2em; }
 		.tx-srfeuserregister-pi1 input[type=radio], .tx-srfeuserregister-pi1 input[type=checkbox] { background-color: transparent; color: #35006d; }
 		* html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-radio, * html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-checkbox { background-color: transparent; color: #35006d; }
 		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-delete-icon { height: 12px; width: 12px; margin: 0 0 0 1em; border-style: none; vertical-align: middle; background-color: transparent; background-repeat: no-repeat; background-position: center; }
@@ -236,6 +238,7 @@ plugin.tx_srfeuserregister_pi1 {
 		.tx-srfeuserregister-pi1 form { margin: 0 5%; }
 		* html .tx-srfeuserregister-pi1 form { margin: 0; padding: 0 4%;}
 		.tx-srfeuserregister-pi1 fieldset { border-color: #35006d; }
+		* html .tx-srfeuserregister-pi1 fieldset { border-width: 1px; }
 		.tx-srfeuserregister-pi1 legend { font-weight: bold; padding: 0 .5em; }
 		.tx-srfeuserregister-pi1 dl { margin: 0; padding: 1em 0 0 0; display: block; }
 		.tx-srfeuserregister-pi1 dt, .tx-srfeuserregister-pi1 dd { margin: 0; padding: 0 0 .5em 0; display: block; }
