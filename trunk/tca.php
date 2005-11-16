@@ -1,4 +1,5 @@
 <?php
+
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
 $TCA['fe_groups_language_overlay'] = Array (
@@ -47,4 +48,5 @@ $TCA['fe_groups_language_overlay'] = Array (
 		'0' => Array( 'showitem' => 'hidden;;;;1-1-1, fe_group, sys_language_uid, title')
 	)
 );
+
 ?>

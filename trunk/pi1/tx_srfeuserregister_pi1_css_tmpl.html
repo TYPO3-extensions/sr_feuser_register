@@ -14,9 +14,9 @@
 <p><em>Form for the registration of a frontend user:</em></p>
 <!-- ###TEMPLATE_CREATE### begin -->
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
-	<h4> ###LABEL_ENTER_ACCOUNT_INFO### </h4>
-	<p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
-
+<fieldset>
+<legend>###LABEL_ENTER_ACCOUNT_INFO###</legend>
+<p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
 <dl>
 	<!-- ###SUB_INCLUDED_FIELD_username### -->
 	<dt>
@@ -46,9 +46,9 @@
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<input id="tx-srfeuserregister-pi1-password" type="password" name="FE[fe_users][password]" class="tx-srfeuserregister-pi1-password" />
+		<input id="tx-srfeuserregister-pi1-password" type="password" title="###TOOLTIP_PASSWORD###" name="FE[fe_users][password]" class="tx-srfeuserregister-pi1-password" />
 		<label for="tx-srfeuserregister-pi1-password_again">###LABEL_PASSWORD_REPEAT###</label>
-		<input id="tx-srfeuserregister-pi1-password_again" type="password" name="FE[fe_users][password_again]" class="tx-srfeuserregister-pi1-password" />
+		<input id="tx-srfeuserregister-pi1-password_again" type="password" title="###LABEL_TOOLTIP_PASSWORD_AGAIN###" name="FE[fe_users][password_again]" class="tx-srfeuserregister-pi1-password" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_password### -->
 
@@ -80,7 +80,7 @@
 		<!-- ###SUB_REQUIRED_FIELD_name### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_name### -->
-		<input id="tx-srfeuserregister-pi1-name" type="text" name="FE[fe_users][name]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-name" type="text" title="###TOOLTIP_NAME###" name="FE[fe_users][name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_name### -->
 
@@ -96,7 +96,7 @@
 		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_FIRST_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
-		<input id="tx-srfeuserregister-pi1-first_name" type="text" name="FE[fe_users][first_name]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-first_name" type="text" title="###TOOLTIP_FIRST_NAME###" name="FE[fe_users][first_name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
 
@@ -112,7 +112,7 @@
 		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_LAST_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
-		<input id="tx-srfeuserregister-pi1-last_name" type="text" name="FE[fe_users][last_name]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-last_name" type="text" title="###TOOLTIP_LAST_NAME###" name="FE[fe_users][last_name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
 
@@ -144,7 +144,7 @@
 		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_DATE_OF_BIRTH###</p>
 		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
-		<input id="tx-srfeuserregister-pi1-date_of_birth" type="text" name="FE[fe_users][date_of_birth]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-date_of_birth" type="text" title="###TOOLTIP_DATE_OF_BIRTH###" name="FE[fe_users][date_of_birth]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
 
@@ -160,7 +160,7 @@
 		<!-- ###SUB_REQUIRED_FIELD_title### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_TITLE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_title### -->
-		<input id="tx-srfeuserregister-pi1-title" type="text" name="FE[fe_users][title]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-title" type="text" title="###TOOLTIP_TITLE###" name="FE[fe_users][title]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_title### -->
 
@@ -176,7 +176,7 @@
 		<!-- ###SUB_REQUIRED_FIELD_company### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_COMPANY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_company### -->
-		<input id="tx-srfeuserregister-pi1-company" type="text" name="FE[fe_users][company]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-company" type="text" title="###TOOLTIP_COMPANY###" name="FE[fe_users][company]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_company### -->
 
@@ -192,7 +192,7 @@
 		<!-- ###SUB_REQUIRED_FIELD_address### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_ADDRESS###</p>
 		<!-- ###SUB_REQUIRED_FIELD_address### -->
-		<input id="tx-srfeuserregister-pi1-address" type="text" name="FE[fe_users][address]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-address" type="text" title="###TOOLTIP_ADDRESS###" name="FE[fe_users][address]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_address### -->
 
@@ -208,7 +208,7 @@
 		<!-- ###SUB_REQUIRED_FIELD_city### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_CITY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_city### -->
-		<input id="tx-srfeuserregister-pi1-city" type="text" name="FE[fe_users][city]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-city" type="text" title="###TOOLTIP_CITY###" name="FE[fe_users][city]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_city### -->
 
@@ -224,7 +224,7 @@
 		<!-- ###SUB_REQUIRED_FIELD_country### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_COUNTRY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_country### -->
-		<input id="tx-srfeuserregister-pi1-country" type="text" name="FE[fe_users][country]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-country" type="text" title="###TOOLTIP_COUNTRY###" name="FE[fe_users][country]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_country### -->
 
@@ -266,7 +266,7 @@
 		<!-- ###SUB_REQUIRED_FIELD_zip### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_ZIP###</p>
 		<!-- ###SUB_REQUIRED_FIELD_zip### -->
-		<input id="tx-srfeuserregister-pi1-zip" type="text" name="FE[fe_users][zip]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-zip" type="text" title="###TOOLTIP_ZIP###" name="FE[fe_users][zip]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_zip### -->
 
@@ -282,7 +282,7 @@
 		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_TELEPHONE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
-		<input id="tx-srfeuserregister-pi1-telephone" type="text" name="FE[fe_users][telephone]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-telephone" type="text" title="###TOOLTIP_TELEPHONE###" name="FE[fe_users][telephone]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
 
@@ -298,7 +298,7 @@
 		<!-- ###SUB_REQUIRED_FIELD_fax### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_FAX###</p>
 		<!-- ###SUB_REQUIRED_FIELD_fax### -->
-		<input id="tx-srfeuserregister-pi1-fax" type="text" name="FE[fe_users][fax]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-fax" type="text" title="###TOOLTIP_FAX###" name="FE[fe_users][fax]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_fax### -->
 
@@ -314,7 +314,7 @@
 		<!-- ###SUB_REQUIRED_FIELD_email### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_EMAIL###</p>
 		<!-- ###SUB_REQUIRED_FIELD_email### -->
-		<input id="tx-srfeuserregister-pi1-email" type="text" name="FE[fe_users][email]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-email" type="text" title="###TOOLTIP_EMAIL###" name="FE[fe_users][email]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_email### -->
 
@@ -388,7 +388,7 @@
 		<!-- ###SUB_REQUIRED_FIELD_www### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_WWW###</p>
 		<!-- ###SUB_REQUIRED_FIELD_www### -->
-		<input id="tx-srfeuserregister-pi1-www" type="text" name="FE[fe_users][www]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-www" type="text" title="###TOOLTIP_WWW###" name="FE[fe_users][www]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_www### -->
 
@@ -431,6 +431,7 @@
 	</dd>
 </dl>
 <div class="clear-float"></div>
+</fieldset>
 </form>
 <!-- ###TEMPLATE_CREATE### end -->
 
@@ -438,11 +439,9 @@
 
 <p style="margin-top: 20px"><em>Here the user information is preview before final submission:</em></p>
 <!-- ###TEMPLATE_CREATE_PREVIEW### begin -->
-<h4>###LABEL_V_DEAR###</h4>
-<p class="tx-srfeuserregister-pi1-notice">###LABEL_V_VERIFY_BEFORE_CREATE###</p>
-
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
-
+<fieldset>
+<legend>###LABEL_V_DEAR###<br />###LABEL_V_VERIFY_BEFORE_CREATE###</legend>
 <dl>
 <!-- ###SUB_INCLUDED_FIELD_username### -->
 <dt> ###LABEL_USERNAME### </dt>
@@ -577,6 +576,7 @@
 </dd>
 </dl>
 <div class="clear-float"></div>
+</fieldset>
 </form>
 <!-- ###TEMPLATE_CREATE_PREVIEW### end -->
 
@@ -584,7 +584,7 @@
 
 <p style="margin-top: 20px"><em>Template, displayed if the user is already logged in.</em></p>
 <!-- ###TEMPLATE_CREATE_LOGIN### begin-->
-<p><a href="###EDIT_URL###">###LABEL_CLICK_HERE_TO_EDIT###</a></p>
+<p><a href="###EDIT_URL###" title="###LABEL_TOOLTIP_CLICK_HERE_TO_EDIT###">###LABEL_CLICK_HERE_TO_EDIT###</a></p>
 <!-- ###TEMPLATE_CREATE_LOGIN### end-->
 
 
@@ -655,9 +655,9 @@ The user is informed that a message has been sent to his email address and that 
 <p style="margin-top: 20px"><em>Form for the registration of an invited frontend user:</em></p>
 <!-- ###TEMPLATE_INVITE### begin -->
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
-	<h4>###LABEL_ENTER_INVITATION_ACCOUNT_INFO###</h4>
-	<p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
-
+<fieldset>
+<legend>###LABEL_ENTER_INVITATION_ACCOUNT_INFO###</legend>
+<p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
 <dl>
 	<!-- ###SUB_INCLUDED_FIELD_username### -->
 	<dt>
@@ -671,7 +671,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_username### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_USERNAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_username### -->
-		<input id="tx-srfeuserregister-pi1-username" type="text" name="FE[fe_users][username]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-username" type="text" title="###TOOLTIP_INVITATION_USERNAME###" name="FE[fe_users][username]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_username### -->
 
@@ -687,9 +687,9 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<input id="tx-srfeuserregister-pi1-password" type="password" name="FE[fe_users][password]" class="tx-srfeuserregister-pi1-password" />
+		<input id="tx-srfeuserregister-pi1-password" type="password" title="###TOOLTIP_INVITATION_PASSWORD###" name="FE[fe_users][password]" class="tx-srfeuserregister-pi1-password" />
 		<label for="tx-srfeuserregister-pi1-password_again">###LABEL_PASSWORD_REPEAT###</label>
-		<input id="tx-srfeuserregister-pi1-password_again" type="password" name="FE[fe_users][password_again]" class="tx-srfeuserregister-pi1-password" />
+		<input id="tx-srfeuserregister-pi1-password_again" type="password" title="###LABEL_TOOLTIP_INVITATION_PASSWORD_AGAIN###" name="FE[fe_users][password_again]" class="tx-srfeuserregister-pi1-password" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_password### -->
 
@@ -721,7 +721,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_name### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_name### -->
-		<input id="tx-srfeuserregister-pi1-name" type="text" name="FE[fe_users][name]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-name" type="text" title="###TOOLTIP_INVITATION_NAME###" name="FE[fe_users][name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_name### -->
 
@@ -737,7 +737,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_FIRST_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
-		<input id="tx-srfeuserregister-pi1-first_name" type="text" name="FE[fe_users][first_name]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-first_name" type="text" title="###TOOLTIP_INVITATION_FIRST_NAME###" name="FE[fe_users][first_name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
 
@@ -753,7 +753,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_LAST_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
-		<input id="tx-srfeuserregister-pi1-last_name" type="text" name="FE[fe_users][last_name]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-last_name" type="text" title="###TOOLTIP_INVITATION_LAST_NAME###" name="FE[fe_users][last_name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
 
@@ -785,7 +785,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_DATE_OF_BIRTH###</p>
 		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
-		<input id="tx-srfeuserregister-pi1-date_of_birth" type="text" name="FE[fe_users][date_of_birth]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-date_of_birth" type="text" title="###TOOLTIP_INVITATION_DATE_OF_BIRTH###" name="FE[fe_users][date_of_birth]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
 
@@ -801,7 +801,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_title### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_TITLE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_title### -->
-		<input id="tx-srfeuserregister-pi1-title" type="text" name="FE[fe_users][title]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-title" type="text" title="###TOOLTIP_INVITATION_TITLE###" name="FE[fe_users][title]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_title### -->
 
@@ -817,7 +817,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_company### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_COMPANY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_company### -->
-		<input id="tx-srfeuserregister-pi1-company" type="text" name="FE[fe_users][company]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-company" type="text" title="###TOOLTIP_INVITATION_COMPANY###" name="FE[fe_users][company]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_company### -->
 
@@ -833,7 +833,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_address### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_ADDRESS###</p>
 		<!-- ###SUB_REQUIRED_FIELD_address### -->
-		<input id="tx-srfeuserregister-pi1-address" type="text" name="FE[fe_users][address]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-address" type="text" title="###TOOLTIP_INVITATION_ADDRESS###" name="FE[fe_users][address]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_address### -->
 
@@ -849,7 +849,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_city### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_CITY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_city### -->
-		<input id="tx-srfeuserregister-pi1-city" type="text" name="FE[fe_users][city]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-city" type="text" title="###TOOLTIP_INVITATION_CITY###" name="FE[fe_users][city]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_city### -->
 
@@ -865,7 +865,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_country### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_COUNTRY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_country### -->
-		<input id="tx-srfeuserregister-pi1-country" type="text" name="FE[fe_users][country]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-country" type="text" title="###TOOLTIP_INVITATION_COUNTRY###" name="FE[fe_users][country]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_country### -->
 
@@ -907,7 +907,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_zip### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_ZIP###</p>
 		<!-- ###SUB_REQUIRED_FIELD_zip### -->
-		<input id="tx-srfeuserregister-pi1-zip" type="text" name="FE[fe_users][zip]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-zip" type="text" title="###TOOLTIP_INVITATION_ZIP###" name="FE[fe_users][zip]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_zip### -->
 
@@ -923,7 +923,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_TELEPHONE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
-		<input id="tx-srfeuserregister-pi1-telephone" type="text" name="FE[fe_users][telephone]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-telephone" type="text" title="###TOOLTIP_INVITATION_TELEPHONE###" name="FE[fe_users][telephone]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
 
@@ -939,7 +939,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_fax### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_FAX###</p>
 		<!-- ###SUB_REQUIRED_FIELD_fax### -->
-		<input id="tx-srfeuserregister-pi1-fax" type="text" name="FE[fe_users][fax]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-fax" type="text" title="###TOOLTIP_INVITATION_FAX###" name="FE[fe_users][fax]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_fax### -->
 
@@ -955,7 +955,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_email### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_EMAIL###</p>
 		<!-- ###SUB_REQUIRED_FIELD_email### -->
-		<input id="tx-srfeuserregister-pi1-email" type="text" name="FE[fe_users][email]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-email" type="text" title="###TOOLTIP_INVITATION_EMAIL###" name="FE[fe_users][email]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_email### -->
 
@@ -1029,7 +1029,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_www### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_WWW###</p>
 		<!-- ###SUB_REQUIRED_FIELD_www### -->
-		<input id="tx-srfeuserregister-pi1-www" type="text" name="FE[fe_users][www]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-www" type="text" title="###TOOLTIP_INVITATION_WWW###" name="FE[fe_users][www]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_www### -->
 
@@ -1048,30 +1048,15 @@ The user is informed that a message has been sent to his email address and that 
 		###UPLOAD_image###
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_image### -->
-
-	<!-- ###SUB_INCLUDED_FIELD_comments### -->
-	<dt>
-		<label for="tx-srfeuserregister-pi1-comments">###LABEL_COMMENTS###</label>
-		<span class="tx-srfeuserregister-pi1-required">###REQUIRED_COMMENTS###</span>
-	</dt>
+	
+	<dt></dt>
 	<dd>
-		<!-- ###SUB_ERROR_FIELD_comments### -->
-		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_comments###</p>
-		<!-- ###SUB_ERROR_FIELD_comments### -->
-		<!-- ###SUB_REQUIRED_FIELD_comments### -->
-		<p class="tx-srfeuserregister-pi1-error">###MISSING_COMMENTS###</p>
-		<!-- ###SUB_REQUIRED_FIELD_comments### -->
-		###TCA_INPUT_comments###
-	</dd>
-	<!-- ###SUB_INCLUDED_FIELD_comments### -->
-
-	<dd></dd>
-	<dt>
 		###HIDDENFIELDS###
 		<button type="submit" name="tx_srfeuserregister_pi1[submit]" value="submit">###LABEL_BUTTON_REGISTER###</button>
-	</dt>
+	</dd>
 </dl>
 <div class="clear-float"></div>
+</fieldset>
 </form>
 <!-- ###TEMPLATE_INVITE### end-->
 
@@ -1079,10 +1064,9 @@ The user is informed that a message has been sent to his email address and that 
 
 <p style="margin-top: 20px"><em>Here the invited user information is previewed before final submission:</em></p>
 <!-- ###TEMPLATE_INVITE_PREVIEW### begin -->
-<p>###LABEL_V_VERIFY_INVITATION_BEFORE_CREATE###</p>
-
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
-
+<fieldset>
+<legend>###LABEL_V_VERIFY_INVITATION_BEFORE_CREATE###</legend>
 <dl>
 <!-- ###SUB_INCLUDED_FIELD_username### -->
 <dt>###LABEL_USERNAME###</dt>
@@ -1204,11 +1188,6 @@ The user is informed that a message has been sent to his email address and that 
 <dd>###UPLOAD_PREVIEW_image###</dd>
 <!-- ###SUB_INCLUDED_FIELD_image### -->
 
-<!-- ###SUB_INCLUDED_FIELD_comments### -->
-<dt>###LABEL_COMMENTS###</dt>
-<dd>###TCA_INPUT_comments###</dd>
-<!-- ###SUB_INCLUDED_FIELD_comments### -->
-
 <dt></dt>
 <dd>
 	###HIDDENFIELDS###
@@ -1218,6 +1197,7 @@ The user is informed that a message has been sent to his email address and that 
 
 </dl>
 <div class="clear-float"></div>
+</fieldset>
 </form>
 <!-- ###TEMPLATE_INVITE_PREVIEW### end-->
 
@@ -1242,11 +1222,10 @@ The user is informed that a message has been sent to the email address and that 
 <p style="margin-top: 20px"><em>Form for editing of a fe_users record:</em></p>
 <!-- ###TEMPLATE_EDIT### begin -->
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
-	<h4>###LABEL_V_DEAR###</h4>
-	<p>###LABEL_V_EDIT_YOUR_ACCOUNT###</p>
+<fieldset>
+<legend>###LABEL_V_DEAR###<br />###LABEL_V_EDIT_YOUR_ACCOUNT###</legend>
 	<p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
-	<p class="tx-srfeuserregister-pi1-trash"><a href="###DELETE_URL###">###LABEL_CLICK_HERE_TO_DELETE###</a></p>
-
+	<p class="tx-srfeuserregister-pi1-trash"><a href="###DELETE_URL###" title="###LABEL_TOOLTIP_CLICK_HERE_TO_DELETE###">###LABEL_CLICK_HERE_TO_DELETE###</a></p>
 <dl>
 	<!-- ###SUB_INCLUDED_FIELD_password### -->
 	<dt>
@@ -1260,9 +1239,9 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<input id="tx-srfeuserregister-pi1-password" type="password" name="FE[fe_users][password]" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
+		<input id="tx-srfeuserregister-pi1-password" type="password" title="###TOOLTIP_PASSWORD###" name="FE[fe_users][password]" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
 		<label for="tx-srfeuserregister-pi1-password_again">###LABEL_PASSWORD_REPEAT###</label>
-		<input id="tx-srfeuserregister-pi1-password_again" type="password" name="FE[fe_users][password_again]" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
+		<input id="tx-srfeuserregister-pi1-password_again" type="password" title="###LABEL_TOOLTIP_PASSWORD_AGAIN###" name="FE[fe_users][password_again]" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_password### -->
 
@@ -1294,7 +1273,7 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_name### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_name### -->
-		<input id="tx-srfeuserregister-pi1-name" type="text" name="FE[fe_users][name]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-name" type="text" title="###TOOLTIP_NAME###" name="FE[fe_users][name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_name### -->
 
@@ -1310,7 +1289,7 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_FIRST_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
-		<input id="tx-srfeuserregister-pi1-first_name" type="text" name="FE[fe_users][first_name]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-first_name" type="text" title="###TOOLTIP_FIRST_NAME###" name="FE[fe_users][first_name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
 
@@ -1326,7 +1305,7 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_LAST_NAME###</p>
 		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
-		<input id="tx-srfeuserregister-pi1-last_name" type="text" name="FE[fe_users][last_name]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-last_name" type="text" title="###TOOLTIP_LAST_NAME###" name="FE[fe_users][last_name]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
 
@@ -1358,7 +1337,7 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_DATE_OF_BIRTH###</p>
 		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
-		<input id="tx-srfeuserregister-pi1-date_of_birth" type="text" name="FE[fe_users][date_of_birth]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-date_of_birth" type="text" title="###TOOLTIP_DATE_OF_BIRTH###" name="FE[fe_users][date_of_birth]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
 
@@ -1374,7 +1353,7 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_title### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_TITLE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_title### -->
-		<input id="tx-srfeuserregister-pi1-title" type="text" name="FE[fe_users][title]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-title" type="text" title="###TOOLTIP_TITLE###" name="FE[fe_users][title]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_title### -->
 
@@ -1390,7 +1369,7 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_company### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_COMPANY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_company### -->
-		<input id="tx-srfeuserregister-pi1-company" type="text" name="FE[fe_users][company]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-company" type="text" title="###TOOLTIP_COMPANY###" name="FE[fe_users][company]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_company### -->
 
@@ -1406,7 +1385,7 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_address### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_ADDRESS###</p>
 		<!-- ###SUB_REQUIRED_FIELD_address### -->
-		<input id="tx-srfeuserregister-pi1-address" type="text" name="FE[fe_users][address]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-address" type="text" title="###TOOLTIP_ADDRESS###" name="FE[fe_users][address]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_address### -->
 
@@ -1422,7 +1401,7 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_city### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_CITY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_city### -->
-		<input id="tx-srfeuserregister-pi1-city" type="text" name="FE[fe_users][city]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-city" type="text" title="###TOOLTIP_CITY###" name="FE[fe_users][city]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_city### -->
 
@@ -1438,7 +1417,7 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_country### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_COUNTRY###</p>
 		<!-- ###SUB_REQUIRED_FIELD_country### -->
-		<input id="tx-srfeuserregister-pi1-country" type="text" name="FE[fe_users][country]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-country" type="text" title="###TOOLTIP_COUNTRY###" name="FE[fe_users][country]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_country### -->
 
@@ -1480,7 +1459,7 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_zip### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_ZIP###</p>
 		<!-- ###SUB_REQUIRED_FIELD_zip### -->
-		<input id="tx-srfeuserregister-pi1-zip" type="text" name="FE[fe_users][zip]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-zip" type="text" title="###TOOLTIP_ZIP###" name="FE[fe_users][zip]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_zip### -->
 
@@ -1496,7 +1475,7 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_TELEPHONE###</p>
 		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
-		<input id="tx-srfeuserregister-pi1-telephone" type="text" name="FE[fe_users][telephone]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-telephone" type="text" title="###TOOLTIP_TELEPHONE###" name="FE[fe_users][telephone]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
 
@@ -1512,7 +1491,7 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_fax### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_FAX###</p>
 		<!-- ###SUB_REQUIRED_FIELD_fax### -->
-		<input id="tx-srfeuserregister-pi1-fax" type="text" name="FE[fe_users][fax]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-fax" type="text" title="###TOOLTIP_FAX###" name="FE[fe_users][fax]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_fax### -->
 
@@ -1528,7 +1507,7 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_email### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_EMAIL###</p>
 		<!-- ###SUB_REQUIRED_FIELD_email### -->
-		<input id="tx-srfeuserregister-pi1-email" type="text" name="FE[fe_users][email]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-email" type="text" title="###TOOLTIP_EMAIL###" name="FE[fe_users][email]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_email### -->
 
@@ -1602,7 +1581,7 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_www### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_WWW###</p>
 		<!-- ###SUB_REQUIRED_FIELD_www### -->
-		<input id="tx-srfeuserregister-pi1-www" type="text" name="FE[fe_users][www]" class="tx-srfeuserregister-pi1-text" />
+		<input id="tx-srfeuserregister-pi1-www" type="text" title="###TOOLTIP_WWW###" name="FE[fe_users][www]" class="tx-srfeuserregister-pi1-text" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_www### -->
 
@@ -1648,6 +1627,7 @@ The user is informed that a message has been sent to the email address and that 
 	</dd>
 </dl>
 <div class="clear-float"></div>
+</fieldset>
 </form>
 <!-- ###TEMPLATE_EDIT### end-->
 
@@ -1655,11 +1635,9 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>Here the user information is preview before final submission:</em></p>
 <!-- ###TEMPLATE_EDIT_PREVIEW### begin-->
-<h4>###LABEL_V_DEAR###</h4>
-<p class="tx-srfeuserregister-pi1-notice">###LABEL_V_VERIFY_BEFORE_UPDATE###</p>
-
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
-
+<fieldset>
+<legend>###LABEL_V_DEAR###<br />###LABEL_V_VERIFY_BEFORE_UPDATE###</legend>
 <dl>
 <!-- ###SUB_INCLUDED_FIELD_username### -->
 <dt> ###LABEL_USERNAME### </dt>
@@ -1797,6 +1775,7 @@ The user is informed that a message has been sent to the email address and that 
 </dd>
 </dl>
 <div class="clear-float"></div>
+</fieldset>
 </form>
 <!-- ###TEMPLATE_EDIT_PREVIEW### end-->
 
@@ -1859,10 +1838,10 @@ The user is informed that a message has been sent to the email address and that 
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
 <dl>
 	<dt><label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME###</label></dt>
-	<dd> <input type="text" id="tx-srfeuserregister-pi1-username" name="user" value="###FIELD_username###" /> </dd>
+	<dd> <input type="text" id="tx-srfeuserregister-pi1-username" title="###LABEL_TOOLTIP_LOGIN_USERNAME###" name="user" value="###FIELD_username###" /> </dd>
 
 	<dt><label for="tx-srfeuserregister-pi1-pass">###LABEL_PASSWORD###</label></dt>
-	<dd> <input type="password" id="tx-srfeuserregister-pi1-pass" name="pass" value="###FIELD_password###" /> </dd>
+	<dd> <input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="pass" value="###FIELD_password###" /> </dd>
 
 	<dt></dt>
 	<dd>
@@ -1913,10 +1892,10 @@ The user is informed that a message has been sent to the email address and that 
 <form id="tx-srfeuserregister-pi1-###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
 <dl>
 		<dt><label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME###</label></dt>
-		<dd><input type="text" id="tx-srfeuserregister-pi1-username" name="user" value="###FIELD_username###" /></dd>
+		<dd><input type="text" id="tx-srfeuserregister-pi1-username" title="###LABEL_TOOLTIP_LOGIN_USERNAME###" name="user" value="###FIELD_username###" /></dd>
 
 		<dt><label for="tx-srfeuserregister-pi1-pass">###LABEL_PASSWORD###</label></dt>
-		<dd><input type="password" id="tx-srfeuserregister-pi1-pass" name="pass" value="###FIELD_password###" /></dd>
+		<dd><input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="pass" value="###FIELD_password###" /></dd>
 
 		<dt></dt>
 		<dd>
@@ -1975,7 +1954,7 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>Authentication failed message.</em></p>
 <!-- ###TEMPLATE_AUTH### begin -->
-<p><a href="###REGISTER_URL###">###LABEL_CLICK_HERE_TO_REGISTER###</a></p>
+<p><a href="###REGISTER_URL###" title="###LABEL_TOOLTIP_CLICK_HERE_TO_REGISTER###">###LABEL_CLICK_HERE_TO_REGISTER###</a></p>
 <!-- ###TEMPLATE_AUTH### end-->
 
 

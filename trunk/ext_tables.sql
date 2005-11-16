@@ -20,7 +20,8 @@ CREATE TABLE fe_users (
   date_of_birth int(11) DEFAULT '0' NOT NULL,
   module_sys_dmail_category int(10) unsigned DEFAULT '0' NOT NULL,
   module_sys_dmail_html tinyint(3) unsigned DEFAULT '0' NOT NULL,
-  comments text NOT NULL
+  comments text NOT NULL,
+  by_invitation tinyint(4) unsigned DEFAULT '0' NOT NULL,
 );
 
 CREATE TABLE fe_groups_language_overlay (
@@ -36,4 +37,3 @@ CREATE TABLE fe_groups_language_overlay (
 	PRIMARY KEY (uid),
 	KEY parent (pid)
 );
-

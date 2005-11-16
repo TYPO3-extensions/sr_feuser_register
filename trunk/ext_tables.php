@@ -166,6 +166,14 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 				'cols' => '48'
 			)
 		),
+		'by_invitation' => Array (
+			'exclude' => 0,	
+			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.by_invitation',
+			'config' => Array (
+				'type' => 'check',
+				'default' => '0'
+			)
+		),
 ));
 
 $TCA['fe_users']['interface']['showRecordFieldList'] = str_replace('country', 'zone,static_info_country,country,language', $TCA['fe_users']['interface']['showRecordFieldList']);
@@ -174,14 +182,14 @@ if(!strstr($TCA['fe_users']['interface']['showRecordFieldList'], 'module_sys_dma
 
 $TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace('country', 'zone,static_info_country,country,language,comments', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
 $TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace('title', 'gender,first_name,last_name,status,title', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
-$TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',image,disable,date_of_birth';
+$TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',image,disable,date_of_birth,by_invitation';
 if(!strstr($TCA['fe_users']['feInterface']['fe_admin_fieldList'], 'module_sys_dmail_html')) { $TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',module_sys_dmail_html'; }
 if(!strstr($TCA['fe_users']['feInterface']['fe_admin_fieldList'], 'module_sys_dmail_category')) { $TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',module_sys_dmail_category'; }
 
 $TCA['fe_users']['types']['0']['showitem'] = str_replace('country', 'zone,static_info_country,country,language', $TCA['fe_users']['types']['0']['showitem']);
 if(!strstr($TCA['fe_users']['types']['0']['showitem'], 'module_sys_dmail_html')) { $TCA['fe_users']['types']['0']['showitem'] = str_replace('email', 'email,module_sys_dmail_category,module_sys_dmail_html', $TCA['fe_users']['types']['0']['showitem']); }
 $TCA['fe_users']['types']['0']['showitem'] = str_replace('address', 'status,address', $TCA['fe_users']['types']['0']['showitem']);
-$TCA['fe_users']['types']['0']['showitem'] = str_replace('www', 'www,comments', $TCA['fe_users']['types']['0']['showitem']);
+$TCA['fe_users']['types']['0']['showitem'] = str_replace('www', 'www,comments,by_invitation', $TCA['fe_users']['types']['0']['showitem']);
 
 $TCA['fe_users']['palettes']['2']['showitem'] = str_replace('title', 'gender,first_name,last_name,title', $TCA['fe_users']['palettes']['2']['showitem']);
 
