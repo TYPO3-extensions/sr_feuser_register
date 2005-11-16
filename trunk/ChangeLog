@@ -1,3 +1,7 @@
+2005-11-16  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Adding size and maxlength attributes on text input fields (in css-styled template).
+	* Final css adjustments.
+
 2005-11-15  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Adding tooltips
 	* Adding fieldset tags

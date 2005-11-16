@@ -2392,7 +2392,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$HTMLContent .= '<input type="hidden" name="' . $prefix . '[' . $fName . '][' . $i . '][name]' . '" value="' . $filenames[$i] . '" />';
 				}
 				for ($i = sizeof($filenames); $i < $number + sizeof($filenames); $i++) {
-					$HTMLContent .= '<input id="'. $this->pi_getClassName($fName) . '-' . ($i-sizeof($filenames)) . '" name="'.$prefix.'['.$fName.']['.$i.']'.'" title="' . $this->pi_getLL('tooltip_' . (($this->cmd == 'invite')?'invitation_':'')  . 'image') . '" type="file" '.$this->pi_classParam('uploader').' /><br />';
+					$HTMLContent .= '<input id="'. $this->pi_getClassName($fName) . '-' . ($i-sizeof($filenames)) . '" name="'.$prefix.'['.$fName.']['.$i.']'.'" title="' . $this->pi_getLL('tooltip_' . (($this->cmd == 'invite')?'invitation_':'')  . 'image') . '" size="40" type="file" '.$this->pi_classParam('uploader').' /><br />';
 				}
 			}
 			
