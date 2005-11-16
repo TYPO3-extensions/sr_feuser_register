@@ -96,7 +96,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$this->scriptRelPath = 'pi1/class.tx_srfeuserregister_pi1.php'; // Path to this script relative to the extension dir.
 			$this->extKey = 'sr_feuser_register';  // The extension key.
 			$this->theTable = 'fe_users';
-			$this->adminFieldList = 'username,name,disable,usergroup';
+			$this->adminFieldList = 'username,password,name,disable,usergroup,by_invitation';
 		}
 		 
 		function main($content, $conf) {
@@ -180,8 +180,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			$this->cmd = $this->feUserData['cmd'] ? $this->feUserData['cmd'] : strtolower($this->cObj->data['select_key']);
 			$this->cmd = $this->cmd ? $this->cmd : strtolower($this->conf['defaultCODE']) ;
-			if ($this->cmd == 'edit') {
-				$this->cmdKey = 'edit';
+			if ($this->cmd == 'edit' || $this->cmd == 'invite') {
+				$this->cmdKey = $this->cmd;
 			} else {
 				$this->cmdKey = 'create';
 			}
@@ -205,13 +205,13 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			if (trim($this->conf['addAdminFieldList'])) {
 				$this->adminFieldList .= ',' . trim($this->conf['addAdminFieldList']);
 			}
-
+			
 			if ($this->theTable == 'fe_users') {
 				$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'] . ',username', 1)));
 				$this->conf[$this->cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'] . ',username', 1)));
 				if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername']) {
 					$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('username')));
-					if ($this->cmdKey == 'create') {
+					if ($this->cmdKey == 'create' || $this->cmdKey == 'invite') {
 						$this->conf[$this->cmdKey.'.']['fields'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'] . ',email', 1));
 						$this->conf[$this->cmdKey.'.']['required'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'] . ',email', 1));
 					}
@@ -224,6 +224,19 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$this->conf[$this->cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'] . ',usergroup', 1)));
 				} else {
 					$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('usergroup')));
+				}
+				if ($this->cmdKey == 'invite') {
+					if ($this->useMd5Password) {
+						$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('password')));
+						if (is_array($this->conf[$this->cmdKey.'.']['evalValues.'])) {
+							unset($this->conf[$this->cmdKey.'.']['evalValues.']['password']);
+						}
+					}
+					if ($this->conf['enableAdminReview']) {
+						if ($this->setfixedEnabled && is_array($this->conf['setfixed.']['ACCEPT.']) && is_array($this->conf['setfixed.']['APPROVE.'])) {
+							$this->conf['setfixed.']['APPROVE.'] = $this->conf['setfixed.']['ACCEPT.'];
+						}
+					}
 				}
 			}
 				// Setting requiredArr to the fields in "required" intersected field the total field list in order to remove invalid fields.
@@ -286,6 +299,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				}
 				$this->setUsername();
 				if (!$this->failure && !$this->feUserData['preview'] && !$this->feUserData['doNotSave'] ) {
+					$this->setPassword();
 					$this->save();
 				}
 			} else {
@@ -299,35 +313,36 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 
 				// Display forms
 			if ($this->saved) {
-				// Displaying the page here that says, the record has been saved. You're able to include the saved values by markers.
+					// Displaying the page here that says, the record has been saved. You're able to include the saved values by markers.
 				switch($this->cmd) {
 					case 'delete':
-					$key = 'DELETE'.$this->savedSuffix;
-					break;
+						$key = 'DELETE'.$this->savedSuffix;
+						break;
 					case 'edit':
-					$key = 'EDIT'.$this->savedSuffix;
-					break;
+						$key = 'EDIT'.$this->savedSuffix;
+						break;
 					case 'invite':
-					$key = $this->setfixedPrefix.'INVITE';
-					break;
-					default:
-					if ($this->setfixedEnabled) {
-						$key = $this->setfixedPrefix.'CREATE';
-						if ($this->conf['enableAdminReview']) {
-							$key .= '_REVIEW';
+						$key = $this->setfixedPrefix.'INVITE';
+						break;
+					case 'create':
+						if (!$this->setfixedEnabled) {
+							$this->markerArray = $this->addMd5LoginMarkers($this->markerArray);
+							if ($this->useMd5Password) {
+								$this->currentArr['password'] = '';
+							}
 						}
-					} else {
-						$key = 'CREATE'.$this->savedSuffix;
-					}
-					break;
+					default:
+						if ($this->setfixedEnabled) {
+							$key = $this->setfixedPrefix.'CREATE';
+							if ($this->conf['enableAdminReview']) {
+								$key .= '_REVIEW';
+							}
+						} else {
+							$key = 'CREATE'.$this->savedSuffix;
+						}
+						break;
 				}
 					// Display confirmation message
-				if (!$this->setfixedEnabled && $this->cmd == 'create') {
-					$this->markerArray = $this->addMd5LoginMarkers($this->markerArray);
-					if($this->useMd5Password) {
-						$this->currentArr['password'] = '';
-					}
-				}
 				$templateCode = $this->cObj->getSubpart($this->templateCode, '###TEMPLATE_'.$key.'###');
 				$markerArray = $this->cObj->fillInMarkerArray($this->markerArray, $this->currentArr);
 				$markerArray = $this->addStaticInfoMarkers($markerArray, $this->currentArr);
@@ -350,36 +365,36 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$content = $this->cObj->substituteMarkerArray($templateCode, $this->markerArray);
 			} else {
 					// Finally, if there has been no attempt to save. That is either preview or just displaying and empty or not correctly filled form:
-					switch($this->cmd) {
+				switch($this->cmd) {
 					case 'setfixed':
-					if ($this->conf['infomail']) {
-						$this->setfixedEnabled = 1;
-					}
-					$content = $this->procesSetFixed();
-					break;
+						if ($this->conf['infomail']) {
+							$this->setfixedEnabled = 1;
+						}
+						$content = $this->procesSetFixed();
+						break;
 					case 'infomail':
-					if ($this->conf['infomail']) {
-						$this->setfixedEnabled = 1;
-					}
-					$content = $this->sendInfoMail();
-					break;
+						if ($this->conf['infomail']) {
+							$this->setfixedEnabled = 1;
+						}
+						$content = $this->sendInfoMail();
+						break;
 					case 'delete':
-					$content = $this->displayDeleteScreen();
-					break;
+						$content = $this->displayDeleteScreen();
+						break;
 					case 'edit':
-					$content = $this->displayEditScreen();
-					break;
+						$content = $this->displayEditScreen();
+						break;
 					case 'invite':
 					case 'create':
-					$content = $this->displayCreateScreen($this->cmd);
-					break;
-					default:
-					if ($this->theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) {
 						$content = $this->displayCreateScreen($this->cmd);
-					} else {
-						$content = $this->displayEditScreen();
-					}
-					break;
+						break;
+					default:
+						if ($this->theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) {
+							$content = $this->displayCreateScreen($this->cmd);
+						} else {
+							$content = $this->displayEditScreen();
+						}
+						break;
 				}
 			}
 			return $this->pi_wrapInBaseClass($content);
@@ -403,19 +418,19 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			if (is_array($this->conf[$this->cmdKey.'.']['evalValues.'])) {
 				switch($this->cmd) {
 					case 'edit':
-					if (isset($this->dataArr['pid'])) {
-						// This may be tricked if the input has the pid-field set but the edit-field list does NOT allow the pid to be edited. Then the pid may be false.
-						$recordTestPid = intval($this->dataArr['pid']);
-					} else {
-						$tempRecArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $this->dataArr[uid]);
-						$recordTestPid = intval($tempRecArr['pid']);
-					}
-					$recExist = 1;
-					break;
+						if (isset($this->dataArr['pid'])) {
+								// This may be tricked if the input has the pid-field set but the edit-field list does NOT allow the pid to be edited. Then the pid may be false.
+							$recordTestPid = intval($this->dataArr['pid']);
+						} else {
+							$tempRecArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $this->dataArr[uid]);
+							$recordTestPid = intval($tempRecArr['pid']);
+						}
+						$recExist = 1;
+						break;
 					default:
-					$recordTestPid = $this->thePid ? $this->thePid :
-					t3lib_div::intval_positive($this->dataArr['pid']);
-					break;
+						$recordTestPid = $this->thePid ? $this->thePid :
+						t3lib_div::intval_positive($this->dataArr['pid']);
+						break;
 				}
 				if($this->conf[$this->cmdKey.'.']['useEmailAsUsername']) {
 					unset($this->conf[$this->cmdKey.'.']['evalValues.']['username']);
@@ -826,16 +841,29 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$this->dataArr['name'] = trim(trim($this->dataArr['first_name']).' '.trim($this->dataArr['last_name']));
 			}
 		}
+		
 		/**
-		* Moves email into username if useEmailAsUsername is set
-		*
-		* @return void  done directly on array $this->dataArr
-		*/
+		 * Moves email into username if useEmailAsUsername is set
+		 *
+		 * @return void  done directly on array $this->dataArr
+		 */
 		function setUsername() {
 			if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'] && $this->theTable == "fe_users" && t3lib_div::inList($this->fieldList, 'username') && !$this->failureMsg['email']) {
 				$this->dataArr['username'] = trim($this->dataArr['email']);
 			}
 		}
+		
+		/**
+		 * Assigns a value to the password if this is an invitation and password encryption with kb_md5fepw is enabled
+		 *
+		 * @return void  done directly on array $this->dataArr
+		 */
+		function setPassword() {
+			if ($this->cmdKey == 'invite' && $this->useMd5Password) {
+				$this->dataArr['password'] = tx_kbmd5fepw_funcs::generatePassword(intval($GLOBALS['TSFE']->config['plugin.']['tx_newloginbox_pi1.']['defaultPasswordLength']) ? intval($GLOBALS['TSFE']->config['plugin.']['tx_newloginbox_pi1.']['defaultPasswordLength']) : 5);
+			}
+		}
+		
 		/**
 		* Saves the data into the database
 		*
@@ -887,14 +915,19 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				}
 				break;
 				default:
-				if ($this->conf['create']) {
-					$newFieldList = implode(array_intersect(explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->conf['create.']['fields'], 1)), ',');
+				if (is_array($this->conf[$this->cmdKey.'.'])) {
+					$newFieldList = implode(array_intersect(explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)), ',');
 					$newFieldList  = implode( array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->adminFieldList))), ',');
+					$parsedArray = array();
+					$parsedArray = $this->parseOutgoingDates($this->dataArr);
+					if ($this->cmdKey == 'invite' && $this->useMd5Password) {
+						$parsedArray['password'] = md5($this->dataArr['password']);
+					}
 					if ($this->typoVersion >= 3006000) {
-						$res = $this->cObj->DBgetInsert($this->theTable, $this->thePid, $this->parseOutgoingDates($this->dataArr), $newFieldList, true);
+						$res = $this->cObj->DBgetInsert($this->theTable, $this->thePid, $parsedArray, $newFieldList, true);
 						$newId = $TYPO3_DB->sql_insert_id();
 					} else {
-						$query = $this->cObj->DBgetInsert($this->theTable, $this->thePid, $this->parseOutgoingDates($this->dataArr), $newFieldList);
+						$query = $this->cObj->DBgetInsert($this->theTable, $this->thePid, $parsedArray, $newFieldList);
 						mysql(TYPO3_db, $query);
 						echo mysql_error();
 						$newId = mysql_insert_id();
@@ -941,23 +974,27 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						}
 					}
 						// </Ries van Twisk added registrationProcess hooks>
+					if ($this->cmdKey == 'invite' && $this->useMd5Password) {
+						$this->currentArr['password'] = $this->dataArr['password'];
+					}
 				}
 				break;
 			}
 		}
+		
 		/**
-		* Removes required parts
-		*
-		* Works like this:
-		* - Insert subparts like this ###SUB_REQUIRED_FIELD_".$theField."### that tells that the field is required, if it's not correctly filled in.
-		* - These subparts are all removed, except if the field is listed in $failure string!
-		* - Subparts like ###SUB_ERROR_FIELD_".$theField."### are also removed if there is no error on the field
-		* and remove also the parts of non-included fields, using a similar scheme!
-		*
-		* @param string  $templateCode: the content of the HTML template
-		* @param string  $failure: the list of fiels with errors
-		* @return string  the template with susbstituted parts
-		*/
+		 * Removes required and error sub-parts when there are no errors
+		 *
+		 * Works like this:
+		 * - Insert subparts like this ###SUB_REQUIRED_FIELD_".$theField."### that tells that the field is required, if it's not correctly filled in.
+		 * - These subparts are all removed, except if the field is listed in $failure string!
+		 * - Subparts like ###SUB_ERROR_FIELD_".$theField."### are also removed if there is no error on the field
+		 * - Remove also the parts of non-included fields, using a similar scheme!
+		 *
+		 * @param string  $templateCode: the content of the HTML template
+		 * @param string  $failure: the list of fiels with errors
+		 * @return string  the template with susbstituted parts
+		 */
 		function removeRequired($templateCode, $failure = '') {
 			$includedFields = t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1);
 			reset($this->requiredArr);
@@ -1456,7 +1493,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						}
 					}
 					$setfixedSufffix = $this->feUserData['sFK'];
-					if ($this->conf['enableAdminReview'] && $this->feUserData['sFK'] == 'APPROVE') {
+					if ($this->conf['enableAdminReview'] && $this->feUserData['sFK'] == 'APPROVE' && !$origArr['by_invitation']) {
 						$setfixedSufffix .= '_REVIEW';
 					}
 					$content = $this->getPlainTemplate('###TEMPLATE_' . $this->setfixedPrefix . 'OK_' . $setfixedSufffix . '###', $origArr);
@@ -1473,7 +1510,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					
 					if ($this->theTable == 'fe_users') { 
 							// If applicable, send admin a request to review the registration request
-						if ($this->conf['enableAdminReview'] && $this->feUserData['sFK'] == 'APPROVE') {
+						if ($this->conf['enableAdminReview'] && $this->feUserData['sFK'] == 'APPROVE' && !$origArr['by_invitation']) {
 							$this->compileMail(
 								$this->setfixedPrefix.'REVIEW',
 								array($origArr),
@@ -1913,6 +1950,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 */
 							case 'text':
 								$colContent = '<textarea id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']"'.
+									' title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . strtoupper($colName).'###"'.
 									' cols="'.($colConfig['cols']?$colConfig['cols']:30).'"'.
 									' rows="'.($colConfig['rows']?$colConfig['rows']:5).'"'.
 									' wrap="'.($colConfig['wrap']?$colConfig['wrap']:'virtual').'"'.
@@ -1954,7 +1992,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									if ($this->theTable == 'fe_users' && $colName == 'usergroup' && !$this->conf['allowMultipleUserGroupSelection']) {
 										$multiple = '';
 									}
-									$colContent = '<select id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']' . $multiple . '">';
+									$colContent = '<select id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . strtoupper($colName).'###">';
 									if (is_array($colConfig['items'])) {
 										for ($i = 0; $i < count ($colConfig['items']); $i++) {
 											$colContent .= '<option value="'.$colConfig['items'][$i][1]. '" ' . (in_array($colConfig['items'][$i][1], $valuesArray) ? 'selected="selected"' : '') . '>' . $this->getLLFromString($colConfig['items'][$i][0]).'</option>';
@@ -2029,6 +2067,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			while (list(, $fName) = each($infoFields) ) {
 				$markerArray['###LABEL_'.strtoupper($fName).'###'] = $this->pi_getLL($fName) ? $this->pi_getLL($fName) : $this->getLLFromString($this->TCA['columns'][$fName]['label']);
 				$markerArray['###TOOLTIP_'.strtoupper($fName).'###'] = $this->pi_getLL('tooltip_' . $fName);
+				$markerArray['###TOOLTIP_INVITATION_'.strtoupper($fName).'###'] = $this->pi_getLL('tooltip_invitation_' . $fName);
 				// <Ries van Twisk added support for multiple checkboxes>
 				if (is_array($dataArray[$fName])) {
 					$colContent = '';
@@ -2061,8 +2100,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$markerArray['###LABEL_BUTTON_'.strtoupper($labelName).'###'] = $this->pi_getLL('button_'.$labelName);
 			}
 			// Labels possibly with variables
-			$otherLabelsList = 'yes,no,password_repeat,click_here_to_register,click_here_to_edit,click_here_to_delete,'.
+			$otherLabelsList = 'yes,no,password_repeat,tooltip_password_again,tooltip_invitation_password_again,click_here_to_register,tooltip_click_here_to_register,click_here_to_edit,tooltip_click_here_to_edit,click_here_to_delete,tooltip_click_here_to_delete'.
 				',copy_paste_link,enter_account_info,enter_invitation_account_info,required_info_notice,excuse_us,'.
+				',tooltip_login_username,tooltip_login_password,'.
 				',registration_problem,registration_sorry,registration_clicked_twice,registration_help,kind_regards,kind_regards_cre,kind_regards_del,kind_regards_ini,kind_regards_inv,kind_regards_upd'.
 				',v_verify_before_create,v_verify_invitation_before_create,v_verify_before_update,v_really_wish_to_delete,v_edit_your_account'.
 				',v_dear,v_now_enter_your_username,v_notification'.
@@ -2153,12 +2193,12 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$markerArray['###FIELD_language###'] = $this->staticInfo->getStaticInfoName('LANGUAGES', is_array($dataArray)?$dataArray['language']:'');
 			} else {
 				if ($this->conf['templateStyle'] == 'css-styled') {
-					$markerArray['###SELECTOR_STATIC_INFO_COUNTRY###'] = $this->staticInfo->buildStaticInfoSelector('COUNTRIES', 'FE['.$this->theTable.']'.'[static_info_country]', '', is_array($dataArray)?$dataArray['static_info_country']:'', '', $this->conf['onChangeCountryAttribute'], $this->pi_getClassName('static_info_country'));
-					$markerArray['###SELECTOR_ZONE###'] = $this->staticInfo->buildStaticInfoSelector('SUBDIVISIONS', 'FE['.$this->theTable.']'.'[zone]', '', is_array($dataArray)?$dataArray['zone']:'', is_array($dataArray)?$dataArray['static_info_country']:'', '', $this->pi_getClassName('zone'));
+					$markerArray['###SELECTOR_STATIC_INFO_COUNTRY###'] = $this->staticInfo->buildStaticInfoSelector('COUNTRIES', 'FE['.$this->theTable.']'.'[static_info_country]', '', is_array($dataArray)?$dataArray['static_info_country']:'', '', $this->conf['onChangeCountryAttribute'], $this->pi_getClassName('static_info_country'), $this->pi_getLL('tooltip_' . (($this->cmd == 'invite')?'invitation_':'')  . 'static_info_country'));
+					$markerArray['###SELECTOR_ZONE###'] = $this->staticInfo->buildStaticInfoSelector('SUBDIVISIONS', 'FE['.$this->theTable.']'.'[zone]', '', is_array($dataArray)?$dataArray['zone']:'', is_array($dataArray)?$dataArray['static_info_country']:'', '', $this->pi_getClassName('zone'), $this->pi_getLL('tooltip_' . (($this->cmd == 'invite')?'invitation_':'')  . 'zone'));
 					if (!$markerArray['###SELECTOR_ZONE###'] ) {
 						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$this->theTable.'][zone]" value="">';
 					}
-					$markerArray['###SELECTOR_LANGUAGE###'] = $this->staticInfo->buildStaticInfoSelector('LANGUAGES', 'FE['.$this->theTable.']'.'[language]', '', is_array($dataArray)?$dataArray['language']:'', '', '', $this->pi_getClassName('language'));
+					$markerArray['###SELECTOR_LANGUAGE###'] = $this->staticInfo->buildStaticInfoSelector('LANGUAGES', 'FE['.$this->theTable.']'.'[language]', '', is_array($dataArray)?$dataArray['language']:'', '', '', $this->pi_getClassName('language'), $this->pi_getLL('tooltip_' . (($this->cmd == 'invite')?'invitation_':'')  . 'language'));
 				} else {
 					$markerArray['###SELECTOR_STATIC_INFO_COUNTRY###'] = $this->staticInfo->buildStaticInfoSelector('COUNTRIES', 'FE['.$this->theTable.']'.'[static_info_country]', '', is_array($dataArray)?$dataArray['static_info_country']:'', '', $this->conf['onChangeCountryAttribute']);
 					$markerArray['###SELECTOR_ZONE###'] = $this->staticInfo->buildStaticInfoSelector('SUBDIVISIONS', 'FE['.$this->theTable.']'.'[zone]', '', is_array($dataArray)?$dataArray['zone']:'', is_array($dataArray)?$dataArray['static_info_country']:'');
@@ -2352,7 +2392,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$HTMLContent .= '<input type="hidden" name="' . $prefix . '[' . $fName . '][' . $i . '][name]' . '" value="' . $filenames[$i] . '" />';
 				}
 				for ($i = sizeof($filenames); $i < $number + sizeof($filenames); $i++) {
-					$HTMLContent .= '<input id="'. $this->pi_getClassName($fName) . '-' . ($i-sizeof($filenames)) . '" name="'.$prefix.'['.$fName.']['.$i.']'.'" type="file" '.$this->pi_classParam('uploader').' /><br />';
+					$HTMLContent .= '<input id="'. $this->pi_getClassName($fName) . '-' . ($i-sizeof($filenames)) . '" name="'.$prefix.'['.$fName.']['.$i.']'.'" title="' . $this->pi_getLL('tooltip_' . (($this->cmd == 'invite')?'invitation_':'')  . 'image') . '" type="file" '.$this->pi_classParam('uploader').' /><br />';
 				}
 			}
 			
@@ -2466,11 +2506,12 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			return $parsedArr;
 		}
+		
 		/**
-		* Transforms outgoing dates into timestamps
-		*
-		* @return parsedArray
-		*/
+		 * Transforms outgoing dates into timestamps
+		 *
+		 * @return parsedArray
+		 */
 		function parseOutgoingDates($origArr = array()) {
 			$parsedArr = array();
 			$parsedArr = $origArr;
@@ -2478,7 +2519,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				reset($this->conf['parseToDBValues.']);
 				while (list($theField, $theValue) = each($this->conf['parseToDBValues.'])) {
 					$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
-
 					while (list(, $cmd) = each($listOfCommands)) {
 						$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 						$theCmd = trim($cmdParts[0]);
@@ -2659,6 +2699,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			if ($cmd != 'edit') {
 				$JSPart .= "if (pass == '') {
 						alert('" . $this->pi_getLL('missing_password') . "');
+						form['FE[" . $this->theTable . "][password]'].select();
+						form['FE[" . $this->theTable . "][password]'].focus();
+						return false;
 					}
 					";
 			}

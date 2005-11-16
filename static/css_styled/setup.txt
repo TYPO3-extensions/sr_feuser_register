@@ -46,11 +46,13 @@ plugin.tx_srfeuserregister_pi1 {
 			module_sys_dmail_category = 1
 			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
 			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
+			by_invitation =
 		}
 
 		overrideValues {
 			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
 			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
+			by_invitation =
 		}
 
 		evalValues {
@@ -76,6 +78,7 @@ plugin.tx_srfeuserregister_pi1 {
 			status = 
 			module_sys_dmail_category = 
 			usergroup =
+			by_invitation =
 		}
 	}
 
@@ -106,6 +109,14 @@ plugin.tx_srfeuserregister_pi1 {
 	setfixed.ENTER < .setfixed.ACCEPT
 	
 	invite < .create
+	invite {
+		defaultValues {
+			by_invitation = 1
+		}
+		overrideValues {
+			by_invitation = 1
+		}
+	}
 
 	edit < .create
 	edit {
@@ -117,12 +128,14 @@ plugin.tx_srfeuserregister_pi1 {
 			usergroup >
 			module_sys_dmail_html >
 			module_sys_dmail_category >
+			by_invitation >
 		}
 
 		overrideValues {
 			username = 
 			usergroup >
 			disable = 0
+			by_invitation >
 		}
 
 		evalValues {
@@ -192,10 +205,11 @@ plugin.tx_srfeuserregister_pi1 {
 	_CSS_DEFAULT_STYLE (
 		.tx-srfeuserregister-pi1  { font-family:Verdana, sans-serif; line-height: 125%; color: #35006d; font-size: 1em; }
 		.tx-srfeuserregister-pi1 p { margin-top: .5em; margin-bottom: 0; padding: 0 .3em; text-indent: 0; }
-		.tx-srfeuserregister-pi1 a:link { background-color:transparent; color:navy; text-decoration:none; font-weight:bold;}
-		.tx-srfeuserregister-pi1 a:visited { color:navy; }
-		.tx-srfeuserregister-pi1 a:hover { color:#333333; }
-		.tx-srfeuserregister-pi1 a:active { color:navy; }
+		.tx-srfeuserregister-pi1 h4 { margin-top: 0; padding-left: .3em; }
+		.tx-srfeuserregister-pi1 a:link { padding-left: 14px; background-image: url("typo3conf/ext/sr_feuser_register/pi1/internal_link.gif"); background-repeat: no-repeat; background-position: 0% 60%; background-color: transparent; color:navy; text-decoration:none; font-weight: bold; }
+		.tx-srfeuserregister-pi1 a:visited { color: navy; background-repeat: no-repeat; }
+		.tx-srfeuserregister-pi1 a:hover { color: #333333; background-repeat: no-repeat; }
+		.tx-srfeuserregister-pi1 a:active { color: navy; background-repeat: no-repeat; }
 		.tx-srfeuserregister-pi1 label { margin: 0; padding: 0; font-size: 1em; }
 		.tx-srfeuserregister-pi1 input { font-size: 10px;  background-color: #35006d; color: #ffffff; font-weight: bold; margin: 0; padding: 0 .5em 0 0; }
 		.tx-srfeuserregister-pi1 input[type=text]  { width: 25em; }
@@ -204,9 +218,9 @@ plugin.tx_srfeuserregister_pi1 {
 		* html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-password { width: 13em; margin-right: 2em; }
 		.tx-srfeuserregister-pi1 input[type=radio], .tx-srfeuserregister-pi1 input[type=checkbox] { background-color: transparent; color: #35006d; }
 		* html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-radio, * html .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-checkbox { background-color: transparent; color: #35006d; }
-		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-delete-icon { height: 12px; width: 12px; margin: 0 0 0 .6em; border-style: none; vertical-align: middle; background-color: transparent; background-repeat: no-repeat; background-position: center; }
+		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-delete-icon { height: 12px; width: 12px; margin: 0 0 0 1em; border-style: none; vertical-align: middle; background-color: transparent; background-repeat: no-repeat; background-position: center; }
 		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-delete-icon:hover { cursor: pointer; }
-		.tx-srfeuserregister-pi1 a.tx-srfeuserregister-pi1-file-view { font-size: .8em; margin-left: .6em; }
+		.tx-srfeuserregister-pi1 a.tx-srfeuserregister-pi1-file-view { padding-left: 15px; background-image: url("typo3conf/ext/sr_feuser_register/pi1/internal_link_new_window.gif"); backgroud-repeat: no-repeat; font-size: .8em; margin-left: 1em; }
 		.tx-srfeuserregister-pi1 select { font-size: 10px;  background-color: #35006d; color: #ffffff; font-weight: bold; }
 		.tx-srfeuserregister-pi1 textarea { font-size: 10px;  background-color: #35006d; color: #ffffff; font-weight: bold; }
 		.tx-srfeuserregister-pi1 ul { margin: 0; padding: 0; list-style-image: none; list-style-position: inside; font-size: 1em; }
@@ -219,17 +233,21 @@ plugin.tx_srfeuserregister_pi1 {
 		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-required { color: #FF0000; }
 		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-error { color: #FF0000; font-weight: bold; }
 		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-trash { margin-bottom: 2em; }
-		.tx-srfeuserregister-pi1 dl { margin: 0 5%; padding: 1em 0 0 0; display: block; }
-		* html .tx-srfeuserregister-pi1 dl { margin: 0; padding: 1em 4% 0 4%;}
+		.tx-srfeuserregister-pi1 form { margin: 0 5%; }
+		* html .tx-srfeuserregister-pi1 form { margin: 0; padding: 0 4%;}
+		.tx-srfeuserregister-pi1 fieldset { border-color: #35006d; }
+		.tx-srfeuserregister-pi1 legend { font-weight: bold; padding: 0 .5em; }
+		.tx-srfeuserregister-pi1 dl { margin: 0; padding: 1em 0 0 0; display: block; }
 		.tx-srfeuserregister-pi1 dt, .tx-srfeuserregister-pi1 dd { margin: 0; padding: 0 0 .5em 0; display: block; }
 		.tx-srfeuserregister-pi1 dt { float: left; clear: both; width: 25%; text-align: right; }
 		* html .tx-srfeuserregister-pi1 dt { padding-right: 1em; }
-		.tx-srfeuserregister-pi1 dd { text-align: left; float: right; clear: right; width: 73%; font-weight: bold; }
-		* html .tx-srfeuserregister-pi1 dd { float: none; clear: none; }
+		.tx-srfeuserregister-pi1 dd { text-align: left; float: right; clear: right; width: 73%; }
+		* html .tx-srfeuserregister-pi1 dd { float: none; clear: none; width: 100%; }
 		.tx-srfeuserregister-pi1 dd p { margin-top: 0; margin-bottom: .5em; padding: 0; }
 		.tx-srfeuserregister-pi1 dd label { padding: 0 1em 0 .5em; }
-		.tx-srfeuserregister-pi1 .clear-float { clear: both; }
-		.tx-srfeuserregister-pi1 button { color: #35006d; }
+		.tx-srfeuserregister-pi1 .clear-float { clear: both; border-style: none; height: 1px; }
+		.tx-srfeuserregister-pi1 button { padding: .2em; color: #ffffff; background-color: #35006d; font-size: .8em; font-weight: bold; border-style: outset; }
+		* html .tx-srfeuserregister-pi1 button { padding: 0; font-size: .9em; }
 	)
 
 	_DEFAULT_PI_VARS {

@@ -1,3 +1,10 @@
+2005-11-15  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Adding tooltips
+	* Adding fieldset tags
+	* Adding by_invitation field to fe_users table.
+	* Generate password when inviting and useMd5Password is enabled.
+	* Do not request administrative review on invitation.
+	
 2005-11-14  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Finalizing css styling (css-styled template).
 	* Working around varions IE css bugs and label on select bug.
