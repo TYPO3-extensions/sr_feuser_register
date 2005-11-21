@@ -2086,7 +2086,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$markerArray['###LABEL_'.$fName.'_CHECKED###'] = ($dataArray[$fName])?$this->pi_getLL('yes'):$this->pi_getLL('no');
 				}
 				if (in_array(trim($fName), $this->requiredArr) ) {
-					$markerArray['###REQUIRED_'.strtoupper($fName).'###'] = '*';
+					$markerArray['###REQUIRED_'.strtoupper($fName).'###'] = '<span>*</span>';
 					$markerArray['###MISSING_'.strtoupper($fName).'###'] = $this->pi_getLL('missing_'.$fName);
 					$markerArray['###MISSING_INVITATION_'.strtoupper($fName).'###'] = $this->pi_getLL('missing_invitation_'.$fName);
 				} else {
