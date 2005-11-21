@@ -1,3 +1,8 @@
+2005-11-21  Sebastian Roth <sebastian.roth@c-qube.com>
+	* Monday hacking session (mostly css related):
+	*  Many cleanups & some bugfixes.
+	*  Fixed some whitespace issues with IE/FF.
+
 2005-11-16  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Version 2.0.0
 	* Adding size and maxlength attributes on text input fields (in css-styled template).
@@ -10,7 +15,7 @@
 	* Adding by_invitation field to fe_users table.
 	* Generate password when inviting and useMd5Password is enabled.
 	* Do not request administrative review on invitation.
-	
+
 2005-11-14  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Finalizing css styling (css-styled template).
 	* Working around varions IE css bugs and label on select bug.
