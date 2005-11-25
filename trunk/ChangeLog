@@ -1,3 +1,9 @@
+2005-11-25  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Version 2.2.0:
+	* Further correction due to IE mishandling of button elements of type button. Eliminated all button elements from the html template.
+	* Added a note on upgrading to version 2 in the configuration section.
+	* Added support for backend flexforms by Franz Holzinger, but not yet enabled in ext_localconf.php.
+
 2005-11-24  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Version 2.1.0:
 	* Major correction to the CSS-styled html template: backtracking on the use of button elements of type submit because their behavior is erratic in Internet Explorer 6 and break a number of screens of the extension. Most of them are replaced by input elements.

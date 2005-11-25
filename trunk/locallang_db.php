@@ -8,6 +8,11 @@
 $LOCAL_LANG = Array (
 	'default' => Array (
 		'tt_content.list_type' => 'Front End User Registration',
+ 		'tt_content.pi1_flexform.display_mode' => 'Display mode',
+ 		'tt_content.pi1_flexform.display_mode.1' => 'Create',
+		'tt_content.pi1_flexform.display_mode.3' => 'Invite',
+ 		'tt_content.pi1_flexform.display_mode.5' => 'Confirm',
+ 		'tt_content.pi1_flexform.display_mode.7' => 'Edit',
 		'fe_users.static_info_country' => 'Country:',
 		'fe_users.zone' => 'State/province:',
 		'fe_users.language' => 'Language:',
@@ -119,6 +124,11 @@ $LOCAL_LANG = Array (
 	),
 	'fr' => Array (
 		'tt_content.list_type' => 'Enregistrement des utilisateurs de l\'avant-plan',
+ 		'tt_content.pi1_flexform.display_mode' => 'Mode d\'affichage',
+ 		'tt_content.pi1_flexform.display_mode.1' => 'Création',
+		'tt_content.pi1_flexform.display_mode.3' => 'Invitation',
+ 		'tt_content.pi1_flexform.display_mode.5' => 'Confirmation',
+ 		'tt_content.pi1_flexform.display_mode.7' => 'Mise à jour',
 		'fe_users.static_info_country' => 'Pays:',
 		'fe_users.zone' => 'État/province:',
 		'fe_users.language' => 'Langue:',
