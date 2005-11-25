@@ -1,7 +1,13 @@
+2005-11-24  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Version 2.1.0:
+	* Major correction to the CSS-styled html template: backtracking on the use of button elements of type submit because their behavior is erratic in Internet Explorer 6 and break a number of screens of the extension. Most of them are replaced by input elements.
+	* Some further adjustments to the CSS-styled template.
+	* Simplification of the default CSS styles. In particular, most color and font styling has been eliminated.
+
 2005-11-21  Sebastian Roth <sebastian.roth@c-qube.com>
 	* Monday hacking session (mostly css related):
-	*  Many cleanups & some bugfixes.
-	*  Fixed some whitespace issues with IE/FF.
+	* Many cleanups & some bugfixes.
+	* Fixed some whitespace issues with IE/FF.
 
 2005-11-16  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Version 2.0.0

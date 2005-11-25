@@ -2380,12 +2380,15 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				}
 			} else {
 					// Dynamically generate some CSS selectors
-				if ($this->conf['templateStyle'] == 'css-styled') {
-					$GLOBALS['TSFE']->additionalCSS['css-' . $this->pi_getClassName('delete-icon')] = '.' . $this->pi_getClassName('delete-icon') . ' { background-image: url("'. $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '"); }';
-				}
+				//if ($this->conf['templateStyle'] == 'css-styled') {
+				//	$GLOBALS['TSFE']->additionalCSS['css-' . $this->pi_getClassName('delete-icon')] = '.' . $this->pi_getClassName('delete-icon') . ' { background-image: url("'. $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '"); }';
+				//}
 				for($i = 0; $i < sizeof($filenames); $i++) {
 					if ($this->conf['templateStyle'] == 'css-styled') {
-						$HTMLContent .= $filenames[$i] . '<button type="submit" name="'.$prefix.'['.$fName.']['.$i.'][submit_delete]" value="1" title="'.$this->pi_getLL('icon_delete').'"' . $this->pi_classParam('delete-icon') . ' onclick=\'if(confirm("' . $this->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' ></button><a href="' . $dir.'/' . $filenames[$i] . '"' . $this->pi_classParam('file-view') . 'target="_blank" title="' . $this->pi_getLL('file_view') . '">' . $this->pi_getLL('file_view') . '</a><br />';
+						// button elements of type submit do not behave correctly in IE6
+						//$HTMLContent .= $filenames[$i] . '<button type="submit" name="'.$prefix.'['.$fName.']['.$i.'][submit_delete]" value="1" title="'.$this->pi_getLL('icon_delete').'"' . $this->pi_classParam('delete-icon') . ' onclick=\'if(confirm("' . $this->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' >' . $this->pi_getLL('icon_delete') . '</button><a href="' . $dir.'/' . $filenames[$i] . '"' . $this->pi_classParam('file-view') . 'target="_blank" title="' . $this->pi_getLL('file_view') . '">' . $this->pi_getLL('file_view') . '</a><br />';
+						$HTMLContent .= $filenames[$i] . '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="'.$prefix.'['.$fName.']['.$i.'][submit_delete]" value="1" title="'.$this->pi_getLL('icon_delete').'" alt="' . $this->pi_getLL('icon_delete'). '"' . $this->pi_classParam('delete-icon') . ' onclick=\'if(confirm("' . $this->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' />'
+								. '<a href="' . $dir.'/' . $filenames[$i] . '"' . $this->pi_classParam('file-view') . 'target="_blank" title="' . $this->pi_getLL('file_view') . '">' . $this->pi_getLL('file_view') . '</a><br />';
 					} else {
 						$HTMLContent .= $filenames[$i] . '&nbsp;&nbsp;<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="'.$prefix.'['.$fName.']['.$i.'][submit_delete]" value="1" title="'.$this->pi_getLL('icon_delete').'" alt="' . $this->pi_getLL('icon_delete'). '"' . $this->pi_classParam('icon') . ' onclick=\'if(confirm("' . $this->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' />&nbsp;&nbsp;<small><a href="' . $dir.'/' . $filenames[$i] . '" target="_blank">' . $this->pi_getLL('file_view') . '</a></small><br />';
 					}
