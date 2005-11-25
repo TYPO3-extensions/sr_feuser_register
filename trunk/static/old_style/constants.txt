@@ -22,7 +22,7 @@ plugin.tx_srfeuserregister_pi1 {
   siteName = My Typo3 Site
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Registration form fields: List of fields to be included on the front end user registration form.
-  formFields = username, password, gender, first_name, last_name, status, date_of_birth, email, address, city, zone, static_info_country, zip, telephone, language, title, company, www, module_sys_dmail_html, module_sys_dmail_category, image, comments, disable
+  formFields = username, password, gender, first_name, last_name, status, date_of_birth, email, address, city, zone, static_info_country, zip, telephone, fax, language, title, company, www, module_sys_dmail_html, module_sys_dmail_category, image, comments, disable
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Required fields: List of fields that must be fillied in on the front end user registration form.
   requiredFields = username,password,first_name,last_name,email
@@ -150,16 +150,16 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Minimum password length: The minimum number of characters that the password must contain.
   passwordAtLeast = 5
 
-    # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Maximun password length: The maximum number of characters that the password may contain.
+    # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Maximum password length: The maximum number of characters that the password may contain.
   passwordAtMost = 40
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Minimum username length: The minimum number of characters that the username must contain.
   usernameAtLeast = 6
 
-    # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Maximun username length: The maximum number of characters that the username may contain.
+    # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Maximum username length: The maximum number of characters that the username may contain.
   usernameAtMost = 50
 
-    # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Maximun name length: The maximum number of characters that the name of the front end user may contain.
+    # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Maximum name length: The maximum number of characters that the name of the front end user may contain.
   nameAtMost = 80
 
     # cat=plugin.tx_srfeuserregister_pi1/typo; type=wrap; label= Wrap 1:  In the default HTML template file, this wraps highlights some major prompts.
