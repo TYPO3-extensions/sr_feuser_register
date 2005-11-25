@@ -401,7 +401,6 @@
 	<dt>&nbsp;</dt>
 	<dd>
 		###HIDDENFIELDS###
-		<!--<button type="submit" name="tx_srfeuserregister_pi1[submit]" value="submit">###LABEL_BUTTON_REGISTER###</button>-->
 		<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_REGISTER###" />
 	</dd>
 </dl>
@@ -545,8 +544,6 @@
 <dt>&nbsp;</dt>
 <dd>
 	###HIDDENFIELDS###
-	<!--<button type="submit" name="tx_srfeuserregister_pi1[submit]" value"submit">###LABEL_BUTTON_CONFIRM_REGISTER###</button>
-	<button type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="submit">###LABEL_BUTTON_BACK_TO_FORM###</button>-->
 	<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_REGISTER###" />
 	<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_BACK_TO_FORM###" />
 </dd>
@@ -586,7 +583,7 @@
 		<input type="hidden" name="pid" value="###THE_PID###" />
 		<input type="hidden" name="redirect_url" value="" />
 		###HIDDENFIELDS###
-		<button type="submit" name="submit" value="submit">###LABEL_BUTTON_ENTER###</button>
+		<input type="submit" name="submit" value="###LABEL_BUTTON_ENTER###" />
 	</dd>
 </dl>
 </form>
@@ -1001,7 +998,6 @@ The user is informed that a message has been sent to his email address and that 
 	<dt>&nbsp;</dt>	
 	<dd>
 		###HIDDENFIELDS###
-		<!--<button type="submit" name="tx_srfeuserregister_pi1[submit]" value="submit">###LABEL_BUTTON_REGISTER###</button>-->
 		<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_REGISTER###" />
 	</dd>
 </dl>
@@ -1140,8 +1136,6 @@ The user is informed that a message has been sent to his email address and that 
 <dt>&nbsp;</dt>
 <dd>
 	###HIDDENFIELDS###
-	<!--<button type="submit" name="tx_srfeuserregister_pi1[submit]" value="submit">###LABEL_BUTTON_CONFIRM_REGISTER###</button>
-	<button type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="submit">###LABEL_BUTTON_BACK_TO_FORM###</button>-->
 	<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_REGISTER###" />
 	<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_BACK_TO_FORM###" />
 </dd>
@@ -1545,10 +1539,8 @@ The user is informed that a message has been sent to the email address and that 
 	<dt>&nbsp;</dt>
 	<dd>
 		###HIDDENFIELDS###
-		<!--<button type="submit" name="tx_srfeuserregister_pi1[submit]" value="submit">###LABEL_BUTTON_CONFIRM_UPDATE###</button>-->
 		<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_UPDATE###" />
 		<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
-		<!--<button type="submit" name="tx_srfeuserregister_pi1[linkToPID]" value="submit">###LABEL_BUTTON_UPDATE_AND_MORE###</button>-->
 		<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[linkToPID]" value="###LABEL_BUTTON_UPDATE_AND_MORE###" />
 		<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
 	</dd>
@@ -1693,13 +1685,10 @@ The user is informed that a message has been sent to the email address and that 
 <dt>&nbsp;</dt>
 <dd>
 	###HIDDENFIELDS###
-	<!--<button type="submit" name="tx_srfeuserregister_pi1[submit]" value="submit">###LABEL_BUTTON_CONFIRM_UPDATE###</button>-->
 	<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_UPDATE###" />
 	<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
-	<!--<button type="submit" name="tx_srfeuserregister_pi1[linkToPID]" value="submit">###LABEL_BUTTON_UPDATE_AND_MORE###</button>-->
 	<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[linkToPID]" value="###LABEL_BUTTON_UPDATE_AND_MORE###" />
 	<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
-	<!--<button type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="submit">###LABEL_BUTTON_BACK_TO_FORM###</button>-->
 	<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_BACK_TO_FORM###" />
 </dd>
 </dl>
@@ -1744,8 +1733,8 @@ The user is informed that a message has been sent to the email address and that 
 	<p>
 		###HIDDENFIELDS###
 		<input type="hidden" name="FE[fe_users][module_sys_dmail_html]" value="###FIELD_module_sys_dmail_html###" />
-		<button type="button" name="tx_srfeuserregister_pi1[doNotSave]" onclick="document.location='###BACK_URL###'; return false;" value="submit">###LABEL_BUTTON_CANCEL_DELETE###</button>
-		<button type="submit" name="tx_srfeuserregister_pi1[submit]" value="submit">###LABEL_BUTTON_CONFIRM_DELETE###</button>
+		<input type="submit" name="tx_srfeuserregister_pi1[doNotSave]" onclick="document.location='###BACK_URL###'; return false;" value="###LABEL_BUTTON_CANCEL_DELETE###" />
+		<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_DELETE###" />
 	</p>
 </form>
 <!-- ###TEMPLATE_DELETE_PREVIEW### end-->
@@ -1773,7 +1762,7 @@ The user is informed that a message has been sent to the email address and that 
 
 	<dt>&nbsp;</dt>
 	<dd>
-		<button type="submit" name="submit" value="submit">###LABEL_BUTTON_ENTER###</button>
+		<input type="submit" name="submit" value="###LABEL_BUTTON_ENTER###" />
 		<input type="hidden" name="logintype" value="login" />
 		<input type="hidden" name="pid" value="###THE_PID###" />
 		<input type="hidden" name="redirect_url" value="" />
@@ -1826,7 +1815,7 @@ The user is informed that a message has been sent to the email address and that 
 
 	<dt>&nbsp;</dt>
 	<dd>
-		<button type="submit" name="submit" value="submit">###LABEL_BUTTON_ENTER###</button>
+		<input type="submit" name="submit" value="###LABEL_BUTTON_ENTER###" />
 		<input type="hidden" name="logintype" value="login" />
 		<input type="hidden" name="pid" value="###THE_PID###" />
 		<input type="hidden" name="redirect_url" value="" />

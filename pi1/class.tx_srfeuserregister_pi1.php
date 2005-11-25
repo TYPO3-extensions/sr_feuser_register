@@ -179,7 +179,26 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				unset($this->feUserData['cmd']);
 			}
 			$this->cmd = $this->feUserData['cmd'] ? $this->feUserData['cmd'] : strtolower($this->cObj->data['select_key']);
-			$this->cmd = $this->cmd ? $this->cmd : strtolower($this->conf['defaultCODE']) ;
+			
+			// <Franz Holzinger added flexform support>
+			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['useFlexforms'] && t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
+			 		// FE BE library for flexform functions
+				require_once(PATH_BE_fh_library.'lib/class.tx_fhlibrary_flexform.php');
+					// check the flexform
+				$this->pi_initPIflexForm();
+				$this->cmd = tx_fhlibrary_flexform::getSetupOrFFvalue(
+					$this, 
+					$this->cmd, 
+					'',
+					$this->conf['defaultCode'], 
+					$this->cObj->data['pi_flexform'], 
+					'display_mode',
+					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['useFlexforms']
+				);
+			}else {
+				$this->cmd = $this->cmd ? $this->cmd : strtolower($this->conf['defaultCODE']);
+			}
+			// <//Franz Holzinger added flexform support>
 			if ($this->cmd == 'edit' || $this->cmd == 'invite') {
 				$this->cmdKey = $this->cmd;
 			} else {

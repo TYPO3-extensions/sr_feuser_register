@@ -1,12 +1,18 @@
 <?php
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
-t3lib_extMgm::addStaticFile($_EXTKEY, 'static/css_styled/', 'FE User Registration CSS-styled');
-t3lib_extMgm::addStaticFile($_EXTKEY, 'static/old_style/', 'FE User Registration Old Style');
+t3lib_extMgm::addStaticFile(SR_FEUSER_REGISTER_EXTkey, 'static/css_styled/', 'FE User Registration CSS-styled');
+t3lib_extMgm::addStaticFile(SR_FEUSER_REGISTER_EXTkey, 'static/old_style/', 'FE User Registration Old Style');
 
 t3lib_div::loadTCA('tt_content');
-$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi1'] = 'layout';
-t3lib_extMgm::addPlugin(Array('LLL:EXT:sr_feuser_register/locallang_db.php:tt_content.list_type', $_EXTKEY.'_pi1'),'list_type');
+if ($TYPO3_CONF_VARS['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['useFlexforms']==1) {
+	$TCA['tt_content']['types']['list']['subtypes_excludelist'][SR_FEUSER_REGISTER_EXTkey.'_pi1']='layout,select_key';
+	$TCA['tt_content']['types']['list']['subtypes_addlist'][SR_FEUSER_REGISTER_EXTkey.'_pi1']='pi_flexform';
+	t3lib_extMgm::addPiFlexFormValue(SR_FEUSER_REGISTER_EXTkey.'_pi1', 'FILE:EXT:'.SR_FEUSER_REGISTER_EXTkey.'/pi1/flexform_ds_pi1.xml');
+} else {
+	$TCA['tt_content']['types']['list']['subtypes_excludelist'][SR_FEUSER_REGISTER_EXTkey.'_pi1'] = 'layout';
+}
+t3lib_extMgm::addPlugin(Array('LLL:EXT:'.SR_FEUSER_REGISTER_EXTkey.'/locallang_db.php:tt_content.list_type', SR_FEUSER_REGISTER_EXTkey.'_pi1'),'list_type');
 
 /**
  * Setting up country, country subdivision, preferred language, first_name and last_name in fe_users table
@@ -32,9 +38,9 @@ $TCA['fe_users']['columns']['email']['config']['max'] = '255';
 $TCA['fe_users']['columns']['telephone']['config']['max'] = '25';
 $TCA['fe_users']['columns']['fax']['config']['max'] = '25';
 
-$TCA['fe_users']['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['uploadFolder'];
-$TCA['fe_users']['columns']['image']['config']['max_size'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['imageMaxSize'];
-$TCA['fe_users']['columns']['image']['config']['allowed'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['imageTypes'];
+$TCA['fe_users']['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['uploadFolder'];
+$TCA['fe_users']['columns']['image']['config']['max_size'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageMaxSize'];
+$TCA['fe_users']['columns']['image']['config']['allowed'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageTypes'];
 
 if(!is_array($TCA['fe_users']['columns']['module_sys_dmail_html'])) { $TCA['fe_users']['columns']['module_sys_dmail_html'] = array();}
 $TCA['fe_users']['columns']['module_sys_dmail_html']['exclude'] = 0;
@@ -195,7 +201,7 @@ $TCA['fe_users']['palettes']['2']['showitem'] = str_replace('title', 'gender,fir
 
 $TCA['fe_groups_language_overlay'] = Array (
 	'ctrl' => Array (
-	'title' => 'LLL:EXT:' . $_EXTKEY . '/locallang_db.php:fe_groups_language_overlay',
+ 	'title' => 'LLL:EXT:' . SR_FEUSER_REGISTER_EXTkey . '/locallang_db.php:fe_groups_language_overlay',
 		'label' => 'title',
 		'default_sortby' => 'ORDER BY fe_groups_uid',
 		'sortby' => 'sorting',
@@ -203,7 +209,7 @@ $TCA['fe_groups_language_overlay'] = Array (
 		'enablecolumns' => Array (
 			'disabled' => 'hidden'
 		),
-		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY)."tca.php",
+ 		'dynamicConfigFile' => t3lib_extMgm::extPath(SR_FEUSER_REGISTER_EXTkey)."tca.php",
 		'iconfile' => 'gfx/i/fe_groups.gif',
 		)
 );
