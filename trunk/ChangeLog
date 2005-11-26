@@ -1,3 +1,8 @@
+2005-11-26  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Version 2.2.1:
+	* Fix in ext_localconf.php
+	* Documentation update.
+	
 2005-11-25  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Added support for backend flexforms by Franz Holzinger.
 	

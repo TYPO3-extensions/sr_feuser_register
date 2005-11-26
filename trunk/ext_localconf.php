@@ -30,16 +30,17 @@ $TYPO3_CONF_VARS['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['re
 	*/
 
 	// turn the use of flexforms on:
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['useFlexforms'] = $_EXTCONF['useFlexforms'];
-if (t3lib_div::int_from_ver($GLOBALS['TYPO_VERSION']) < 3007000) {
-	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['useFlexforms'] = 0;
-}
 
 if (!defined ('FH_LIBRARY_EXTkey')) {
 	define('FH_LIBRARY_EXTkey','fh_library');
 }
 
-if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['useFlexforms'] && t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['useFlexforms'] = $_EXTCONF['useFlexforms'];
+if (t3lib_div::int_from_ver($GLOBALS['TYPO_VERSION']) < 3007000 || !t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['useFlexforms'] = 0;
+}
+
+if (t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
 	if (!defined ('PATH_BE_fh_library')) {
 		define('PATH_BE_fh_library', t3lib_extMgm::extPath(FH_LIBRARY_EXTkey));
 	}
