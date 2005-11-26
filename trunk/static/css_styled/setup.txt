@@ -222,12 +222,11 @@ plugin.tx_srfeuserregister_pi1 {
 		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-delete-icon { margin-left: 1em; background-color: transparent; }
 		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-delete-icon:hover { cursor: pointer; }
 		.tx-srfeuserregister-pi1 a.tx-srfeuserregister-pi1-file-view { padding-left: 15px; background-image: url("typo3conf/ext/sr_feuser_register/pi1/internal_link_new_window.gif"); background-color: transparent; background-repeat: no-repeat; font-size: .8em; margin-left: 1em; }
-		.tx-srfeuserregister-pi1 ul { margin: 0; padding: 0; list-style-image: none; list-style-position: inside; }
+		.tx-srfeuserregister-pi1 ul { margin: 0; padding: 0; list-style-position: inside; }
 		.tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checkboxes { list-style-type: none; }
 		.tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checkboxes li { margin: 0 0 .3em 0; padding: 0; }
 		.tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checkboxes li label { margin: 0; padding: 0 0 0 .5em; }
-		.tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checked-values { list-style-type: square; }
-		.tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checked-values li { float: left; margin: 0 2em 0 0; }
+		.tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checked-values li { float: left; padding: 0 2em 0 0; margin: 0; }
 		.tx-srfeuserregister-pi1 dl { margin: 0; padding: 1em 0 0 0; }
 		.tx-srfeuserregister-pi1 dt, .tx-srfeuserregister-pi1 dd { margin: 0; padding: 0 0 .5em 0; float: left; }
 		.tx-srfeuserregister-pi1 dt { clear: both; width: 25%; text-align: right; padding-right: 1em; }
