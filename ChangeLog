@@ -1,3 +1,7 @@
+2005-11-28  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Eliminate error subpart when a required field is missing but no other validation error is raised.
+	* Minor improvement to html template.
+
 2005-11-26  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Version 2.2.1:
 	* Fix in ext_localconf.php
