@@ -74,6 +74,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		var $backURL;
 		var $recUid;
 		var $failure = 0; // is set if data did not have the required fields set.
+		var $missing = array(); // array of required missing fields
+		var $inError = array(); // array of fields with eval errors other than absence
 		var $error = '';
 		var $saved = 0; // is set if data is saved
 		var $nc = ''; // "&no_cache=1" if you want that parameter sent.
@@ -430,6 +432,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			while (list(, $theField) = each($this->requiredArr)) {
 				if (!trim($this->dataArr[$theField])) {
 					$tempArr[] = $theField;
+					$this->missing[$theField] = true;
 				}
 			}
 			// Evaluate: This evaluates for more advanced things than "required" does. But it returns the same error code, so you must let the required-message tell, if further evaluation has failed!
@@ -470,6 +473,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								if (!$recExist || $DBrows[0]['uid'] != $this->dataArr['uid']) {
 									// Only issue an error if the record is not existing (if new...) and if the record with the false value selected was not our self.
 									$tempArr[] = $theField;
+									$this->inError[$theField] = true;
 									$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'The value existed already. Enter a new value.');
 								}
 							}
@@ -480,6 +484,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								if (!$recExist || $DBrows[0]['uid'] != $this->dataArr['uid']) {
 									// Only issue an error if the record is not existing (if new...) and if the record with the false value selected was not our self.
 									$tempArr[] = $theField;
+									$this->inError[$theField] = true;
 									$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'The value existed already. Enter a new value.');
 								}
 							}
@@ -487,18 +492,21 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							case 'twice':
 							if (strcmp($this->dataArr[$theField], $this->dataArr[$theField.'_again'])) {
 								$tempArr[] = $theField;
+								$this->inError[$theField] = true;
 								$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'You must enter the same value twice.');
 							}
 							break;
 							case 'email':
 							if (trim($this->dataArr[$theField]) && !$this->cObj->checkEmail($this->dataArr[$theField])) {
 								$tempArr[] = $theField;
+								$this->inError[$theField] = true;
 								$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'You must enter a valid email address.');
 							}
 							break;
 							case 'required':
 							if (!trim($this->dataArr[$theField])) {
 								$tempArr[] = $theField;
+								$this->inError[$theField] = true;
 								$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'You must enter a value!');
 							}
 							break;
@@ -506,6 +514,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							$chars = intval($cmdParts[1]);
 							if (strlen($this->dataArr[$theField]) < $chars) {
 								$tempArr[] = $theField;
+								$this->inError[$theField] = true;
 								$this->failureMsg[$theField][] = sprintf($this->getFailure($theField, $theCmd, 'You must enter at least %s characters!'), $chars);
 							}
 							break;
@@ -513,6 +522,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							$chars = intval($cmdParts[1]);
 							if (strlen($this->dataArr[$theField]) > $chars) {
 								$tempArr[] = $theField;
+								$this->inError[$theField] = true;
 								$this->failureMsg[$theField][] = sprintf($this->getFailure($theField, $theCmd, 'You must enter at most %s characters!'), $chars);
 							}
 							break;
@@ -526,6 +536,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								);
 								if (!$pid_list || !t3lib_div::inList($pid_list, $this->dataArr[$theField])) {
 									$tempArr[] = $theField;
+									$this->inError[$theField] = true;
 									$this->failureMsg[$theField][] = sprintf($this->getFailure($theField, $theCmd, 'The value was not a valid value from this list: %s'), $pid_list);
 								}
 							}
@@ -535,6 +546,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								$hash = array_flip($tempArr);
 								unset($hash[$theField]);
 								$tempArr = array_keys($hash);
+								unset($this->inError[$theField]);
 								unset($this->failureMsg[$theField]);
 								unset($this->dataArr[$theField]); // This should prevent the field from entering the database.
 							}
@@ -557,12 +569,14 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 												} else {
 													$this->failureMsg[$theField][] = sprintf($this->getFailure($theField, 'max_size', 'The file is larger than %s KB.'), $maxSize);
 													$tempArr[] = $theField;
+													$this->inError[$theField] = true;
 													if(@is_file(PATH_site.$uploadPath.'/'.$filename)) @unlink(PATH_site.$uploadPath.'/'.$filename);
 												}
 											}
 										} else {
 											$this->failureMsg[$theField][] = sprintf($this->getFailure($theField, 'allowed', 'The file extension %s is not allowed.'), $fI['extension']);
 											$tempArr[] = $theField;
+											$this->inError[$theField] = true;
 											if (@is_file(PATH_site.$uploadPath.'/'.$filename)) { @unlink(PATH_site.$uploadPath.'/'.$filename); }
 										}
 									}
@@ -582,6 +596,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								$wwwURLResult = tx_srfeuserregister_pi1_urlvalidator::_ValURL($this->dataArr[$theField], $wwwURLOptions);
 								if ($wwwURLResult['Result'] != 'EW_OK' ) {
 									$tempArr[] = $theField;
+									$this->inError[$theField] = true;
 									$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'Please enter a valid Internet site address.');
 								}
 							}
@@ -589,6 +604,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							case 'date':
 							if ($this->dataArr[$theField] && !$this->evalDate($this->dataArr[$theField]) ){
 								$tempArr[] = $theField;
+								$this->inError[$theField] = true;
 								$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'Please enter a valid date.');
 							}
 							break;
@@ -1023,6 +1039,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				if (in_array(trim($fName), $this->requiredArr) ) {
 					if (!t3lib_div::inList($failure, $fName)) {
 						$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_'.$fName.'###', '');
+						$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_'.$fName.'###', '');
+					} else if (!$this->inError[$fName]) {
 						$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_'.$fName.'###', '');
 					}
 				} else {
