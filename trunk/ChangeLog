@@ -1,3 +1,6 @@
+2005-11-30  Franz Holzinger  <kontakt@fholzinger.com>
+	* German texts for the flexform
+
 2005-11-28  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
 	* Eliminate error subpart when a required field is missing but no other validation error is raised.
 	* Minor improvement to html template.

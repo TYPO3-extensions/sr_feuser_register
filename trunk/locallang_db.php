@@ -52,6 +52,11 @@ $LOCAL_LANG = Array (
 	),
 	'de' => Array (
 		'tt_content.list_type' => 'Front End Benutzer Registrierung',
+ 		'tt_content.pi1_flexform.display_mode' => 'Anzeigetyp',
+		'tt_content.pi1_flexform.display_mode.1' => 'leer',
+ 		'tt_content.pi1_flexform.display_mode.3' => 'Anlegen',
+		'tt_content.pi1_flexform.display_mode.5' => 'Einladen',
+ 		'tt_content.pi1_flexform.display_mode.7' => 'Bearbeiten',
 		'fe_users.static_info_country' => 'Land:',
 		'fe_users.zone' => 'Bundesland / Staat / Provinz:',
 		'fe_users.language' => 'Sprache:',
