@@ -210,7 +210,7 @@ plugin.tx_srfeuserregister_pi1 {
 		.tx-srfeuserregister-pi1 legend { padding: 0 .5em; font-weight: bold; }
 		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-notice { font-style: italic; margin-bottom: 1em; }
 		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-trash { margin-bottom: 2em; }
-		.tx-srfeuserregister-pi1 a:link { padding-left: 14px; background-image: url("typo3conf/ext/sr_feuser_register/pi1/internal_link.gif"); background-repeat: no-repeat; background-position: 0% 60%; text-decoration:none; }
+		.tx-srfeuserregister-pi1 a { padding-left: 14px; background-image: url("typo3conf/ext/sr_feuser_register/pi1/internal_link.gif"); background-repeat: no-repeat; background-position: 0% 60%; text-decoration:none; }
 		.tx-srfeuserregister-pi1 label { margin: 0; padding: 0; }
 		.tx-srfeuserregister-pi1 label span { color: #ff0000; }
 		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-error { color: #ff0000; }
