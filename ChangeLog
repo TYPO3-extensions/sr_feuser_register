@@ -1,3 +1,6 @@
+2005-12-04  Stanislas Rolland  <stanislas.rolland@fructifor.ca>
+	* Correction: setting usergroupAfterAcceptation did not work if the original usergroup assigned at creation was changed by usergroupAfterConfirmation.
+
 2005-11-30  Franz Holzinger  <kontakt@fholzinger.com>
 	* German texts for the flexform
 

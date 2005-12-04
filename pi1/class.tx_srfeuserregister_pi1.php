@@ -31,6 +31,9 @@
 *
 * @author Kasper Skaarhoj <kasper@typo3.com>
 * @author Stanislas Rolland <stanislas.rolland@fructifor.ca>
+*
+* TYPO3 CVS ID: $Id$
+*
 */
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
@@ -1486,7 +1489,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						if ($this->theTable == 'fe_users') {
 							if ($this->conf['create.']['allowUserGroupSelection']) {
 								$origArr['usergroup'] = implode(',', array_unique(array_merge(array_diff(t3lib_div::trimExplode(',', $origUsergroup, 1), t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'], 1)), t3lib_div::trimExplode(',', $setfixedUsergroup, 1))));
-							} elseif ($origUsergroup != $this->conf['create.']['overrideValues.']['usergroup']) {
+							} elseif ($this->feUserData['sFK'] == 'APPROVE' && $origUsergroup != $this->conf['create.']['overrideValues.']['usergroup']) {
 								$origArr['usergroup'] = $origUsergroup;
 							}
 						}
