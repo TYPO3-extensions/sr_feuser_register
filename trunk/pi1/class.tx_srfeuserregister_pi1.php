@@ -378,8 +378,12 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$this->compileMail($key, array($this->currentArr), $this->currentArr[$this->conf['email.']['field']], $this->conf['setfixed.']);
 
 					// Link to on edit save
-				if ($this->theTable == 'fe_users' && $this->cmd == 'edit' && $this->conf['linkToPID'] && ($this->feUserData['linkToPID'] || !$this->conf['linkToPIDAddButton'])) {
-					header('Location: '.t3lib_div::locationHeaderUrl($this->site_url.$this->cObj->getTypoLink_URL($this->conf['linkToPID'].','.$GLOBALS['TSFE']->type)));
+					// backURL may link back to referring process
+				if ($this->theTable == 'fe_users' && 
+					$this->cmd == 'edit' && 
+ 					($this->backURL || ($this->conf['linkToPID'] && ($this->feUserData['linkToPID'] || !$this->conf['linkToPIDAddButton']))) ) {
+ 					$destUrl = ($this->backURL ? $this->backURL : $this->site_url.$this->cObj->getTypoLink_URL($this->conf['linkToPID'].','.$GLOBALS['TSFE']->type));
+ 					header('Location: '.t3lib_div::locationHeaderUrl($destUrl));
 					exit;
 				}
 			} elseif ($this->error) {
