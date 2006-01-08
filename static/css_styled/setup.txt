@@ -41,6 +41,7 @@ plugin.tx_srfeuserregister_pi1 {
 		fields = {$plugin.tx_srfeuserregister_pi1.formFields}
 		required = {$plugin.tx_srfeuserregister_pi1.requiredFields}
 		useEmailAsUsername = {$plugin.tx_srfeuserregister_pi1.useEmailAsUsername}
+		generateUsername = {$plugin.tx_srfeuserregister_pi1.generateUsername}
 		allowUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowUserGroupSelection}
 
 		defaultValues {
