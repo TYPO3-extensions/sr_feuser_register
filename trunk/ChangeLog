@@ -1,5 +1,9 @@
 2006-01-08 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
-	* Version 2.2.2:
+	* Version 2.2.3:
+	* Update to Danish, Norwegian and Turkish translations.
+
+2006-01-08 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Version 2.2.3:
 	* Allow to override TCA labels in TS template setup
 	* Add generateUsername setup property.
 	* Add registrationProcess_beforeConfirmCreate hook. Thanks to Pieter Verstraelen.
