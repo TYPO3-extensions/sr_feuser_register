@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005 Stanislas Rolland (stanislas.rolland@fructifor.com)
+*  (c) 2005, 2006 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -27,12 +27,28 @@
 *
 * Example of hook handler for extension Front End User Registration (sr_feuser_register)
 *
-* @author Stanislas Rolland <stanislas.rolland@fructifor.com>
+* @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
 *
 */
 	 // $invokingObj is a reference to the invoking object
 
 class tx_srfeuserregister_hooksHandler {
+
+	function registrationProcess_beforeConfirmCreate(&$recordArray, &$invokingObj) {
+			// in the case of this hook, the record array is passed by reference
+			// in this example hook, we generate a username based on the first and last names of the user
+		if ($invokingObj->feUserData['preview'] && $invokingObj->conf[$invokingObj->cmdKey.'.']['generateUsername']) {
+			$recordArray[username] = substr(strtolower(trim($recordArray[first_name])),0,1) . substr(strtolower(trim($recordArray[last_name])),0,2);
+			$counter = 1;
+			$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($invokingObj->theTable, 'username', $recordArray[username]."$counter", 'LIMIT 1');
+			while($recordArray[username]."$counter" && $DBrows) {
+				$counter = $counter + 1;
+				$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($invokingObj->theTable, 'username', $recordArray[username]."$counter", 'LIMIT 1');
+			}
+			$recordArray[username] = $recordArray[username]."$counter";
+		}
+		echo 'beforeConfirmCreate';
+	}
 
 	function registrationProcess_afterSaveEdit($recordArray, &$invokingObj) {
 		echo 'afterSaveEdit';

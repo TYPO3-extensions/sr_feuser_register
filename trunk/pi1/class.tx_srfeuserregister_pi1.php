@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 1999-2003 Kasper Skaarhoj (kasper@typo3.com)
-*  (c) 2004-2005 Stanislas Rolland (stanislas.rolland@fructifor.ca)
+*  (c) 2004, 2005, 2006 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca)>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -30,7 +30,7 @@
 * A variant restricted to front end user self-registration and profile maintenance, with a number of enhancements (see the manual).
 *
 * @author Kasper Skaarhoj <kasper@typo3.com>
-* @author Stanislas Rolland <stanislas.rolland@fructifor.ca>
+* @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
 *
 * TYPO3 CVS ID: $Id$
 *
@@ -233,6 +233,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			if ($this->theTable == 'fe_users') {
 				$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'] . ',username', 1)));
 				$this->conf[$this->cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'] . ',username', 1)));
+				if ($this->conf[$this->cmdKey.'.']['generateUsername']) {
+					$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('username')));
+				}
 				if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername']) {
 					$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('username')));
 					if ($this->cmdKey == 'create' || $this->cmdKey == 'invite') {
@@ -263,7 +266,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					}
 				}
 			}
-				// Setting requiredArr to the fields in "required" intersected field the total field list in order to remove invalid fields.
+				// Setting requiredArr to the fields in "required" fields list intersected with the total field list in order to remove invalid fields.
 			$this->requiredArr = array_intersect(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'], 1),
 				t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1));
 				
@@ -461,12 +464,13 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						t3lib_div::intval_positive($this->dataArr['pid']);
 						break;
 				}
-				if($this->conf[$this->cmdKey.'.']['useEmailAsUsername']) {
+				if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'] || $this->conf[$this->cmdKey.'.']['generateUsername']) {
 					unset($this->conf[$this->cmdKey.'.']['evalValues.']['username']);
-					if ($this->cmdKey == 'edit' && $this->conf['setfixed']) {
-						unset($this->conf[$this->cmdKey.'.']['evalValues.']['email']);
-					}
 				}
+				if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'] && $this->cmdKey == 'edit' && $this->conf['setfixed']) {
+						unset($this->conf[$this->cmdKey.'.']['evalValues.']['email']);
+				}
+				
 				reset($this->conf[$this->cmdKey.'.']['evalValues.']);
 				while (list($theField, $theValue) = each($this->conf[$this->cmdKey.'.']['evalValues.'])) {
 					$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
@@ -1140,6 +1144,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			} elseif ($this->conf[$this->cmdKey.'.']['useEmailAsUsername']) {
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][username]" value="'.$currentArr['username'].'" />';
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][email]" value="'.$currentArr['email'].'" />';
+			} elseif ($this->conf[$this->cmdKey.'.']['generateUsername']) {
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][username]" value="'.$currentArr['username'].'" />';
 			}
 			$markerArray = $this->addHiddenFieldsMarkers($markerArray, $currentArr);
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
@@ -1329,6 +1335,19 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		*/
 		function displayCreateScreen($cmd = 'create') {
 			if ($this->conf['create']) {
+				
+					// <Pieter Verstraelen added registrationProcess hooks>
+					// Call all beforeConfirmCreate hooks before the record has been shown and confirmed
+				if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'])) {
+					foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'] as $classRef) {
+						$hookObj= &t3lib_div::getUserObj($classRef);
+						if (method_exists($hookObj,'registrationProcess_beforeConfirmCreate')) {
+							$hookObj->registrationProcess_beforeConfirmCreate($this->dataArr, $this);
+						}
+					}
+				}
+					// </Pieter Verstraelen added registrationProcess hooks>
+				
 				$key = ($cmd == 'invite') ? 'INVITE': 'CREATE';
 				$this->markerArray = $this->addMd5EventsMarkers($this->markerArray, 'create');
 				$templateCode = $this->cObj->getSubpart($this->templateCode, ((!($this->theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $cmd == 'invite') ? '###TEMPLATE_'.$key.$this->previewLabel.'###':'###TEMPLATE_CREATE_LOGIN###'));
@@ -2448,16 +2467,19 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		
 		function addHiddenFieldsMarkers($markerArray, $dataArr = array()) {
 			if ($this->conf[$this->cmdKey.'.']['preview'] && !$this->previewLabel) {
-				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[preview]" value="1">';
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[preview]" value="1" />';
 			}
 			if ($this->previewLabel && $this->conf['templateStyle'] == 'css-styled') {
 				$fields = explode(',', $this->conf[$this->cmdKey.'.']['fields']);
 				$fields = array_diff($fields, array( 'hidden', 'disable'));
 				if ($this->theTable == 'fe_users') {
 					$fields[] = 'password_again';
+					if ($this->conf[$this->cmdKey.'.']['generateUsername']) {
+						$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][username]" value="'.$dataArr['username'].'" />';
+					}
 				}
 				while (list(, $fName) = each($fields) ) {
-					$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.']['.$fName.']" value="'. htmlspecialchars($dataArr[$fName]).'">';
+					$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.']['.$fName.']" value="'. htmlspecialchars($dataArr[$fName]).'" />';
 				}
 			}
 			return $markerArray;
@@ -2604,16 +2626,21 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		}
 
 		function getLLFromString($string) {
-			if ($this->typoVersion >= 3006000 ) { 
-				return $GLOBALS['TSFE']->sL($string);
-			} else {
-				global $LOCAL_LANG;
-				$arr = explode(':',$string);
-				if($arr[0] == 'LLL' && $arr[1] == 'EXT') {
-					$filename = t3lib_div::getFileAbsFileName($arr[1].':'.$arr[2]);
-					include_once($filename);
-					$this->LOCAL_LANG = t3lib_div::array_merge_recursive_overrule($this->LOCAL_LANG,$LOCAL_LANG);
-					return $this->pi_getLL($arr[3]);
+			global $LOCAL_LANG, $TSFE;
+			$arr = explode(':',$string);
+			if($arr[0] == 'LLL' && $arr[1] == 'EXT') {
+				$temp = $this->pi_getLL($arr[3]);
+				if ($temp) {
+					return $temp;
+				} else {
+					if ($this->typoVersion >= 3006000 ) {
+						return $TSFE->sL($string);
+					} else {
+						$filename = t3lib_div::getFileAbsFileName($arr[1].':'.$arr[2]);
+						include_once($filename);
+						$this->LOCAL_LANG = t3lib_div::array_merge_recursive_overrule($this->LOCAL_LANG,$LOCAL_LANG);
+						return $this->pi_getLL($arr[3]);
+					}
 				}
 			}
 		}
@@ -2810,6 +2837,34 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			return parent::pi_getLL($key, $alt, $hsc);
 		}
+		
+		function pi_loadLL() {
+				// flatten the structure of labels overrides
+			if (is_array($this->conf['_LOCAL_LANG.'])) {
+				$done = false;
+				$i = 0;
+				while(!$done && $i < 10) {
+					$done = true;
+					reset($this->conf['_LOCAL_LANG.']);
+					while(list($k,$lA)=each($this->conf['_LOCAL_LANG.'])) {
+						if (is_array($lA)) {
+							foreach($lA as $llK => $llV)    {
+								if (is_array($llV))    {
+									foreach ($llV as $llK2 => $llV2) {
+										$this->conf['_LOCAL_LANG.'][$k][$llK . $llK2] = $llV2;
+									}
+									unset($this->conf['_LOCAL_LANG.'][$k][$llK]);
+									$done = false;
+									++$i;
+								}
+							}
+						}
+					}
+				}
+			}
+			parent::pi_loadLL();
+		}
+		
 	}
 	if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php"]) {
 		include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php"]);
