@@ -464,7 +464,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						t3lib_div::intval_positive($this->dataArr['pid']);
 						break;
 				}
-				if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'] || $this->conf[$this->cmdKey.'.']['generateUsername']) {
+				if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'] || ($this->conf[$this->cmdKey.'.']['generateUsername'] && $this->cmdKey != 'edit')) {
 					unset($this->conf[$this->cmdKey.'.']['evalValues.']['username']);
 				}
 				if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'] && $this->cmdKey == 'edit' && $this->conf['setfixed']) {
@@ -1043,6 +1043,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		 */
 		function removeRequired($templateCode, $failure = '') {
 			$includedFields = t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1);
+			if ($this->feUserData['preview'] && !in_array('username', $includedFields)) {
+				$includedFields[] = 'username';
+			}
 			reset($this->requiredArr);
 			$infoFields = explode(',', $this->fieldList);
 
@@ -1141,11 +1144,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			if ($this->theTable != 'fe_users') {
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[aC]" value="'.$this->authCode($origArr).'" />';
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[cmd]" value="edit" />';
-			} elseif ($this->conf[$this->cmdKey.'.']['useEmailAsUsername']) {
+			} elseif ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'] && $this->conf['templateStyle'] != 'css-styled') {
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][username]" value="'.$currentArr['username'].'" />';
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][email]" value="'.$currentArr['email'].'" />';
-			} elseif ($this->conf[$this->cmdKey.'.']['generateUsername']) {
-				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][username]" value="'.$currentArr['username'].'" />';
 			}
 			$markerArray = $this->addHiddenFieldsMarkers($markerArray, $currentArr);
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
@@ -2047,6 +2048,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									$colContent = 'MM ' . $this->pi_getLL('unsupported');
 								} else {
 									$valuesArray = is_array($dataArray[$colName]) ? $dataArray[$colName] : explode(',',$dataArray[$colName]);
+									if (!$valuesArray[0] && $colConfig['default']) {
+										$valuesArray[] = $colConfig['default'];
+									}
 									if ($colConfig['maxitems'] > 1) {
 										$multiple = '[]" multiple="multiple';
 									} else {
@@ -2442,14 +2446,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					}
 				}
 			} else {
-					// Dynamically generate some CSS selectors
-				//if ($this->conf['templateStyle'] == 'css-styled') {
-				//	$GLOBALS['TSFE']->additionalCSS['css-' . $this->pi_getClassName('delete-icon')] = '.' . $this->pi_getClassName('delete-icon') . ' { background-image: url("'. $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '"); }';
-				//}
 				for($i = 0; $i < sizeof($filenames); $i++) {
 					if ($this->conf['templateStyle'] == 'css-styled') {
-						// button elements of type submit do not behave correctly in IE6
-						//$HTMLContent .= $filenames[$i] . '<button type="submit" name="'.$prefix.'['.$fName.']['.$i.'][submit_delete]" value="1" title="'.$this->pi_getLL('icon_delete').'"' . $this->pi_classParam('delete-icon') . ' onclick=\'if(confirm("' . $this->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' >' . $this->pi_getLL('icon_delete') . '</button><a href="' . $dir.'/' . $filenames[$i] . '"' . $this->pi_classParam('file-view') . 'target="_blank" title="' . $this->pi_getLL('file_view') . '">' . $this->pi_getLL('file_view') . '</a><br />';
 						$HTMLContent .= $filenames[$i] . '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="'.$prefix.'['.$fName.']['.$i.'][submit_delete]" value="1" title="'.$this->pi_getLL('icon_delete').'" alt="' . $this->pi_getLL('icon_delete'). '"' . $this->pi_classParam('delete-icon') . ' onclick=\'if(confirm("' . $this->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' />'
 								. '<a href="' . $dir.'/' . $filenames[$i] . '"' . $this->pi_classParam('file-view') . 'target="_blank" title="' . $this->pi_getLL('file_view') . '">' . $this->pi_getLL('file_view') . '</a><br />';
 					} else {
@@ -2474,8 +2472,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$fields = array_diff($fields, array( 'hidden', 'disable'));
 				if ($this->theTable == 'fe_users') {
 					$fields[] = 'password_again';
-					if ($this->conf[$this->cmdKey.'.']['generateUsername']) {
-						$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][username]" value="'.$dataArr['username'].'" />';
+					if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'] || $this->conf[$this->cmdKey.'.']['generateUsername']) {
+						$fields = array_merge($fields, array( 'username'));
+					}
+					if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername']) {
+						$fields = array_merge($fields, array( 'email'));
 					}
 				}
 				while (list(, $fName) = each($fields) ) {
