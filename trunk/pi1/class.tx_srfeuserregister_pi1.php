@@ -2470,8 +2470,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		function addHiddenFieldsMarkers($markerArray, $dataArr = array()) {
 			if ($this->conf[$this->cmdKey.'.']['preview'] && !$this->previewLabel) {
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[preview]" value="1" />';
-				if ($this->theTable == 'fe_users' && ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'])) {
+				if ($this->theTable == 'fe_users' && $this->cmdKey == 'edit' && $this->conf[$this->cmdKey.'.']['useEmailAsUsername']) {
 					$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][username]" value="'. htmlspecialchars($dataArr['username']).'" />';
+					$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][email]" value="'. htmlspecialchars($dataArr['email']).'" />';
 				}
 			}
 			if ($this->previewLabel && $this->conf['templateStyle'] == 'css-styled') {
