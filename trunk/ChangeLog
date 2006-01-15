@@ -1,3 +1,7 @@
+2006-01-14 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Version 2.2.5:
+	* Correction to the useEmailAsUsername property: when set, the username was erased on editing the profile.
+
 2006-01-10 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Version 2.2.4:
 	* Correction to the generateUsername property: when set, the username was erased on editing the profile.

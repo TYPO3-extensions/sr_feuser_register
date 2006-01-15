@@ -373,7 +373,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$templateCode = $this->cObj->getSubpart($this->templateCode, '###TEMPLATE_'.$key.'###');
 				$markerArray = $this->cObj->fillInMarkerArray($this->markerArray, $this->currentArr);
 				$markerArray = $this->addStaticInfoMarkers($markerArray, $this->currentArr);
-				$markerArray = $this->addTcaMarkers($markerArray, $this->currentArr);
+				$markerArray = $this->addTcaMarkers($markerArray, $this->currentArr, true);
 				$markerArray = $this->addLabelMarkers($markerArray, $this->currentArr);
 				$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 
@@ -1098,7 +1098,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$templateCode = $this->cObj->getSubpart($this->templateCode, $key);
 			$markerArray = is_array($r) ? $this->cObj->fillInMarkerArray($this->markerArray, $r) : $this->markerArray;
 			$markerArray = $this->addStaticInfoMarkers($markerArray, $r);
-			$markerArray = $this->addTcaMarkers($markerArray, $r);
+			$markerArray = $this->addTcaMarkers($markerArray, $r, true);
 			$markerArray = $this->addLabelMarkers($markerArray, $r);
 			$templateCode = $this->removeStaticInfoSubparts($templateCode, $markerArray);
 			return $this->cObj->substituteMarkerArray($templateCode, $markerArray);
@@ -1136,6 +1136,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$templateCode = $this->removeRequired($templateCode, $failure);
 			$markerArray = $this->cObj->fillInMarkerArray($this->markerArray, $currentArr);
 			$markerArray = $this->addStaticInfoMarkers($markerArray, $currentArr);
+			$markerArray = $this->addTcaMarkers($markerArray, $currentArr, true);
 			$markerArray = $this->addTcaMarkers($markerArray, $currentArr);
 			$markerArray = $this->addLabelMarkers($markerArray, $currentArr);
 			$markerArray = $this->addFileUploadMarkers('image', $markerArray, $currentArr);
@@ -1708,7 +1709,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$this->cObj->sendNotifyEmail($adminContent, $admin, '', $this->conf['email.']['from'], $this->conf['email.']['fromName'], $recipient);
 			}
 			// Send mail to front end user
-			if ($this->HTMLMailEnabled && $HTMLContent && $this->dataArr['module_sys_dmail_html']) {
+			if ($this->HTMLMailEnabled && $HTMLContent && ($this->dataArr['module_sys_dmail_html'] || ($this->saved && $this->currentArr['module_sys_dmail_html']))) {
 				$this->sendHTMLMail($HTMLContent, $content, $recipient, '', $this->conf['email.']['from'], $this->conf['email.']['fromName'], '', $fileAttachment);
 			} else {
 				$this->cObj->sendNotifyEmail($content, $recipient, '', $this->conf['email.']['from'], $this->conf['email.']['fromName']);
@@ -2100,6 +2101,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								$colContent .= $colConfig['type'].':'.$this->pi_getLL('unsupported');
 						}
 					}
+					if ($this->previewLabel || $viewOnly) {
+						$markerArray['###TCA_INPUT_VALUE_'.$colName.'###'] = $colContent;
+					}
 					$markerArray['###TCA_INPUT_'.$colName.'###'] = $colContent;
 				}
 			}
@@ -2466,6 +2470,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		function addHiddenFieldsMarkers($markerArray, $dataArr = array()) {
 			if ($this->conf[$this->cmdKey.'.']['preview'] && !$this->previewLabel) {
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[preview]" value="1" />';
+				if ($this->theTable == 'fe_users' && ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'])) {
+					$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][username]" value="'. htmlspecialchars($dataArr['username']).'" />';
+				}
 			}
 			if ($this->previewLabel && $this->conf['templateStyle'] == 'css-styled') {
 				$fields = explode(',', $this->conf[$this->cmdKey.'.']['fields']);
