@@ -42,32 +42,6 @@ $TCA['fe_users']['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3
 $TCA['fe_users']['columns']['image']['config']['max_size'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageMaxSize'];
 $TCA['fe_users']['columns']['image']['config']['allowed'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageTypes'];
 
-if(!is_array($TCA['fe_users']['columns']['module_sys_dmail_html'])) { $TCA['fe_users']['columns']['module_sys_dmail_html'] = array();}
-$TCA['fe_users']['columns']['module_sys_dmail_html']['exclude'] = 0;
-$TCA['fe_users']['columns']['module_sys_dmail_html']['label'] = 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.module_sys_dmail_html';
-$TCA['fe_users']['columns']['module_sys_dmail_html']['config'] = array('type'=>'check', 'default' => '1');
-
-if(!is_array($TCA['fe_users']['columns']['module_sys_dmail_category'])) { $TCA['fe_users']['columns']['module_sys_dmail_category'] = array();}
-$TCA['fe_users']['columns']['module_sys_dmail_category']['exclude'] = 0;
-$TCA['fe_users']['columns']['module_sys_dmail_category']['label'] = 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.module_sys_dmail_category';
-$TCA['fe_users']['columns']['module_sys_dmail_category']['config'] =  Array (
-		'type' => 'check',
-		'items' => Array (
-			Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.module_sys_dmail_category.I.1', ''),
-			Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.module_sys_dmail_category.I.2', ''),
-			Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.module_sys_dmail_category.I.3', ''),
-			Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.module_sys_dmail_category.I.4', ''),
-			Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.module_sys_dmail_category.I.5', ''),
-			Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.module_sys_dmail_category.I.6', ''),
-			Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.module_sys_dmail_category.I.7', ''),
-			Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.module_sys_dmail_category.I.8', ''),
-			Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.module_sys_dmail_category.I.9', ''),
-			Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.module_sys_dmail_category.I.10', ''),
-		),
-		'default' => 0,
-		'cols' => 4,
-);
-
 t3lib_extMgm::addTCAcolumns('fe_users', Array(
 		'static_info_country' => Array (
 			'exclude' => 0,
@@ -184,16 +158,12 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 
 $TCA['fe_users']['interface']['showRecordFieldList'] = str_replace('country', 'zone,static_info_country,country,language', $TCA['fe_users']['interface']['showRecordFieldList']);
 $TCA['fe_users']['interface']['showRecordFieldList'] = str_replace('title', 'gender,first_name,last_name,status,date_of_birth,title', $TCA['fe_users']['interface']['showRecordFieldList']);
-if(!strstr($TCA['fe_users']['interface']['showRecordFieldList'], 'module_sys_dmail_html')) { $TCA['fe_users']['interface']['showRecordFieldList']  .= ',module_sys_dmail_html'; }
 
 $TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace('country', 'zone,static_info_country,country,language,comments', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
 $TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace('title', 'gender,first_name,last_name,status,title', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
 $TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',image,disable,date_of_birth,by_invitation';
-if(!strstr($TCA['fe_users']['feInterface']['fe_admin_fieldList'], 'module_sys_dmail_html')) { $TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',module_sys_dmail_html'; }
-if(!strstr($TCA['fe_users']['feInterface']['fe_admin_fieldList'], 'module_sys_dmail_category')) { $TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',module_sys_dmail_category'; }
 
 $TCA['fe_users']['types']['0']['showitem'] = str_replace('country', 'zone,static_info_country,country,language', $TCA['fe_users']['types']['0']['showitem']);
-if(!strstr($TCA['fe_users']['types']['0']['showitem'], 'module_sys_dmail_html')) { $TCA['fe_users']['types']['0']['showitem'] = str_replace('email', 'email,module_sys_dmail_category,module_sys_dmail_html', $TCA['fe_users']['types']['0']['showitem']); }
 $TCA['fe_users']['types']['0']['showitem'] = str_replace('address', 'status,address', $TCA['fe_users']['types']['0']['showitem']);
 $TCA['fe_users']['types']['0']['showitem'] = str_replace('www', 'www,comments,by_invitation', $TCA['fe_users']['types']['0']['showitem']);
 
