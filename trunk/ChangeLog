@@ -1,5 +1,6 @@
 2006-01-30 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Verify enabled fields when selecting MM relations, in particular module_sys_dmail_category.
+	* Accept value '0' on required fields (see bugtracker issue #2027).
 	
 2006-01-30 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Correction to css-styled html template (see bugtracker issue #2403).
