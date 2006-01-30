@@ -445,7 +445,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			reset($this->requiredArr);
 			$tempArr = array();
 			while (list(, $theField) = each($this->requiredArr)) {
-				if (!trim($this->dataArr[$theField])) {
+				if (!trim($this->dataArr[$theField]) && trim($this->dataArr[$theField]) != '0') {
 					$tempArr[] = $theField;
 					$this->missing[$theField] = true;
 				}
