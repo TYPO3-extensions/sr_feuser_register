@@ -230,6 +230,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$this->adminFieldList .= ',' . trim($this->conf['addAdminFieldList']);
 			}
 			
+			if (!t3lib_extMgm::isLoaded('direct_mail')) {
+				$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('module_sys_dmail_category,module_sys_dmail_html')));
+				$this->conf[$this->cmdKey.'.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('module_sys_dmail_category,module_sys_dmail_html')));
+			}
+			
 			if ($this->theTable == 'fe_users') {
 				$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'] . ',username', 1)));
 				$this->conf[$this->cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'] . ',username', 1)));
@@ -932,16 +937,17 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					}
 					if ($this->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($this->theTable, $origArr, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 						if ($this->typoVersion >= 3006000) {
-							$res = $this->cObj->DBgetUpdate($this->theTable, $theUid, $this->parseOutgoingDates($this->dataArr), $newFieldList, true);
+							$res = $this->cObj->DBgetUpdate($this->theTable, $theUid, $this->parseOutgoingData($this->dataArr), $newFieldList, true);
 						} else {
-							$query = $this->cObj->DBgetUpdate($this->theTable, $theUid, $this->parseOutgoingDates($this->dataArr), $newFieldList);
+							$query = $this->cObj->DBgetUpdate($this->theTable, $theUid, $this->parseOutgoingData($this->dataArr), $newFieldList);
 							mysql(TYPO3_db, $query);
 							echo mysql_error();
 						}
+						$this->updateMMRelations($this->dataArr);
 						$this->saved = 1;
 
 							// Post-edit processing: call user functions and hooks
-						$this->currentArr = $this->parseIncomingTimestamps( $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $theUid));
+						$this->currentArr = $this->parseIncomingData( $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $theUid));
 						$this->userProcess_alt($this->conf['edit.']['userFunc_afterSave'], $this->conf['edit.']['userFunc_afterSave.'], array('rec' => $this->currentArr, 'origRec' => $origArr));
 
 							// <Ries van Twisk added registrationProcess hooks>
@@ -965,7 +971,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$newFieldList = implode(array_intersect(explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)), ',');
 					$newFieldList  = implode( array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->adminFieldList))), ',');
 					$parsedArray = array();
-					$parsedArray = $this->parseOutgoingDates($this->dataArr);
+					$parsedArray = $this->parseOutgoingData($this->dataArr);
 					if ($this->cmdKey == 'invite' && $this->useMd5Password) {
 						$parsedArray['password'] = md5($this->dataArr['password']);
 					}
@@ -1003,10 +1009,12 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							}
 						} 
 					}
+					$this->dataArr['uid'] = $newId;
+					$this->updateMMRelations($this->dataArr);
 					$this->saved = 1;
 
 						// Post-create processing: call user functions and hooks
-					$this->currentArr = $this->parseIncomingTimestamps( $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $newId));
+					$this->currentArr = $this->parseIncomingData( $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $newId));
 					$this->userProcess_alt($this->conf['create.']['userFunc_afterSave'], $this->conf['create.']['userFunc_afterSave.'], array('rec' => $this->currentArr));
 
 						// <Ries van Twisk added registrationProcess hooks>
@@ -1182,9 +1190,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					}
 					$theCode = $this->setfixedHash($origArr, $origArr['_FIELDLIST']);
 				}
-				$origArr = $this->parseIncomingTimestamps($origArr);
+				if (is_array($origArr)) $origArr = $this->parseIncomingData($origArr);
 
-				if ( is_array($origArr) && ( ($this->theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $this->aCAuth($origArr) || !strcmp($this->authCode, $theCode) ) ) {
+				if (is_array($origArr) && ( ($this->theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $this->aCAuth($origArr) || !strcmp($this->authCode, $theCode) ) ) {
 					// Must be logged in OR be authenticated by the aC code in order to edit
 					// If the recUid selects a record.... (no check here)
 					$this->markerArray = $this->addMd5EventsMarkers($this->markerArray, 'edit');
@@ -1247,6 +1255,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								mysql(TYPO3_db, $query);
 								echo mysql_error();
 							}
+							$this->deleteMMRelations($this->theTable, $this->recUid);
 							$this->currentArr = $origArr;
 							$this->saved = 1;
 						} else {
@@ -1510,6 +1519,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							mysql(TYPO3_db, $query);
 							echo mysql_error();
 						}
+						$this->deleteMMRelations($this->theTable, $this->recUid);
 					} else {
 						if ($this->theTable == 'fe_users') {
 							if ($this->conf['create.']['allowUserGroupSelection']) {
@@ -1933,6 +1943,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return array  the output marker array
 		*/
 		function addTcaMarkers($markerArray, $dataArray = '', $viewOnly = false) {
+			global $TCA;
 			if ($this->typoVersion >= 3006000) global $TYPO3_DB;
 			foreach ($this->TCA['columns'] as $colName => $colSettings) {
 				if (t3lib_div::inList($this->conf[$this->cmdKey.'.']['fields'], $colName)) {
@@ -1979,7 +1990,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 										}
 										$valuesArray = array_diff($valuesArray, $reservedValues);
 										if (!empty($valuesArray)) {
-											$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
+											$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
 											$res = $TYPO3_DB->exec_SELECTquery($titleField, $colConfig['foreign_table'],
 												'uid IN ('.implode(',', $valuesArray).')');
 											$i = 0;
@@ -2045,57 +2056,53 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								break;
 
 							case 'select':
-								if ($colConfig['MM']) {
-									$colContent = 'MM ' . $this->pi_getLL('unsupported');
-								} else {
-									$valuesArray = is_array($dataArray[$colName]) ? $dataArray[$colName] : explode(',',$dataArray[$colName]);
-									if (!$valuesArray[0] && $colConfig['default']) {
-										$valuesArray[] = $colConfig['default'];
-									}
-									if ($colConfig['maxitems'] > 1) {
-										$multiple = '[]" multiple="multiple';
-									} else {
-										$multiple = '';
-									}
-									if ($this->theTable == 'fe_users' && $colName == 'usergroup' && !$this->conf['allowMultipleUserGroupSelection']) {
-										$multiple = '';
-									}
-									$colContent = '<select id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . strtoupper($colName).'###">';
-									if (is_array($colConfig['items'])) {
-										for ($i = 0; $i < count ($colConfig['items']); $i++) {
-											$colContent .= '<option value="'.$colConfig['items'][$i][1]. '" ' . (in_array($colConfig['items'][$i][1], $valuesArray) ? 'selected="selected"' : '') . '>' . $this->getLLFromString($colConfig['items'][$i][0]).'</option>';
-										}
-									}
-									if ($this->typoVersion >= 3006000 && $colConfig['foreign_table']) {
-										$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
-										if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
-											$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
-											$selectedValue = false;
-										}
-										$whereClause = ($this->theTable == 'fe_users' && $colName == 'usergroup') ? ' pid='.$this->thePid.' ' : ' 1=1 ';
-										$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
-										$res = $TYPO3_DB->exec_SELECTquery('uid,'.$titleField, $colConfig['foreign_table'], $whereClause);
-										if(!in_array($colName, $this->requiredArr)) {
-											$colContent .= '<option value="" ' . ($valuesArray[0] ? '' : 'selected="selected"') . '></option>';
-										}
-										while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
-											if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
-												if (!in_array($row['uid'], $reservedValues)) {
-													$row = $this->getUsergroupOverlay($row);
-													$selected = (in_array($row['uid'], $valuesArray) ? 'selected="selected"' : '');
-													if(!$this->conf['allowMultipleUserGroupSelection'] && $selectedValue) {
-														$selected = '';
-													}
-													$selectedValue = $selected ? true: $selectedValue;
-													$colContent .= '<option value="'.$row['uid'].'"' . $selected . '>'.$row[$titleField].'</option>';
-												}
-											} else {
-												$colContent .= '<option value="'.$row['uid'].'"' . (in_array($row['uid'], $valuesArray) ? 'selected="selected"' : '') . '>'.$row[$titleField].'</option>';
-											}
-										}
-									}
-									$colContent .= '</select>';
+								$valuesArray = is_array($dataArray[$colName]) ? $dataArray[$colName] : explode(',',$dataArray[$colName]);
+								if (!$valuesArray[0] && $colConfig['default']) {
+									$valuesArray[] = $colConfig['default'];
 								}
+								if ($colConfig['maxitems'] > 1) {
+									$multiple = '[]" multiple="multiple';
+								} else {
+									$multiple = '';
+								}
+								if ($this->theTable == 'fe_users' && $colName == 'usergroup' && !$this->conf['allowMultipleUserGroupSelection']) {
+									$multiple = '';
+								}
+								$colContent = '<select id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . strtoupper($colName).'###">';
+								if (is_array($colConfig['items'])) {
+									for ($i = 0; $i < count ($colConfig['items']); $i++) {
+										$colContent .= '<option value="'.$colConfig['items'][$i][1]. '" ' . (in_array($colConfig['items'][$i][1], $valuesArray) ? 'selected="selected"' : '') . '>' . $this->getLLFromString($colConfig['items'][$i][0]).'</option>';
+									}
+								}
+								if ($this->typoVersion >= 3006000 && $colConfig['foreign_table']) {
+									$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
+									if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
+										$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
+										$selectedValue = false;
+									}
+									$whereClause = ($this->theTable == 'fe_users' && $colName == 'usergroup') ? ' pid='.intval($this->thePid).' ' : ' 1=1 ';
+									$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
+									$res = $TYPO3_DB->exec_SELECTquery('uid,'.$titleField, $colConfig['foreign_table'], $whereClause);
+									if(!in_array($colName, $this->requiredArr)) {
+										$colContent .= '<option value="" ' . ($valuesArray[0] ? '' : 'selected="selected"') . '></option>';
+									}
+									while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
+										if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
+											if (!in_array($row['uid'], $reservedValues)) {
+												$row = $this->getUsergroupOverlay($row);
+												$selected = (in_array($row['uid'], $valuesArray) ? 'selected="selected"' : '');
+												if(!$this->conf['allowMultipleUserGroupSelection'] && $selectedValue) {
+													$selected = '';
+												}
+												$selectedValue = $selected ? true: $selectedValue;
+												$colContent .= '<option value="'.$row['uid'].'"' . $selected . '>'.$row[$titleField].'</option>';
+											}
+										} else {
+											$colContent .= '<option value="'.$row['uid'].'"' . (in_array($row['uid'], $valuesArray) ? 'selected="selected"' : '') . '>'.$row[$titleField].'</option>';
+										}
+									}
+								}
+								$colContent .= '</select>';
 								break;
 							default:
 								$colContent .= $colConfig['type'].':'.$this->pi_getLL('unsupported');
@@ -2550,7 +2557,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		*
 		* @return parsedArray
 		*/
-		function parseIncomingTimestamps($origArr = array()) {
+		function parseIncomingData($origArr = array()) {
+			if ($this->typoVersion >= 3006000) global $TYPO3_DB;
+			
 			$parsedArr = array();
 			$parsedArr = $origArr;
 			if (is_array($this->conf['parseFromDBValues.'])) {
@@ -2582,6 +2591,25 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					}
 				}
 			}
+			
+			if ($this->typoVersion >= 3006000) {
+			$fieldsList = array_keys($parsedArr);
+			foreach ($this->TCA['columns'] as $colName => $colSettings) {
+				if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
+					if (!$parsedArr[$colName]) {
+						$parsedArr[$colName] = '';
+					} else {
+						$valuesArray = array();
+						$res = $TYPO3_DB->exec_SELECTquery('uid_local,uid_foreign,sorting',$colSettings['config']['MM'],'uid_local='.intval($parsedArr['uid']),'','sorting');
+						while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
+							$valuesArray[] = $row['uid_foreign'];
+						}
+						$parsedArr[$colName] = implode(',', $valuesArray);
+					}
+				}
+			}
+			}
+			
 			return $parsedArr;
 		}
 		
@@ -2590,7 +2618,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		 *
 		 * @return parsedArray
 		 */
-		function parseOutgoingDates($origArr = array()) {
+		function parseOutgoingData($origArr = array()) {
+			
 			$parsedArr = array();
 			$parsedArr = $origArr;
 			if (is_array($this->conf['parseToDBValues.'])) {
@@ -2630,8 +2659,65 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					}
 				}
 			}
-
+			
+				// update the MM relation count field
+			$fieldsList = array_keys($parsedArr);
+			foreach ($this->TCA['columns'] as $colName => $colSettings) {
+				if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
+					$parsedArr[$colName] = count(explode(',', $parsedArr[$colName]));
+				}
+			}
+			
 			return $parsedArr;
+		}
+		
+		/**
+		 * Update MM relations
+		 *
+		 * @return void
+		 */
+		function updateMMRelations($origArr = array()) {
+			if ($this->typoVersion >= 3006000) {
+				global $TYPO3_DB;
+							// update the MM relation
+			$fieldsList = array_keys($origArr);
+			foreach ($this->TCA['columns'] as $colName => $colSettings) {
+				if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
+					$valuesList = $origArr[$colName];
+					if ($valuesList) {
+						$res = $TYPO3_DB->exec_DELETEquery($colSettings['config']['MM'], 'uid_local='.intval($origArr['uid']));
+						$valuesArray = explode(',', $valuesList);
+						reset($valuesArray);
+						$insertFields = array();
+						$insertFields['uid_local'] = intval($origArr['uid']);
+						$insertFields['tablenames'] = '';
+						$insertFields['sorting'] = 0;
+						while (list(, $theValue) = each($valuesArray)) {
+							$insertFields['uid_foreign'] = intval($theValue);
+							$insertFields['sorting']++;
+							$res = $TYPO3_DB->exec_INSERTquery($colSettings['config']['MM'], $insertFields);
+						}
+					}
+				}
+			}
+			}
+		}
+		
+		/**
+		 * Delete MM relations
+		 *
+		 * @return void
+		 */
+		function deleteMMRelations($table,$uid) {
+			if ($this->typoVersion >= 3006000) {
+				global $TYPO3_DB;
+				// update the MM relation
+			foreach ($this->TCA['columns'] as $colName => $colSettings) {
+				if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
+					$res = $TYPO3_DB->exec_DELETEquery($colSettings['config']['MM'], 'uid_local='.intval($uid));
+				}
+			}
+			}
 		}
 
 		function getLLFromString($string) {

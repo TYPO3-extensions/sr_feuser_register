@@ -1,3 +1,9 @@
+2006-01-30 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Correction to css-styled html template (see bugtracker issue #2403).
+	* Remove changes to the TCA for fields module_sys_dmail_category and module_sys_dmail_html
+	* Ignore fields module_sys_dmail_category and module_sys_dmail_html is direct_mail extension is not loaded.
+	* Enable support for select fields with MM relations, in particular module_sys_dmail_category.
+
 2006-01-14 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Version 2.2.5:
 	* Correction to the useEmailAsUsername property: when set, the username was erased on editing the profile.

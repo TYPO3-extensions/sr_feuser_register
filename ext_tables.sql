@@ -18,8 +18,6 @@ CREATE TABLE fe_users (
   telephone varchar(25) DEFAULT '' NOT NULL,
   fax varchar(25) DEFAULT '' NOT NULL,
   date_of_birth int(11) DEFAULT '0' NOT NULL,
-  module_sys_dmail_category int(10) unsigned DEFAULT '0' NOT NULL,
-  module_sys_dmail_html tinyint(3) unsigned DEFAULT '0' NOT NULL,
   comments text NOT NULL,
   by_invitation tinyint(4) unsigned DEFAULT '0' NOT NULL,
 );
