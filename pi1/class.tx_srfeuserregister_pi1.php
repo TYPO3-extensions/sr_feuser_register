@@ -2600,7 +2600,12 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						$parsedArr[$colName] = '';
 					} else {
 						$valuesArray = array();
-						$res = $TYPO3_DB->exec_SELECTquery('uid_local,uid_foreign,sorting',$colSettings['config']['MM'],'uid_local='.intval($parsedArr['uid']),'','sorting');
+						$res = $TYPO3_DB->exec_SELECTquery(
+							'uid_local,uid_foreign,sorting',
+							$colSettings['config']['MM'],
+							'uid_local='.intval($parsedArr['uid']).$this->cObj->enableFields($colSettings['config']['foreign_table']),
+							'',
+							'sorting');
 						while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
 							$valuesArray[] = $row['uid_foreign'];
 						}
