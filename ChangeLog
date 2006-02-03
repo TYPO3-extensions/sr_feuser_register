@@ -1,3 +1,7 @@
+2006-02-03 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Honor TCA default value for TCA-driven multiple checkboxes. Thanks to Simon Tuck.
+	* Remove support for TYPO3 3.5.0.
+	
 2006-01-30 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Verify enabled fields when selecting MM relations, in particular module_sys_dmail_category.
 	* Accept value '0' on required fields (see bugtracker issue #2027).
