@@ -120,10 +120,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			
 				// prepare for character set settings and conversions
 			$this->typoVersion = t3lib_div::int_from_ver($GLOBALS['TYPO_VERSION']);
-			if ($this->typoVersion >= 3006000 ) {
-				if ($GLOBALS['TSFE']->metaCharset) {
-					$this->charset = $GLOBALS['TSFE']->csConvObj->parse_charset($GLOBALS['TSFE']->metaCharset);
-				}
+			if ($GLOBALS['TSFE']->metaCharset) {
+				$this->charset = $GLOBALS['TSFE']->csConvObj->parse_charset($GLOBALS['TSFE']->metaCharset);
 			}
 			
 				// prepare for handling dates befor 1970
@@ -155,23 +153,14 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$this->fileFunc = t3lib_div::makeInstance('t3lib_basicFileFunctions');
 			
 				// Get post parameters
-			if ($this->typoVersion >= 3006000 ) {
-				$this->feUserData = t3lib_div::_GP($this->prefixId);
-				$fe = t3lib_div::_GP('FE');
-					// Establishing compatibility with Direct Mail extension
-				$this->feUserData['rU'] = t3lib_div::_GP('rU') ? t3lib_div::_GP('rU') : $this->feUserData['rU'];
-				$this->feUserData['aC'] = t3lib_div::_GP('aC') ? t3lib_div::_GP('aC') : $this->feUserData['aC'];
-				$this->feUserData['cmd'] = t3lib_div::_GP('cmd') ? t3lib_div::_GP('cmd') : $this->feUserData['cmd'];
-				$this->feUserData['sFK'] = t3lib_div::_GP('sFK') ? t3lib_div::_GP('sFK') : $this->feUserData['sFK'];
-			} else {
-				$this->feUserData = t3lib_div::slashArray(t3lib_div::GPvar($this->prefixId), 'strip');
-				$fe = t3lib_div::GPvar('FE');
-					// Establishing compatibility with Direct Mail extension
-				$this->feUserData['rU'] = t3lib_div::GPvar('rU') ? t3lib_div::GPvar('rU') : $this->feUserData['rU'];
-				$this->feUserData['aC'] = t3lib_div::GPvar('aC') ? t3lib_div::GPvar('aC') : $this->feUserData['aC'];
-				$this->feUserData['cmd'] = t3lib_div::GPvar('cmd') ? t3lib_div::GPvar('cmd') : $this->feUserData['cmd'];
-				$this->feUserData['sFK'] = t3lib_div::GPvar('sFK') ? t3lib_div::GPvar('sFK') : $this->feUserData['sFK'];
-			};
+			$this->feUserData = t3lib_div::_GP($this->prefixId);
+			$fe = t3lib_div::_GP('FE');
+				// Establishing compatibility with Direct Mail extension
+			$this->feUserData['rU'] = t3lib_div::_GP('rU') ? t3lib_div::_GP('rU') : $this->feUserData['rU'];
+			$this->feUserData['aC'] = t3lib_div::_GP('aC') ? t3lib_div::_GP('aC') : $this->feUserData['aC'];
+			$this->feUserData['cmd'] = t3lib_div::_GP('cmd') ? t3lib_div::_GP('cmd') : $this->feUserData['cmd'];
+			$this->feUserData['sFK'] = t3lib_div::_GP('sFK') ? t3lib_div::_GP('sFK') : $this->feUserData['sFK'];
+
 			$this->dataArr = $fe[$this->theTable];
 			$this->incomingData = is_array($this->dataArr);
 			
@@ -921,7 +910,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return void  sets $this->saved
 		*/
 		function save() {
-			if ($this->typoVersion >= 3006000) global $TYPO3_DB;
+			global $TYPO3_DB;
+			
 			switch($this->cmd) {
 				case 'edit':
 				$theUid = $this->dataArr['uid'];
@@ -936,13 +926,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						$newFieldList  = implode(',', array_diff(explode(',', $newFieldList), array('name')));
 					}
 					if ($this->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($this->theTable, $origArr, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
-						if ($this->typoVersion >= 3006000) {
-							$res = $this->cObj->DBgetUpdate($this->theTable, $theUid, $this->parseOutgoingData($this->dataArr), $newFieldList, true);
-						} else {
-							$query = $this->cObj->DBgetUpdate($this->theTable, $theUid, $this->parseOutgoingData($this->dataArr), $newFieldList);
-							mysql(TYPO3_db, $query);
-							echo mysql_error();
-						}
+						$res = $this->cObj->DBgetUpdate($this->theTable, $theUid, $this->parseOutgoingData($this->dataArr), $newFieldList, true);
 						$this->updateMMRelations($this->dataArr);
 						$this->saved = 1;
 
@@ -975,15 +959,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					if ($this->cmdKey == 'invite' && $this->useMd5Password) {
 						$parsedArray['password'] = md5($this->dataArr['password']);
 					}
-					if ($this->typoVersion >= 3006000) {
-						$res = $this->cObj->DBgetInsert($this->theTable, $this->thePid, $parsedArray, $newFieldList, true);
-						$newId = $TYPO3_DB->sql_insert_id();
-					} else {
-						$query = $this->cObj->DBgetInsert($this->theTable, $this->thePid, $parsedArray, $newFieldList);
-						mysql(TYPO3_db, $query);
-						echo mysql_error();
-						$newId = mysql_insert_id();
-					}
+					$res = $this->cObj->DBgetInsert($this->theTable, $this->thePid, $parsedArray, $newFieldList, true);
+					$newId = $TYPO3_DB->sql_insert_id();
+
 						// Enable users to own them self.
 					if ($this->theTable == "fe_users" && $this->conf['fe_userOwnSelf']) {
 						$extraList = '';
@@ -1000,13 +978,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							$extraList .= ','.$field;
 						}
 						if (count($dataArr)) {
-							if ($this->typoVersion >= 3006000) {
-								$res = $this->cObj->DBgetUpdate($this->theTable, $newId, $dataArr, $extraList, true);
-							} else {
-								$query = $this->cObj->DBgetUpdate($this->theTable, $newId, $dataArr, $extraList);
-								mysql(TYPO3_db, $query);
-								echo mysql_error();
-							}
+							$res = $this->cObj->DBgetUpdate($this->theTable, $newId, $dataArr, $extraList, true);
 						} 
 					}
 					$this->dataArr['uid'] = $newId;
@@ -1133,11 +1105,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			if (!$this->conf['linkToPID'] || !$this->conf['linkToPIDAddButton'] || !($this->previewLabel || !$this->conf['edit.']['preview'])) {
 				$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_LINKTOPID_ADD_BUTTON###', '');
 			}
-			if ($this->typoVersion >= 3006000) {
-				$failure = t3lib_div::_GP('noWarnings') ? '': $this->failure;
-			} else {
-				$failure = t3lib_div::GPvar('noWarnings') ? '': $this->failure;
-			}
+			
+			$failure = t3lib_div::_GP('noWarnings') ? '': $this->failure;
 			if (!$failure) {
 				$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
 			}
@@ -1175,11 +1144,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				// If editing is enabled
 				$origArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $this->dataArr['uid']?$this->dataArr['uid']:$this->recUid);
 				if( $this->theTable != 'fe_users' && $this->conf['setfixed.']['edit.']['_FIELDLIST']) {
-					if ($this->typoVersion >= 3006000) {
-						$fD = t3lib_div::_GP('fD', 1);
-					} else {
-						$fD = t3lib_div::GPvar('fD', 1);
-					}
+					$fD = t3lib_div::_GP('fD', 1);
 					$fieldArr = array();
 					if (is_array($fD)) {
 						reset($fD);
@@ -1248,13 +1213,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									// If the record is being fully deleted... then remove the images or files attached.
 								$this->deleteFilesFromRecord($this->recUid);
 							}
-							if ($this->typoVersion >= 3006000) {
-								$res = $this->cObj->DBgetDelete($this->theTable, $this->recUid, true);
-							} else {
-								$query = $this->cObj->DBgetDelete($this->theTable, $this->recUid);
-								mysql(TYPO3_db, $query);
-								echo mysql_error();
-							}
+							$res = $this->cObj->DBgetDelete($this->theTable, $this->recUid, true);
 							$this->deleteMMRelations($this->theTable, $this->recUid);
 							$this->currentArr = $origArr;
 							$this->saved = 1;
@@ -1277,15 +1236,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$updateFields = array();
 			while (list($field, $conf) = each($this->TCA['columns'])) {
 				if ($conf['config']['type'] == "group" && $conf['config']['internal_type'] == 'file') {
-					if ($this->typoVersion >= 3006000) {
-						$updateFields[$field] = '';
-						$res = $this->cObj->DBgetUpdate($this->theTable, $uid, $updateFields, $field, true);
-						unset($updateFields[$field]);
-					} else {
-						$query = 'UPDATE '.$this->theTable.' SET '.$field."='' WHERE uid=".$uid;
-						$res = mysql(TYPO3_db, $query);
-						echo mysql_error();
-					}
+					$updateFields[$field] = '';
+					$res = $this->cObj->DBgetUpdate($this->theTable, $uid, $updateFields, $field, true);
+					unset($updateFields[$field]);
 					$delFileArr = explode(',', $rec[$field]);
 					reset($delFileArr);
 					while (list(, $n) = each($delFileArr)) {
@@ -1362,12 +1315,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$key = ($cmd == 'invite') ? 'INVITE': 'CREATE';
 				$this->markerArray = $this->addMd5EventsMarkers($this->markerArray, 'create');
 				$templateCode = $this->cObj->getSubpart($this->templateCode, ((!($this->theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $cmd == 'invite') ? '###TEMPLATE_'.$key.$this->previewLabel.'###':'###TEMPLATE_CREATE_LOGIN###'));
-				if ($this->typoVersion >= 3006000) {
-					$failure = t3lib_div::_GP('noWarnings') ? '': $this->failure;
-				} else {
-					$failure = t3lib_div::GPvar('noWarnings') ? '': $this->failure;
-				}
+				
+				$failure = t3lib_div::_GP('noWarnings') ? '': $this->failure;
 				if (!$failure) $templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
+				
 				$templateCode = $this->removeRequired($templateCode, $failure);
 				$markerArray = $this->cObj->fillInMarkerArray($this->markerArray, $this->dataArr);
 				$markerArray = $this->addStaticInfoMarkers($markerArray, $this->dataArr);
@@ -1455,7 +1406,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						switch($theCmd) {
 							case 'multiple':
 							if (isset($inputArr[$theField]) && !$this->isPreview()) {
-
 								$inputArr[$theField] = explode(',', $inputArr[$theField]);
 							}
 							break;
@@ -1488,11 +1438,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$origArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $this->recUid);
 				$origUsergroup = $origArr['usergroup'];
 				$setfixedUsergroup = '';
-				if ($this->typoVersion >= 3006000) {
-					$fD = t3lib_div::_GP('fD', 1);
-				} else {
-					$fD = t3lib_div::GPvar('fD', 1);
-				}
+				$fD = t3lib_div::_GP('fD', 1);
 				$fieldArr = array();
 				if (is_array($fD)) {
 					reset($fD);
@@ -1512,13 +1458,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							// If the record is fully deleted... then remove the image attached.
 							$this->deleteFilesFromRecord($this->recUid);
 						}
-						if ($this->typoVersion >= 3006000) {
-							$res = $this->cObj->DBgetDelete($this->theTable, $this->recUid, true);
-						} else {
-							$query = $this->cObj->DBgetDelete($this->theTable, $this->recUid);
-							mysql(TYPO3_db, $query);
-							echo mysql_error();
-						}
+						$res = $this->cObj->DBgetDelete($this->theTable, $this->recUid, true);
 						$this->deleteMMRelations($this->theTable, $this->recUid);
 					} else {
 						if ($this->theTable == 'fe_users') {
@@ -1542,13 +1482,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							}
 						}
 						$newFieldList = implode(array_intersect(t3lib_div::trimExplode(',', $this->fieldList), t3lib_div::trimExplode(',', implode($fieldArr, ','), 1)), ',');
-						if ($this->typoVersion >= 3006000) {
-							$res = $this->cObj->DBgetUpdate($this->theTable, $this->recUid, $origArr, $newFieldList, true);
-						} else {
-							$query = $this->cObj->DBgetUpdate($this->theTable, $this->recUid, $origArr, $newFieldList);
-							mysql(TYPO3_db, $query);
-							echo mysql_error();
-						}
+						$res = $this->cObj->DBgetUpdate($this->theTable, $this->recUid, $origArr, $newFieldList, true);
 						$this->currentArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable,$theUid);
 						$this->userProcess_alt($this->conf['setfixed.']['userFunc_afterSave'],$this->conf['setfixed.']['userFunc_afterSave.'],array('rec'=>$this->currentArr, 'origRec'=>$origArr));
 
@@ -1880,14 +1814,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							$linkPID = $this->confirmInvitationPID;
 						}
 					}
-					if ($this->typoVersion >= 3006000) {
-						if (t3lib_div::_GP('L') && !t3lib_div::inList($GLOBALS['TSFE']->config['config']['linkVars'], 'L')) {
-							$setfixedpiVars['L'] = t3lib_div::_GP('L');
-						}
-					} else {
-						if (t3lib_div::GPvar('L') && !t3lib_div::inList($GLOBALS['TSFE']->config['config']['linkVars'], 'L')) {
-							$setfixedpiVars['L'] = t3lib_div::GPvar('L');
-						}
+					if (t3lib_div::_GP('L') && !t3lib_div::inList($GLOBALS['TSFE']->config['config']['linkVars'], 'L')) {
+						$setfixedpiVars['L'] = t3lib_div::_GP('L');
 					}
 					$markerArray['###SETFIXED_'.strtoupper($theKey).'_URL###'] = $urlPrefix . $this->cObj->getTypoLink_URL($linkPID.','.$this->confirmType, $setfixedpiVars);
 				}
@@ -1943,8 +1871,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return array  the output marker array
 		*/
 		function addTcaMarkers($markerArray, $dataArray = '', $viewOnly = false) {
-			global $TCA;
-			if ($this->typoVersion >= 3006000) global $TYPO3_DB;
+			global $TYPO3_DB, $TCA;
+
 			foreach ($this->TCA['columns'] as $colName => $colSettings) {
 				if (t3lib_div::inList($this->conf[$this->cmdKey.'.']['fields'], $colName)) {
 					$colConfig = $colSettings['config'];
@@ -1983,7 +1911,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 											$colContent .= ($i ? '<br />': '') . $this->getLLFromString($colConfig['items'][$valuesArray[$i]][0]);
 										}
 									} 
-									if ($this->typoVersion >= 3006000 && $colConfig['foreign_table']) {
+									if ($colConfig['foreign_table']) {
 										$reservedValues = array();
 										if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
 											$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
@@ -2037,7 +1965,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									// <Ries van Twisk added support for multiple checkboxes>
 									$colContent  = '<ul id="'. $this->pi_getClassName($colName) . '" class="tx-srfeuserregister-multiple-checkboxes">';
 									foreach ($colConfig['items'] AS $key => $value) {
-										$checked = ($dataArray[$colName] & (1 << $key))?'checked="checked"':'';
+										if ($this->cmd == 'create' || $this->cmd == 'invite') {
+											$checked = ($colConfig['default'] & (1 << $key))?'checked="checked"':'';
+										} else {
+											$checked = ($dataArray[$colName] & (1 << $key))?'checked="checked"':'';
+										}
 										$colContent .= '<li><input type="checkbox"' . $this->pi_classParam('checkbox') . 'id="' . $this->pi_getClassName($colName) . '-' . $key .  '" name="FE['.$this->theTable.']['.$colName.'][]" value="'.$key.'" '.$checked.' /><label for="' . $this->pi_getClassName($colName) . '-' . $key .  '">'.$this->getLLFromString($colConfig['items'][$key][0]).'</label></li>';					
 									}
 									$colContent .= '</ul>';
@@ -2074,7 +2006,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 										$colContent .= '<option value="'.$colConfig['items'][$i][1]. '" ' . (in_array($colConfig['items'][$i][1], $valuesArray) ? 'selected="selected"' : '') . '>' . $this->getLLFromString($colConfig['items'][$i][0]).'</option>';
 									}
 								}
-								if ($this->typoVersion >= 3006000 && $colConfig['foreign_table']) {
+								if ($colConfig['foreign_table']) {
 									$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
 									if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
 										$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
@@ -2558,7 +2490,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return parsedArray
 		*/
 		function parseIncomingData($origArr = array()) {
-			if ($this->typoVersion >= 3006000) global $TYPO3_DB;
+			global $TYPO3_DB;
 			
 			$parsedArr = array();
 			$parsedArr = $origArr;
@@ -2592,7 +2524,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				}
 			}
 			
-			if ($this->typoVersion >= 3006000) {
 			$fieldsList = array_keys($parsedArr);
 			foreach ($this->TCA['columns'] as $colName => $colSettings) {
 				if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
@@ -2612,7 +2543,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						$parsedArr[$colName] = implode(',', $valuesArray);
 					}
 				}
-			}
 			}
 			
 			return $parsedArr;
@@ -2682,9 +2612,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		 * @return void
 		 */
 		function updateMMRelations($origArr = array()) {
-			if ($this->typoVersion >= 3006000) {
-				global $TYPO3_DB;
-							// update the MM relation
+			global $TYPO3_DB;
+				// update the MM relation
 			$fieldsList = array_keys($origArr);
 			foreach ($this->TCA['columns'] as $colName => $colSettings) {
 				if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
@@ -2705,7 +2634,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					}
 				}
 			}
-			}
 		}
 		
 		/**
@@ -2714,14 +2642,12 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		 * @return void
 		 */
 		function deleteMMRelations($table,$uid) {
-			if ($this->typoVersion >= 3006000) {
-				global $TYPO3_DB;
+			global $TYPO3_DB;
 				// update the MM relation
 			foreach ($this->TCA['columns'] as $colName => $colSettings) {
 				if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
 					$res = $TYPO3_DB->exec_DELETEquery($colSettings['config']['MM'], 'uid_local='.intval($uid));
 				}
-			}
 			}
 		}
 
@@ -2733,14 +2659,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				if ($temp) {
 					return $temp;
 				} else {
-					if ($this->typoVersion >= 3006000 ) {
-						return $TSFE->sL($string);
-					} else {
-						$filename = t3lib_div::getFileAbsFileName($arr[1].':'.$arr[2]);
-						include_once($filename);
-						$this->LOCAL_LANG = t3lib_div::array_merge_recursive_overrule($this->LOCAL_LANG,$LOCAL_LANG);
-						return $this->pi_getLL($arr[3]);
-					}
+					return $TSFE->sL($string);
 				}
 			}
 		}
