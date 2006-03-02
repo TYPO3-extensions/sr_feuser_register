@@ -17,7 +17,6 @@ t3lib_extMgm::addPlugin(Array('LLL:EXT:'.SR_FEUSER_REGISTER_EXTkey.'/locallang_d
 /**
  * Setting up country, country subdivision, preferred language, first_name and last_name in fe_users table
  * Adjusting some maximum lengths to conform to specifications of payment gateways (ref.: Authorize.net)
- * Adding module_sys_dmail_html, if not added by extension Direct mail
  */
 t3lib_div::loadTCA('fe_users');
 $TCA['fe_users']['columns']['username']['config']['eval'] = 'nospace,uniqueInPid,required';
