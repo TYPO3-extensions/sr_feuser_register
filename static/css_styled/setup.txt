@@ -20,6 +20,7 @@ plugin.tx_srfeuserregister_pi1 {
 	loginPID = {$plugin.tx_srfeuserregister_pi1.loginPID}
 	linkToPID = {$plugin.tx_srfeuserregister_pi1.linkToPID}
 	linkToPIDAddButton = {$plugin.tx_srfeuserregister_pi1.linkToPIDAddButton}
+	module_sys_dmail_category_PIDLIST = {$plugin.tx_srfeuserregister_pi1.module_sys_dmail_category_PIDLIST}
 	defaultCODE = {$plugin.tx_srfeuserregister_pi1.defaultCODE}
 
 	formName = {$plugin.tx_srfeuserregister_pi1.formName}
@@ -46,7 +47,6 @@ plugin.tx_srfeuserregister_pi1 {
 
 		defaultValues {
 			module_sys_dmail_html = 1
-			module_sys_dmail_category = 1
 			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
 			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
 			by_invitation =

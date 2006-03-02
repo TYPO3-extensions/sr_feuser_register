@@ -88,6 +88,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		var $savedSuffix = '_SAVED';
 		var $setfixedPrefix = 'SETFIXED_';
 		var $emailMarkHTMLSuffix = '_HTML';
+		var $sys_language_content;
 		var $charset = 'iso-8859-1'; // charset to be used in emails and form conversions
 		var $codeLength;
 		var $cmdKey;
@@ -105,6 +106,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		}
 		 
 		function main($content, $conf) {
+			global $TSFE, $TCA, $TYPO3_CONF_VARS;
+			
 				// plugin initialization
 			$this->initId();
 			$this->conf = $conf;
@@ -112,16 +115,17 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$this->pi_USER_INT_obj = 1;
 			$this->pi_setPiVarDefaults();
 			$this->site_url = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
+			$this->sys_language_content = intval($TSFE->config['config']['sys_language_uid']) ? intval($TSFE->config['config']['sys_language_uid']) : 0;
 			
 				// get the table definition
-			$GLOBALS['TSFE']->includeTCA();
-			$GLOBALS['TCA'][$this->theTable]['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['uploadFolder'] ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['uploadFolder'] :  $GLOBALS['TCA'][$this->theTable]['columns']['image']['config']['uploadfolder'];
-			$this->TCA = $GLOBALS['TCA'][$this->theTable];
+			$TSFE->includeTCA();
+			$TCA[$this->theTable]['columns']['image']['config']['uploadfolder'] = $TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['uploadFolder'] ? $TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['uploadFolder'] :  $TCA[$this->theTable]['columns']['image']['config']['uploadfolder'];
+			$this->TCA = $TCA[$this->theTable];
 			
 				// prepare for character set settings and conversions
 			$this->typoVersion = t3lib_div::int_from_ver($GLOBALS['TYPO_VERSION']);
-			if ($GLOBALS['TSFE']->metaCharset) {
-				$this->charset = $GLOBALS['TSFE']->csConvObj->parse_charset($GLOBALS['TSFE']->metaCharset);
+			if ($TSFE->metaCharset) {
+				$this->charset = $TSFE->csConvObj->parse_charset($TSFE->metaCharset);
 			}
 			
 				// prepare for handling dates befor 1970
@@ -130,20 +134,20 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				// set the pid's and the title language overlay
 			$this->pidRecord = t3lib_div::makeInstance('t3lib_pageSelect');
 			$this->pidRecord->init(0);
-			$this->pidRecord->sys_language_uid = (trim($GLOBALS['TSFE']->config['config']['sys_language_uid'])) ? trim($GLOBALS['TSFE']->config['config']['sys_language_uid']) : 0;
-			$this->thePid = intval($this->conf['pid']) ? strval(intval($this->conf['pid'])) : $GLOBALS['TSFE']->id;
+			$this->pidRecord->sys_language_uid = $this->sys_language_content;
+			$this->thePid = intval($this->conf['pid']) ? strval(intval($this->conf['pid'])) : $TSFE->id;
 			$row = $this->pidRecord->getPage($this->thePid);
 			$this->thePidTitle = trim($this->conf['pidTitleOverride']) ? trim($this->conf['pidTitleOverride']) : $row['title'];
-			$this->registerPID = intval($this->conf['registerPID']) ? strval(intval($this->conf['registerPID'])) : $GLOBALS['TSFE']->id;
-			$this->editPID = intval($this->conf['editPID']) ? strval(intval($this->conf['editPID'])) : $GLOBALS['TSFE']->id;
+			$this->registerPID = intval($this->conf['registerPID']) ? strval(intval($this->conf['registerPID'])) : $TSFE->id;
+			$this->editPID = intval($this->conf['editPID']) ? strval(intval($this->conf['editPID'])) : $TSFE->id;
 			$this->infomailPID = intval($this->conf['infomailPID']) ? strval(intval($this->conf['infomailPID'])) : $this->registerPID;
 			$this->confirmPID = intval($this->conf['confirmPID']) ? strval(intval($this->conf['confirmPID'])) : $this->registerPID;
 			$this->confirmInvitationPID = intval($this->conf['confirmInvitationPID']) ? strval(intval($this->conf['confirmInvitationPID'])) : $this->confirmPID;			
-			$this->confirmType = intval($this->conf['confirmType']) ? strval(intval($this->conf['confirmType'])) : $GLOBALS['TSFE']->type;
+			$this->confirmType = intval($this->conf['confirmType']) ? strval(intval($this->conf['confirmType'])) : $TSFE->type;
 			if ($this->conf['confirmType'] == '0' ) {
 				$this->confirmType = '0';
 			};
-			$this->loginPID = intval($this->conf['loginPID']) ? strval(intval($this->conf['loginPID'])) : $GLOBALS['TSFE']->id;
+			$this->loginPID = intval($this->conf['loginPID']) ? strval(intval($this->conf['loginPID'])) : $TSFE->id;
 			 
 				// Initialise static info library
 			$this->staticInfo = t3lib_div::makeInstance('tx_srstaticinfo_pi1');
@@ -175,7 +179,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$this->cmd = $this->feUserData['cmd'] ? $this->feUserData['cmd'] : strtolower($this->cObj->data['select_key']);
 			
 			// <Franz Holzinger added flexform support>
-			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['useFlexforms'] && t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
+			if ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['useFlexforms'] && t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
 			 		// FE BE library for flexform functions
 				require_once(PATH_BE_fh_library.'lib/class.tx_fhlibrary_flexform.php');
 					// check the flexform
@@ -187,7 +191,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$this->conf['defaultCode'], 
 					$this->cObj->data['pi_flexform'], 
 					'display_mode',
-					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['useFlexforms']
+					$TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['useFlexforms']
 				);
 			}else {
 				$this->cmd = $this->cmd ? $this->cmd : strtolower($this->conf['defaultCODE']);
@@ -213,7 +217,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			
 				// Setting the list of fields allowed for editing and creation.
-			$this->fieldList = implode(',', t3lib_div::trimExplode(',', $GLOBALS['TCA'][$this->theTable]['feInterface']['fe_admin_fieldList'], 1));
+			$this->fieldList = implode(',', t3lib_div::trimExplode(',', $TCA[$this->theTable]['feInterface']['fe_admin_fieldList'], 1));
 			$this->adminFieldList = implode(',', array_intersect( explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->adminFieldList, 1)));
 			if (trim($this->conf['addAdminFieldList'])) {
 				$this->adminFieldList .= ',' . trim($this->conf['addAdminFieldList']);
@@ -268,8 +272,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$this->codeLength = intval($this->conf['authcodeFields.']['codeLength']) ? intval($this->conf['authcodeFields.']['codeLength']) : 8;
 
 				// Setting the record uid if a frontend user is logged in and we are not trying to send an invitation
-			if ($this->theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser && $this->cmd != 'invite') {
-				$this->recUid = $GLOBALS['TSFE']->fe_user->user['uid'];
+			if ($this->theTable == 'fe_users' && $TSFE->loginUser && $this->cmd != 'invite') {
+				$this->recUid = $TSFE->fe_user->user['uid'];
 			}
 
 				// Fetching the template file
@@ -379,7 +383,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				if ($this->theTable == 'fe_users' && 
 					$this->cmd == 'edit' && 
  					($this->backURL || ($this->conf['linkToPID'] && ($this->feUserData['linkToPID'] || !$this->conf['linkToPIDAddButton']))) ) {
- 					$destUrl = ($this->backURL ? $this->backURL : $this->site_url.$this->cObj->getTypoLink_URL($this->conf['linkToPID'].','.$GLOBALS['TSFE']->type));
+ 					$destUrl = ($this->backURL ? $this->backURL : $this->site_url.$this->cObj->getTypoLink_URL($this->conf['linkToPID'].','.$TSFE->type));
  					header('Location: '.t3lib_div::locationHeaderUrl($destUrl));
 					exit;
 				}
@@ -414,7 +418,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						$content = $this->displayCreateScreen($this->cmd);
 						break;
 					default:
-						if ($this->theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) {
+						if ($this->theTable == 'fe_users' && $TSFE->loginUser) {
 							$content = $this->displayCreateScreen($this->cmd);
 						} else {
 							$content = $this->displayEditScreen();
@@ -1129,7 +1133,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$markerArray = $this->addHiddenFieldsMarkers($markerArray, $currentArr);
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 			if ($this->conf['templateStyle'] != 'css-styled' || !$this->previewLabel) {
-				$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($currentArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
+				$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($currentArr), $this->theTable.'_form', 'FE['.$this->theTable.']', $this->fieldList.$this->additionalUpdateFields);
 			}
 			return $content;
 		}
@@ -1140,9 +1144,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return string  the template with substituted markers
 		*/
 		function displayEditScreen() {
+			global $TSFE;
+			
 			if ($this->conf['edit']) {
 				// If editing is enabled
-				$origArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $this->dataArr['uid']?$this->dataArr['uid']:$this->recUid);
+				$origArr = $TSFE->sys_page->getRawRecord($this->theTable, $this->dataArr['uid']?$this->dataArr['uid']:$this->recUid);
 				if( $this->theTable != 'fe_users' && $this->conf['setfixed.']['edit.']['_FIELDLIST']) {
 					$fD = t3lib_div::_GP('fD', 1);
 					$fieldArr = array();
@@ -1156,8 +1162,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$theCode = $this->setfixedHash($origArr, $origArr['_FIELDLIST']);
 				}
 				if (is_array($origArr)) $origArr = $this->parseIncomingData($origArr);
-
-				if (is_array($origArr) && ( ($this->theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $this->aCAuth($origArr) || !strcmp($this->authCode, $theCode) ) ) {
+				
+				if (is_array($origArr) && ( ($this->theTable == 'fe_users' && $TSFE->loginUser) || $this->aCAuth($origArr) || !strcmp($this->authCode, $theCode) ) ) {
 					// Must be logged in OR be authenticated by the aC code in order to edit
 					// If the recUid selects a record.... (no check here)
 					$this->markerArray = $this->addMd5EventsMarkers($this->markerArray, 'edit');
@@ -1214,7 +1220,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								$this->deleteFilesFromRecord($this->recUid);
 							}
 							$res = $this->cObj->DBgetDelete($this->theTable, $this->recUid, true);
-							$this->deleteMMRelations($this->theTable, $this->recUid);
+							$this->deleteMMRelations($this->theTable, $this->recUid, $origArr);
 							$this->currentArr = $origArr;
 							$this->saved = 1;
 						} else {
@@ -1459,7 +1465,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							$this->deleteFilesFromRecord($this->recUid);
 						}
 						$res = $this->cObj->DBgetDelete($this->theTable, $this->recUid, true);
-						$this->deleteMMRelations($this->theTable, $this->recUid);
+						$this->deleteMMRelations($this->theTable, $this->recUid, $origArr);
 					} else {
 						if ($this->theTable == 'fe_users') {
 							if ($this->conf['create.']['allowUserGroupSelection']) {
@@ -1831,6 +1837,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return string  the hash value
 		*/
 		function setfixedHash($recCopy, $fields = '') {
+			$recCopy_temp=array();
 			if ($fields) {
 				$fieldArr = t3lib_div::trimExplode(',', $fields, 1);
 				reset($fieldArr);
@@ -1840,9 +1847,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			} else {
 				$recCopy_temp = $recCopy;
 			}
-			$encStr = implode('|', $recCopy_temp).'|'.$this->conf['authcodeFields.']['addKey'].'|'.$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
-			$hash = substr(md5($encStr), 0, $this->codeLength);
-			return $hash;
+			$preKey = implode('|',$recCopy_temp);
+			$authCode = $preKey.'|'.$this->conf['authcodeFields.']['addKey'].'|'.$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
+			$authCode = substr(md5($authCode), 0, $this->codeLength);
+			//$authcode = t3lib_div::stdAuthCode($recCopy,$fields,$this->codeLength);
+			return $authCode;
 		}
 		/**
 		* Checks if preview display is on.
@@ -1871,7 +1880,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return array  the output marker array
 		*/
 		function addTcaMarkers($markerArray, $dataArray = '', $viewOnly = false) {
-			global $TYPO3_DB, $TCA;
+			global $TYPO3_DB, $TCA, $TSFE;
 
 			foreach ($this->TCA['columns'] as $colName => $colSettings) {
 				if (t3lib_div::inList($this->conf[$this->cmdKey.'.']['fields'], $colName)) {
@@ -1912,6 +1921,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 										}
 									} 
 									if ($colConfig['foreign_table']) {
+										t3lib_div::loadTCA($colConfig['foreign_table']);
 										$reservedValues = array();
 										if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
 											$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
@@ -1919,12 +1929,17 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 										$valuesArray = array_diff($valuesArray, $reservedValues);
 										if (!empty($valuesArray)) {
 											$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
-											$res = $TYPO3_DB->exec_SELECTquery($titleField, $colConfig['foreign_table'],
-												'uid IN ('.implode(',', $valuesArray).')');
+											$res = $TYPO3_DB->exec_SELECTquery(
+												'*',
+												$colConfig['foreign_table'],
+												'uid IN ('.implode(',', $valuesArray).')'
+												);
 											$i = 0;
 											while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
 												if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
 													$row = $this->getUsergroupOverlay($row);
+												} elseif ($localizedRow = $TSFE->sys_page->getRecordOverlay($colConfig['foreign_table'], $row, $this->sys_language_content)) {
+													$row = $localizedRow;
 												}
 												$colContent .= ($i++ ? '<br />': '') . $row[$titleField];
 											}
@@ -2007,14 +2022,21 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									}
 								}
 								if ($colConfig['foreign_table']) {
+									t3lib_div::loadTCA($colConfig['foreign_table']);
 									$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
 									if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
 										$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
 										$selectedValue = false;
 									}
-									$whereClause = ($this->theTable == 'fe_users' && $colName == 'usergroup') ? ' pid='.intval($this->thePid).' ' : ' 1=1 ';
+									$whereClause = ($this->theTable == 'fe_users' && $colName == 'usergroup') ? ' pid='.intval($this->thePid).' ' : ' 1=1';
+									if ($TCA[$colConfig['foreign_table']] && $TCA[$colConfig['foreign_table']]['ctrl']['languageField'] && $TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField']) {
+										$whereClause .= ' AND '.$TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField'].'=0';
+									}
+									if ($colName == 'module_sys_dmail_category' && $colConfig['foreign_table'] == 'sys_dmail_category' && $this->conf['module_sys_dmail_category_PIDLIST']) {
+										$whereClause .= ' AND sys_dmail_category.pid IN (' . $TYPO3_DB->fullQuoteStr($this->conf['module_sys_dmail_category_PIDLIST'], 'sys_dmail_category') . ')';
+									}
 									$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
-									$res = $TYPO3_DB->exec_SELECTquery('uid,'.$titleField, $colConfig['foreign_table'], $whereClause);
+									$res = $TYPO3_DB->exec_SELECTquery('*', $colConfig['foreign_table'], $whereClause);
 									if(!in_array($colName, $this->requiredArr)) {
 										$colContent .= '<option value="" ' . ($valuesArray[0] ? '' : 'selected="selected"') . '></option>';
 									}
@@ -2030,6 +2052,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 												$colContent .= '<option value="'.$row['uid'].'"' . $selected . '>'.$row[$titleField].'</option>';
 											}
 										} else {
+											if ($localizedRow = $TSFE->sys_page->getRecordOverlay($colConfig['foreign_table'], $row, $this->sys_language_content)) {
+												$row = $localizedRow;
+											}
 											$colContent .= '<option value="'.$row['uid'].'"' . (in_array($row['uid'], $valuesArray) ? 'selected="selected"' : '') . '>'.$row[$titleField].'</option>';
 										}
 									}
@@ -2463,7 +2488,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				return $this->cObj->getTypoLink_URL($id, $piVars);
 			}
 		}
-		/* evalDate($value)
+		/** evalDate($value)
 		 *
 		 *  Check if the value is a correct date in format yyyy-mm-dd
 		*/
@@ -2490,7 +2515,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return parsedArray
 		*/
 		function parseIncomingData($origArr = array()) {
-			global $TYPO3_DB;
+			global $TYPO3_DB, $TCA;
 			
 			$parsedArr = array();
 			$parsedArr = $origArr;
@@ -2519,11 +2544,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							}
 							break;
 						}
-
 					}
 				}
 			}
-			
+
 			$fieldsList = array_keys($parsedArr);
 			foreach ($this->TCA['columns'] as $colName => $colSettings) {
 				if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
@@ -2534,7 +2558,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						$res = $TYPO3_DB->exec_SELECTquery(
 							'uid_local,uid_foreign,sorting',
 							$colSettings['config']['MM'],
-							'uid_local='.intval($parsedArr['uid']).$this->cObj->enableFields($colSettings['config']['foreign_table']),
+							'uid_local='.intval($parsedArr['uid']),
 							'',
 							'sorting');
 						while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
@@ -2641,9 +2665,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		 *
 		 * @return void
 		 */
-		function deleteMMRelations($table,$uid) {
+		function deleteMMRelations($table,$uid,$origArr = array()) {
 			global $TYPO3_DB;
 				// update the MM relation
+			$fieldsList = array_keys($origArr);
 			foreach ($this->TCA['columns'] as $colName => $colSettings) {
 				if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
 					$res = $TYPO3_DB->exec_DELETEquery($colSettings['config']['MM'], 'uid_local='.intval($uid));

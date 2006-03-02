@@ -1,3 +1,7 @@
+2006-03-01 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Add support for localization of MM relations when configured on the foreign table.
+	* Add constant and setup property module_sys_dmail_category_PIDLIST
+
 2006-02-03 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Honor TCA default value for TCA-driven multiple checkboxes. Thanks to Simon Tuck.
 	* Remove support for TYPO3 3.5.0.
