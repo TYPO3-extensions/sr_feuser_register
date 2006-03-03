@@ -956,8 +956,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				break;
 				default:
 				if (is_array($this->conf[$this->cmdKey.'.'])) {
-					$newFieldList = implode(array_intersect(explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)), ',');
-					$newFieldList  = implode( array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->adminFieldList))), ',');
+					$newFieldList = implode(',', array_intersect(explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)));
+					$newFieldList  = implode(',', array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->adminFieldList))));
 					$parsedArray = array();
 					$parsedArray = $this->parseOutgoingData($this->dataArr);
 					if ($this->cmdKey == 'invite' && $this->useMd5Password) {
@@ -1335,7 +1335,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$markerArray = $this->addHiddenFieldsMarkers($markerArray, $this->dataArr);
 				$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 				if ($this->conf['templateStyle'] != 'css-styled' || !$this->previewLabel) {
-					$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($this->dataArr), $this->theTable."_form", "FE[".$this->theTable."]", $this->fieldList.$this->additionalUpdateFields);
+					$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($this->dataArr), $this->theTable.'_form', 'FE['.$this->theTable.']', $this->fieldList.$this->additionalUpdateFields);
 				}
 			}
 			return $content;

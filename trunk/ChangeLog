@@ -2,6 +2,7 @@
 	* Add support for localization of MM relations when configured on the foreign table.
 	* Add constant and setup property module_sys_dmail_category_PIDLIST
 	* Update to the requirements section of the manual
+	* Small cleaning changes in class.tx_srfeuserregister_pi1.php and static templates setup.txt
 
 2006-02-03 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Honor TCA default value for TCA-driven multiple checkboxes. Thanks to Simon Tuck.
@@ -14,7 +15,7 @@
 2006-01-30 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Correction to css-styled html template (see bugtracker issue #2403).
 	* Remove changes to the TCA for fields module_sys_dmail_category and module_sys_dmail_html
-	* Ignore fields module_sys_dmail_category and module_sys_dmail_html is direct_mail extension is not loaded.
+	* Ignore fields module_sys_dmail_category and module_sys_dmail_html if direct_mail extension is not loaded.
 	* Enable support for select fields with MM relations, in particular module_sys_dmail_category.
 
 2006-01-14 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
