@@ -914,28 +914,32 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return void  sets $this->saved
 		*/
 		function save() {
-			global $TYPO3_DB;
+			global $TYPO3_DB, $TSFE;
 			
 			switch($this->cmd) {
 				case 'edit':
 				$theUid = $this->dataArr['uid'];
-				$origArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $theUid);
+				$origArr = $TSFE->sys_page->getRawRecord($this->theTable, $theUid);
 					// Fetch the original record to check permissions
-				if ($this->conf['edit'] && ($GLOBALS['TSFE']->loginUser || $this->aCAuth($origArr))) {
+				if ($this->conf['edit'] && ($TSFE->loginUser || $this->aCAuth($origArr))) {
 						// Must be logged in in order to edit  (OR be validated by email)
 					$newFieldList = implode(',', array_intersect(explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->conf['edit.']['fields'], 1)));
 					$newFieldList = implode(',', array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->adminFieldList))));
 						// Do not reset the name if we have no new value
-					if(!in_array('name', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)) && !in_array('first_name', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)) && !in_array('last_name', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1))) {
+					if (!in_array('name', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)) && !in_array('first_name', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)) && !in_array('last_name', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1))) {
 						$newFieldList  = implode(',', array_diff(explode(',', $newFieldList), array('name')));
 					}
-					if ($this->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($this->theTable, $origArr, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
+						// Do not reset the username if we have no new value
+					if (!in_array('username', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)) ) {
+						$newFieldList  = implode(',', array_diff(explode(',', $newFieldList), array('username')));
+					}
+					if ($this->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($this->theTable, $origArr, $TSFE->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 						$res = $this->cObj->DBgetUpdate($this->theTable, $theUid, $this->parseOutgoingData($this->dataArr), $newFieldList, true);
 						$this->updateMMRelations($this->dataArr);
 						$this->saved = 1;
 
 							// Post-edit processing: call user functions and hooks
-						$this->currentArr = $this->parseIncomingData( $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $theUid));
+						$this->currentArr = $this->parseIncomingData( $TSFE->sys_page->getRawRecord($this->theTable, $theUid));
 						$this->userProcess_alt($this->conf['edit.']['userFunc_afterSave'], $this->conf['edit.']['userFunc_afterSave.'], array('rec' => $this->currentArr, 'origRec' => $origArr));
 
 							// <Ries van Twisk added registrationProcess hooks>
@@ -990,7 +994,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$this->saved = 1;
 
 						// Post-create processing: call user functions and hooks
-					$this->currentArr = $this->parseIncomingData( $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $newId));
+					$this->currentArr = $this->parseIncomingData( $TSFE->sys_page->getRawRecord($this->theTable, $newId));
 					$this->userProcess_alt($this->conf['create.']['userFunc_afterSave'], $this->conf['create.']['userFunc_afterSave.'], array('rec' => $this->currentArr));
 
 						// <Ries van Twisk added registrationProcess hooks>
