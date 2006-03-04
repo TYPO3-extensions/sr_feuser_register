@@ -1,3 +1,7 @@
+2006-03-03 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Update Danish localization.
+	* Update version number to 2.3.0
+
 2006-03-01 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Add support for localization of MM relations when configured on the foreign table.
 	* Add constant and setup property module_sys_dmail_category_PIDLIST
