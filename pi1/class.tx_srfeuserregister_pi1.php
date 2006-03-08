@@ -71,8 +71,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		var $loginPID;
 		var $cmd;
 		var $setfixedEnabled = 1;
+		var $useShortUrls = FALSE;
 		var $HTMLMailEnabled = 1;
-		var $incomingData = false;
+		var $incomingData = FALSE;
 		var $previewLabel = '';
 		var $backURL;
 		var $recUid;
@@ -156,9 +157,25 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				// Initialise fileFunc object
 			$this->fileFunc = t3lib_div::makeInstance('t3lib_basicFileFunctions');
 			
-				// Get post parameters
+				// Get parameters
 			$this->feUserData = t3lib_div::_GP($this->prefixId);
 			$fe = t3lib_div::_GP('FE');
+			
+				// <Steve Webster added short url feature>
+				// Get hash variable if provided and if short url feature is enabled
+			if ($this->conf['useShortUrls']) {
+				$this->useShortUrls = TRUE;
+				$this->shortUrlLife = intval($this->conf['shortUrlLife']) ? strval(intval($this->conf['shortUrlLife'])) : '30';
+				$this->cleanShortUrlCache();
+					// Check and process for short URL if the regHash GET parameter exists
+				if (isset($this->feUserData['regHash'])) {
+					$getVars = $this->getStoredURL($this->feUserData['regHash']);
+					t3lib_div::_GETset($getVars);
+					$this->feUserData = t3lib_div::_GP($this->prefixId);
+				}
+			}
+				// </Steve Webster added short url feature>
+			
 				// Establishing compatibility with Direct Mail extension
 			$this->feUserData['rU'] = t3lib_div::_GP('rU') ? t3lib_div::_GP('rU') : $this->feUserData['rU'];
 			$this->feUserData['aC'] = t3lib_div::_GP('aC') ? t3lib_div::_GP('aC') : $this->feUserData['aC'];
@@ -1827,6 +1844,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					if (t3lib_div::_GP('L') && !t3lib_div::inList($GLOBALS['TSFE']->config['config']['linkVars'], 'L')) {
 						$setfixedpiVars['L'] = t3lib_div::_GP('L');
 					}
+					if ($this->useShortUrls) {
+						$thisHash = $this->storeFixedPiVars($setfixedpiVars);
+						$setfixedpiVars = array($this->prefixId.'[regHash]' => $thisHash);
+					}
 					$markerArray['###SETFIXED_'.strtoupper($theKey).'_URL###'] = $urlPrefix . $this->cObj->getTypoLink_URL($linkPID.','.$this->confirmType, $setfixedpiVars);
 				}
 			}
@@ -2455,7 +2476,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						$fields = array_merge($fields, array( 'email'));
 					}
 				}
-				while (list(, $fName) = each($fields) ) {
+				while (list(, $fName) = each($fields)) {
 					$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.']['.$fName.']" value="'. htmlspecialchars($dataArr[$fName]).'" />';
 				}
 			}
@@ -2492,6 +2513,66 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				return $this->cObj->getTypoLink_URL($id, $piVars);
 			}
 		}
+		
+		// <Steve Webster added short url feature>
+		/**
+		 *  Store the setfixed vars and return a replacement hash
+		 */
+		function storeFixedPiVars($vars) {
+			global $TYPO3_DB, $TYPO3_CONF_VARS;
+			
+				// create a unique hash value
+			$params = serialize($vars);
+			$md5 = substr(md5(microtime().$params.t3lib_div::getIndpEnv('TYPO3_HOST_ONLY').$TYPO3_CONF_VARS['SYS']['encryptionKey']),0,20);
+				// and store it with a serialized version of the array in the DB
+			$res = $TYPO3_DB->exec_SELECTquery('md5hash','cache_md5params','md5hash='.$TYPO3_DB->fullQuoteStr($md5,'cache_md5params'));
+			if (!$TYPO3_DB->sql_num_rows($res))  {
+				$insertFields = array (
+					'md5hash' => $md5,
+					'tstamp' => time(),
+					'type' => 99,
+					'params' => $params
+				);
+				$TYPO3_DB->exec_INSERTquery('cache_md5params',$insertFields);
+			}
+			return $md5;
+		}
+		
+		/**
+		 *  Get the stored variables using the hash value to access the database
+		 */
+		function getStoredURL($regHash) {
+			global $TYPO3_DB;
+			
+				// get the serialised array from the DB based on the passed hash value
+			$varArray = array();
+ 			$res = $TYPO3_DB->exec_SELECTquery('params','cache_md5params','md5hash='.$TYPO3_DB->fullQuoteStr($regHash,'cache_md5params'));
+			while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
+				$varArray = unserialize($row['params']);
+			}
+				// convert the array to one that will be properly incorporated into the GET global array.
+			$retArray = array();
+			reset($varArray);
+			while (list($key, $val) = each($varArray)){
+				$search = array('[\]]', '[\[]');
+				$replace = array ( '\']', '\'][\'');
+				$newkey = "['" . preg_replace($search, $replace, $key);
+				eval("\$retArr".$newkey."='$val';");
+			}
+			return $retArr;
+		}
+		
+		/**
+		 *  Clears obsolete hashes used for short url's
+		 */
+ 		function cleanShortUrlCache() {
+ 			global $TYPO3_DB;
+			
+ 			$max_life = time() - (86400 * intval($this->shortUrlLife));
+ 			$res = $TYPO3_DB->exec_DELETEquery('cache_md5params', 'tstamp<' . $max_life . ' AND type=99');	
+ 		}
+		// </Steve Webster added short url feature>
+		
 		/** evalDate($value)
 		 *
 		 *  Check if the value is a correct date in format yyyy-mm-dd
@@ -2914,7 +2995,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		}
 		
 	}
-	if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php"]) {
-		include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php"]);
+	if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php']) {
+		include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php']);
 	}
 ?>
