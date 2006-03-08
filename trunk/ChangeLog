@@ -1,3 +1,7 @@
+2006-03-08 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Add short URL's feature. Thanks to Steve Webster.
+	* Update requirements to TYPO3 4.0.0
+
 2006-03-03 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Update Danish localization.
 	* Update version number to 2.3.0

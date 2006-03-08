@@ -26,6 +26,9 @@ plugin.tx_srfeuserregister_pi1 {
 	linkToPIDAddButton = {$plugin.tx_srfeuserregister_pi1.linkToPIDAddButton}
 	module_sys_dmail_category_PIDLIST = {$plugin.tx_srfeuserregister_pi1.module_sys_dmail_category_PIDLIST}
 	defaultCODE = {$plugin.tx_srfeuserregister_pi1.defaultCODE}
+	
+	useShortUrls = {$plugin.tx_srfeuserregister_pi1.useShortUrls}
+	shortUrlLife = {$plugin.tx_srfeuserregister_pi1.shortUrlLife}
 
 	formName = {$plugin.tx_srfeuserregister_pi1.formName}
 	onChangeCountryAttribute = {$plugin.tx_srfeuserregister_pi1.onChangeCountryAttribute}

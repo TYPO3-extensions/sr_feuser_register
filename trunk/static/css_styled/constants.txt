@@ -177,7 +177,13 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable md5-hashed password: If set and if extension kb_md5fepw is installed, password will be md5-hashed.
   useMd5Password = 1
   
-      # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= PID list for Direct Mail categories: The Direct mail categories used by the plugin will be restricted to those found in these PID's.
+    # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= PID list for Direct Mail categories: The Direct mail categories used by the plugin will be restricted to those found in these PID's.
   module_sys_dmail_category_PIDLIST =
+  
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label=Use short URL's: If set, the use of short URL's in email messages sent to users is enabled.
+  useShortUrls = 0
+
+    # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label=Short URL cache lifespan: Number of days that short URL's will be kept in the DB. After this delay, the short URL's will be removed. Confirmation URL's included in email messages older than this number of days will not work.
+  shortUrlLife = 30
 
 }
