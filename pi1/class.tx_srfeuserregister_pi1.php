@@ -52,9 +52,15 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		var $cObj;
 		var $conf = array();
 		var $site_url = '';
-		var $theTable = 'fe_users';
 		var $TCA = array();
-		 
+		
+			// Plugin initialization variables
+		var $prefixId = 'tx_srfeuserregister_pi1';  // Same as class name
+		var $scriptRelPath = 'pi1/class.tx_srfeuserregister_pi1.php'; // Path to this script relative to the extension dir.
+		var $extKey = 'sr_feuser_register';  // The extension key.
+		var $theTable = 'fe_users';
+		var $adminFieldList = 'username,password,name,disable,usergroup,by_invitation';
+			
 		var $feUserData = array();
 		var $dataArr = array();
 		var $currentArr = array();
@@ -95,18 +101,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		var $cmdKey;
 		var $fieldList; // List of fields from fe_admin_fieldList
 		var $requiredArr; // List of required fields
-		var $adminFieldList = 'name,disable,usergroup';
 		var $fileFunc = ''; // Set to a basic_filefunc object for file uploads
-		
-		function tx_srfeuserregister_pi1() {
-			$this->prefixId = 'tx_srfeuserregister_pi1';  // Same as class name
-			$this->scriptRelPath = 'pi1/class.tx_srfeuserregister_pi1.php'; // Path to this script relative to the extension dir.
-			$this->extKey = 'sr_feuser_register';  // The extension key.
-			$this->theTable = 'fe_users';
-			$this->adminFieldList = 'username,password,name,disable,usergroup,by_invitation';
-			parent::tslib_pibase();
-		}
-		 
+
 		function main($content, $conf) {
 			global $TSFE, $TCA, $TYPO3_CONF_VARS;
 			
@@ -241,8 +237,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			
 			if (!t3lib_extMgm::isLoaded('direct_mail')) {
-				$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('module_sys_dmail_category','module_sys_dmail_html')));
-				$this->conf[$this->cmdKey.'.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'], 1), array('module_sys_dmail_category','module_sys_dmail_html')));
+				$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('module_sys_dmail_category')));
+				$this->conf[$this->cmdKey.'.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'], 1), array('module_sys_dmail_category')));
 			}
 			
 			if ($this->theTable == 'fe_users') {
@@ -2538,7 +2534,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				);
 				$TYPO3_DB->exec_INSERTquery('cache_md5params',$insertFields);
 			}
-			return $md5;
+			return $regHash_calc;
 		}
 		
 		/**

@@ -168,6 +168,22 @@ $TCA['fe_users']['types']['0']['showitem'] = str_replace('www', 'www,comments,by
 
 $TCA['fe_users']['palettes']['2']['showitem'] = str_replace('title', 'gender,first_name,last_name,title', $TCA['fe_users']['palettes']['2']['showitem']);
 
+	// fe_users modified
+if (!t3lib_extMgm::isLoaded('direct_mail')) {
+	$tempCols = Array(
+		'module_sys_dmail_html' => Array(
+			'label'=>'LLL:EXT:'.$_EXTKEY.'/locallang_db.php:fe_users.module_sys_dmail_html',
+			'exclude' => '1',
+			'config'=>Array(
+				'type'=>'check'
+				)
+			)
+	);
+	t3lib_extMgm::addTCAcolumns('fe_users',$tempCols);
+	$TCA['fe_users']['feInterface']['fe_admin_fieldList'].=',module_sys_dmail_html';
+	t3lib_extMgm::addToAllTCATypes('fe_users','--div--;Direct mail,module_sys_dmail_html;;;;1-1-1');
+}
+
 $TCA['fe_groups_language_overlay'] = Array (
 	'ctrl' => Array (
  	'title' => 'LLL:EXT:' . SR_FEUSER_REGISTER_EXTkey . '/locallang_db.php:fe_groups_language_overlay',
