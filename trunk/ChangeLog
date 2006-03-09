@@ -1,6 +1,8 @@
 2006-03-08 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Add short URL's feature. Thanks to Steve Webster.
 	* Update requirements to TYPO3 4.0.0
+	* Modify plugin initialization by adding class constructor
+	* Correct processing of module_sys_dmail fields when Direct Mail is not installed.
 
 2006-03-03 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Update Danish localization.
