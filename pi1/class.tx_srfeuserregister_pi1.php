@@ -40,7 +40,6 @@ require_once(PATH_tslib.'class.tslib_pibase.php');
 	// To get the pid language overlay:
 require_once(PATH_t3lib.'class.t3lib_page.php');
 require_once(t3lib_extMgm::extPath('sr_static_info').'pi1/class.tx_srstaticinfo_pi1.php');
-require_once(t3lib_extMgm::extPath('sr_feuser_register').'pi1/class.tx_srfeuserregister_pi1_t3lib_htmlmail.php');
 require_once(t3lib_extMgm::extPath('sr_feuser_register').'pi1/class.tx_srfeuserregister_pi1_urlvalidator.php');
 require_once(t3lib_extMgm::extPath('sr_feuser_register').'pi1/class.tx_srfeuserregister_pi1_adodb_time.php');
 	// For use with images:
@@ -119,8 +118,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$TCA[$this->theTable]['columns']['image']['config']['uploadfolder'] = $TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['uploadFolder'] ? $TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['uploadFolder'] :  $TCA[$this->theTable]['columns']['image']['config']['uploadfolder'];
 			$this->TCA = $TCA[$this->theTable];
 			
-				// prepare for character set settings and conversions
-			$this->typoVersion = t3lib_div::int_from_ver($GLOBALS['TYPO_VERSION']);
+				// prepare for character set settings
 			if ($TSFE->metaCharset) {
 				$this->charset = $TSFE->csConvObj->parse_charset($TSFE->metaCharset);
 			}
@@ -1706,11 +1704,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$subject = trim($parts[1]) ? strip_tags(trim($parts[1])) :
 				'Front end user registration message';
 				 
-				$Typo3_htmlmail = t3lib_div::makeInstance('tx_srfeuserregister_pi1_t3lib_htmlmail');
-				$Typo3_htmlmail->charset = $this->charset;
+				$Typo3_htmlmail = t3lib_div::makeInstance('t3lib_htmlmail');
 				$Typo3_htmlmail->start();
-				$Typo3_htmlmail->mailer = 'Typo3 HTMLMail';		 
-				$Typo3_htmlmail->subject = $Typo3_htmlmail->convertName($subject);
+				$Typo3_htmlmail->mailer = 'Typo3 HTMLMail';
+				$Typo3_htmlmail->subject = $subject;
 				$Typo3_htmlmail->from_email = $fromEmail;
 				$Typo3_htmlmail->returnPath = $fromEmail;
 				$Typo3_htmlmail->from_name = $fromName;
