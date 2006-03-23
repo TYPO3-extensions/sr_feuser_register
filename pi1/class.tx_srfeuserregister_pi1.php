@@ -1611,7 +1611,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$userContent['rec'] = $this->removeStaticInfoSubparts($userContent['rec'], $markerArray, $viewOnly);
 					$userContent['accum'] .= $this->cObj->substituteMarkerArray($userContent['rec'], $markerArray);
 				}
-
 				if ($HTMLContent['rec']) {
 					$HTMLContent['rec'] = $this->removeStaticInfoSubparts($HTMLContent['rec'], $markerArray, $viewOnly);
 					$HTMLContent['accum'] .= $this->cObj->substituteMarkerArray($HTMLContent['rec'], $markerArray);
@@ -1619,13 +1618,13 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				if ($adminContent['rec']) {
 					$adminContent['rec'] = $this->removeStaticInfoSubparts($adminContent['rec'], $markerArray, $viewOnly);
 					$adminContent['accum'] .= $this->cObj->substituteMarkerArray($adminContent['rec'], $markerArray);
-
 				}
 			}
 			
-				// Substitute the markers and eliminate HTML markup from plain text versions
+				// Substitute the markers and eliminate HTML markup from plain text versions, but preserve <http://...> constructs
 			if ($userContent['all']) {
-				$userContent['final'] .= strip_tags($this->cObj->substituteSubpart($userContent['all'], '###SUB_RECORD###', $userContent['accum']));
+				$userContent['final'] .= $this->cObj->substituteSubpart($userContent['all'], '###SUB_RECORD###', $userContent['accum']);
+				$userContent['final'] = str_replace('###http', '<http', strip_tags(str_replace('<http', '###http', $userContent['final'])));
 				$userContent['final'] = $this->removeHTMLComments($userContent['final']);
 				$userContent['final'] = $this->replaceHTMLBr($userContent['final']);
 			}
@@ -1635,6 +1634,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			if ($adminContent['all']) {
 				$adminContent['final'] .= $this->cObj->substituteSubpart($adminContent['all'], '###SUB_RECORD###', $adminContent['accum']);
+				$adminContent['final'] = str_replace('###http', '<http', strip_tags(str_replace('<http', '###http', $adminContent['final'])));
 				$adminContent['final'] = $this->removeHTMLComments($adminContent['final']);
 				$adminContent['final'] = $this->replaceHTMLBr($adminContent['final']);
 			}
