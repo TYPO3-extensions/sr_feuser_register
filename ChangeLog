@@ -1,3 +1,7 @@
+2006-03-22 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Adjustments to make the extension compatible with system extension Database Abstraction Layer (dbal).
+	* Correct bugtracker issue 2912: some missing slashes.
+
 2006-03-08 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Remove locally extended t3lib_htmlmail
 
