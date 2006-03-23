@@ -488,7 +488,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						$theCmd = trim($cmdParts[0]);
 						switch($theCmd) {
 							case 'uniqueGlobal':
-							$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->theTable, $theField, $this->dataArr[$theField], 'LIMIT 1');
+							$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->theTable, $theField, $this->dataArr[$theField], '', '', '', '1');
 							if (trim($this->dataArr[$theField]) && $DBrows) {
 								if (!$recExist || $DBrows[0]['uid'] != $this->dataArr['uid']) {
 									// Only issue an error if the record is not existing (if new...) and if the record with the false value selected was not our self.
@@ -499,7 +499,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							}
 							break;
 							case 'uniqueLocal':
-							$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->theTable, $theField, $this->dataArr[$theField], "AND pid IN (".$recordTestPid.') LIMIT 1');
+							$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->theTable, $theField, $this->dataArr[$theField], 'AND pid IN ('.$recordTestPid.')', '', '', '1');
 							if (trim($this->dataArr[$theField]) && $DBrows) {
 								if (!$recExist || $DBrows[0]['uid'] != $this->dataArr['uid']) {
 									// Only issue an error if the record is not existing (if new...) and if the record with the false value selected was not our self.
@@ -978,7 +978,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					if ($this->cmdKey == 'invite' && $this->useMd5Password) {
 						$parsedArray['password'] = md5($this->dataArr['password']);
 					}
-					$res = $this->cObj->DBgetInsert($this->theTable, $this->thePid, $parsedArray, $newFieldList, true);
+					$res = $this->cObj->DBgetInsert($this->theTable, $this->thePid, $parsedArray, $newFieldList, TRUE);
 					$newId = $TYPO3_DB->sql_insert_id();
 
 						// Enable users to own them self.
@@ -997,15 +997,15 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							$extraList .= ','.$field;
 						}
 						if (count($dataArr)) {
-							$res = $this->cObj->DBgetUpdate($this->theTable, $newId, $dataArr, $extraList, true);
-						} 
+							$res = $this->cObj->DBgetUpdate($this->theTable, $newId, $dataArr, $extraList, TRUE);
+						}
 					}
 					$this->dataArr['uid'] = $newId;
 					$this->updateMMRelations($this->dataArr);
 					$this->saved = 1;
 
 						// Post-create processing: call user functions and hooks
-					$this->currentArr = $this->parseIncomingData( $TSFE->sys_page->getRawRecord($this->theTable, $newId));
+					$this->currentArr = $this->parseIncomingData($TSFE->sys_page->getRawRecord($this->theTable, $newId));
 					$this->userProcess_alt($this->conf['create.']['userFunc_afterSave'], $this->conf['create.']['userFunc_afterSave.'], array('rec' => $this->currentArr));
 
 						// <Ries van Twisk added registrationProcess hooks>
@@ -1368,7 +1368,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			if ($this->conf['infomail'] && $this->conf['email.']['field'])	{
 				$fetch = $this->feUserData['fetch'];
 				if (isset($fetch))	{
-					$pidLock=' AND pid IN ('.$this->thePid.') ';
+					$pidLock='AND pid IN ('.$this->thePid.')';
 						// Getting records
 					if ( $this->theTable == 'fe_users' && t3lib_div::testInt($fetch) )	{
 						$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->theTable,'uid',$fetch,$pidLock,'','','1');
@@ -2225,9 +2225,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 
 			$markerArray['###HIDDENFIELDS###'] = '';
 			if($this->theTable == 'fe_users') {
-				$markerArray['###HIDDENFIELDS###'] = ($this->cmd?'<input type="hidden" name="'.$this->prefixId.'[cmd]" value="'.$this->cmd.'">':'');
-				$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($this->authCode?'<input type="hidden" name="'.$this->prefixId.'[aC]" value="'.$this->authCode.'">':'');
-				$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($this->backURL?'<input type="hidden" name="'.$this->prefixId.'[backURL]" value="'.htmlspecialchars($this->backURL).'">':'');
+				$markerArray['###HIDDENFIELDS###'] = ($this->cmd?'<input type="hidden" name="'.$this->prefixId.'[cmd]" value="'.$this->cmd.'" />':'');
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($this->authCode?'<input type="hidden" name="'.$this->prefixId.'[aC]" value="'.$this->authCode.'" />':'');
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($this->backURL?'<input type="hidden" name="'.$this->prefixId.'[backURL]" value="'.htmlspecialchars($this->backURL).'" />':'');
 			}
 			return $markerArray;
 		}
@@ -2244,7 +2244,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$markerArray['###FIELD_static_info_country###'] = $this->staticInfo->getStaticInfoName('COUNTRIES', is_array($dataArray)?$dataArray['static_info_country']:'');
 				$markerArray['###FIELD_zone###'] = $this->staticInfo->getStaticInfoName('SUBDIVISIONS', is_array($dataArray)?$dataArray['zone']:'', is_array($dataArray)?$dataArray['static_info_country']:'');
 				if (!$markerArray['###FIELD_zone###'] ) {
-					$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$this->theTable.'][zone]" value="">';
+					$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$this->theTable.'][zone]" value="" />';
 				}
 				$markerArray['###FIELD_language###'] = $this->staticInfo->getStaticInfoName('LANGUAGES', is_array($dataArray)?$dataArray['language']:'');
 			} else {
@@ -2252,14 +2252,14 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$markerArray['###SELECTOR_STATIC_INFO_COUNTRY###'] = $this->staticInfo->buildStaticInfoSelector('COUNTRIES', 'FE['.$this->theTable.']'.'[static_info_country]', '', is_array($dataArray)?$dataArray['static_info_country']:'', '', $this->conf['onChangeCountryAttribute'], $this->pi_getClassName('static_info_country'), $this->pi_getLL('tooltip_' . (($this->cmd == 'invite')?'invitation_':'')  . 'static_info_country'));
 					$markerArray['###SELECTOR_ZONE###'] = $this->staticInfo->buildStaticInfoSelector('SUBDIVISIONS', 'FE['.$this->theTable.']'.'[zone]', '', is_array($dataArray)?$dataArray['zone']:'', is_array($dataArray)?$dataArray['static_info_country']:'', '', $this->pi_getClassName('zone'), $this->pi_getLL('tooltip_' . (($this->cmd == 'invite')?'invitation_':'')  . 'zone'));
 					if (!$markerArray['###SELECTOR_ZONE###'] ) {
-						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$this->theTable.'][zone]" value="">';
+						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$this->theTable.'][zone]" value="" />';
 					}
 					$markerArray['###SELECTOR_LANGUAGE###'] = $this->staticInfo->buildStaticInfoSelector('LANGUAGES', 'FE['.$this->theTable.']'.'[language]', '', is_array($dataArray)?$dataArray['language']:'', '', '', $this->pi_getClassName('language'), $this->pi_getLL('tooltip_' . (($this->cmd == 'invite')?'invitation_':'')  . 'language'));
 				} else {
 					$markerArray['###SELECTOR_STATIC_INFO_COUNTRY###'] = $this->staticInfo->buildStaticInfoSelector('COUNTRIES', 'FE['.$this->theTable.']'.'[static_info_country]', '', is_array($dataArray)?$dataArray['static_info_country']:'', '', $this->conf['onChangeCountryAttribute']);
 					$markerArray['###SELECTOR_ZONE###'] = $this->staticInfo->buildStaticInfoSelector('SUBDIVISIONS', 'FE['.$this->theTable.']'.'[zone]', '', is_array($dataArray)?$dataArray['zone']:'', is_array($dataArray)?$dataArray['static_info_country']:'');
 					if (!$markerArray['###SELECTOR_ZONE###'] ) {
-						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$this->theTable.'][zone]" value="">';
+						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$this->theTable.'][zone]" value="" />';
 					}
 					$markerArray['###SELECTOR_LANGUAGE###'] = $this->staticInfo->buildStaticInfoSelector('LANGUAGES', 'FE['.$this->theTable.']'.'[language]', '', is_array($dataArray)?$dataArray['language']:'');
 				}
