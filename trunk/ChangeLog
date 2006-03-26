@@ -1,3 +1,6 @@
+2006-03-25 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Add TS setup property extraLabels. Thanks to Dmitry Dulepov.
+
 2006-03-22 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Adjustments to make the extension compatible with system extension Database Abstraction Layer (dbal).
 	* Correct bugtracker issue 2912: some missing slashes.

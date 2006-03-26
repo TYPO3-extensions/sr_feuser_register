@@ -2178,6 +2178,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				',v_registration_entered_subject,v_registration_entered_message1,v_registration_entered_message2'.
 				',v_registration_updated,v_registration_updated_subject,v_registration_updated_message1'.
 				',v_registration_deleted,v_registration_deleted_subject,v_registration_deleted_message1,v_registration_deleted_message2';
+				
+			if (isset($this->conf['extraLabels']) && $this->conf['extraLabels'] != '') {
+				$otherLabelsList .= ',' . $this->conf['extraLabels'];
+			}
 			$otherLabels = t3lib_div::trimExplode(',', $otherLabelsList);
 			while (list(, $labelName) = each($otherLabels) ) {
 				$markerArray['###LABEL_'.strtoupper($labelName).'###'] = sprintf($this->pi_getLL($labelName), $this->thePidTitle, $dataArray['username'], $dataArray['name'], $dataArray['email'], $dataArray['password']); 
