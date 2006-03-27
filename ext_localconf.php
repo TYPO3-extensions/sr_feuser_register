@@ -36,7 +36,7 @@ if (!defined ('FH_LIBRARY_EXTkey')) {
 }
 
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['useFlexforms'] = $_EXTCONF['useFlexforms'];
-if (t3lib_div::int_from_ver($GLOBALS['TYPO_VERSION']) < 3007000 || !t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
+if (!t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['useFlexforms'] = 0;
 }
 

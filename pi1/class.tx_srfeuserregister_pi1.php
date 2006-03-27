@@ -187,7 +187,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			if ($this->theTable == 'fe_users' && $this->feUserData['cmd'] == 'login' ) {
 				unset($this->feUserData['cmd']);
 			}
-			$this->cmd = $this->feUserData['cmd'] ? $this->feUserData['cmd'] : $this->caseShift($this->cObj->data['select_key']);
+			$this->cmd = $this->feUserData['cmd'] ? $this->feUserData['cmd'] : $this->cObj->caseshift($this->cObj->data['select_key'],'lower');
 			
 			// <Franz Holzinger added flexform support>
 			if ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['useFlexforms'] && t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
@@ -205,7 +205,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['useFlexforms']
 				);
 			}else {
-				$this->cmd = $this->cmd ? $this->cmd : $this->caseShift($this->conf['defaultCODE']);
+				$this->cmd = $this->cmd ? $this->cmd : $this->cObj->caseshift($this->conf['defaultCODE'],'lower');
 			}
 			// <//Franz Holzinger added flexform support>
 			if ($this->cmd == 'edit' || $this->cmd == 'invite') {
@@ -1734,8 +1734,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			// HTML
 			if (trim($recipient)) {
 				$parts = spliti('<title>|</title>', $HTMLContent, 3);
-				$subject = trim($parts[1]) ? strip_tags(trim($parts[1])) :
-				'Front end user registration message';
+				$subject = trim($parts[1]) ? strip_tags(trim($parts[1])) : 'Front end user registration message';
 				 
 				$Typo3_htmlmail = t3lib_div::makeInstance('t3lib_htmlmail');
 				$Typo3_htmlmail->start();
@@ -1877,7 +1876,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						$thisHash = $this->storeFixedPiVars($setfixedpiVars);
 						$setfixedpiVars = array($this->prefixId.'[regHash]' => $thisHash);
 					}
-					$markerArray['###SETFIXED_'.$this->caseShift($theKey,'toUpper').'_URL###'] = $urlPrefix . $this->cObj->getTypoLink_URL($linkPID.','.$this->confirmType, $setfixedpiVars);
+					$markerArray['###SETFIXED_'.$this->cObj->caseshift($theKey,'upper').'_URL###'] = $urlPrefix . $this->cObj->getTypoLink_URL($linkPID.','.$this->confirmType, $setfixedpiVars);
 				}
 			}
 			return $markerArray;
@@ -2023,7 +2022,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 */
 							case 'text':
 								$colContent = '<textarea id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']"'.
-									' title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . $this->caseShift($colName,'toUpper').'###"'.
+									' title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###"'.
 									' cols="'.($colConfig['cols']?$colConfig['cols']:30).'"'.
 									' rows="'.($colConfig['rows']?$colConfig['rows']:5).'"'.
 									' wrap="'.($colConfig['wrap']?$colConfig['wrap']:'virtual').'"'.
@@ -2069,7 +2068,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								if ($this->theTable == 'fe_users' && $colName == 'usergroup' && !$this->conf['allowMultipleUserGroupSelection']) {
 									$multiple = '';
 								}
-								$colContent = '<select id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . $this->caseShift($colName,'toUpper').'###">';
+								$colContent = '<select id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
 								if (is_array($colConfig['items'])) {
 									for ($i = 0; $i < count ($colConfig['items']); $i++) {
 										$colContent .= '<option value="'.$colConfig['items'][$i][1]. '" ' . (in_array($colConfig['items'][$i][1], $valuesArray) ? 'selected="selected"' : '') . '>' . $this->getLLFromString($colConfig['items'][$i][0]).'</option>';
@@ -2154,9 +2153,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			// Data field labels
 			$infoFields = t3lib_div::trimExplode(',', $this->fieldList, 1);
 			while (list(, $fName) = each($infoFields)) {
-				$markerArray['###LABEL_'.$this->caseShift($fName,'toUpper').'###'] = $this->pi_getLL($fName) ? $this->pi_getLL($fName) : $this->getLLFromString($this->TCA['columns'][$fName]['label']);
-				$markerArray['###TOOLTIP_'.$this->caseShift($fName,'toUpper').'###'] = $this->pi_getLL('tooltip_' . $fName);
-				$markerArray['###TOOLTIP_INVITATION_'.$this->caseShift($fName,'toUpper').'###'] = $this->pi_getLL('tooltip_invitation_' . $fName);
+				$markerArray['###LABEL_'.$this->cObj->caseshift($fName,'upper').'###'] = $this->pi_getLL($fName) ? $this->pi_getLL($fName) : $this->getLLFromString($this->TCA['columns'][$fName]['label']);
+				$markerArray['###TOOLTIP_'.$this->cObj->caseshift($fName,'upper').'###'] = $this->pi_getLL('tooltip_' . $fName);
+				$markerArray['###TOOLTIP_INVITATION_'.$this->cObj->caseshift($fName,'upper').'###'] = $this->pi_getLL('tooltip_invitation_' . $fName);
 				// <Ries van Twisk added support for multiple checkboxes>
 				if (is_array($dataArray[$fName])) {
 					$colContent = '';
@@ -2175,18 +2174,18 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$markerArray['###LABEL_'.$fName.'_CHECKED###'] = ($dataArray[$fName])?$this->pi_getLL('yes'):$this->pi_getLL('no');
 				}
 				if (in_array(trim($fName), $this->requiredArr) ) {
-					$markerArray['###REQUIRED_'.$this->caseShift($fName,'toUpper').'###'] = '<span>*</span>';
-					$markerArray['###MISSING_'.$this->caseShift($fName,'toUpper').'###'] = $this->pi_getLL('missing_'.$fName);
-					$markerArray['###MISSING_INVITATION_'.$this->caseShift($fName,'toUpper').'###'] = $this->pi_getLL('missing_invitation_'.$fName);
+					$markerArray['###REQUIRED_'.$this->cObj->caseshift($fName,'upper').'###'] = '<span>*</span>';
+					$markerArray['###MISSING_'.$this->cObj->caseshift($fName,'upper').'###'] = $this->pi_getLL('missing_'.$fName);
+					$markerArray['###MISSING_INVITATION_'.$this->cObj->caseshift($fName,'upper').'###'] = $this->pi_getLL('missing_invitation_'.$fName);
 				} else {
-					$markerArray['###REQUIRED_'.$this->caseShift($fName,'toUpper').'###'] = '';
+					$markerArray['###REQUIRED_'.$this->cObj->caseshift($fName,'upper').'###'] = '';
 				}
 			}
 			// Button labels
 			$buttonLabelsList = 'register,confirm_register,back_to_form,update,confirm_update,enter,confirm_delete,cancel_delete,update_and_more';
 			$buttonLabels = t3lib_div::trimExplode(',', $buttonLabelsList, 1);
 			while (list(, $labelName) = each($buttonLabels) ) {
-				$markerArray['###LABEL_BUTTON_'.$this->caseShift($labelName,'toUpper').'###'] = $this->pi_getLL('button_'.$labelName);
+				$markerArray['###LABEL_BUTTON_'.$this->cObj->caseshift($labelName,'upper').'###'] = $this->pi_getLL('button_'.$labelName);
 			}
 			// Labels possibly with variables
 			$otherLabelsList = 'yes,no,password_repeat,tooltip_password_again,tooltip_invitation_password_again,click_here_to_register,tooltip_click_here_to_register,click_here_to_edit,tooltip_click_here_to_edit,click_here_to_delete,tooltip_click_here_to_delete'.
@@ -2217,7 +2216,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			$otherLabels = t3lib_div::trimExplode(',', $otherLabelsList, 1);
 			while (list(, $labelName) = each($otherLabels) ) {
-				$markerArray['###LABEL_'.$this->caseShift($labelName,'toUpper').'###'] = sprintf($this->pi_getLL($labelName), $this->thePidTitle, $dataArray['username'], $dataArray['name'], $dataArray['email'], $dataArray['password']); 
+				$markerArray['###LABEL_'.$this->cObj->caseshift($labelName,'upper').'###'] = sprintf($this->pi_getLL($labelName), $this->thePidTitle, $dataArray['username'], $dataArray['name'], $dataArray['email'], $dataArray['password']); 
 			}
 			return $markerArray;
 		}
@@ -2965,14 +2964,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			parent::pi_loadLL();
 		}
-		// Locale-sensitive caseshift for markers
-	function caseShift($string,$case='toLower') {
-		global $TSFE;
-		setlocale(LC_CTYPE,'C');
-		$string = $TSFE->csConvObj->conv_case($TSFE->charSet,$string,$case);
-		setlocale(LC_CTYPE,$TSFE->config['config']['locale_all']);
-		return $string;
-	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php']);
