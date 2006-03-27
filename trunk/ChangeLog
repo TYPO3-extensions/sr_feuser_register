@@ -1,3 +1,6 @@
+2006-03-27 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Use cObj->caseshift for case shifting operations on markers.
+
 2006-03-26 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Two new TS constants: enableAdminNotifyOnAdminAccept and enableAdminNotifyOnAdminRefuse.
 	* Remove locally defined quoteJSvalue and getUpdateJS (these were fixed in TYPO3 4.0).
