@@ -1,3 +1,9 @@
+2006-03-26 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Two new TS constants: enableAdminNotifyOnAdminAccept and enableAdminNotifyOnAdminRefuse.
+	* Remove locally defined quoteJSvalue and getUpdateJS (these were fixed in TYPO3 4.0).
+	* Use TCA-driven field module_sys_dmail_html in css-styled template.
+	* If usergroup selection is enabled on edit, keep usergroups set by confirmation or acceptation.
+
 2006-03-25 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Add TS setup property extraLabels. Thanks to Dmitry Dulepov.
 
@@ -7,7 +13,7 @@
 	* Preserve <url> constructs in plain text html template. See bugtracker issue 1966.
 
 2006-03-08 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
-	* Remove locally extended t3lib_htmlmail
+	* Remove locally extended t3lib_htmlmail (fixed in TYPO3 4.0).
 
 2006-03-08 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Add short URL's feature. Thanks to Steve Webster.

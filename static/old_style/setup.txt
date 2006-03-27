@@ -83,7 +83,8 @@ plugin.tx_srfeuserregister_pi1 {
 			www = wwwURL
 			comments = 
 			status = 
-			module_sys_dmail_category = 
+			module_sys_dmail_category =
+			module_sys_dmail_html =
 			usergroup =
 		}
 	}
@@ -169,15 +170,15 @@ plugin.tx_srfeuserregister_pi1 {
 	email.fromName = {$plugin.tx_srfeuserregister_pi1.siteName}
 	email.admin = {$plugin.tx_srfeuserregister_pi1.email}
 	email.field = email
-	email.HTMLMail =  {$plugin.tx_srfeuserregister_pi1.enableHTMLMail}
-	email.HTMLMailCSS =  {$plugin.tx_srfeuserregister_pi1.HTMLMailCSS}
+	email.HTMLMail = {$plugin.tx_srfeuserregister_pi1.enableHTMLMail}
+	email.HTMLMailCSS = {$plugin.tx_srfeuserregister_pi1.HTMLMailCSS}
 	email.CREATE_SAVED = {$plugin.tx_srfeuserregister_pi1.enableEmailOnRegister}
 	email.EDIT_SAVED = {$plugin.tx_srfeuserregister_pi1.enableEmailOnUpdate}
-	email.DELETE_SAVED =  {$plugin.tx_srfeuserregister_pi1.enableEmailOnDelete}
-	email.SETFIXED_APPROVE =  {$plugin.tx_srfeuserregister_pi1.enableEmailOnApprove}
-	email.SETFIXED_DELETE =  {$plugin.tx_srfeuserregister_pi1.enableEmailOnRefuse}
-	email.SETFIXED_ACCEPT =  {$plugin.tx_srfeuserregister_pi1.enableEmailOnApprove}
-	email.SETFIXED_REFUSE =  {$plugin.tx_srfeuserregister_pi1.enableEmailOnRefuse}
+	email.DELETE_SAVED = {$plugin.tx_srfeuserregister_pi1.enableEmailOnDelete}
+	email.SETFIXED_APPROVE = {$plugin.tx_srfeuserregister_pi1.enableEmailOnApprove}
+	email.SETFIXED_DELETE = {$plugin.tx_srfeuserregister_pi1.enableEmailOnRefuse}
+	email.SETFIXED_ACCEPT = 1
+	email.SETFIXED_REFUSE = 1
 
 	notify.CREATE_SAVED = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnRegister}
 	notify.EDIT_SAVED = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnUpdate}
@@ -186,8 +187,8 @@ plugin.tx_srfeuserregister_pi1 {
 	notify.SETFIXED_INVITE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyConfirmation}
 	notify.SETFIXED_APPROVE =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnApprove}
 	notify.SETFIXED_DELETE =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnRefuse}
-	notify.SETFIXED_ACCEPT =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnApprove}
-	notify.SETFIXED_REFUSE =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnRefuse}
+	notify.SETFIXED_ACCEPT = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnAdminAccept}
+	notify.SETFIXED_REFUSE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnAdminRefuse}
 
   _CSS_DEFAULT_STYLE (
    .tx-srfeuserregister-pi1 p { font-family:Verdana, sans-serif; font-size:12px; line-height:125%; color:#35006d; margin-top:8px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; padding-right:3px; padding-left:3px; text-indent:0px; }

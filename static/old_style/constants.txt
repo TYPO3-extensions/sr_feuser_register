@@ -119,6 +119,12 @@ plugin.tx_srfeuserregister_pi1 {
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable admin notification on deletion: If set, an email will be sent to the site administration when a user deletes his(her) account.
   enableAdminNotifyOnDelete = 1
+  
+     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable admin notification on approval by admin: If set, an email will be sent to the site administration when a registration is accepted by the administration.
+  enableAdminNotifyOnAdminAccept = 1
+
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable admin notification on refusal by admin: If set, an email will be sent to the site administration when a registration is refused by the administration.
+  enableAdminNotifyOnAdminRefuse = 1
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable HTML emails: If set, emails sent to the front end user will be sent in HTML format.
   enableHTMLMail = 1
