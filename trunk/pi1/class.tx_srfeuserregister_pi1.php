@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 1999-2003 Kasper Skaarhoj (kasper@typo3.com)
-*  (c) 2004, 2005, 2006 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca)>
+*  (c) 2004-2006 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca)>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -184,7 +184,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$this->authCode = $this->feUserData['aC'];
 			
 				// Setting cmd and various switches
-			if ( $this->theTable == 'fe_users' && $this->feUserData['cmd'] == 'login' ) {
+			if ($this->theTable == 'fe_users' && $this->feUserData['cmd'] == 'login' ) {
 				unset($this->feUserData['cmd']);
 			}
 			$this->cmd = $this->feUserData['cmd'] ? $this->feUserData['cmd'] : strtolower($this->cObj->data['select_key']);
@@ -213,11 +213,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			} else {
 				$this->cmdKey = 'create';
 			}
-			if ($this->conf['setfixed'] != 1) {
-				$this->setfixedEnabled = 0;
+			if (isset($this->conf['setfixed'])) {
+				$this->setfixedEnabled = $this->conf['setfixed'];
 			}
-			if ($this->conf['email.'][HTMLMail] != 1) {
-				$this->HTMLMailEnabled = 0;
+			if (isset($this->conf['email.'][HTMLMail])) {
+				$this->HTMLMailEnabled = $this->conf['email.'][HTMLMail];
 			}
 			
 				// Initialise password encryption
@@ -258,6 +258,13 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				if ($this->conf[$this->cmdKey.'.']['allowUserGroupSelection']) {
 					$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'] . ',usergroup', 1)));
 					$this->conf[$this->cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['required'] . ',usergroup', 1)));
+					if ($this->cmdKey == 'edit' && is_array($this->conf['setfixed.'])) {
+						if ($this->conf['enableAdminReview'] && is_array($this->conf['setfixed.']['ACCEPT.'])) {
+							$this->conf[$this->cmdKey.'.']['overrideValues.']['usergroup'] = $this->conf['setfixed.']['ACCEPT.']['usergroup'];
+						} elseif ($this->conf['setfixed'] && is_array($this->conf['setfixed.']['APPROVE.'])) {
+							$this->conf[$this->cmdKey.'.']['overrideValues.']['usergroup'] = $this->conf['setfixed.']['APPROVE.']['usergroup'];
+						}
+					}
 				} else {
 					$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('usergroup')));
 				}
@@ -690,12 +697,16 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			// <Ries van Twisk added support for multiple checkboxes>
 			foreach ($this->dataArr AS $key => $value) {
 				// If it's an array and the type is check, then we combine the selected items to a binary value
-				if (($this->TCA['columns'][$key]['config']['type'] == 'check') && is_array($this->TCA['columns'][$key]['config']['items'])) {
-					if(is_array($value)) {
-						$this->dataArr[$key] = 0;
-						foreach ($value AS $dec) {  // Combine values to one hexidecimal number
-							$this->dataArr[$key] |= (1 << $dec);
+				if ($this->TCA['columns'][$key]['config']['type'] == 'check') {
+					if (is_array($this->TCA['columns'][$key]['config']['items'])) {
+						if(is_array($value)) {
+							$this->dataArr[$key] = 0;
+							foreach ($value AS $dec) {  // Combine values to one hexidecimal number
+								$this->dataArr[$key] |= (1 << $dec);
+							}
 						}
+					} else {
+						$this->dataArr[$key] = $value ? 1 : 0;
 					}
 				}
 			}
@@ -705,7 +716,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				while (list($theField, $theValue) = each($this->conf['parseValues.'])) {
 					$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
 					while (list(, $cmd) = each($listOfCommands)) {
-						$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
+						$cmdParts = split('\[|\]', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 						$theCmd = trim($cmdParts[0]);
 						switch($theCmd) {
 							case 'int':
@@ -856,12 +867,14 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			if (is_array($this->conf[$this->cmdKey.'.']['overrideValues.'])) {
 				reset($this->conf[$this->cmdKey.'.']['overrideValues.']);
 				while (list($theField, $theValue) = each($this->conf[$this->cmdKey.'.']['overrideValues.'])) {
-					if( $theField == 'usergroup' && $this->theTable == 'fe_users' && $this->conf[$this->cmdKey.'.']['allowUserGroupSelection']) {
+					if ($theField == 'usergroup' && $this->theTable == 'fe_users' && $this->conf[$this->cmdKey.'.']['allowUserGroupSelection']) {
 						$this->dataArr[$theField] = implode(',', array_merge(array_diff(t3lib_div::trimExplode(',', $this->dataArr[$theField], 1), t3lib_div::trimExplode(',', $theValue, 1)), t3lib_div::trimExplode(',', $theValue, 1)));
 					} else {
 						$this->dataArr[$theField] = $theValue;
 					}
 				}
+			}
+			if ($this->cmdKey == 'edit') {
 			}
 		}
 
@@ -1112,6 +1125,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return string  the template with substituted markers
 		*/
 		function displayEditForm($origArr) {
+			global $TSFE;
+			
 			$currentArr = is_array($this->dataArr) ? $this->dataArr+$origArr: $origArr;
 			if(is_array($this->dataArr)) {
 				foreach ($currentArr AS $key => $value) {
@@ -1151,7 +1166,15 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$markerArray = $this->addHiddenFieldsMarkers($markerArray, $currentArr);
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 			if ($this->conf['templateStyle'] != 'css-styled' || !$this->previewLabel) {
-				$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($currentArr), $this->theTable.'_form', 'FE['.$this->theTable.']', $this->fieldList.$this->additionalUpdateFields);
+				if ($this->conf['templateStyle'] == 'css-styled') {
+					$form = $this->pi_getClassName($this->theTable.'_form');
+				} else {
+					$form = $this->theTable.'_form';
+				}
+				$content .= $this->cObj->getUpdateJS($this->modifyDataArrForFormUpdate($currentArr), $form, 'FE['.$this->theTable.']', $this->fieldList.$this->additionalUpdateFields);
+				if ($this->conf['templateStyle'] == 'css-styled') {
+					$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
+				}
 			}
 			return $content;
 		}
@@ -1322,6 +1345,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return string  the template with substituted markers
 		*/
 		function displayCreateScreen($cmd = 'create') {
+			global $TSFE;
+			
 			if ($this->conf['create']) {
 				
 					// <Pieter Verstraelen added registrationProcess hooks>
@@ -1353,7 +1378,15 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$markerArray = $this->addHiddenFieldsMarkers($markerArray, $this->dataArr);
 				$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 				if ($this->conf['templateStyle'] != 'css-styled' || !$this->previewLabel) {
-					$content .= $this->getUpdateJS($this->modifyDataArrForFormUpdate($this->dataArr), $this->theTable.'_form', 'FE['.$this->theTable.']', $this->fieldList.$this->additionalUpdateFields);
+					if ($this->conf['templateStyle'] == 'css-styled') {
+						$form = $this->pi_getClassName($this->theTable.'_form');
+					} else {
+						$form = $this->theTable.'_form';
+					}
+					$content .= $this->cObj->getUpdateJS($this->modifyDataArrForFormUpdate($this->dataArr), $form, 'FE['.$this->theTable.']', $this->fieldList.$this->additionalUpdateFields);
+					if ($this->conf['templateStyle'] == 'css-styled') {
+						$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
+					}
 				}
 			}
 			return $content;
@@ -1925,7 +1958,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									$colContent .= '</ul>';
 									// </Ries van Twisk added support for multiple checkboxes>
 								} else {
-									$colContent = $dataArray[$colName] ? 'checked' : 'not checked';
+									$colContent = $dataArray[$colName]?$this->pi_getLL('yes'):$this->pi_getLL('no');
 								}
 								break;
 							case 'radio':
@@ -2011,7 +2044,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									$colContent .= '</ul>';
 									// </Ries van Twisk added support for multiple checkboxes>
 								} else {
-									$colContent = '<input type="checkbox"' . $this->pi_classParam('checkbox') . 'id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']"' . ' value="1" />';
+									$colContent = '<input type="checkbox"' . $this->pi_classParam('checkbox') . 'id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']"' . ($dataArray[$colName]?'checked="checked"':'') . ' />';
 								}
 								break;
 
@@ -2821,67 +2854,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				return is_array($row) ? $row : array(); // always an array in return
 			}
 		}
-
-		/**
-		* Function imported from class.tslib_content.php
-		*  unescape replaced by decodeURIComponent
-		*
-		* Returns a JavaScript <script> section with some function calls to JavaScript functions from "t3lib/jsfunc.updateform.js" (which is also included by setting a reference in $GLOBALS['TSFE']->additionalHeaderData['JSincludeFormupdate'])
-		* The JavaScript codes simply transfers content into form fields of a form which is probably used for editing information by frontend users. Used by fe_adminLib.inc.
-		*
-		* @param       array           Data array which values to load into the form fields from $formName (only field names found in $fieldList)
-		* @param       string          The form name
-		* @param       string          A prefix for the data array
-		* @param       string          The list of fields which are loaded
-		* @return      string
-		*/
-		function getUpdateJS($dataArray, $formName, $arrPrefix, $fieldList) {
-			$JSPart = '';
-			$updateValues = t3lib_div::trimExplode(',', $fieldList);
-			if ($this->conf['templateStyle'] == 'css-styled') {
-				$form = $this->pi_getClassName($formName);
-			} else {
-				$form = $formName;
-			}
-			while (list(, $fKey) = each($updateValues)) {
-				$value = $dataArray[$fKey];
-				if (is_array($value)) {
-					reset($value);
-					while (list(, $Nvalue) = each($value)) {
-						$JSPart .= "
-		updateForm('".$form."','".$arrPrefix."[".$fKey."][]',".$this->quoteJSvalue($Nvalue, true).")";
-					}
-				} else {
-					$JSPart .= "
-		updateForm('".$form."','".$arrPrefix."[".$fKey."]',".$this->quoteJSvalue($value, true).")";
-				}
-			}
-			$JSPart = '<script type="text/javascript">
-	/*<![CDATA[*/ 
-<!--'.$JSPart.'
-// -->
-	/*]]>*/
-</script>';
-			if ($this->conf['templateStyle'] == 'css-styled') {
-				$GLOBALS['TSFE']->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $GLOBALS['TSFE']->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
-			} else {
-				$GLOBALS['TSFE']->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $GLOBALS['TSFE']->absRefPrefix . 't3lib/jsfunc.updateform.js"></script>';
-			}
-			return $JSPart;
-		}
-		
-		/**
-		 * Function imported from class.t3lib_div.php
-		 * See http://bugs.typo3.org/view.php?id=277
-		 * NOTE: chr(10) and chr(13) also need to be escaped for textarea elements
-		 */
-		function quoteJSvalue($value, $inScriptTags = false)	{
-			$value = addcslashes($value, '\''.chr(10).chr(13));
-			if (!$inScriptTags)	{
-				$value = htmlspecialchars($value);
-			}
-			return '\''.$value.'\'';
-		}
 		
 		/**
 		 * From the 'KB MD5 FE Password (kb_md5fepw)' extension.
@@ -2995,7 +2967,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		}
 		
 	}
-	if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php']) {
+	if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php']) {
 		include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php']);
 	}
 ?>
