@@ -1,3 +1,7 @@
+2006-04-05 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Version 2.3.3
+	* Correction: missing inclusion of t3lib_htmlmail
+
 2006-03-27 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Use cObj->caseshift for case shifting operations on markers.
 

@@ -39,6 +39,7 @@
 require_once(PATH_tslib.'class.tslib_pibase.php');
 	// To get the pid language overlay:
 require_once(PATH_t3lib.'class.t3lib_page.php');
+require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 require_once(t3lib_extMgm::extPath('sr_static_info').'pi1/class.tx_srstaticinfo_pi1.php');
 require_once(t3lib_extMgm::extPath('sr_feuser_register').'pi1/class.tx_srfeuserregister_pi1_urlvalidator.php');
 require_once(t3lib_extMgm::extPath('sr_feuser_register').'pi1/class.tx_srfeuserregister_pi1_adodb_time.php');
