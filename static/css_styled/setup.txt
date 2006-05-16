@@ -97,6 +97,7 @@ plugin.tx_srfeuserregister_pi1 {
 	}
 
 	enableAutoLoginOnConfirmation = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnConfirmation}
+	enableAutoLoginOnCreate = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnCreate}
 	autoLoginRedirect_url = {$plugin.tx_srfeuserregister_pi1.autoLoginRedirect_url}
 
 	setfixed.DELETE {

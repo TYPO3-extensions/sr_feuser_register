@@ -224,8 +224,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				// Initialise password encryption
 			if ($this->theTable == 'fe_users' && t3lib_extMgm::isLoaded('kb_md5fepw')) {
 				require_once(t3lib_extMgm::extPath('kb_md5fepw').'class.tx_kbmd5fepw_funcs.php');
-				$this->useMd5Password = true;
-				$this->conf['enableAutoLoginOnConfirmation'] = false;
+				$this->useMd5Password = TRUE;
+				$this->conf['enableAutoLoginOnConfirmation'] = FALSE;
+				$this->conf['enableAutoLoginOnCreate'] = FALSE;
 			}
 			
 				// Setting the list of fields allowed for editing and creation.
@@ -402,8 +403,19 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				if ($this->theTable == 'fe_users' && 
 					$this->cmd == 'edit' && 
  					($this->backURL || ($this->conf['linkToPID'] && ($this->feUserData['linkToPID'] || !$this->conf['linkToPIDAddButton']))) ) {
- 					$destUrl = ($this->backURL ? $this->backURL : $this->site_url.$this->cObj->getTypoLink_URL($this->conf['linkToPID'].','.$TSFE->type));
+ 					$destUrl = ($this->backURL ? $this->backURL : ($TSFE->absRefPrefix ? '' : $this->site_url).$this->cObj->getTypoLink_URL($this->conf['linkToPID'].','.$TSFE->type));
  					header('Location: '.t3lib_div::locationHeaderUrl($destUrl));
+					exit;
+				}
+					// Auto-login on create
+				if ($this->theTable == 'fe_users' && $this->cmd == 'create' && !$this->setfixedEnabled && $this->conf['enableAutoLoginOnCreate']) {
+					$loginVars = array();
+					$loginVars['user'] = $this->currentArr['username'];
+					$loginVars['pass'] = $this->currentArr['password'];
+					$loginVars['pid'] = $this->thePid;
+					$loginVars['logintype'] = 'login';
+					$loginVars['redirect_url'] = htmlspecialchars(trim($this->conf['autoLoginRedirect_url']));
+					header('Location: '.t3lib_div::locationHeaderUrl($this->cObj->getTypoLink_URL($this->loginPID.','.$GLOBALS['TSFE']->type, $loginVars)));
 					exit;
 				}
 			} elseif ($this->error) {
@@ -1492,8 +1504,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return string  the template with substituted markers
 		*/
 		function procesSetFixed() {
+			global $TSFE;
+			
 			if ($this->setfixedEnabled) {
-				$origArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $this->recUid);
+				$origArr = $TSFE->sys_page->getRawRecord($this->theTable, $this->recUid);
 				$origUsergroup = $origArr['usergroup'];
 				$setfixedUsergroup = '';
 				$fD = t3lib_div::_GP('fD', 1);
@@ -1586,13 +1600,14 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						}
 							// Auto-login on confirmation
 						if ($this->conf['enableAutoLoginOnConfirmation'] && ($this->feUserData['sFK'] == 'APPROVE' || $this->feUserData['sFK'] == 'ENTER')) {
+			
 							$loginVars = array();
 							$loginVars['user'] = $origArr['username'];
 							$loginVars['pass'] = $origArr['password'];
 							$loginVars['pid'] = $this->thePid;
 							$loginVars['logintype'] = 'login';
 							$loginVars['redirect_url'] = htmlspecialchars(trim($this->conf['autoLoginRedirect_url']));
-							header('Location: '.t3lib_div::locationHeaderUrl($this->site_url.$this->cObj->getTypoLink_URL($this->loginPID.','.$GLOBALS['TSFE']->type, $loginVars)));
+							header('Location: '.t3lib_div::locationHeaderUrl(($TSFE->absRefPrefix ? '' : $this->site_url).$this->cObj->getTypoLink_URL($this->loginPID.','.$GLOBALS['TSFE']->type, $loginVars)));
 							exit;
 						}
 					}
@@ -1820,15 +1835,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return array  the output marker array
 		*/
 		function setfixed($markerArray, $setfixed, $r) {
+			global $TSFE;
+			
 			if ($this->setfixedEnabled && is_array($setfixed) ) {
 				$setfixedpiVars = array();
-				
-					// Find prefix for links
-				if ($GLOBALS['TSFE']->config['config']['baseURL']) {
-					$urlPrefix = intval($GLOBALS['TSFE']->config['config']['baseURL']) ? $this->site_url : $GLOBALS['TSFE']->config['config']['baseURL'];
-				} else {
-					$urlPrefix = $GLOBALS['TSFE']->absRefPrefix ? $GLOBALS['TSFE']->absRefPrefix : $this->site_url;
-				}
 				
 				reset($setfixed);
 				while (list($theKey, $data) = each($setfixed)) {
@@ -1877,7 +1887,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						$thisHash = $this->storeFixedPiVars($setfixedpiVars);
 						$setfixedpiVars = array($this->prefixId.'[regHash]' => $thisHash);
 					}
-					$markerArray['###SETFIXED_'.$this->cObj->caseshift($theKey,'upper').'_URL###'] = $urlPrefix . $this->cObj->getTypoLink_URL($linkPID.','.$this->confirmType, $setfixedpiVars);
+					$markerArray['###SETFIXED_'.$this->cObj->caseshift($theKey,'upper').'_URL###'] = ($TSFE->absRefPrefix ? '' : $this->site_url) . $this->cObj->getTypoLink_URL($linkPID.','.$this->confirmType, $setfixedpiVars);
 				}
 			}
 			return $markerArray;
