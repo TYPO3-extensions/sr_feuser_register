@@ -132,6 +132,9 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable HTML email attachment: If set, the specified attachment file will be attached to the confirmation HTML email.
   enableEmailAttachment = 0
 
+      # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable auto-login on account creation: If set and if email confirmation is not set, the user will be automatically logged in upon creation of his(her) account.
+  enableAutoLoginOnCreate = 0
+  
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable auto-login: If set, the user will be automatically logged in upon confirmation of his(her) registration.
   enableAutoLoginOnConfirmation = 0
 

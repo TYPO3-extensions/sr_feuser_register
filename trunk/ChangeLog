@@ -1,3 +1,9 @@
+2006-05-16 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Version 2.3.4
+	* Fix bugtracker issue 3431: incorrect email url's when config.absRefPrefix is used.
+	* New TS Constant: enableAutoLoginOnCreate.
+	* Update to the structure of the manual.
+
 2006-04-05 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Version 2.3.3
 	* Correction: missing inclusion of t3lib_htmlmail
