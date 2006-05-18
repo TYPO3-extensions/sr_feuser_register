@@ -2081,15 +2081,17 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									$multiple = '';
 								}
 								if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-									$colContent .='<input id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']" value="" type="hidden">';
-									$colContent .='<dl class="' . $this->pi_getClassName('multiple-checkbox') . '" title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
+									$colContent .='
+											<input id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']" value="" type="hidden">';
+									$colContent .='
+											<dl class="' . $this->pi_getClassName('multiple-checkboxes') . '" title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
 								} else {
 									$colContent .= '<select id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
 								}
 								if (is_array($colConfig['items'])) {
 									for ($i = 0; $i < count ($colConfig['items']); $i++) {
 										if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-											$colContent .= '<dt><input id="'. $this->pi_getClassName($colName) . '-' . $i .'" name="FE['.$this->theTable.']['.$colName.']["'.$colConfig['items'][$i][1].'"]" value="'.$colConfig['items'][$i][1].'" type="checkbox"  ' . (in_array($colConfig['items'][$i][1], $valuesArray) ? 'checked="checked"' : '') . '></dt>
+											$colContent .= '<dt><input class="' . $this->pi_getClassName('checkbox') . '" id="'. $this->pi_getClassName($colName) . '-' . $i .'" name="FE['.$this->theTable.']['.$colName.']["'.$colConfig['items'][$i][1].'"]" value="'.$colConfig['items'][$i][1].'" type="checkbox"  ' . (in_array($colConfig['items'][$i][1], $valuesArray) ? 'checked="checked"' : '') . '></dt>
 													<dd><label for="'. $this->pi_getClassName($colName) . '-' . $i .'">'.$this->getLLFromString($colConfig['items'][$i][0]).'</label></dd>';
 										} else {
 											$colContent .= '<option value="'.$colConfig['items'][$i][1]. '" ' . (in_array($colConfig['items'][$i][1], $valuesArray) ? 'selected="selected"' : '') . '>' . $this->getLLFromString($colConfig['items'][$i][0]).'</option>';                                        
@@ -2129,7 +2131,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 												}
 												$selectedValue = $selected ? true: $selectedValue;
 												if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-													$colContent .= '<dt><input id="'. $this->pi_getClassName($colName) . '-' . $row['uid'] .'" name="FE['.$this->theTable.']['.$colName.']['.$row['uid'].'"]" value="'.$row['uid'].'" type="checkbox" ' . $selected ?'checked="checked"':'' . '></dt>
+													$colContent .= '<dt><input  class="' . $this->pi_getClassName('checkbox') . '" id="'. $this->pi_getClassName($colName) . '-' . $row['uid'] .'" name="FE['.$this->theTable.']['.$colName.']['.$row['uid'].'"]" value="'.$row['uid'].'" type="checkbox" ' . $selected ?'checked="checked"':'' . '></dt>
 															<dd><label for="'. $this->pi_getClassName($colName) . '-' . $row['uid'] .'">'.$row[$titleField].'</label></dd>';
 												} else {
 													$colContent .= '<option value="'.$row['uid'].'"' . $selected . '>'.$row[$titleField].'</option>';
@@ -2140,7 +2142,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 												$row = $localizedRow;
 											}
 											if ($colConfig['renderMode']=='checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-												$colContent .= '<dt><input id="'. $this->pi_getClassName($colName) . '-' . $row['uid'] .'" name="FE['.$this->theTable.']['.$colName.']['.$row['uid']. ']" value="'.$row['uid'].'" type="checkbox" ' . (in_array($row['uid'], $valuesArray) ? 'checked="checked"' : '') . '></dt>
+												$colContent .= '<dt><input  class="' . $this->pi_getClassName('checkbox') . '" id="'. $this->pi_getClassName($colName) . '-' . $row['uid'] .'" name="FE['.$this->theTable.']['.$colName.']['.$row['uid']. ']" value="'.$row['uid'].'" type="checkbox" ' . (in_array($row['uid'], $valuesArray) ? 'checked="checked"' : '') . '></dt>
 														<dd><label for="'. $this->pi_getClassName($colName) . '-' . $row['uid'] .'">'.$row[$titleField].'</label></dd>';
 											} else {
 												$colContent .= '<option value="'.$row['uid'].'"' . (in_array($row['uid'], $valuesArray) ? 'selected="selected"' : '') . '>'.$row[$titleField].'</option>';
