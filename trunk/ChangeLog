@@ -1,4 +1,8 @@
 2006-05-16 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Version 2.3.6
+	* CSS adjustments for multiple checkboxes.
+
+2006-05-16 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Version 2.3.5
 	* Honor TCA setting renderMode = checkbox for columns of type select when static template css-styled is used.
 
