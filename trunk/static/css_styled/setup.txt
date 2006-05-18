@@ -237,6 +237,8 @@ plugin.tx_srfeuserregister_pi1 {
 		.tx-srfeuserregister-pi1 dt, .tx-srfeuserregister-pi1 dd { margin: 0; padding: 0 0 .5em 0; float: left; }
 		.tx-srfeuserregister-pi1 dt { clear: both; width: 25%; text-align: right; padding-right: 1em; }
 		.tx-srfeuserregister-pi1 dd { text-align: left; width: 50%; }
+		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-multiple-checkbox dt { width: auto; }
+		.tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-multiple-checkbox dd { width: auto; }
 		* html .tx-srfeuserregister-pi1 dd { float: none; }
 		.tx-srfeuserregister-pi1 dd p { margin-top: 0; margin-bottom: .5em; padding: 0; }
 		.tx-srfeuserregister-pi1 dd label { padding: 0 1em 0 .5em; }
