@@ -421,7 +421,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			} elseif ($this->error) {
 					// If there was an error, we return the template-subpart with the error message
 				$templateCode = $this->cObj->getSubpart($this->templateCode, $this->error);
-				$this->setCObjects($templateCode);
+				$this->markerArray = $this->addLabelMarkers($this->markerArray, $this->dataArr);
 				$content = $this->cObj->substituteMarkerArray($templateCode, $this->markerArray);
 			} else {
 					// Finally, if there has been no attempt to save. That is either preview or just displaying and empty or not correctly filled form:
@@ -1413,7 +1413,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		function sendInfoMail()	{
 			if ($this->conf['infomail'] && $this->conf['email.']['field'])	{
 				$fetch = $this->feUserData['fetch'];
-				if (isset($fetch))	{
+				if (isset($fetch) && !empty($fetch))	{
 					$pidLock='AND pid IN ('.$this->thePid.')';
 						// Getting records
 					if ( $this->theTable == 'fe_users' && t3lib_div::testInt($fetch) )	{
@@ -1430,7 +1430,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						$fetchArray = array( '0' => array( 'email' => $fetch));
 						$this->compileMail('INFOMAIL_NORECORD', $fetchArray, $fetch);
 					}
-					$content = $this->getPlainTemplate('###TEMPLATE_'.$this->infomailPrefix.'SENT###', (is_array($DBrows)?$DBrows[0]:''));
+					$content = $this->getPlainTemplate('###TEMPLATE_'.$this->infomailPrefix.'SENT###', (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:'')));
 				} else {
 					$content = $this->getPlainTemplate('###TEMPLATE_INFOMAIL###');
 				}
@@ -2278,12 +2278,14 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$markerArray['###FORM_NAME###'] = $this->conf['formName'];
 			$unsetVars['cmd'] = '';
 
+			$vars['cmd'] = $this->cmd;
+			$vars['backURL'] = rawurlencode($this->get_url('', $GLOBALS['TSFE']->id.','.$GLOBALS['TSFE']->type, $vars));
 			$vars['cmd'] = 'delete';
-			$vars['backURL'] = rawurlencode($markerArray['###FORM_URL###']);
 			$vars['rU'] = $this->recUid;
 			$vars['preview'] = '1';
 			$markerArray['###DELETE_URL###'] = $this->get_url('', $this->editPID.','.$GLOBALS['TSFE']->type, $vars);
-			 
+			
+			$vars['backURL'] = rawurlencode($markerArray['###FORM_URL###']);
 			$vars['cmd'] = 'create';
 			$markerArray['###REGISTER_URL###'] = $this->get_url('', $this->registerPID.','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
 			$vars['cmd'] = 'edit';

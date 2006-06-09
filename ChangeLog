@@ -1,3 +1,12 @@
+2006-06-08 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Version 2.4
+	* Correction to some improbable failure. Thanks to Rupert Germann.
+	* Small corrections to the manual.
+	* Correction to infomail screen display for sr_email_subscribe
+	* Correction to path to icon in default css of css-styled static template.
+	* Correction to back path of the delete dialog.
+	* Conversion of locallang files to xml format.
+
 2006-05-16 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Version 2.3.6
 	* CSS adjustments for multiple checkboxes.

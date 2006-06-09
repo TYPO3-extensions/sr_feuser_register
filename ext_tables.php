@@ -12,7 +12,7 @@ if ($TYPO3_CONF_VARS['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['useFlexforms']==1) {
 } else {
 	$TCA['tt_content']['types']['list']['subtypes_excludelist'][SR_FEUSER_REGISTER_EXTkey.'_pi1'] = 'layout';
 }
-t3lib_extMgm::addPlugin(Array('LLL:EXT:'.SR_FEUSER_REGISTER_EXTkey.'/locallang_db.php:tt_content.list_type', SR_FEUSER_REGISTER_EXTkey.'_pi1'),'list_type');
+t3lib_extMgm::addPlugin(Array('LLL:EXT:'.SR_FEUSER_REGISTER_EXTkey.'/locallang_db.xml:tt_content.list_type', SR_FEUSER_REGISTER_EXTkey.'_pi1'),'list_type');
 
 /**
  * Setting up country, country subdivision, preferred language, first_name and last_name in fe_users table
@@ -44,7 +44,7 @@ $TCA['fe_users']['columns']['image']['config']['allowed'] = $GLOBALS['TYPO3_CONF
 t3lib_extMgm::addTCAcolumns('fe_users', Array(
 		'static_info_country' => Array (
 			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.static_info_country',
+			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.static_info_country',
 			'config' => Array (
 				'type' => 'input',
 				'size' => '5',
@@ -55,7 +55,7 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 		),
 		'zone' => Array (
 			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.zone',
+			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.zone',
 			'config' => Array (
 				'type' => 'input',
 				'size' => '20',
@@ -66,7 +66,7 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 		),
 		'language' => Array (
 			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.language',
+			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.language',
 			'config' => Array (
 				'type' => 'input',
 				'size' => '4',
@@ -77,7 +77,7 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 		),
 		'first_name' => Array (
 			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.first_name',
+			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.first_name',
 			'config' => Array (
 				'type' => 'input',
 				'size' => '20',
@@ -88,7 +88,7 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 		),
 		'last_name' => Array (
 			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.last_name',
+			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.last_name',
 			'config' => Array (
 				'type' => 'input',
 				'size' => '20',
@@ -99,7 +99,7 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 		),
 		'date_of_birth' => Array (
 			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.date_of_birth',
+			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.date_of_birth',
 			'config' => Array (
 				'type' => 'input',
 				'size' => '10',
@@ -111,26 +111,26 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 		),
 		'gender' => Array (
 			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.gender',
+			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender',
 			'config' => Array (
 				'type' => 'radio',
 				'items' => Array (
-					Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.gender.I.0', '0'),
-					Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.gender.I.1', '1'),
+					Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender.I.0', '0'),
+					Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender.I.1', '1'),
 				),
 			)
 		),
 		'status' => Array (
 			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.status',
+			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status',
 			'config' => Array (
 				'type' => 'select',
 				'items' => Array (
-					Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.status.I.0', '0'),
-					Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.status.I.1', '1'),
-					Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.status.I.2', '2'),
-					Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.status.I.3', '3'),
-					Array('LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.status.I.4', '4'),
+					Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.0', '0'),
+					Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.1', '1'),
+					Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.2', '2'),
+					Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.3', '3'),
+					Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.4', '4'),
 				),
 				'size' => 1,
 				'maxitems' => 1,
@@ -138,7 +138,7 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 		),
 		'comments' => Array (
 			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.comments',
+			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.comments',
 			'config' => Array (
 				'type' => 'text',
 				'rows' => '5',
@@ -147,7 +147,7 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 		),
 		'by_invitation' => Array (
 			'exclude' => 0,	
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_users.by_invitation',
+			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.by_invitation',
 			'config' => Array (
 				'type' => 'check',
 				'default' => '0'
@@ -172,7 +172,7 @@ $TCA['fe_users']['palettes']['2']['showitem'] = str_replace('title', 'gender,fir
 if (!t3lib_extMgm::isLoaded('direct_mail')) {
 	$tempCols = Array(
 		'module_sys_dmail_html' => Array(
-			'label'=>'LLL:EXT:'.$_EXTKEY.'/locallang_db.php:fe_users.module_sys_dmail_html',
+			'label'=>'LLL:EXT:'.$_EXTKEY.'/locallang_db.xml:fe_users.module_sys_dmail_html',
 			'exclude' => '1',
 			'config'=>Array(
 				'type'=>'check'
@@ -186,7 +186,7 @@ if (!t3lib_extMgm::isLoaded('direct_mail')) {
 
 $TCA['fe_groups_language_overlay'] = Array (
 	'ctrl' => Array (
- 	'title' => 'LLL:EXT:' . SR_FEUSER_REGISTER_EXTkey . '/locallang_db.php:fe_groups_language_overlay',
+ 	'title' => 'LLL:EXT:' . SR_FEUSER_REGISTER_EXTkey . '/locallang_db.xml:fe_groups_language_overlay',
 		'label' => 'title',
 		'default_sortby' => 'ORDER BY fe_groups_uid',
 		'sortby' => 'sorting',
