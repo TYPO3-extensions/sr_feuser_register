@@ -10,7 +10,7 @@ $TCA['fe_groups_language_overlay'] = Array (
 	'columns' => Array (
 		'hidden' => Array (		
 			'exclude' => 0,	
-			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
+			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.hidden',
 			'config' => Array (
 				'type' => 'check',
 				'default' => '0'
@@ -18,7 +18,7 @@ $TCA['fe_groups_language_overlay'] = Array (
 		),
 		'fe_group' => Array (
 			'exclude' => 0,
-			'label' => 'LLL:EXT:cms/locallang_tca.php:fe_groups',
+			'label' => 'LLL:EXT:cms/locallang_tca.xml:fe_groups',
 			'config' => Array (
 				'type' => 'select',	
 				'foreign_table' => 'fe_groups'
@@ -26,7 +26,7 @@ $TCA['fe_groups_language_overlay'] = Array (
 		),
 		'sys_language_uid' => Array (
 			'exclude' => 0,
-			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.language',
+			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.language',
 			'config' => Array (
 				'type' => 'select',
 				'foreign_table' => 'sys_language',
@@ -35,7 +35,7 @@ $TCA['fe_groups_language_overlay'] = Array (
 		),
 		'title' => Array (		
 			'exclude' => 0,		
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.php:fe_groups_language_overlay.title',
+			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_groups_language_overlay.title',
 			'config' => Array (
 				'type' => 'input',	
 				'size' => '20',
