@@ -40,7 +40,7 @@ require_once(PATH_tslib.'class.tslib_pibase.php');
 	// To get the pid language overlay:
 require_once(PATH_t3lib.'class.t3lib_page.php');
 require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
-require_once(t3lib_extMgm::extPath('sr_static_info').'pi1/class.tx_srstaticinfo_pi1.php');
+require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinfotables_pi1.php');
 require_once(t3lib_extMgm::extPath('sr_feuser_register').'pi1/class.tx_srfeuserregister_pi1_urlvalidator.php');
 require_once(t3lib_extMgm::extPath('sr_feuser_register').'pi1/class.tx_srfeuserregister_pi1_adodb_time.php');
 	// For use with images:
@@ -146,7 +146,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$this->loginPID = intval($this->conf['loginPID']) ? strval(intval($this->conf['loginPID'])) : $TSFE->id;
 			 
 				// Initialise static info library
-			$this->staticInfo = t3lib_div::makeInstance('tx_srstaticinfo_pi1');
+			$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
 			$this->staticInfo->init();
 			 
 				// Initialise fileFunc object
@@ -389,7 +389,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				}
 					// Display confirmation message
 				$templateCode = $this->cObj->getSubpart($this->templateCode, '###TEMPLATE_'.$key.'###');
-				$markerArray = $this->cObj->fillInMarkerArray($this->markerArray, $this->currentArr);
+				$markerArray = $this->cObj->fillInMarkerArray($this->markerArray, $this->currentArr, '',TRUE, 'FIELD_', TRUE);
 				$markerArray = $this->addStaticInfoMarkers($markerArray, $this->currentArr);
 				$markerArray = $this->addTcaMarkers($markerArray, $this->currentArr, true);
 				$markerArray = $this->addLabelMarkers($markerArray, $this->currentArr);
@@ -1124,7 +1124,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		*/
 		function getPlainTemplate($key, $r = '') {
 			$templateCode = $this->cObj->getSubpart($this->templateCode, $key);
-			$markerArray = is_array($r) ? $this->cObj->fillInMarkerArray($this->markerArray, $r) : $this->markerArray;
+			$markerArray = is_array($r) ? $this->cObj->fillInMarkerArray($this->markerArray, $r, '',TRUE, 'FIELD_', TRUE) : $this->markerArray;
 			$markerArray = $this->addStaticInfoMarkers($markerArray, $r);
 			$markerArray = $this->addTcaMarkers($markerArray, $r, true);
 			$markerArray = $this->addLabelMarkers($markerArray, $r);
@@ -1161,7 +1161,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
 			}
 			$templateCode = $this->removeRequired($templateCode, $failure);
-			$markerArray = $this->cObj->fillInMarkerArray($this->markerArray, $currentArr);
+			$markerArray = $this->cObj->fillInMarkerArray($this->markerArray, $currentArr, '',TRUE, 'FIELD_', TRUE);
 			$markerArray = $this->addStaticInfoMarkers($markerArray, $currentArr);
 			$markerArray = $this->addTcaMarkers($markerArray, $currentArr, true);
 			$markerArray = $this->addTcaMarkers($markerArray, $currentArr);
@@ -1382,7 +1382,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				if (!$failure) $templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
 				
 				$templateCode = $this->removeRequired($templateCode, $failure);
-				$markerArray = $this->cObj->fillInMarkerArray($this->markerArray, $this->dataArr);
+				$markerArray = $this->cObj->fillInMarkerArray($this->markerArray, $this->dataArr, '',TRUE, 'FIELD_', TRUE);
 				$markerArray = $this->addStaticInfoMarkers($markerArray, $this->dataArr);
 				$markerArray = $this->addTcaMarkers($markerArray, $this->dataArr);
 				$markerArray = $this->addFileUploadMarkers('image', $markerArray, $this->dataArr);
@@ -1955,7 +1955,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						switch ($colConfig['type']) {
 							//case 'input':
 							case 'text':
-								$colContent = str_replace(chr(10), '<br />', $dataArray[$colName]);
+								$colContent = nl2br(htmlspecialchars($dataArray[$colName]));
 								break;
 							case 'check':
 								// <Ries van Twisk added support for multiple checkboxes>

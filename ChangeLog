@@ -1,3 +1,8 @@
+2006-06-21 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Version 2.5
+	* Remove dependency on Static Info Library (sr_static_info)
+	* Correction for missing htmlspecialcharacters statements.
+
 2006-06-08 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Version 2.4
 	* Correction to some improbable failure. Thanks to Rupert Germann.
