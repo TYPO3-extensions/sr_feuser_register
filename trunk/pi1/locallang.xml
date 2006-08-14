@@ -3078,6 +3078,17 @@ Jeśli chcesz zaakceptować zaproszenie i potwierdzić swoją rejestrację w ser
             <label index="registration_sorry">Мы сожалеем, что не получилось завершить этот процесс.</label>
             <label index="registration_help">Если проблема повторится, напишите нам на следующий адрес email и мы с удовольствием Вам поможем:</label>
             <label index="kind_regards">С наилучшими пожеланиями,</label>
+            <label index="kind_regards_informal">С наилучшими пожеланиями,</label>
+            <label index="kind_regards_cre">Добро пожаловать на</label>
+            <label index="kind_regards_cre_informal">Добро пожаловать на</label>
+            <label index="kind_regards_del">Всего хорошего</label>
+            <label index="kind_regards_del_informal">Всего хорошего</label>
+            <label index="kind_regards_ini">Добро пожаловать на</label>
+            <label index="kind_regards_ini_informal">Добро пожаловать на</label>
+            <label index="kind_regards_inv">Добро пожаловать на</label>
+            <label index="kind_regards_inv_informal">Добро пожаловать на</label>
+            <label index="kind_regards_upd">С наилучшими пожеланиями</label>
+            <label index="kind_regards_upd_informal">С наилучшими пожеланиями</label>
             <label index="v_really_wish_to_delete">Вы действительно хотите удалить регистрацию &lt;b&gt;%2$s&lt;/b&gt;?</label>
             <label index="v_verify_before_create">Пожалуйста, перед тем как Вы будете зарегистрированы, убедитесь, что вся информация верна:</label>
             <label index="v_verify_invitation_before_create">Пожалуйста убедитесь, что вся информация о &lt;b&gt;%3$s&lt;/b&gt; верна, перед тем как &lt;b&gt;%2$s&lt;/b&gt; будет зарегистрирован:</label>

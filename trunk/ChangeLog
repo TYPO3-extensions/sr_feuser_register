@@ -1,3 +1,13 @@
+2006-08-14 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+	* Version 2.5.1
+	* Update to Russian translation.
+	* When a foreign table is used on a select field, sort values according to the sortby field.
+	* Fix bugtracker issue 3992: Hook not working: confirmRegistrationClass_postProcess
+	* Remove duplicate class attributes on multiple statements of the css-styles html template.
+	* Remove deprecated wrap attribute from dynamically-generated textearea html statements.
+	* Remove for attribute from label tag of "gender" radio buttons field.
+	* onchange and onsubmit attribute names should be lowercase.
+
 2006-06-21 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Version 2.5
 	* Remove dependency on Static Info Library (sr_static_info)

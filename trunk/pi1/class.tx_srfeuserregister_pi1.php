@@ -1555,7 +1555,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						}
 						$newFieldList = implode(array_intersect(t3lib_div::trimExplode(',', $this->fieldList), t3lib_div::trimExplode(',', implode($fieldArr, ','), 1)), ',');
 						$res = $this->cObj->DBgetUpdate($this->theTable, $this->recUid, $origArr, $newFieldList, true);
-						$this->currentArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable,$theUid);
+						$this->currentArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable,$this->recUid);
 						$this->userProcess_alt($this->conf['setfixed.']['userFunc_afterSave'],$this->conf['setfixed.']['userFunc_afterSave.'],array('rec'=>$this->currentArr, 'origRec'=>$origArr));
 
 							// Hook: confirmRegistrationClass_postProcess
@@ -2036,7 +2036,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									' title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###"'.
 									' cols="'.($colConfig['cols']?$colConfig['cols']:30).'"'.
 									' rows="'.($colConfig['rows']?$colConfig['rows']:5).'"'.
-									' wrap="'.($colConfig['wrap']?$colConfig['wrap']:'virtual').'"'.
 									'>'.($colConfig['default']?$this->getLLFromString($colConfig['default']):'').'</textarea>';
 								break;
 							case 'check':
@@ -2060,7 +2059,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 
 							case 'radio':
 								for ($i = 0; $i < count ($colConfig['items']); ++$i) {
-									$colContent .= '<input type="radio"' . $this->pi_classParam('radio') . 'id="'. $this->pi_getClassName($colName) . '-' . $i . '" name="FE['.$this->theTable.']['.$colName.']"'.
+									$colContent .= '<input type="radio"' . $this->pi_classParam('radio') . ' id="'. $this->pi_getClassName($colName) . '-' . $i . '" name="FE['.$this->theTable.']['.$colName.']"'.
 											' value="'.$i.'" '.($i==0?'checked="checked"':'').' />' .
 											'<label for="' . $this->pi_getClassName($colName) . '-' . $i . '">' . $this->getLLFromString($colConfig['items'][$i][0]) . '</label>';
 								}
@@ -2113,7 +2112,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 										$whereClause .= ' AND sys_dmail_category.pid IN (' . $TYPO3_DB->fullQuoteStr($this->conf['module_sys_dmail_category_PIDLIST'], 'sys_dmail_category') . ')';
 									}
 									$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
-									$res = $TYPO3_DB->exec_SELECTquery('*', $colConfig['foreign_table'], $whereClause);
+									$res = $TYPO3_DB->exec_SELECTquery('*', $colConfig['foreign_table'], $whereClause, '', $TCA[$colConfig['foreign_table']]['ctrl']['sortby']);
 									if (!in_array($colName, $this->requiredArr)) {
 										if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
 											$colContent .='';
@@ -2360,9 +2359,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$mode = $this->incomingData ? 'edit' : $cmd;
 				$GLOBALS['TSFE']->additionalHeaderData['MD5_script'] = '<script type="text/javascript" src="typo3/md5.js"></script>';
 				$GLOBALS['TSFE']->JSCode .= $this->getMD5Submit($mode);
-				$markerArray['###FORM_ONSUBMIT###'] = 'onSubmit="return enc_form(this);"';
+				$markerArray['###FORM_ONSUBMIT###'] = 'onsubmit="return enc_form(this);"';
 				if ($mode == 'edit') {
-					$markerArray['###PASSWORD_ONCHANGE###'] = 'onChange="pw_change=1; return true;"';
+					$markerArray['###PASSWORD_ONCHANGE###'] = 'onchange="pw_change=1; return true;"';
 				}
 			}
 			return $markerArray;
@@ -2393,7 +2392,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				}
 				if (count($onSubmitAr)) {
 					$onSubmit = implode('; ', $onSubmitAr).'; return true;';
-					$onSubmit = strlen($onSubmit) ? ' onSubmit="'.$onSubmit.'"' : '';
+					$onSubmit = strlen($onSubmit) ? ' onsubmit="'.$onSubmit.'"' : '';
 					$extraHidden = implode(chr(10), $extraHiddenAr);
 				}
 
