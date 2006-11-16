@@ -2,7 +2,7 @@
 	/***************************************************************
 	*  Copyright notice
 	*
-	*  (c) 2004 Stanislas Rolland (stanislas.rolland@fructifor.com)
+	*  (c) 2004 Esben Maaløe esm-at-baseclassmodulweb.dk
 	*  All rights reserved
 	*
 	*  This script is part of the Typo3 project. The Typo3 project is
@@ -22,16 +22,18 @@
 	*  This copyright notice MUST APPEAR in all copies of the script!
 	***************************************************************/
 	 
-	/**
-	* This class contains a function to validate url's devloped by:
-	*
-	* @copyright 2004   Esben Maaløe esm-at-baseclassmodulweb.dk
-	* @author   Esben Maaløe esm-at-baseclassmodulweb.dk
-	* @license You are free to copy/modify this function to your hearts content
-	*          However I ask that you return any improvements you make to me,
-	*          and that you credit me in your sourcecode if you use it
-	* @version 0.24
-	*/
+/**
+ * This class contains a function to validate url's devloped by:
+ *
+ * $Id$
+ * 
+ * @author   Esben Maaløe esm-at-baseclassmodulweb.dk
+ * @license You are free to copy/modify this function to your hearts content
+ *          However I ask that you return any improvements you make to me,
+ *          and that you credit me in your sourcecode if you use it
+ * @version 0.24
+ *
+ */
 	 
 	class tx_srfeuserregister_pi1_urlvalidator {
 		 
