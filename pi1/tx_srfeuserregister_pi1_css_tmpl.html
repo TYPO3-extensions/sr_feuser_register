@@ -13,7 +13,7 @@
 
 <p><em>Form for the registration of a frontend user:</em></p>
 <!-- ###TEMPLATE_CREATE### begin -->
-<form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 <fieldset>
 <legend>###LABEL_ENTER_ACCOUNT_INFO###</legend>
 <p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
@@ -412,7 +412,7 @@
 
 <p style="margin-top: 20px"><em>Here the user information is preview before final submission:</em></p>
 <!-- ###TEMPLATE_CREATE_PREVIEW### begin -->
-<form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
 <fieldset>
 <legend>###LABEL_V_DEAR###<br />###LABEL_V_VERIFY_BEFORE_CREATE###</legend>
 <dl>
@@ -569,7 +569,7 @@
 <p>###LABEL_V_REGISTRATION_CREATED_MESSAGE2###</p>
 <p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
 
-<form id="tx-srfeuserregister-pi1-###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
 <dl>
 	<dt>###LABEL_USERNAME###</dt>
 	<dd><input type="text" class="tx-srfeuserregister-pi1-text" name="user" value="###FIELD_username###"  size="40" maxlength="50" /></dd>
@@ -625,7 +625,7 @@ The user is informed that a message has been sent to his email address and that 
 
 <p style="margin-top: 20px"><em>Form for the registration of an invited frontend user:</em></p>
 <!-- ###TEMPLATE_INVITE### begin -->
-<form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 <fieldset>
 <legend>###LABEL_ENTER_INVITATION_ACCOUNT_INFO###</legend>
 <p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
@@ -1009,7 +1009,7 @@ The user is informed that a message has been sent to his email address and that 
 
 <p style="margin-top: 20px"><em>Here the invited user information is previewed before final submission:</em></p>
 <!-- ###TEMPLATE_INVITE_PREVIEW### begin -->
-<form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
 <fieldset>
 <legend>###LABEL_V_VERIFY_INVITATION_BEFORE_CREATE###</legend>
 <dl>
@@ -1165,7 +1165,7 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>Form for editing of a fe_users record:</em></p>
 <!-- ###TEMPLATE_EDIT### begin -->
-<form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 <fieldset>
 <legend>###LABEL_V_DEAR###<br />###LABEL_V_EDIT_YOUR_ACCOUNT###</legend>
 	<p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
@@ -1553,7 +1553,7 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>Here the user information is preview before final submission:</em></p>
 <!-- ###TEMPLATE_EDIT_PREVIEW### begin-->
-<form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
 <fieldset>
 <legend>###LABEL_V_DEAR###<br />###LABEL_V_VERIFY_BEFORE_UPDATE###</legend>
 <dl>
@@ -1729,7 +1729,7 @@ The user is informed that a message has been sent to the email address and that 
 <!-- ###TEMPLATE_DELETE_PREVIEW### begin-->
 <h4>###LABEL_V_DEAR###</h4>
 <p>###LABEL_V_REALLY_WISH_TO_DELETE###</p>
-<form id="tx-srfeuserregister-pi1-###FORM_NAME###" method="post" action="###FORM_URL###">
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###">
 	<p>
 		###HIDDENFIELDS###
 		<input type="hidden" name="FE[fe_users][module_sys_dmail_html]" value="###FIELD_module_sys_dmail_html###" />
@@ -1752,7 +1752,7 @@ The user is informed that a message has been sent to the email address and that 
 <p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE1###</p>
 <p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE2###</p>
 <p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
-<form id="tx-srfeuserregister-pi1-###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
 <dl>
 	<dt><label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME###</label></dt>
 	<dd> <input type="text" class="tx-srfeuserregister-pi1-text" id="tx-srfeuserregister-pi1-username" size="40" maxlength="50" title="###LABEL_TOOLTIP_LOGIN_USERNAME###" name="user" value="###FIELD_username###" /> </dd>
@@ -1805,7 +1805,7 @@ The user is informed that a message has been sent to the email address and that 
 <p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE1###</p>
 <p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE2###</p>
 <p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
-<form id="tx-srfeuserregister-pi1-###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
 <dl>
 	<dt><label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME###</label></dt>
 	<dd><input type="text" class="tx-srfeuserregister-pi1-text" id="tx-srfeuserregister-pi1-username" size="40" maxlength="50" title="###LABEL_TOOLTIP_LOGIN_USERNAME###" name="user" value="###FIELD_username###" /></dd>
@@ -1943,10 +1943,25 @@ The user is informed that a message has been sent to the email address and that 
 <!-- ###EMAIL_TEMPLATE_CREATE_SAVED_ADMIN### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CREATED###
 ###LABEL_V_REGISTRATION_CREATED###
+###LABEL_USERNAME### ###FIELD_username###
 
+###LABEL_TITLE### ###FIELD_title###
 ###LABEL_NAME### ###FIELD_name###
 ###LABEL_EMAIL### ###FIELD_email###
-###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_COMPANY### ###FIELD_company###
+###LABEL_ADDRESS### ###FIELD_address###
+###LABEL_ZIP### ###FIELD_zip###
+###LABEL_CITY### ###FIELD_city###
+
+###LABEL_TELEPHONE### ###FIELD_telephone###
+
+###LABEL_STATUS### ###TCA_INPUT_status###
+
+###LABEL_MODULE_SYS_DMAIL_CATEGORY### ###TCA_INPUT_module_sys_dmail_category### 
+
+###LABEL_COMMENTS### ###REQUIRED_COMMENTS###
+###TCA_INPUT_comments###
 
 ###LABEL_KIND_REGARDS###
 ###SITE_NAME###
@@ -2006,10 +2021,25 @@ The user is informed that a message has been sent to the email address and that 
 <!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_UPDATED###
 
 ###LABEL_V_REGISTRATION_UPDATED###
+###LABEL_USERNAME### ###FIELD_username###
 
+###LABEL_TITLE### ###FIELD_title###
 ###LABEL_NAME### ###FIELD_name###
 ###LABEL_EMAIL### ###FIELD_email###
-###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_COMPANY### ###FIELD_company###
+###LABEL_ADDRESS### ###FIELD_address###
+
+###LABEL_ZIP### ###FIELD_zip###
+###LABEL_CITY### ###FIELD_city###
+
+###LABEL_TELEPHONE### ###FIELD_telephone###
+
+###LABEL_STATUS### ###TCA_INPUT_status###
+###LABEL_MODULE_SYS_DMAIL_CATEGORY###  ###TCA_INPUT_module_sys_dmail_category### 
+
+###LABEL_COMMENTS### ###REQUIRED_COMMENTS###
+###TCA_INPUT_comments###
 
 ###LABEL_KIND_REGARDS###
 ###SITE_NAME###

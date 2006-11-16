@@ -1,3 +1,13 @@
+2006-11-16 Franz Holzinger  <kontakt@fholzinger.com>
+	* Version 2.5.2
+	* no edit functions shall be available when user has logged out
+	* htmlspecialchar around the url links to have clean HTML
+	* overridable select items for status via TS _LOCAL_LANG setup
+	* Fix bugtracker issue 3986: formName has been deleted. No data has been visible in edit form.
+	* Fix bugtracker issue 4055: $_GET array should not get lost
+	* Fix bug: The select box entries could not be saved
+	* enhance CSS template to show the select box entries as plain texts
+
 2006-08-14 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Version 2.5.1
 	* Update to Russian translation.

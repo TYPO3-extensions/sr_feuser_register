@@ -25,16 +25,17 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
-*
-* Front End creating/editing/deleting records authenticated by fe_user login.
-* A variant restricted to front end user self-registration and profile maintenance, with a number of enhancements (see the manual).
-*
-* @author Kasper Skaarhoj <kasper@typo3.com>
-* @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
-*
-* TYPO3 CVS ID: $Id$
-*
-*/
+ *
+ * Front End creating/editing/deleting records authenticated by fe_user login.
+ * A variant restricted to front end user self-registration and profile maintenance, with a number of enhancements (see the manual).
+ *
+ * $Id$
+ * 
+ * @author Kasper Skaarhoj <kasper@typo3.com>
+ * @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
+ *
+ *
+ */
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
 	// To get the pid language overlay:
@@ -165,7 +166,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					// Check and process for short URL if the regHash GET parameter exists
 				if (isset($this->feUserData['regHash'])) {
 					$getVars = $this->getStoredURL($this->feUserData['regHash']);
-					t3lib_div::_GETset($getVars);
+					foreach ($getVars as $k => $v ) {
+					    t3lib_div::_GETset($v,$k);
+					}
 					$this->feUserData = t3lib_div::_GP($this->prefixId);
 				}
 			}
@@ -178,8 +181,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$this->feUserData['sFK'] = t3lib_div::_GP('sFK') ? t3lib_div::_GP('sFK') : $this->feUserData['sFK'];
 
 			$this->dataArr = $fe[$this->theTable];
+			if (is_array($this->dataArr['module_sys_dmail_category']))	{	// no array elements are allowed for $this->cObj->fillInMarkerArray
+				$this->dataArr['module_sys_dmail_category'] = implode(',',$this->dataArr['module_sys_dmail_category']);
+			}
+
 			$this->incomingData = is_array($this->dataArr);
-			
 			$this->backURL = rawurldecode($this->feUserData['backURL']);
 			$this->recUid = intval($this->feUserData['rU']);
 			$this->authCode = $this->feUserData['aC'];
@@ -208,7 +214,17 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}else {
 				$this->cmd = $this->cmd ? $this->cmd : $this->cObj->caseshift($this->conf['defaultCODE'],'lower');
 			}
-			// <//Franz Holzinger added flexform support>
+			// </Franz Holzinger added flexform support>
+			// Ralf Hettinger: avoid data from edit forms being visible by back buttoning to client side cached pages
+			// This only solves data being visible by back buttoning for edit forms.
+			// It won't help against data being visible by back buttoning in create forms.
+			$noLoginCommands = array('','create','invite','setfixed');
+			if (!$GLOBALS['TSFE']->loginUser && !(in_array($this->cmd,$noLoginCommands))) {
+				$this->cmd='';
+				$this->incomingData = false;
+				$this->dataArr = array();
+			}
+			
 			if ($this->cmd == 'edit' || $this->cmd == 'invite') {
 				$this->cmdKey = $this->cmd;
 			} else {
@@ -325,6 +341,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				// Delete record if delete command is sent + the preview flag is NOT set.
 				$this->deleteRecord();
 			}
+			
 				// Evaluate incoming data
 			if ($this->incomingData) {
 				$this->setName();
@@ -424,6 +441,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$this->markerArray = $this->addLabelMarkers($this->markerArray, $this->dataArr);
 				$content = $this->cObj->substituteMarkerArray($templateCode, $this->markerArray);
 			} else {
+
 					// Finally, if there has been no attempt to save. That is either preview or just displaying and empty or not correctly filled form:
 				switch($this->cmd) {
 					case 'setfixed':
@@ -457,7 +475,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						break;
 				}
 			}
-			return $this->pi_wrapInBaseClass($content);
+			$rc = $this->pi_wrapInBaseClass($content);
+			return $rc; 
 		}
 		/**
 		* Applies validation rules specified in TS setup
@@ -971,12 +990,14 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						$newFieldList  = implode(',', array_diff(explode(',', $newFieldList), array('username')));
 					}
 					if ($this->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($this->theTable, $origArr, $TSFE->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
-						$res = $this->cObj->DBgetUpdate($this->theTable, $theUid, $this->parseOutgoingData($this->dataArr), $newFieldList, true);
+						$outGoingData = $this->parseOutgoingData($this->dataArr);
+						$res = $this->cObj->DBgetUpdate($this->theTable, $theUid, $outGoingData, $newFieldList, true);
 						$this->updateMMRelations($this->dataArr);
 						$this->saved = 1;
 
 							// Post-edit processing: call user functions and hooks
-						$this->currentArr = $this->parseIncomingData( $TSFE->sys_page->getRawRecord($this->theTable, $theUid));
+						$rawRecord = $TSFE->sys_page->getRawRecord($this->theTable, $theUid);
+						$this->currentArr = $this->parseIncomingData($rawRecord);
 						$this->userProcess_alt($this->conf['edit.']['userFunc_afterSave'], $this->conf['edit.']['userFunc_afterSave.'], array('rec' => $this->currentArr, 'origRec' => $origArr));
 
 							// <Ries van Twisk added registrationProcess hooks>
@@ -1095,20 +1116,20 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						}
 						if (is_array($this->conf['parseValues.']) && strstr($this->conf['parseValues.'][$fName],'checkArray')) {
 							$listOfCommands = t3lib_div::trimExplode(',', $this->conf['parseValues.'][$fName], 1);
-								while (list(, $cmd) = each($listOfCommands)) {
-									$cmdParts = split('\[|\]', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
-									$theCmd = trim($cmdParts[0]);
-									switch($theCmd) {
-										case 'checkArray':
-											$positions = t3lib_div::trimExplode(';', $cmdParts[1]);
-											for($i=0; $i<10; $i++) {
-												if(!in_array($i, $positions)) {
-													$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_'.$fName.'_'.$i.'###', '');
-												}
+							while (list(, $cmd) = each($listOfCommands)) {
+								$cmdParts = split('\[|\]', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
+								$theCmd = trim($cmdParts[0]);
+								switch($theCmd) {
+									case 'checkArray':
+										$positions = t3lib_div::trimExplode(';', $cmdParts[1]);
+										for($i=0; $i<10; $i++) {
+											if(!in_array($i, $positions)) {
+												$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_'.$fName.'_'.$i.'###', '');
 											}
-										break;
-									}
+										}
+									break;
 								}
+							}
 						}
 					}
 				}
@@ -1151,7 +1172,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					}
 				}
 			}
-			$templateCode = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_EDIT".$this->previewLabel.'###');
+			$templateCode = $this->cObj->getSubpart($this->templateCode, '###TEMPLATE_EDIT'.$this->previewLabel.'###');
 			if (!$this->conf['linkToPID'] || !$this->conf['linkToPIDAddButton'] || !($this->previewLabel || !$this->conf['edit.']['preview'])) {
 				$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_LINKTOPID_ADD_BUTTON###', '');
 			}
@@ -1177,6 +1198,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->theTable.'][email]" value="'.$currentArr['email'].'" />';
 			}
 			$markerArray = $this->addHiddenFieldsMarkers($markerArray, $currentArr);
+			
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 			if ($this->conf['templateStyle'] != 'css-styled' || !$this->previewLabel) {
 				if ($this->conf['templateStyle'] == 'css-styled') {
@@ -1184,7 +1206,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				} else {
 					$form = $this->theTable.'_form';
 				}
-				$content .= $this->cObj->getUpdateJS($this->modifyDataArrForFormUpdate($currentArr), $form, 'FE['.$this->theTable.']', $this->fieldList.$this->additionalUpdateFields);
+				$modData = $this->modifyDataArrForFormUpdate($currentArr);
+				$updateJS = $this->cObj->getUpdateJS($modData, $form, 'FE['.$this->theTable.']', $this->fieldList.$this->additionalUpdateFields);
+				$content .= $updateJS; 
 				if ($this->conf['templateStyle'] == 'css-styled') {
 					$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
 				}
@@ -1979,24 +2003,35 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 							case 'select':
 								if ($dataArray[$colName] != '') {
 									$valuesArray = is_array($dataArray[$colName]) ? $dataArray[$colName] : explode(',',$dataArray[$colName]);
-									if (is_array($colConfig['items'])) {
+									$textSchema = 'fe_users.'.$colName.'.I.';
+									$itemArray = $this->getItemsLL($textSchema, true);
+									$bUseTCA = false;
+									if (!count ($itemArray))	{
+										$itemArray = $colConfig['items'];
+										$bUseTCA = true;
+									}
+									
+									if (is_array($itemArray)) {
+										$itemKeyArray = $this->getItemKeyArray($itemArray);
 										for ($i = 0; $i < count ($valuesArray); $i++) {
-											$colContent .= ($i ? '<br />': '') . $this->getLLFromString($colConfig['items'][$valuesArray[$i]][0]);
+											$colContent .= ($i ? '<br />': '') . $this->getLLFromString($itemKeyArray[$valuesArray[$i]][0]);
 										}
-									} 
-									if ($colConfig['foreign_table']) {
+									} else if ($colConfig['foreign_table']) {
 										t3lib_div::loadTCA($colConfig['foreign_table']);
 										$reservedValues = array();
 										if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
 											$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
 										}
 										$valuesArray = array_diff($valuesArray, $reservedValues);
-										if (!empty($valuesArray)) {
+										reset($valuesArray);
+										$firstValue = current($valuesArray);
+										if (!empty($firstValue) || count ($valuesArray) > 1) {
 											$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
+											$where = 'uid IN ('.implode(',', $valuesArray).')';
 											$res = $TYPO3_DB->exec_SELECTquery(
 												'*',
 												$colConfig['foreign_table'],
-												'uid IN ('.implode(',', $valuesArray).')'
+												$where
 												);
 											$i = 0;
 											while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
@@ -2087,17 +2122,36 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								} else {
 									$colContent .= '<select id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
 								}
-								if (is_array($colConfig['items'])) {
-									for ($i = 0; $i < count ($colConfig['items']); $i++) {
-										if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-											$colContent .= '<dt><input class="' . $this->pi_getClassName('checkbox') . '" id="'. $this->pi_getClassName($colName) . '-' . $i .'" name="FE['.$this->theTable.']['.$colName.']["'.$colConfig['items'][$i][1].'"]" value="'.$colConfig['items'][$i][1].'" type="checkbox"  ' . (in_array($colConfig['items'][$i][1], $valuesArray) ? 'checked="checked"' : '') . '></dt>
-													<dd><label for="'. $this->pi_getClassName($colName) . '-' . $i .'">'.$this->getLLFromString($colConfig['items'][$i][0]).'</label></dd>';
-										} else {
-											$colContent .= '<option value="'.$colConfig['items'][$i][1]. '" ' . (in_array($colConfig['items'][$i][1], $valuesArray) ? 'selected="selected"' : '') . '>' . $this->getLLFromString($colConfig['items'][$i][0]).'</option>';                                        
-										}
-									}
+								$textSchema = 'fe_users.'.$colName.'.I.';
+								$itemArray = $this->getItemsLL($textSchema, true);
+								$bUseTCA = false;
+								if (!count ($itemArray))	{
+									$itemArray = $colConfig['items'];
+									$bUseTCA = true;
 								}
-								if ($colConfig['foreign_table']) {
+								
+								if (is_array($itemArray)) {
+									$itemArray = $this->getItemKeyArray($itemArray);
+									$i = 0;
+									if ($bUseTCA)	{
+										$deftext = $itemArray[$i][0];
+										$deftext = substr($deftext, 0, strlen($deftext) - 2);										
+									}
+									// while (($label = $this->getLLFromString($itemArray[$i][0],false)) != '' || $i < count ($itemArray) || $bUseTCA && ($label = $this->getLLFromString($deftext.'.'.$i,false)) != '') {
+
+									// for ($i = 0; $i < count ($itemArray); $i++) {
+									$i = 0;
+									foreach ($itemArray as $k => $item)	{
+										$label = $this->getLLFromString($item[0],false);
+										if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
+											$colContent .= '<dt><input class="' . $this->pi_getClassName('checkbox') . '" id="'. $this->pi_getClassName($colName) . '-' . $i .'" name="FE['.$this->theTable.']['.$colName.']['.$k.']" value="'.$k.'" type="checkbox"  ' . (in_array($k, $valuesArray) ? 'checked="checked"' : '') . '></dt>
+													<dd><label for="'. $this->pi_getClassName($colName) . '-' . $i .'">'.$label.'</label></dd>';
+										} else {
+											$colContent .= '<option value="'.$k. '" ' . (in_array($k, $valuesArray) ? 'selected="selected"' : '') . '>' . $label.'</option>';
+										}
+										$i++;
+									}
+								} else if ($colConfig['foreign_table']) {
 									t3lib_div::loadTCA($colConfig['foreign_table']);
 									$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
 									if ($this->theTable == 'fe_users' && $colName == 'usergroup') {
@@ -2181,6 +2235,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			return -1;
 		}
+		
+		
+		
 		// </Ries van Twisk added support for multiple checkboxes>
 		/**
 		* Adds language-dependent label markers
@@ -2190,7 +2247,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @return array  the output marker array
 		*/
 		function addLabelMarkers($markerArray, $dataArray) {
-
 			// Data field labels
 			$infoFields = t3lib_div::trimExplode(',', $this->fieldList, 1);
 			while (list(, $fName) = each($infoFields)) {
@@ -2198,13 +2254,15 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$markerArray['###TOOLTIP_'.$this->cObj->caseshift($fName,'upper').'###'] = $this->pi_getLL('tooltip_' . $fName);
 				$markerArray['###TOOLTIP_INVITATION_'.$this->cObj->caseshift($fName,'upper').'###'] = $this->pi_getLL('tooltip_invitation_' . $fName);
 				// <Ries van Twisk added support for multiple checkboxes>
-				if (is_array($dataArray[$fName])) {
+				$colConfig = $this->TCA['columns'][$fName]['config'];
+				
+				if ($colConfig['type'] == 'select' && $colConfig['items'])	{ // (is_array($dataArray[$fName])) {
 					$colContent = '';
 					$markerArray['###FIELD_'.$fName.'_CHECKED###'] = '';
 					$markerArray['###LABEL_'.$fName.'_CHECKED###'] = '';
-					$this->dataArr['###POSTVARS_'.$fName.'###'] = ''; 
-					foreach ($dataArray[$fName] AS $key => $value) {
-						$colConfig = $this->TCA['columns'][$fName]['config'];
+					$this->dataArr['###POSTVARS_'.$fName.'###'] = '';
+					$fieldArray = t3lib_div::trimExplode(',', $dataArray[$fName]);
+					foreach ($fieldArray AS $key => $value) {
 						$markerArray['###FIELD_'.$fName.'_CHECKED###'] .= '- '.$this->getLLFromString($colConfig['items'][$value][0]).'<br />';
 						$markerArray['###LABEL_'.$fName.'_CHECKED###'] .= '- '.$this->getLLFromString($colConfig['items'][$value][0]).'<br />';
 						$markerArray['###POSTVARS_'.$fName.'###'] .= chr(10).'	<input type="hidden" name="FE[fe_users]['.$fName.']['.$key.']" value ="'.$value.'" />';
@@ -2274,7 +2332,14 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 
 			$unsetVars['cmd'] = 'cmd';
 			$markerArray['###FORM_URL###'] = $this->get_url('', $GLOBALS['TSFE']->id.','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
-			$markerArray['###FORM_NAME###'] = $this->conf['formName'];
+			
+			if ($this->conf['templateStyle'] == 'css-styled') {
+				$form = $this->pi_getClassName($this->theTable.'_form');
+			} else {
+				$form = $this->theTable.'_form';
+			}
+
+			$markerArray['###FORM_NAME###'] = $form; // $this->conf['formName'];
 			$unsetVars['cmd'] = '';
 
 			$vars['cmd'] = $this->cmd;
@@ -2583,10 +2648,13 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$piVars[$this->prefixId . '['. $key . ']'] = $val;
 			}
 			if ($tag) {
-				return $this->cObj->getTypoLink($tag, $id, $piVars);
+				$rc = $this->cObj->getTypoLink($tag, $id, $piVars);
 			} else {
-				return $this->cObj->getTypoLink_URL($id, $piVars);
+				$rc = $this->cObj->getTypoLink_URL($id, $piVars);
 			}
+			
+			$rc = htmlspecialchars($rc);
+			return $rc;
 		}
 		
 		// <Steve Webster added short url feature>
@@ -2734,6 +2802,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		
 		/**
 		 * Transforms outgoing dates into timestamps
+		 * and modifies the select fields into the count
+		 * if mm tables are used.
 		 *
 		 * @return parsedArray
 		 */
@@ -2781,9 +2851,14 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			
 				// update the MM relation count field
 			$fieldsList = array_keys($parsedArr);
-			foreach ($this->TCA['columns'] as $colName => $colSettings) {
+			foreach ($this->TCA['columns'] as $colName => $colSettings) {	// +++
 				if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
-					$parsedArr[$colName] = count(explode(',', $parsedArr[$colName]));
+					// set the count instead of the comma separated list
+					if ($parsedArr[$colName])	{
+						$parsedArr[$colName] = count(explode(',', $parsedArr[$colName]));
+					} else {
+						// $parsedArr[$colName] = 0; +++
+					}
 				}
 			}
 			
@@ -2836,17 +2911,23 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 		}
 
-		function getLLFromString($string) {
+		function getLLFromString($string, $bForce=true) {
 			global $LOCAL_LANG, $TSFE;
+			
+			$rc = '';
 			$arr = explode(':',$string);
 			if($arr[0] == 'LLL' && $arr[1] == 'EXT') {
 				$temp = $this->pi_getLL($arr[3]);
-				if ($temp) {
+				if ($temp || !$bForce) {
 					return $temp;
 				} else {
 					return $TSFE->sL($string);
 				}
+			} else {
+				$rc = $string;
 			}
+			
+			return $rc;
 		}
 
 		/**
@@ -2954,6 +3035,54 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		    // list of allowed suffixes
 		var $allowedSuffixes = array('formal', 'informal');
 		
+
+
+
+		/**
+		* Transfers the item array to one where the key corresponds to the value
+		* @param	array	array of selectable items like found in TCA
+		* @ return	array	array of selectable items with correct key
+		*/
+		function getItemKeyArray($itemArray) {
+			$rc = array();
+			
+			if (is_array($itemArray))	{
+				foreach ($itemArray as $k => $row)	{
+					$key = intval($row[1]);
+					$rc [$key] = $row;
+				}
+			}
+			return $rc;
+		}
+
+
+
+
+		/**
+		* Get the item array for a select if configured via TypoScript
+		* @param	string	name of the field
+		* @ return	array	array of selectable items
+		*/
+		function getItemsLL($textSchema, $bAll = true, $valuesArray = array()) {
+			$rc = array();
+			if ($bAll)	{
+				for ($i = 0; $i < 50; ++$i)	{
+					$text = $this->pi_getLL($textSchema.$i);
+					if ($text != '')	{
+						$rc[] = array($text, $i);
+					}
+				}				
+			} else {
+				foreach ($valuesArray as $k => $i)	{
+					$text = $this->pi_getLL($textSchema.$i);
+					if ($text != '')	{
+						$rc[] = array($text, $i);
+					}
+				}
+			}
+			return $rc;
+		}
+
 		/**
 		 * Returns the localized label of the LOCAL_LANG key, $key
 		 * In $this->conf['salutation'], a suffix to the key may be set (which may be either 'formal' or 'informal').
@@ -2978,7 +3107,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					$key = $expandedKey;
 				}
 			}
-			return parent::pi_getLL($key, $alt, $hsc);
+			$rc =  parent::pi_getLL($key, $alt, $hsc);
+			return $rc;
 		}
 		
 		function pi_loadLL() {
@@ -2993,7 +3123,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						if (is_array($lA)) {
 							foreach($lA as $llK => $llV)    {
 								if (is_array($llV))    {
-									foreach ($llV as $llK2 => $llV2) {
+										foreach ($llV as $llK2 => $llV2) {
 										$this->conf['_LOCAL_LANG.'][$k][$llK . $llK2] = $llV2;
 									}
 									unset($this->conf['_LOCAL_LANG.'][$k][$llK]);

@@ -194,7 +194,7 @@ $TCA['fe_groups_language_overlay'] = Array (
 		'enablecolumns' => Array (
 			'disabled' => 'hidden'
 		),
- 		'dynamicConfigFile' => t3lib_extMgm::extPath(SR_FEUSER_REGISTER_EXTkey)."tca.php",
+ 		'dynamicConfigFile' => t3lib_extMgm::extPath(SR_FEUSER_REGISTER_EXTkey).'tca.php',
 		'iconfile' => 'gfx/i/fe_groups.gif',
 		)
 );
