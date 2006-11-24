@@ -1,3 +1,7 @@
+2006-11-24 Franz Holzinger  <kontakt@fholzinger.com>
+	* Version 2.5.2 relaunch
+	* add 'infomail' to the commands where not FE login is necessary
+
 2006-11-16 Franz Holzinger  <kontakt@fholzinger.com>
 	* Version 2.5.2
 	* no edit functions shall be available when user has logged out

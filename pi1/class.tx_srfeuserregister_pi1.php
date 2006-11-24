@@ -218,7 +218,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			// Ralf Hettinger: avoid data from edit forms being visible by back buttoning to client side cached pages
 			// This only solves data being visible by back buttoning for edit forms.
 			// It won't help against data being visible by back buttoning in create forms.
-			$noLoginCommands = array('','create','invite','setfixed');
+			$noLoginCommands = array('','create','invite','setfixed','infomail');
 			if (!$GLOBALS['TSFE']->loginUser && !(in_array($this->cmd,$noLoginCommands))) {
 				$this->cmd='';
 				$this->incomingData = false;
