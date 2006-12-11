@@ -211,7 +211,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					'display_mode',
 					$TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['useFlexforms']
 				);
-			}else {
+			} else {
 				$this->cmd = $this->cmd ? $this->cmd : $this->cObj->caseshift($this->conf['defaultCODE'],'lower');
 			}
 			// </Franz Holzinger added flexform support>
@@ -441,14 +441,13 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$this->markerArray = $this->addLabelMarkers($this->markerArray, $this->dataArr);
 				$content = $this->cObj->substituteMarkerArray($templateCode, $this->markerArray);
 			} else {
-
 					// Finally, if there has been no attempt to save. That is either preview or just displaying and empty or not correctly filled form:
 				switch($this->cmd) {
 					case 'setfixed':
 						if ($this->conf['infomail']) {
 							$this->setfixedEnabled = 1;
 						}
-						$content = $this->procesSetFixed();
+						$content = $this->processSetFixed();
 						break;
 					case 'infomail':
 						if ($this->conf['infomail']) {
@@ -1527,8 +1526,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		*
 		* @return string  the template with substituted markers
 		*/
-		function procesSetFixed() {
-			global $TSFE;
+		function processSetFixed() {
+			global $TSFE, $TCA;
 			
 			if ($this->setfixedEnabled) {
 				$origArr = $TSFE->sys_page->getRawRecord($this->theTable, $this->recUid);
@@ -1580,6 +1579,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						$newFieldList = implode(array_intersect(t3lib_div::trimExplode(',', $this->fieldList), t3lib_div::trimExplode(',', implode($fieldArr, ','), 1)), ',');
 						$res = $this->cObj->DBgetUpdate($this->theTable, $this->recUid, $origArr, $newFieldList, true);
 						$this->currentArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable,$this->recUid);
+						$modArray=array();
+						$this->currentArr = $this->modifyTcaMMfields($this->currentArr,$modArray);
+						$origArr = array_merge ($origArr, $modArray);
 						$this->userProcess_alt($this->conf['setfixed.']['userFunc_afterSave'],$this->conf['setfixed.']['userFunc_afterSave.'],array('rec'=>$this->currentArr, 'origRec'=>$origArr));
 
 							// Hook: confirmRegistrationClass_postProcess
@@ -1664,7 +1666,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$HTMLContent['all'] = $this->removeRequired($HTMLContent['all']);
 			}
 			if ($this->conf['notify.'][$key] ) {
-				$adminContent['all'] = trim($this->cObj->getSubpart($this->templateCode, '###'.$this->emailMarkPrefix.$key.$this->emailMarkAdminSuffix.'###'));
+				$subpartMarker = '###'.$this->emailMarkPrefix.$key.$this->emailMarkAdminSuffix.'###';
+				$adminContent['all'] = trim($this->cObj->getSubpart($this->templateCode, $subpartMarker));
 				$adminContent['all'] = $this->removeRequired($adminContent['all']);
 			}
 			$userContent['rec'] = $this->cObj->getSubpart($userContent['all'], '###SUB_RECORD###');
@@ -1677,7 +1680,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				$markerArray['###SYS_AUTHCODE###'] = $this->authCode($r);
 				$markerArray = $this->setfixed($markerArray, $setFixedConfig, $r);
 				$markerArray = $this->addStaticInfoMarkers($markerArray, $r, $viewOnly);
-				$markerArray = $this->addTcaMarkers($markerArray, $r, $viewOnly);
+				$markerArray = $this->addTcaMarkers($markerArray, $r, $viewOnly, 'email');
 				$markerArray = $this->addFileUploadMarkers('image', $markerArray, $r, $viewOnly);
 				$markerArray = $this->addLabelMarkers($markerArray, $r);
 				if ($userContent['rec']) {
@@ -1707,7 +1710,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 			if ($adminContent['all']) {
 				$adminContent['final'] .= $this->cObj->substituteSubpart($adminContent['all'], '###SUB_RECORD###', $adminContent['accum']);
-				$adminContent['final'] = str_replace('###http', '<http', strip_tags(str_replace('<http', '###http', $adminContent['final'])));
+				// $adminContent['final'] = str_replace('###http', '<http', strip_tags(str_replace('<http', '###http', $adminContent['final'])));
 				$adminContent['final'] = $this->removeHTMLComments($adminContent['final']);
 				$adminContent['final'] = $this->replaceHTMLBr($adminContent['final']);
 			}
@@ -1730,7 +1733,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		}
 		
 		function replaceHTMLBr($content) {
-			return preg_replace('/<br\s?\/>/',chr(10),$content);
+			$rc = preg_replace('/<br\s?\/>/',chr(10),$content);
+			return $rc;
 		}
 		
 		/**
@@ -1960,6 +1964,46 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 		}
 
+
+		/**
+		* Adds the fields coming from other tables via MM tables
+		*
+		* @param array  $dataArray: the record array
+		* @return array  the modified data array
+		*/
+		function modifyTcaMMfields($dataArray, &$modArray) {
+			global $TYPO3_DB;
+
+			$rcArray = $dataArray;
+
+			foreach ($this->TCA['columns'] as $colName => $colSettings) {
+				$colConfig = $colSettings['config'];
+				
+				// Configure preview based on input type
+				switch ($colConfig['type']) {
+					case 'select':
+						if ($colConfig['MM'] && $colConfig['foreign_table']) {
+							$where = 'uid_local = '.$dataArray['uid'];
+							$res = $TYPO3_DB->exec_SELECTquery(
+								'uid_foreign',
+								$colConfig['MM'],
+								$where
+								);
+							$valueArray = array();
+							while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
+								$valueArray[] = $row['uid_foreign']; 
+							}
+							$rcArray[$colName] = implode(',', $valueArray);
+							$modArray[$colName] = $rcArray[$colName]; 
+						}
+						break;
+				}
+			}
+			
+			return $rcArray;
+		}
+
+
 		/**
 		* Adds form element markers from the Table Configuration Array to a marker array
 		*
@@ -1967,7 +2011,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		* @param array  $dataArray: the record array
 		* @return array  the output marker array
 		*/
-		function addTcaMarkers($markerArray, $dataArray = '', $viewOnly = false) {
+		function addTcaMarkers($markerArray, $dataArray = '', $viewOnly = false, $activity='') {
 			global $TYPO3_DB, $TCA, $TSFE;
 
 			foreach ($this->TCA['columns'] as $colName => $colSettings) {
@@ -2013,8 +2057,17 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									
 									if (is_array($itemArray)) {
 										$itemKeyArray = $this->getItemKeyArray($itemArray);
+										
+										$stdWrap = array();
+										if (is_array($this->conf['select.']) && is_array($this->conf['select.'][$activity.'.']) && is_array($this->conf['select.'][$activity.'.'][$colName.'.']))	{
+											$stdWrap = $this->conf['select.'][$activity.'.'][$colName.'.'];
+										} else {
+											$stdWrap['wrap'] = '|<br />';
+										}
+										
 										for ($i = 0; $i < count ($valuesArray); $i++) {
-											$colContent .= ($i ? '<br />': '') . $this->getLLFromString($itemKeyArray[$valuesArray[$i]][0]);
+											$text = $this->getLLFromString($itemKeyArray[$valuesArray[$i]][0]);
+											$colContent .= $this->cObj->stdWrap($text,$stdWrap);
 										}
 									} else if ($colConfig['foreign_table']) {
 										t3lib_div::loadTCA($colConfig['foreign_table']);
@@ -2116,7 +2169,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								}
 								if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
 									$colContent .='
-											<input id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']" value="" type="hidden">';
+											<input id="'. $this->pi_getClassName($colName) . '" name="FE['.$this->theTable.']['.$colName.']" value="" type="hidden" />';
 									$colContent .='
 											<dl class="' . $this->pi_getClassName('multiple-checkboxes') . '" title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
 								} else {
@@ -2144,7 +2197,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 									foreach ($itemArray as $k => $item)	{
 										$label = $this->getLLFromString($item[0],false);
 										if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-											$colContent .= '<dt><input class="' . $this->pi_getClassName('checkbox') . '" id="'. $this->pi_getClassName($colName) . '-' . $i .'" name="FE['.$this->theTable.']['.$colName.']['.$k.']" value="'.$k.'" type="checkbox"  ' . (in_array($k, $valuesArray) ? 'checked="checked"' : '') . '></dt>
+											$colContent .= '<dt><input class="' . $this->pi_getClassName('checkbox') . '" id="'. $this->pi_getClassName($colName) . '-' . $i .'" name="FE['.$this->theTable.']['.$colName.']['.$k.']" value="'.$k.'" type="checkbox"  ' . (in_array($k, $valuesArray) ? 'checked="checked"' : '') . ' /></dt>
 													<dd><label for="'. $this->pi_getClassName($colName) . '-' . $i .'">'.$label.'</label></dd>';
 										} else {
 											$colContent .= '<option value="'.$k. '" ' . (in_array($k, $valuesArray) ? 'selected="selected"' : '') . '>' . $label.'</option>';
@@ -2184,7 +2237,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 												}
 												$selectedValue = $selected ? true: $selectedValue;
 												if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-													$colContent .= '<dt><input  class="' . $this->pi_getClassName('checkbox') . '" id="'. $this->pi_getClassName($colName) . '-' . $row['uid'] .'" name="FE['.$this->theTable.']['.$colName.']['.$row['uid'].'"]" value="'.$row['uid'].'" type="checkbox" ' . $selected ?'checked="checked"':'' . '></dt>
+													$colContent .= '<dt><input  class="' . $this->pi_getClassName('checkbox') . '" id="'. $this->pi_getClassName($colName) . '-' . $row['uid'] .'" name="FE['.$this->theTable.']['.$colName.']['.$row['uid'].'"]" value="'.$row['uid'].'" type="checkbox" ' . $selected ?'checked="checked"':'' . ' /></dt>
 															<dd><label for="'. $this->pi_getClassName($colName) . '-' . $row['uid'] .'">'.$row[$titleField].'</label></dd>';
 												} else {
 													$colContent .= '<option value="'.$row['uid'].'"' . $selected . '>'.$row[$titleField].'</option>';
@@ -2195,7 +2248,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 												$row = $localizedRow;
 											}
 											if ($colConfig['renderMode']=='checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-												$colContent .= '<dt><input  class="' . $this->pi_getClassName('checkbox') . '" id="'. $this->pi_getClassName($colName) . '-' . $row['uid'] .'" name="FE['.$this->theTable.']['.$colName.']['.$row['uid']. ']" value="'.$row['uid'].'" type="checkbox" ' . (in_array($row['uid'], $valuesArray) ? 'checked="checked"' : '') . '></dt>
+												$colContent .= '<dt><input  class="' . $this->pi_getClassName('checkbox') . '" id="'. $this->pi_getClassName($colName) . '-' . $row['uid'] .'" name="FE['.$this->theTable.']['.$colName.']['.$row['uid']. ']" value="'.$row['uid'].'" type="checkbox" ' . (in_array($row['uid'], $valuesArray) ? 'checked="checked"' : '') . ' /></dt>
 														<dd><label for="'. $this->pi_getClassName($colName) . '-' . $row['uid'] .'">'.$row[$titleField].'</label></dd>';
 											} else {
 												$colContent .= '<option value="'.$row['uid'].'"' . (in_array($row['uid'], $valuesArray) ? 'selected="selected"' : '') . '>'.$row[$titleField].'</option>';
