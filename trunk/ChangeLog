@@ -1,3 +1,10 @@
+2006-12-11 Franz Holzinger  <kontakt@fholzinger.com>
+	* Version 2.5.3
+	* Fix bug: input-Tags shall be shown as <input ... />
+	* Fix bug with wrongly filled in field values of mm table records with setfixed command, e.g. module_sys_dmail_category
+	* Gideon So: all Hongkong Chinese translations
+	* Thomas Dubach: more German translations
+
 2006-11-24 Franz Holzinger  <kontakt@fholzinger.com>
 	* Version 2.5.2 relaunch
 	* add 'infomail' to the commands where not FE login is necessary

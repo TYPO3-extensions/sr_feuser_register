@@ -46,4 +46,9 @@ if (t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
 	}
 }
 
+if (t3lib_extMgm::isLoaded('tt_products')) {
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tt_products']['extendingTCA'][] = SR_FEUSER_REGISTER_EXTkey;
+}
+
+
 ?>
