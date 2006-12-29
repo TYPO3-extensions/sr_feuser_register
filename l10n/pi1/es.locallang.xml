@@ -1,0 +1,683 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallangExt>
+	<data type="array">
+		<languageKey index="es" type="array">
+			<label index="unsupported">no soportado</label>
+			<label index="username">Nombre de usuario:</label>
+			<label index="tooltip_username">Escriba el nombre de usuario que desea utilizar para identificarle.</label>
+			<label index="tooltip_username_informal">Escribe el nombre de usuario que utilizarás para identificarte.</label>
+			<label index="tooltip_invitation_username">Escriba el nombre de usuaria que la persona invitada utilizará para identificarse.</label>
+			<label index="tooltip_login_username">Escriba su nombre de usuario .</label>
+			<label index="tooltip_login_username_informal">Escribe tu nombre de usuario.</label>
+			<label index="missing_username">Por favor inténtelo otra vez</label>
+			<label index="evalErrors_uniqueGlobal_username">Este nombre de usuario ya existe. Por favor elija otro.</label>
+			<label index="evalErrors_uniqueLocal_username">Este nombre de usuario ya existe. Por favor elija otro.</label>
+			<label index="evalErrors_atLeast_username">Se requieren al menos %s carácteres en el nombre de usuario.</label>
+			<label index="evalErrors_atMost_username">Solo se permiten como máximo %s carácteres en el nombre de usuario.</label>
+			<label index="password">Contraseña:</label>
+			<label index="tooltip_password">Escriba la contraseña que desea utilizar para identificarle.</label>
+			<label index="tooltip_password_informal">Escribe la contraseña que utilizarás para identificarte.</label>
+			<label index="tooltip_invitation_password">Escriba la contraseña que la persona invitada utilizará para identificarse.</label>
+			<label index="tooltip_login_password">Escriba su contraseña.</label>
+			<label index="tooltip_login_password_informal">Escribe tu contraseña.</label>
+			<label index="password_repeat">Otra vez:</label>
+			<label index="tooltip_password_again">Escriba su contraseña otra vez.</label>
+			<label index="tooltip_password_again_informal">Escribe tu contraseña otra vez.</label>
+			<label index="tooltip_invitation_password_again">Escriba la contraseña otra vez.</label>
+			<label index="missing_password">Por favor inténtelo otra vez</label>
+			<label index="evalErrors_twice_password">Por favor escriba la misma contraseña dos veces.</label>
+			<label index="evalErrors_atLeast_password">Se requieren al menos %s carácteres en la contraseña.</label>
+			<label index="evalErrors_atMost_password">Solo se permiten como máximo %s carácteres en la contraseña.</label>
+			<label index="usergroup">Grupo de usuarios:</label>
+			<label index="missing_usergroup">Por favor elija un grupo de ususarios.</label>
+			<label index="missing_invitation_usergroup">Por favor elija un grupo de ususarios.</label>
+			<label index="name">Nombre:</label>
+			<label index="tooltip_name">Escriba su nombre.</label>
+			<label index="tooltip_name_informal">Escribe tu nombre.</label>
+			<label index="tooltip_invitation_name">Escriba el nombre de la persona invitada.</label>
+			<label index="missing_name">Por favor escriba su nombre.</label>
+			<label index="missing_invitation_name">Por favor escriba un nombre.</label>
+			<label index="first_name">Nombre:</label>
+			<label index="tooltip_first_name">Escriba su nombre.</label>
+			<label index="tooltip_first_name_informal">Escribe tu nombre.</label>
+			<label index="tooltip_invitation_first_name">Escriba el nombre de la persona invitada.</label>
+			<label index="missing_first_name">Por favor escriba su nombre.</label>
+			<label index="missing_invitation_first_name">Por favor escriba un nombre.</label>
+			<label index="last_name">Apellido:</label>
+			<label index="tooltip_last_name">Escriba su apellido.</label>
+			<label index="tooltip_last_name_informal">Escribe tu apellido.</label>
+			<label index="tooltip_invitation_last_name">Escriba el apellido de la persona invitada.</label>
+			<label index="missing_last_name">Por favor escriba sus apellidos.</label>
+			<label index="missing_invitation_last_name">Por favor escriba los apellidos.</label>
+			<label index="date_of_birth">Fecha de nacimiento (AAAA-MM-DD):</label>
+			<label index="missing_date_of_birth">¡Por favor inserte su fecha de nacimiento!</label>
+			<label index="missing_invitation_date_of_birth">¡Por favor inserte la fecha de nacimiento!</label>
+			<label index="address">Dirección:</label>
+			<label index="tooltip_address">Escriba su dirección (número cívico, calle, ...).</label>
+			<label index="tooltip_address_informal">Escribe tu dirección (número cívico, calle, ...).</label>
+			<label index="tooltip_invitation_address">Escriba la dirección de la persona invitada (número cívico, calle, ...).</label>
+			<label index="missing_address">Por favor escriba su dirección.</label>
+			<label index="missing_invitation_address">Por favor escriba una dirección.</label>
+			<label index="city">Ciudad:</label>
+			<label index="tooltip_city">Escriba el nombre de su ciudad o de su pueblo.</label>
+			<label index="tooltip_city_informal">Escribe el nombre de tu ciudad o de tu pueblo.</label>
+			<label index="missing_city">Por favor escriba el nombre de su ciudad.</label>
+			<label index="missing_invitation_city">Por favor escriba el nombre de la ciudad.</label>
+			<label index="zone">Estado/Provincia:</label>
+			<label index="tooltip_zone">Elija su estado o provincia en la lista.</label>
+			<label index="tooltip_zone_informal">Elije tu estado o provincia en la lista.</label>
+			<label index="tooltip_invitation_zone">Elija un estado o provincia en la lista.</label>
+			<label index="missing_zone">Por favor elija su estado o provincia.</label>
+			<label index="missing_invitation_zone">Por favor elija un estado o una provincia.</label>
+			<label index="country">País:</label>
+			<label index="missing_country">Por favor escriba el nombre de su país.</label>
+			<label index="zip">Código postal:</label>
+			<label index="tooltip_zip">Escriba su código postal.</label>
+			<label index="tooltip_zip_informal">Escribe tu código postal.</label>
+			<label index="tooltip_invitation_zip">Escriba el código postal de la persona invitada.</label>
+			<label index="missing_zip">Por favor escriba su código postal.</label>
+			<label index="missing_invitation_zip">Por favor escriba un código postal.</label>
+			<label index="static_info_country">País:</label>
+			<label index="tooltip_static_info_country">Elija su país en la lista.</label>
+			<label index="tooltip_static_info_country_informal">Elije tu país en la lista.</label>
+			<label index="tooltip_invitation_static_info_country">Elija un país en la lista.</label>
+			<label index="missing_static_info_country">Por favor elija su país.</label>
+			<label index="missing_invitation_static_info_country">Por favor elija un país.</label>
+			<label index="telephone">Teléfono:</label>
+			<label index="tooltip_telephone">Escriba su número de teléfono.</label>
+			<label index="tooltip_telephone_informal">Escribe tu número de teléfono.</label>
+			<label index="tooltip_invitation_telephone">Escriba el número de teléfono de la persona invitada.</label>
+			<label index="missing_telephone">Por favor escriba su número de teléfono.</label>
+			<label index="missing_telephone_informal">Por favor escribe tu número de teléfono.</label>
+			<label index="missing_invitation_telephone">Por favor escriba un número de teléfono.</label>
+			<label index="fax">Fax:</label>
+			<label index="tooltip_fax">Escriba su número de fax.</label>
+			<label index="tooltip_fax_informal">Escribe tu número de fax.</label>
+			<label index="tooltip_invitation_fax">Escriba el número de fax de la persona invitada.</label>
+			<label index="missing_fax">Por favor escriba su número de fax.</label>
+			<label index="missing_invitation_fax">Por favor escriba un número de fax.</label>
+			<label index="email">Correo electrónico:</label>
+			<label index="tooltip_email">Escriba su dirección de correo electrónico.</label>
+			<label index="tooltip_email_informal">Escribe tu dirección de correo electrónico.</label>
+			<label index="tooltip_invitation_email">Escriba la dirección de correo electrónico de la persona invitada.</label>
+			<label index="missing_email">Se requiere una dirección de correo electrónico válida.</label>
+			<label index="evalErrors_email_email">Según nuestras verificaciones, la dirección que escribió, no es correcta. Es posible que no la haya escrito correctamente.</label>
+			<label index="evalErrors_uniqueLocal_email">Esta dirección de correo ya existe.</label>
+			<label index="module_sys_dmail_html">¿Recibir mensajes en formato HTML?</label>
+			<label index="yes">Sí</label>
+			<label index="no">No</label>
+			<label index="module_sys_dmail_category">¿Desea recibir noticias sobre alguno de estos temas?</label>
+			<label index="missing_module_sys_dmail_category">¡Por favor seleccione almenos un tema!</label>
+			<label index="missing_invitation_module_sys_dmail_category">¡Por favor seleccione almenos un tema!</label>
+			<label index="language">Idioma:</label>
+			<label index="tooltip_language">Elija su idioma en esta lista.</label>
+			<label index="tooltip_language_informal">Elije tu idioma en esta lista.</label>
+			<label index="tooltip_invitation_language">Elija el idioma de la persona invitada en esta lista.</label>
+			<label index="missing_language">¡Por favor elija su idioma!</label>
+			<label index="missing_invitation_language">¡Por favor elija un idioma!</label>
+			<label index="title">Título:</label>
+			<label index="tooltip_title">Escriba su título.</label>
+			<label index="tooltip_title_informal">Escribe tu título.</label>
+			<label index="tooltip_invitation_title">Escriba el título de la persona invitada.</label>
+			<label index="missing_title">Por favor escriba su título.</label>
+			<label index="missing_invitation_title">Por favor escriba un título.</label>
+			<label index="company">Empresa:</label>
+			<label index="tooltip_company">Escriba el nombre de su empresa.</label>
+			<label index="tooltip_company_informal">Escribe el nombre de tu empresa.</label>
+			<label index="tooltip_invitation_company">Escriba el nombre de la empresa de la persona invitada.</label>
+			<label index="missing_company">Por favor escriba el nombre de su empresa.</label>
+			<label index="missing_company_informal">Por favor escribe el nombre de tu empresa.</label>
+			<label index="missing_invitation_company">Por favor escriba el nombre de la empresa.</label>
+			<label index="www">Página de Internet:</label>
+			<label index="tooltip_www">Escriba la dirección de su página de Internet.</label>
+			<label index="tooltip_www_informal">Escribe la dirección de tu página de Internet.</label>
+			<label index="tooltip_invitation_www">Escriba la dirección de la página de Internet de la persona invitada.</label>
+			<label index="missing_www">Por favor escriba la dirección de su página de Internet.</label>
+			<label index="missing_www_informal">Por favor escribe la dirección de tu página de Internet.</label>
+			<label index="missing_invitation_www">Por favor escriba la dirección de una página de Internet.</label>
+			<label index="evalErrors_wwwURL_www">Según nuestras verificaciones, la dirección de página web que escribió, no es correcta. Es posible que no la haya escrito correctamente.</label>
+			<label index="image">Imágenes:</label>
+			<label index="missing_image">Por favor proporcione una imágen:</label>
+			<label index="missing_invitation_image">Por favor proporcione una imágen:</label>
+			<label index="evalErrors_allowed_image">No se pueden aceptar archivos de tipo %s.</label>
+			<label index="evalErrors_max_size_image">El tamaño de archivo no puede superar %s KB.</label>
+			<label index="icon_delete">¡Borrar!</label>
+			<label index="file_view">Ver</label>
+			<label index="confirm_file_delete">¿Está seguro que desea borrar este archivo?</label>
+			<label index="button_register">Crear cuenta</label>
+			<label index="button_confirm_register">Crear cuenta</label>
+			<label index="button_back_to_form">Atrás</label>
+			<label index="button_update">Actualizar este perfil</label>
+			<label index="button_confirm_update">Actualizar este perfil</label>
+			<label index="button_enter">Entrar</label>
+			<label index="button_confirm_delete">Sí, borrar esta cuenta</label>
+			<label index="button_cancel_delete">No, anular</label>
+			<label index="click_here_to_register">¿Primera visita? Haga clic aquí para registrarse.</label>
+			<label index="click_here_to_register_informal">¿Primera visita? Haz clic aquí para registrarte.</label>
+			<label index="tooltip_click_here_to_register">Presenta un formulario de registro.</label>
+			<label index="click_here_to_edit">Haga clic aquí para actualizar su perfil o borrar su cuenta.</label>
+			<label index="click_here_to_edit_informal">Haz clic aquí para actualizar tu perfil o borrar tu cuenta.</label>
+			<label index="tooltip_click_here_to_edit">Présenta un formulario de actualización.</label>
+			<label index="click_here_to_delete">Haga clic aquí para borrar su cuenta.</label>
+			<label index="click_here_to_delete_informal">Haz clic aquí para borrar tu cuenta.</label>
+			<label index="tooltip_click_here_to_delete">Inicia un diálogo para borrar la cuenta.</label>
+			<label index="enter_account_info">Por favor escriba los datos de su cuenta:</label>
+			<label index="enter_account_info_informal">Escribe tus datos:</label>
+			<label index="enter_invitation_account_info">Por favor escriba los datos de la cuenta de la persona invitada:</label>
+			<label index="required_info_notice">Nota: Los campos marcados con * son requeridos!</label>
+			<label index="copy_paste_link">(Haga clic sobre el vínculo o copie el vínculo y péguelo en su navegador.)</label>
+			<label index="copy_paste_link_informal">(Haz clic sobre el vínculo o copia el vínculo y pégalo en tu navegador.)</label>
+			<label index="excuse_us">Le pedimos disculpas y lamentamos los problemas ocasionados.</label>
+			<label index="excuse_us_informal">Te pedimos una disculpa y lamentamos las molestias que esto te ocasiona.</label>
+			<label index="registration_problem">Existe un problema.</label>
+			<label index="registration_sorry">Lo sentimos, nos ha sido imposible completar la operación</label>
+			<label index="registration_help">Si tiene algún problema, por favor contacte con nosotros al siguiente correo y con gusto le atenderemos:</label>
+			<label index="kind_regards">Atentamente,</label>
+			<label index="v_really_wish_to_delete">¿Realmente desea borrar su cuenta &lt;b&gt;%2$s&lt;/b&gt;?</label>
+			<label index="v_verify_before_create">Por favor, confirme sus datos:</label>
+			<label index="v_verify_invitation_before_create">Por favor, confirme los datos de su invitado:</label>
+			<label index="v_edit_your_account">Por favor actualize los datos de su cuenta &lt;b&gt;%2$s&lt;/b&gt;:</label>
+			<label index="v_verify_before_update">Por favor, confirme sus datos antes de actualizar su cuenta:</label>
+			<label index="v_dear">Estimado(a) %3$s,</label>
+			<label index="v_now_enter_your_username">Ahora ya puede entrar con su nombre de usuario &lt;b&gt;%2$s&lt;/b&gt; y su contraseña:</label>
+			<label index="v_notification">Notificación:</label>
+			<label index="v_registration_created_subject">¡Gracias por registrarle en &lt;b&gt;%1$s&lt;/b&gt;!</label>
+			<label index="v_registration_created_message1">Su cuenta &lt;b&gt;%2$s&lt;/b&gt; fue creada.</label>
+			<label index="v_registration_created_message2">Su dirección de correo electrónico &lt;b&gt;%4$s&lt;/b&gt; ha sido agregada a nuestras listas.</label>
+			<label index="v_registration_created">%3$s creó una nueva cuenta en %1$s.</label>
+			<label index="v_registration_updated_subject">Su perfil en &lt;b&gt;%1$s&lt;/b&gt; fue actualizado.</label>
+			<label index="v_registration_updated_message1">Gracias por tener actualizados los datos de su cuenta en &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_updated">%3$s actualizó su perfil en %1$s.</label>
+			<label index="v_invitation_confirm">La invitación fue enviada.</label>
+			<label index="v_invitation_account_was_created">La cuenta &lt;b&gt;%2$s&lt;/b&gt; fue creada.  Una invitación a confirmar su registro en &lt;b&gt;%1$s&lt;/b&gt; fue enviada a &lt;b&gt;%3$s&lt;/b&gt; a su dirección de correo electrónico &lt;b&gt;%4$s&lt;/b&gt;.</label>
+			<label index="v_invitation_instructions1">Para confirmar su registro en &lt;b&gt;%1$s&lt;/b&gt; la persona invitada tendrá que seguir las instrucciones que se señalan en el mensaje de invitación para completar el proceso de registro.</label>
+			<label index="v_please_confirm">Por favor, confirme su registro.</label>
+			<label index="v_your_account_was_created">Su cuenta &lt;b&gt;%2$s&lt;/b&gt; fue creada.  Le enviamos un mensaje a su dirección de correo electrónico &lt;b&gt;%4$s&lt;/b&gt; para confirmar su registro en &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_follow_instructions1">Solo podra entrar en la sección de &lt;b&gt;%1$s&lt;/b&gt; después de haber confirmado su registro. Siga las instrucciones que le señala el mensaje de confirmación para completar el proceso de registro.</label>
+			<label index="v_registration_initiated_subject">Por favor confirme su registro en &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_initiated_message1">Le enviamos este mensaje para confirmar que desee registrarse en &lt;b&gt;%1$s&lt;/b&gt;. Solo podra entrar en la sección de &lt;b&gt;%1$s&lt;/b&gt; después de haber confirmado su registro. Para confirmar su registro siga este vínculo:</label>
+			<label index="v_registration_initiated_message2">Recibe este mensaje porque deseamos asegurarnos que la dirección de correo está correcta y también prevenir que alguien suscriba una dirección que no sea suya. Si por alguna razón, recibió este mensaje sin haberle registrado, siga este vínculo:</label>
+			<label index="v_registration_initiated">%3$s inició su registro en %1$s.</label>
+			<label index="v_registration_invited_subject">Le invitamos a registrarse en &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_invited_message1">Hemos pensado que le gustaría registrarse en &lt;b&gt;%1$s&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;  Le hemos creado una cuenta con nombre de usuario &lt;b&gt;%2$s&lt;/b&gt; y contraseña &lt;b&gt;%5$s&lt;/b&gt;.&lt;br /&gt;&lt;br /&gt;  Le enviamos este mensaje para confirmar que desea registrarse en &lt;b&gt;%1$s&lt;/b&gt; Solo podra entrar en la sección de &lt;b&gt;%1$s&lt;/b&gt; después de haber confirmado su registro. También podra cambiar su contraseña y actualizar sus datos.&lt;br /&gt;&lt;br /&gt;  Si desea aceptar nuestra invitación y confirmar su registro en &lt;b&gt;%1$s&lt;/b&gt;, haga clic sobre este vínculo:</label>
+			<label index="v_registration_invited_message2">Es la única vez que le enviaremos este mensaje. Si desea declinar nuestra invitación y entonces no desea registrarse en &lt;b&gt;%1$s&lt;/b&gt;, siga este vínculo o sencillamente ignore este mensaje:</label>
+			<label index="v_registration_invited">Una invitación para registrarse en %1$s fue enviada a %3$s.</label>
+			<label index="v_registration_confirmed_subject">¡Gracias por registrarse en &lt;b&gt;%1$s&lt;/b&gt;!</label>
+			<label index="v_registration_confirmed_message1">Su cuenta &lt;b&gt;%2$s&lt;/b&gt; fue confirmada.</label>
+			<label index="v_registration_confirmed_message2">Su dirección de correo electrónico &lt;b&gt;%4$s&lt;/b&gt; ha sido agregada a nuestras listas.</label>
+			<label index="v_registration_confirmed">%3$s confirmó su registro en %1$s.</label>
+			<label index="v_registration_cancelled_subject">Gracias por su visita.</label>
+			<label index="v_registration_cancelled_message1">Su registro en &lt;b&gt;%1$s&lt;/b&gt; fue anulado.</label>
+			<label index="v_registration_cancelled_message2">Su cuenta &lt;b&gt;%2$s&lt;/b&gt; y su dirección &lt;b&gt;%4$s&lt;/b&gt; fueron borradas de nuestras listas.</label>
+			<label index="v_registration_cancelled">%3$s anuló su registro en %1$s.</label>
+			<label index="v_registration_deleted_subject">Gracias por haberse registrado en &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_deleted_message1">A partir de este momento no recibirá más mensajes nuestros.</label>
+			<label index="v_registration_deleted_message2">Su cuenta &lt;b&gt;%2$s&lt;/b&gt; y su dirección &lt;b&gt;%4$s&lt;/b&gt; fueron borradas de nuestras listas.</label>
+			<label index="v_registration_deleted">%3$s borró su cuenta en %1$s.</label>
+			<label index="evalErrors_uniqueGlobal">Esta valor ya existe. Por favor elija otra.</label>
+			<label index="evalErrors_uniqueLocal">Esta valor ya existe. Por favor elija otra.</label>
+			<label index="evalErrors_twice">Por favor escriba el mismo valor dos veces.</label>
+			<label index="evalErrors_email">La dirección que escribió, no es correcta. Es posible que no la haya escrito correctamente.</label>
+			<label index="evalErrors_required">Este campo es imprescindible</label>
+			<label index="evalErrors_atLeast">Se requieren al menos %s carácteres.</label>
+			<label index="evalErrors_atMost">Solo se permiten como máximo %s carácteres.</label>
+			<label index="evalErrors_date">¡Por favor inserte una fecha valida con el formato AAAA-MM-DD!</label>
+			<label index="tooltip_invitation_city">Escriba el nombre de la ciudad o del pueblo de la persona invitada.</label>
+		</languageKey>
+	</data>
+	<orig_hash type="array">
+		<languageKey index="es" type="array">
+			<label index="unsupported" type="integer">119784024</label>
+			<label index="username" type="integer">267343380</label>
+			<label index="tooltip_username" type="integer">153627012</label>
+			<label index="tooltip_username_informal" type="integer">153627012</label>
+			<label index="tooltip_invitation_username" type="integer">202489891</label>
+			<label index="tooltip_login_username" type="integer">95230801</label>
+			<label index="tooltip_login_username_informal" type="integer">95230801</label>
+			<label index="missing_username" type="integer">92243670</label>
+			<label index="evalErrors_uniqueGlobal_username" type="integer">13859222</label>
+			<label index="evalErrors_uniqueLocal_username" type="integer">13859222</label>
+			<label index="evalErrors_atLeast_username" type="integer">84768618</label>
+			<label index="evalErrors_atMost_username" type="integer">192128341</label>
+			<label index="password" type="integer">187963993</label>
+			<label index="tooltip_password" type="integer">155529153</label>
+			<label index="tooltip_password_informal" type="integer">155529153</label>
+			<label index="tooltip_invitation_password" type="integer">249570388</label>
+			<label index="tooltip_login_password" type="integer">591106</label>
+			<label index="tooltip_login_password_informal" type="integer">591106</label>
+			<label index="password_repeat" type="integer">230540631</label>
+			<label index="tooltip_password_again" type="integer">268421570</label>
+			<label index="tooltip_password_again_informal" type="integer">268421570</label>
+			<label index="tooltip_invitation_password_again" type="integer">268421570</label>
+			<label index="missing_password" type="integer">133474083</label>
+			<label index="evalErrors_twice_password" type="integer">100088493</label>
+			<label index="evalErrors_atLeast_password" type="integer">229887894</label>
+			<label index="evalErrors_atMost_password" type="integer">48104863</label>
+			<label index="usergroup" type="integer">18718016</label>
+			<label index="missing_usergroup" type="integer">193509023</label>
+			<label index="missing_invitation_usergroup" type="integer">193509023</label>
+			<label index="name" type="integer">81871034</label>
+			<label index="tooltip_name" type="integer">154078303</label>
+			<label index="tooltip_name_informal" type="integer">154078303</label>
+			<label index="tooltip_invitation_name" type="integer">40866499</label>
+			<label index="missing_name" type="integer">42766906</label>
+			<label index="missing_invitation_name" type="integer">237116924</label>
+			<label index="first_name" type="integer">107522264</label>
+			<label index="tooltip_first_name" type="integer">66301577</label>
+			<label index="tooltip_first_name_informal" type="integer">66301577</label>
+			<label index="tooltip_invitation_first_name" type="integer">83824539</label>
+			<label index="missing_first_name" type="integer">254988613</label>
+			<label index="missing_invitation_first_name" type="integer">161073984</label>
+			<label index="last_name" type="integer">199614645</label>
+			<label index="tooltip_last_name" type="integer">249389232</label>
+			<label index="tooltip_last_name_informal" type="integer">249389232</label>
+			<label index="tooltip_invitation_last_name" type="integer">2206684</label>
+			<label index="missing_last_name" type="integer">93026003</label>
+			<label index="missing_invitation_last_name" type="integer">221550578</label>
+			<label index="date_of_birth" type="integer">99495875</label>
+			<label index="missing_date_of_birth" type="integer">193016331</label>
+			<label index="missing_invitation_date_of_birth" type="integer">164305076</label>
+			<label index="address" type="integer">46079327</label>
+			<label index="tooltip_address" type="integer">48603607</label>
+			<label index="tooltip_address_informal" type="integer">48603607</label>
+			<label index="tooltip_invitation_address" type="integer">263547894</label>
+			<label index="missing_address" type="integer">2981800</label>
+			<label index="missing_invitation_address" type="integer">79926535</label>
+			<label index="city" type="integer">201307921</label>
+			<label index="tooltip_city" type="integer">102654546</label>
+			<label index="tooltip_city_informal" type="integer">107648966</label>
+			<label index="tooltip_invitation_city" type="integer">222419149</label>
+			<label index="missing_city" type="integer">88466666</label>
+			<label index="missing_invitation_city" type="integer">954485</label>
+			<label index="zone" type="integer">163099424</label>
+			<label index="tooltip_zone" type="integer">232000989</label>
+			<label index="tooltip_zone_informal" type="integer">232000989</label>
+			<label index="tooltip_invitation_zone" type="integer">92626694</label>
+			<label index="missing_zone" type="integer">75437945</label>
+			<label index="missing_invitation_zone" type="integer">172729572</label>
+			<label index="country" type="integer">258260574</label>
+			<label index="missing_country" type="integer">139826955</label>
+			<label index="zip" type="integer">229014119</label>
+			<label index="tooltip_zip" type="integer">35799448</label>
+			<label index="tooltip_zip_informal" type="integer">35799448</label>
+			<label index="tooltip_invitation_zip" type="integer">20868487</label>
+			<label index="missing_zip" type="integer">63279561</label>
+			<label index="missing_invitation_zip" type="integer">88140999</label>
+			<label index="static_info_country" type="integer">258260574</label>
+			<label index="tooltip_static_info_country" type="integer">48385774</label>
+			<label index="tooltip_static_info_country_informal" type="integer">48385774</label>
+			<label index="tooltip_invitation_static_info_country" type="integer">28868673</label>
+			<label index="missing_static_info_country" type="integer">107678717</label>
+			<label index="missing_invitation_static_info_country" type="integer">21663366</label>
+			<label index="telephone" type="integer">33624454</label>
+			<label index="tooltip_telephone" type="integer">245627737</label>
+			<label index="tooltip_telephone_informal" type="integer">245627737</label>
+			<label index="tooltip_invitation_telephone" type="integer">44221306</label>
+			<label index="missing_telephone" type="integer">20131394</label>
+			<label index="missing_telephone_informal" type="integer">20131394</label>
+			<label index="missing_invitation_telephone" type="integer">176333917</label>
+			<label index="fax" type="integer">14875483</label>
+			<label index="tooltip_fax" type="integer">60650212</label>
+			<label index="tooltip_fax_informal" type="integer">60650212</label>
+			<label index="tooltip_invitation_fax" type="integer">153236635</label>
+			<label index="missing_fax" type="integer">164496421</label>
+			<label index="missing_invitation_fax" type="integer">5760007</label>
+			<label index="email" type="integer">233919839</label>
+			<label index="tooltip_email" type="integer">259302369</label>
+			<label index="tooltip_email_informal" type="integer">259302369</label>
+			<label index="tooltip_invitation_email" type="integer">85731332</label>
+			<label index="missing_email" type="integer">232829479</label>
+			<label index="evalErrors_email_email" type="integer">43492470</label>
+			<label index="evalErrors_uniqueLocal_email" type="integer">82200280</label>
+			<label index="module_sys_dmail_html" type="integer">217450124</label>
+			<label index="yes" type="integer">154974727</label>
+			<label index="no" type="integer">196073266</label>
+			<label index="module_sys_dmail_category" type="integer">49070812</label>
+			<label index="missing_module_sys_dmail_category" type="integer">28452518</label>
+			<label index="missing_invitation_module_sys_dmail_category" type="integer">28452518</label>
+			<label index="language" type="integer">8937228</label>
+			<label index="tooltip_language" type="integer">115503483</label>
+			<label index="tooltip_language_informal" type="integer">115503483</label>
+			<label index="tooltip_invitation_language" type="integer">22372906</label>
+			<label index="missing_language" type="integer">240820837</label>
+			<label index="missing_invitation_language" type="integer">202609153</label>
+			<label index="title" type="integer">85903807</label>
+			<label index="tooltip_title" type="integer">64747599</label>
+			<label index="tooltip_title_informal" type="integer">64747599</label>
+			<label index="tooltip_invitation_title" type="integer">185227229</label>
+			<label index="missing_title" type="integer">142129133</label>
+			<label index="missing_invitation_title" type="integer">252424715</label>
+			<label index="company" type="integer">98955432</label>
+			<label index="tooltip_company" type="integer">252670740</label>
+			<label index="tooltip_company_informal" type="integer">252670740</label>
+			<label index="tooltip_invitation_company" type="integer">210705103</label>
+			<label index="missing_company" type="integer">267242006</label>
+			<label index="missing_company_informal" type="integer">267242006</label>
+			<label index="missing_invitation_company" type="integer">10673826</label>
+			<label index="www" type="integer">78145407</label>
+			<label index="tooltip_www" type="integer">187676675</label>
+			<label index="tooltip_www_informal" type="integer">187676675</label>
+			<label index="tooltip_invitation_www" type="integer">53310876</label>
+			<label index="missing_www" type="integer">144168132</label>
+			<label index="missing_www_informal" type="integer">144168132</label>
+			<label index="missing_invitation_www" type="integer">115068597</label>
+			<label index="evalErrors_wwwURL_www" type="integer">99130820</label>
+			<label index="image" type="integer">191981461</label>
+			<label index="missing_image" type="integer">160791491</label>
+			<label index="missing_invitation_image" type="integer">37426884</label>
+			<label index="evalErrors_allowed_image" type="integer">79858507</label>
+			<label index="evalErrors_max_size_image" type="integer">167713473</label>
+			<label index="icon_delete" type="integer">200610258</label>
+			<label index="file_view" type="integer">70589694</label>
+			<label index="confirm_file_delete" type="integer">9256068</label>
+			<label index="button_register" type="integer">69429754</label>
+			<label index="button_confirm_register" type="integer">229002237</label>
+			<label index="button_back_to_form" type="integer">89148461</label>
+			<label index="button_update" type="integer">88944263</label>
+			<label index="button_confirm_update" type="integer">257788373</label>
+			<label index="button_enter" type="integer">253252053</label>
+			<label index="button_confirm_delete" type="integer">86829346</label>
+			<label index="button_cancel_delete" type="integer">85643543</label>
+			<label index="click_here_to_register" type="integer">97408071</label>
+			<label index="click_here_to_register_informal" type="integer">97408071</label>
+			<label index="tooltip_click_here_to_register" type="integer">36203241</label>
+			<label index="click_here_to_edit" type="integer">9474030</label>
+			<label index="click_here_to_edit_informal" type="integer">9474030</label>
+			<label index="tooltip_click_here_to_edit" type="integer">141319381</label>
+			<label index="click_here_to_delete" type="integer">203483403</label>
+			<label index="click_here_to_delete_informal" type="integer">203483403</label>
+			<label index="tooltip_click_here_to_delete" type="integer">2331262</label>
+			<label index="enter_account_info" type="integer">22090475</label>
+			<label index="enter_account_info_informal" type="integer">22090475</label>
+			<label index="enter_invitation_account_info" type="integer">234361878</label>
+			<label index="required_info_notice" type="integer">181889998</label>
+			<label index="copy_paste_link" type="integer">37891874</label>
+			<label index="copy_paste_link_informal" type="integer">37891874</label>
+			<label index="excuse_us" type="integer">157937515</label>
+			<label index="excuse_us_informal" type="integer">157937515</label>
+			<label index="registration_problem" type="integer">78064278</label>
+			<label index="registration_sorry" type="integer">90470925</label>
+			<label index="registration_help" type="integer">225103863</label>
+			<label index="kind_regards" type="integer">98899985</label>
+			<label index="v_really_wish_to_delete" type="integer">103827854</label>
+			<label index="v_verify_before_create" type="integer">144270893</label>
+			<label index="v_verify_invitation_before_create" type="integer">25528841</label>
+			<label index="v_edit_your_account" type="integer">211462604</label>
+			<label index="v_verify_before_update" type="integer">268339676</label>
+			<label index="v_dear" type="integer">22571722</label>
+			<label index="v_now_enter_your_username" type="integer">118347696</label>
+			<label index="v_notification" type="integer">222665243</label>
+			<label index="v_registration_created_subject" type="integer">57963284</label>
+			<label index="v_registration_created_message1" type="integer">211616797</label>
+			<label index="v_registration_created_message2" type="integer">17275902</label>
+			<label index="v_registration_created" type="integer">145745705</label>
+			<label index="v_registration_updated_subject" type="integer">102718275</label>
+			<label index="v_registration_updated_message1" type="integer">205645671</label>
+			<label index="v_registration_updated" type="integer">102534628</label>
+			<label index="v_invitation_confirm" type="integer">257625334</label>
+			<label index="v_invitation_account_was_created" type="integer">254150382</label>
+			<label index="v_invitation_instructions1" type="integer">158303528</label>
+			<label index="v_please_confirm" type="integer">149321470</label>
+			<label index="v_your_account_was_created" type="integer">7052615</label>
+			<label index="v_follow_instructions1" type="integer">188453913</label>
+			<label index="v_registration_initiated_subject" type="integer">20054798</label>
+			<label index="v_registration_initiated_message1" type="integer">205748724</label>
+			<label index="v_registration_initiated_message2" type="integer">130654754</label>
+			<label index="v_registration_initiated" type="integer">12890932</label>
+			<label index="v_registration_invited_subject" type="integer">41301218</label>
+			<label index="v_registration_invited_message1" type="integer">169168342</label>
+			<label index="v_registration_invited_message2" type="integer">87904454</label>
+			<label index="v_registration_invited" type="integer">154347795</label>
+			<label index="v_registration_confirmed_subject" type="integer">152977865</label>
+			<label index="v_registration_confirmed_message1" type="integer">211616797</label>
+			<label index="v_registration_confirmed_message2" type="integer">222390683</label>
+			<label index="v_registration_confirmed" type="integer">128559884</label>
+			<label index="v_registration_cancelled_subject" type="integer">7568402</label>
+			<label index="v_registration_cancelled_message1" type="integer">130305124</label>
+			<label index="v_registration_cancelled_message2" type="integer">267612193</label>
+			<label index="v_registration_cancelled" type="integer">17197480</label>
+			<label index="v_registration_deleted_subject" type="integer">19101350</label>
+			<label index="v_registration_deleted_message1" type="integer">55207665</label>
+			<label index="v_registration_deleted_message2" type="integer">267612193</label>
+			<label index="v_registration_deleted" type="integer">194725906</label>
+			<label index="evalErrors_uniqueGlobal" type="integer">8886710</label>
+			<label index="evalErrors_uniqueLocal" type="integer">8886710</label>
+			<label index="evalErrors_twice" type="integer">227039926</label>
+			<label index="evalErrors_email" type="integer">135361076</label>
+			<label index="evalErrors_required" type="integer">158614496</label>
+			<label index="evalErrors_atLeast" type="integer">100400175</label>
+			<label index="evalErrors_atMost" type="integer">35494949</label>
+			<label index="evalErrors_date" type="integer">89544415</label>
+		</languageKey>
+	</orig_hash>
+	<orig_text type="array">
+		<languageKey index="es" type="array">
+			<label index="unsupported">unsupported</label>
+			<label index="username">Preferred username:</label>
+			<label index="tooltip_username">Enter the username you want to use to login.</label>
+			<label index="tooltip_username_informal">Enter the username you want to use to login.</label>
+			<label index="tooltip_invitation_username">Enter a username for the invited person.</label>
+			<label index="tooltip_login_username">Enter your username.</label>
+			<label index="tooltip_login_username_informal">Enter your username.</label>
+			<label index="missing_username">Please try again!</label>
+			<label index="evalErrors_uniqueGlobal_username">This username already exist. Please enter a different username.</label>
+			<label index="evalErrors_uniqueLocal_username">This username already exist. Please enter a different username.</label>
+			<label index="evalErrors_atLeast_username">The username must contain at least %s characters.</label>
+			<label index="evalErrors_atMost_username">The username must contain at most %s characters.</label>
+			<label index="password">Password:</label>
+			<label index="tooltip_password">Enter the password you want to use to login.</label>
+			<label index="tooltip_password_informal">Enter the password you want to use to login.</label>
+			<label index="tooltip_invitation_password">Enter a password for the invited person.</label>
+			<label index="tooltip_login_password">Enter your password.</label>
+			<label index="tooltip_login_password_informal">Enter your password.</label>
+			<label index="password_repeat">Repeat:</label>
+			<label index="tooltip_password_again">Enter the same password a second time.</label>
+			<label index="tooltip_password_again_informal">Enter the same password a second time.</label>
+			<label index="tooltip_invitation_password_again">Enter the same password a second time.</label>
+			<label index="missing_password">Please enter a password!</label>
+			<label index="evalErrors_twice_password">You must enter the same password twice.</label>
+			<label index="evalErrors_atLeast_password">The password must contain at least %s characters.</label>
+			<label index="evalErrors_atMost_password">The password must contain at most %s characters.</label>
+			<label index="usergroup">User group:</label>
+			<label index="missing_usergroup">Please select a user group!</label>
+			<label index="missing_invitation_usergroup">Please select a user group!</label>
+			<label index="name">Name:</label>
+			<label index="tooltip_name">Enter your full name.</label>
+			<label index="tooltip_name_informal">Enter your full name.</label>
+			<label index="tooltip_invitation_name">Enter the full name of the invited person.</label>
+			<label index="missing_name">Please enter your name!</label>
+			<label index="missing_invitation_name">Please enter a name!</label>
+			<label index="first_name">First name:</label>
+			<label index="tooltip_first_name">Enter your first name.</label>
+			<label index="tooltip_first_name_informal">Enter your first name.</label>
+			<label index="tooltip_invitation_first_name">Enter the first name of the invited person.</label>
+			<label index="missing_first_name">Please enter your first name!</label>
+			<label index="missing_invitation_first_name">Please enter a first name!</label>
+			<label index="last_name">Last name:</label>
+			<label index="tooltip_last_name">Enter your surname.</label>
+			<label index="tooltip_last_name_informal">Enter your surname.</label>
+			<label index="tooltip_invitation_last_name">Enter the surname of the invited person.</label>
+			<label index="missing_last_name">Please enter your surname!</label>
+			<label index="missing_invitation_last_name">Please enter a surname!</label>
+			<label index="date_of_birth">Date of birth (yyyy-mm-dd):</label>
+			<label index="missing_date_of_birth">Please enter your date of birth!</label>
+			<label index="missing_invitation_date_of_birth">Please enter a date of birth!</label>
+			<label index="address">Address:</label>
+			<label index="tooltip_address">Enter your address (number, street, apt.).</label>
+			<label index="tooltip_address_informal">Enter your address (number, street, apt.).</label>
+			<label index="tooltip_invitation_address">Enter the address (number, street, apt.).</label>
+			<label index="missing_address">Please enter your address!</label>
+			<label index="missing_invitation_address">Please enter an address!</label>
+			<label index="city">City:</label>
+			<label index="tooltip_city">Enter the name of the city or village.</label>
+			<label index="tooltip_city_informal">Enter the name of your city or village.</label>
+			<label index="missing_city">Please enter the name of your city!</label>
+			<label index="missing_invitation_city">Please enter the name of a city!</label>
+			<label index="zone">County/province:</label>
+			<label index="tooltip_zone">Select your County or Province in this list.</label>
+			<label index="tooltip_zone_informal">Select your County or Province in this list.</label>
+			<label index="tooltip_invitation_zone">Select the County or Province in this list.</label>
+			<label index="missing_zone">Please select your County or Province!</label>
+			<label index="missing_invitation_zone">Please select a County or Province!</label>
+			<label index="country">Country:</label>
+			<label index="missing_country">Please enter the name of your country!</label>
+			<label index="zip">Postal code:</label>
+			<label index="tooltip_zip">Enter your Postcode.</label>
+			<label index="tooltip_zip_informal">Enter your Postcode.</label>
+			<label index="tooltip_invitation_zip">Enter the Postcode.</label>
+			<label index="missing_zip">Please enter your Postcode!</label>
+			<label index="missing_invitation_zip">Please enter a Postcode!</label>
+			<label index="static_info_country">Country:</label>
+			<label index="tooltip_static_info_country">Select your country in the list.</label>
+			<label index="tooltip_static_info_country_informal">Select your country in the list.</label>
+			<label index="tooltip_invitation_static_info_country">Select the country in the list.</label>
+			<label index="missing_static_info_country">Please select your country!</label>
+			<label index="missing_invitation_static_info_country">Please select a country!</label>
+			<label index="telephone">Telephone:</label>
+			<label index="tooltip_telephone">Enter your phone number.</label>
+			<label index="tooltip_telephone_informal">Enter your phone number.</label>
+			<label index="tooltip_invitation_telephone">Enter the phone number of the invited person.</label>
+			<label index="missing_telephone">Please enter your phone number!</label>
+			<label index="missing_telephone_informal">Please enter your phone number!</label>
+			<label index="missing_invitation_telephone">Please enter a phone number!</label>
+			<label index="fax">Fax:</label>
+			<label index="tooltip_fax">Enter your fax number.</label>
+			<label index="tooltip_fax_informal">Enter your fax number.</label>
+			<label index="tooltip_invitation_fax">Enter the fax number of the invited person.</label>
+			<label index="missing_fax">Please enter your fax number!</label>
+			<label index="missing_invitation_fax">Please enter a fax number!</label>
+			<label index="email">E-mail:</label>
+			<label index="tooltip_email">Enter your email address.</label>
+			<label index="tooltip_email_informal">Enter your email address.</label>
+			<label index="tooltip_invitation_email">Enter the email address of the invited person.</label>
+			<label index="missing_email">A valid e-mail is required.</label>
+			<label index="evalErrors_email_email">According to our verifications, the e-mail you entered is not valid. Perhaps it was not entered correctly?</label>
+			<label index="evalErrors_uniqueLocal_email">This e-mail address already exist.</label>
+			<label index="module_sys_dmail_html">Receive HTML e-mails?</label>
+			<label index="yes">Yes</label>
+			<label index="no">No</label>
+			<label index="module_sys_dmail_category">Receive news on any of these subjects?</label>
+			<label index="missing_module_sys_dmail_category">Please select at least one subject!</label>
+			<label index="missing_invitation_module_sys_dmail_category">Please select at least one subject!</label>
+			<label index="language">Language:</label>
+			<label index="tooltip_language">Select your preferred language in this list.</label>
+			<label index="tooltip_language_informal">Select your preferred language in this list.</label>
+			<label index="tooltip_invitation_language">Select the language of the invited person in this list.</label>
+			<label index="missing_language">Please select your preferred language!</label>
+			<label index="missing_invitation_language">Please select a preferred language!</label>
+			<label index="title">Title:</label>
+			<label index="tooltip_title">Enter the title of your position or profession.</label>
+			<label index="tooltip_title_informal">Enter the title of your position or profession.</label>
+			<label index="tooltip_invitation_title">Enter the title of the invited person.</label>
+			<label index="missing_title">Please enter your title!</label>
+			<label index="missing_invitation_title">Please enter a title!</label>
+			<label index="company">Company:</label>
+			<label index="tooltip_company">Enter the name of your company or organization.</label>
+			<label index="tooltip_company_informal">Enter the name of your company or organization.</label>
+			<label index="tooltip_invitation_company">Enter the name of the company or organization of the invited person.</label>
+			<label index="missing_company">Please enter the name of your company!</label>
+			<label index="missing_company_informal">Please enter the name of your company!</label>
+			<label index="missing_invitation_company">Please enter the name of a company!</label>
+			<label index="www">Homepage:</label>
+			<label index="tooltip_www">Enter the address of your homepage.</label>
+			<label index="tooltip_www_informal">Enter the address of your homepage.</label>
+			<label index="tooltip_invitation_www">Enter the address of the homepage of the invited person.</label>
+			<label index="missing_www">Please enter the address of your homepage!</label>
+			<label index="missing_www_informal">Please enter the address of your homepage!</label>
+			<label index="missing_invitation_www">Please enter a homepage address!</label>
+			<label index="evalErrors_wwwURL_www">According to our verifications, the homepage address you entered is not valid. Perhaps it was not entered correctly?</label>
+			<label index="image">Photographs:</label>
+			<label index="missing_image">Please enter your photograph!</label>
+			<label index="missing_invitation_image">Please enter a photograph!</label>
+			<label index="evalErrors_allowed_image">The file extension %s is not allowed.</label>
+			<label index="evalErrors_max_size_image">The file size should not exceed %s KB.</label>
+			<label index="icon_delete">Delete!</label>
+			<label index="file_view">View</label>
+			<label index="confirm_file_delete">Are sure that you want to delete this file?</label>
+			<label index="button_register">Create account</label>
+			<label index="button_confirm_register">Create account now!</label>
+			<label index="button_back_to_form">Back to form</label>
+			<label index="button_update">Update profile</label>
+			<label index="button_confirm_update">Update profile now!</label>
+			<label index="button_enter">Enter</label>
+			<label index="button_confirm_delete">Yes, delete account</label>
+			<label index="button_cancel_delete">No, cancel</label>
+			<label index="click_here_to_register">Not a member yet? click here to register.</label>
+			<label index="click_here_to_register_informal">Not a member yet? click here to register.</label>
+			<label index="tooltip_click_here_to_register">Presents a registration form.</label>
+			<label index="click_here_to_edit">Click here to edit your profile or delete your account.</label>
+			<label index="click_here_to_edit_informal">Click here to edit your profile or delete your account.</label>
+			<label index="tooltip_click_here_to_edit">Presents an account editing form.</label>
+			<label index="click_here_to_delete">Click here to delete your membership.</label>
+			<label index="click_here_to_delete_informal">Click here to delete your membership.</label>
+			<label index="tooltip_click_here_to_delete">Opens a dialog to delete your membership.</label>
+			<label index="enter_account_info">Please fill in the information of your membership:</label>
+			<label index="enter_account_info_informal">Please fill in the information of your membership:</label>
+			<label index="enter_invitation_account_info">Please fill in the information of the account for the invited person:</label>
+			<label index="required_info_notice">Please make sure that you fill in your details for the fields marked *</label>
+			<label index="copy_paste_link">Or copy and paste it into your browser.&lt;br&gt;</label>
+			<label index="copy_paste_link_informal">Or copy and paste it into your browser.&lt;br&gt;</label>
+			<label index="excuse_us">Please forgive us for any inconvenience we may have caused you.&lt;br&gt;&lt;br&gt;</label>
+			<label index="excuse_us_informal">Please forgive us for any inconvenience we may have caused you.&lt;br&gt;&lt;br&gt;</label>
+			<label index="registration_problem">There seems to be a problem.</label>
+			<label index="registration_sorry">We are sorry that it was not possible to complete this process.</label>
+			<label index="registration_help">If the problem persists, please contact us at the following e-mail address and we will be pleased to help you:</label>
+			<label index="kind_regards">Kind regards,</label>
+			<label index="v_really_wish_to_delete">Do you really wish to delete your membership &lt;b&gt;%2$s&lt;/b&gt;?</label>
+			<label index="v_verify_before_create">Please verify that all the information is correct before your membership with the name: &lt;b&gt;%2$s&lt;/b&gt; will be created&lt;br&gt;</label>
+			<label index="v_verify_invitation_before_create">Please verify that all the data of &lt;b&gt;%3$s&lt;/b&gt; is correct before the membership with the name: &lt;b&gt;%2$s&lt;/b&gt; will be created</label>
+			<label index="v_edit_your_account">Edit the information of your membership &lt;b&gt;%2$s&lt;/b&gt;</label>
+			<label index="v_verify_before_update">Please verify that all the information is correct before your membership &lt;b&gt;%2$s&lt;/b&gt; will be updated</label>
+			<label index="v_dear">Dear %3$s,</label>
+			<label index="v_now_enter_your_username">You may now enter with your username &lt;b&gt;%2$s&lt;/b&gt; and your password:</label>
+			<label index="v_notification">Notification:</label>
+			<label index="v_registration_created_subject">Thank you for joining us at: &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_created_message1">Your membership &lt;b&gt;%2$s&lt;/b&gt; has been confirmed.</label>
+			<label index="v_registration_created_message2">Your e-mail address &lt;b&gt;%4$s&lt;/b&gt; has been added to our list of members.</label>
+			<label index="v_registration_created">%3$s created a new membership with %1$s.</label>
+			<label index="v_registration_updated_subject">Your membership details with &lt;b&gt;%1$s&lt;/b&gt; have been updated.</label>
+			<label index="v_registration_updated_message1">Thank your for keeping your profile up-to-date.</label>
+			<label index="v_registration_updated">%3$s updated his(her) profile with %1$s.</label>
+			<label index="v_invitation_confirm">The invitation has been sent.</label>
+			<label index="v_invitation_account_was_created">The membership &lt;b&gt;%2$s&lt;/b&gt; has been created. An invitation to confirm your registration with &lt;b&gt;%1$s&lt;/b&gt; was sent to &lt;b&gt;%3$s&lt;/b&gt; at the e-mail address &lt;b&gt;%4$s&lt;/b&gt;.</label>
+			<label index="v_invitation_instructions1">You will have access to the section &lt;b&gt;%1$s&lt;/b&gt; of our website only after you will have confirmed your registration.&lt;br&gt;Please follow the instructions given in the confirmation message in order to complete the registration procedure.</label>
+			<label index="v_please_confirm">Please confirm your registration.</label>
+			<label index="v_your_account_was_created">Your membership &lt;b&gt;%2$s&lt;/b&gt; has been created. We are sending a message to your e-mail address &lt;b&gt;%4$s&lt;/b&gt; so that you can confirm your registration with &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_follow_instructions1">In order to confirm your registration with &lt;b&gt;%1$s&lt;/b&gt;, you will have to follow the instructions given in the invitation message.</label>
+			<label index="v_registration_initiated_subject">Please confirm your registration with &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_initiated_message1">Thank you for your application to become a member of &lt;b&gt;%1$s&lt;/b&gt;. &lt;br&gt;Everyone is welcome to browse around our website but you will need to confirm your membership to have unrestricted access to all areas.&lt;br&gt;&lt;br&gt;To confirm your membership please click on this link:</label>
+			<label index="v_registration_initiated_message2">If, for any reason, you do not wish to continue the registration process, or you have received this message in error, please click on this link:</label>
+			<label index="v_registration_initiated">%3$s initiated his(her) registration in %1$s.</label>
+			<label index="v_registration_invited_subject">Invitation to register with: &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_invited_message1">We thought you might be interested in registering with: &lt;b&gt;%1$s&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;
+
+We have created an account for you with username &lt;b&gt;%2$s&lt;/b&gt; and password &lt;b&gt;%5$s&lt;/b&gt;.&lt;br /&gt;&lt;br /&gt;
+
+We are sending you this message so that you may confirm that you wish to register with &lt;b&gt;%1$s&lt;/b&gt;. You will be able to access the section reserved to &lt;b&gt;%1$s&lt;/b&gt; only after confirming your registration. You will also be able to change your password and account profile.&lt;br /&gt;&lt;br /&gt;
+
+If you wish to accept our invitation and confirm your registration in &lt;b&gt;%1$s&lt;/b&gt;, please follow this link:</label>
+			<label index="v_registration_invited_message2">You will not receive this message twice. If you wish to decline our invitation and do not wish to register in &lt;b&gt;%1$s&lt;/b&gt;, please follow this link or just ignore this message:</label>
+			<label index="v_registration_invited">An invitation to register in %1$s was sent to %3$s.</label>
+			<label index="v_registration_confirmed_subject">Thank you for registering with &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_confirmed_message1">Your membership &lt;b&gt;%2$s&lt;/b&gt; has been confirmed.</label>
+			<label index="v_registration_confirmed_message2">Your e-mail address &lt;b&gt;%4$s&lt;/b&gt; has been added to our list.</label>
+			<label index="v_registration_confirmed">%3$s confirmed his(her) registration with %1$s.</label>
+			<label index="v_registration_cancelled_subject">Your registration has been cancelled.</label>
+			<label index="v_registration_cancelled_message1">As requested, we have cancelled your membership &lt;b&gt;%2$s&lt;/b&gt; and your e-mail address &lt;b&gt;%4$s&lt;/b&gt; has been deleted from our list.&lt;br&gt;</label>
+			<label index="v_registration_cancelled_message2">You will still be able to browse the pages of &lt;b&gt;%1$s&lt;/b&gt; for which membership is not necessary, if you wish.&lt;br&gt;&lt;br&gt;If you ever change your mind, you may re-join us and we will be pleased to welcome you again.&lt;br&gt;</label>
+			<label index="v_registration_cancelled">%3$s cancelled his(her) registration with %1$s.</label>
+			<label index="v_registration_deleted_subject">Your membership with &lt;b&gt;%1$s&lt;/b&gt; has been ended.</label>
+			<label index="v_registration_deleted_message1">As requested, we have ended your membership &lt;b&gt;%2$s&lt;/b&gt; and your e-mail address &lt;b&gt;%4$s&lt;/b&gt; has been deleted from our list.&lt;br&gt;</label>
+			<label index="v_registration_deleted_message2">You will still be able to browse the pages of &lt;b&gt;%1$s&lt;/b&gt; for which membership is not necessary, if you wish.&lt;br&gt;&lt;br&gt;If you ever change your mind, you may re-join us and we will be pleased to welcome you again.&lt;br&gt;</label>
+			<label index="v_registration_deleted">%3$s deleted his(her) account from %1$s.</label>
+			<label index="evalErrors_uniqueGlobal">This value already exist. Please enter a new value.</label>
+			<label index="evalErrors_uniqueLocal">This value already exist. Please enter a new value.</label>
+			<label index="evalErrors_twice">Please enter the same value twice.</label>
+			<label index="evalErrors_email">Please enter a valid e-mail address.</label>
+			<label index="evalErrors_required">Please enter a value!</label>
+			<label index="evalErrors_atLeast">You must enter at least %s characters!</label>
+			<label index="evalErrors_atMost">You must enter at most %s characters!</label>
+			<label index="evalErrors_date">Please enter a valid date in format yyyy-mm-dd!</label>
+		</languageKey>
+	</orig_text>
+</T3locallangExt>

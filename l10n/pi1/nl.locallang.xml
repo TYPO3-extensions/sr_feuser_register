@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallangExt>
+	<data type="array">
+		<languageKey index="nl" type="array">
+			<label index="unsupported">niet ondersteund</label>
+			<label index="username">Voorkeur gebruikersnaam:</label>
+			<label index="missing_username">Probeer aub opnieuw!</label>
+			<label index="evalErrors_uniqueGlobal_username">De opgegeven gebruikersnaam bestaat al. Probeer aub een andere.</label>
+			<label index="evalErrors_uniqueLocal_username">De opgegeven gebruikersnaam bestaat al. Probeer aub een andere.</label>
+			<label index="evalErrors_atLeast_username">De gebruikersnaam moet minimaal uit %s karakters bestaan.</label>
+			<label index="evalErrors_atMost_username">De gebruikersnaam mag maximaal uit %s karakters bestaan.</label>
+			<label index="password">Wachtwoord:</label>
+			<label index="password_repeat">Herhaal:</label>
+			<label index="missing_password">Probeer aub opnieuw!</label>
+			<label index="evalErrors_twice_password">U dient het wachtwoord 2 keer in te vullen.</label>
+			<label index="evalErrors_atLeast_password">Het wachtwoord moet minimaal uit %s karakters bestaan.</label>
+			<label index="evalErrors_atMost_password">Het wachtwoord mag maximaal uit %s karakters bestaan.</label>
+			<label index="name">Naam:</label>
+			<label index="missing_name">Vul aub uw naam in!</label>
+			<label index="missing_invitation_name">Vul aub een naam in!</label>
+			<label index="first_name">Voornaam:</label>
+			<label index="missing_first_name">Vul aub uw voornaam in!</label>
+			<label index="missing_invitation_first_name">Vul aub een voornaam in!</label>
+			<label index="last_name">Achternaam:</label>
+			<label index="missing_last_name">Vul aub uw achternaam in!</label>
+			<label index="missing_invitation_last_name">Vul aub een achternaam in!</label>
+			<label index="date_of_birth">Geboortedatum (dd-mm-yyyy):</label>
+			<label index="missing_date_of_birth">Vul aub uw geboortedatum in!</label>
+			<label index="missing_invitation_date_of_birth">Vul aub een geboortedatum in!</label>
+			<label index="address">Adres:</label>
+			<label index="missing_address">Vul aub uw adres in!</label>
+			<label index="missing_invitation_address">Vul aub een adres in!</label>
+			<label index="city">Plaats:</label>
+			<label index="missing_city">Vul aub uw plaats in!</label>
+			<label index="missing_invitation_city">Vul aub een plaats in!</label>
+			<label index="zone">Provincie:</label>
+			<label index="missing_zone">Vul aub uw provincie in!</label>
+			<label index="missing_invitation_zone">Vul aub een provincie in!</label>
+			<label index="country">Land:</label>
+			<label index="missing_country">Vul aub uw land in!</label>
+			<label index="zip">Postcode:</label>
+			<label index="missing_zip">Vul aub uw postcode in!</label>
+			<label index="missing_invitation_zip">Vul aub een postcode in!</label>
+			<label index="static_info_country">Land:</label>
+			<label index="missing_static_info_country">Vul aub uw land in!</label>
+			<label index="missing_invitation_static_info_country">Vul aub een land in!</label>
+			<label index="telephone">Telefoon:</label>
+			<label index="missing_telephone">Vul aub uw telefoonummer in!</label>
+			<label index="missing_invitation_telephone">Vul aub een telefoonnummer in!</label>
+			<label index="fax">Fax:</label>
+			<label index="missing_fax">Vul aub uw faxnummer in!</label>
+			<label index="missing_invitation_fax">Vul aub een faxnummer in!</label>
+			<label index="email">Email:</label>
+			<label index="missing_email">Een geldig email adres is noodzakelijk.</label>
+			<label index="evalErrors_email_email">Volgens onze controle is het email adres dat u ingevoerd heeft niet geldig. Wellicht is het niet juist ingevoerd?</label>
+			<label index="evalErrors_uniqueLocal_email">Dit email adres bestaat al.</label>
+			<label index="module_sys_dmail_html">Wilt u HTML emails ontvangen?</label>
+			<label index="yes">Ja</label>
+			<label index="no">Nee</label>
+			<label index="module_sys_dmail_category">Ontvang nieuws van deze onderwerpen?</label>
+			<label index="missing_module_sys_dmail_category">Selecteer aub tenminste één onderwerp!</label>
+			<label index="missing_invitation_module_sys_dmail_category">Selecteer aub tenminste één onderwerp!</label>
+			<label index="language">Taal:</label>
+			<label index="missing_language">Vul aub uw taalkeuze in!</label>
+			<label index="missing_invitation_language">Vul aub een taalkeuze in!</label>
+			<label index="title">Titel:</label>
+			<label index="missing_title">Vul aub uw titel in!</label>
+			<label index="missing_invitation_title">Vul aub een titel in!</label>
+			<label index="company">Bedrijfsnaam:</label>
+			<label index="missing_company">Vul aub de naam van uw bedrijf in!</label>
+			<label index="missing_invitation_company">Vul aub de naam van een bedrijf in!</label>
+			<label index="www">Homepage:</label>
+			<label index="missing_www">Vul aub het adres van uw homepage in!</label>
+			<label index="missing_invitation_www">Vul aub het adres van een homepage in!</label>
+			<label index="evalErrors_wwwURL_www">Het lijkt er op dat het adres van uw homepage niet juist is ingevuld. Heeft u wellicht een tikfout gemaakt?</label>
+			<label index="image">Foto's:</label>
+			<label index="missing_image">Vul aub uw foto in!</label>
+			<label index="missing_invitation_image">Vul aub een foto in!</label>
+			<label index="evalErrors_allowed_image">Het bestandstype %s is niet toegstaan.</label>
+			<label index="evalErrors_max_size_image">Het bestand mag niet groter zijn dan %s KB.</label>
+			<label index="icon_delete">Verwijder!</label>
+			<label index="file_view">Bekijk</label>
+			<label index="button_register">Gebruiker aanmaken</label>
+			<label index="button_confirm_register">Maak nu een gebruiker aan!</label>
+			<label index="button_back_to_form">Terug naar het formulier</label>
+			<label index="button_update">Profiel aanpassen</label>
+			<label index="button_confirm_update">Profiel nu aanpassen!</label>
+			<label index="button_enter">Invoeren</label>
+			<label index="button_confirm_delete">Ja, verwijder gebruiker</label>
+			<label index="button_cancel_delete">Nee, annuleren</label>
+			<label index="click_here_to_register">Eerste bezoek? Klik hier om te registreren.</label>
+			<label index="click_here_to_edit">Klik hier om uw profiel aan te passen of te verwijderen.</label>
+			<label index="click_here_to_delete">Klik hier om uw account te verwijderen.</label>
+			<label index="enter_account_info">Vul aub uw profiel in:</label>
+			<label index="enter_invitation_account_info">Vul aub de gebruikersgegevens van de uitgenodigde in:</label>
+			<label index="required_info_notice">Let op: Velden met * zijn verplicht!</label>
+			<label index="copy_paste_link">(Klik op de link of kopiëer en plak de link in uw browser)</label>
+			<label index="excuse_us">Wij bieden u onze verontschuldigingen aan voor het mogelijke ongemak.</label>
+			<label index="registration_problem">Er lijkt zich een probleem voor te doen.</label>
+			<label index="registration_sorry">Het is helaas niet mogelijk om dit proces succesvol af te ronden.</label>
+			<label index="registration_help">Als het probleem blijft bestaan neem dan aub contact met ons op via het volgende email adres:</label>
+			<label index="kind_regards">Met vriendelijke groet,</label>
+			<label index="v_really_wish_to_delete">Wilt u werkelijk uw gebruikersnaam &lt;b&gt;%2$s&lt;/b&gt; verwijderen?</label>
+			<label index="v_verify_before_create">Controleer aub alle gegevens voordat gebruiker &lt;b&gt;%2$s&lt;/b&gt; wordt aangemaakt:</label>
+			<label index="v_verify_invitation_before_create">Controleer aub alle gegevens voordat gebruiker &lt;b&gt;%2$s&lt;/b&gt; wordt aangemaakt:</label>
+			<label index="v_edit_your_account">Pas de informatie in uw profiel &lt;b&gt;%2$s&lt;/b&gt; aan:</label>
+			<label index="v_verify_before_update">Controleer aub alle gegevens voordat gebruiker &lt;b&gt;%2$s&lt;/b&gt; wordt aangepast:</label>
+			<label index="v_dear">Beste %3$s,</label>
+			<label index="v_now_enter_your_username">U kunt nu inloggen met uw gebruikersnaam &lt;b&gt;%2$s&lt;/b&gt; en wachtwoord:</label>
+			<label index="v_notification">Bericht:</label>
+			<label index="v_registration_created_subject">Bedankt voor uw registratie in &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_created_message1">Uw account &lt;b&gt;%2$s&lt;/b&gt; is aangemaakt.</label>
+			<label index="v_registration_created_message2">Uw email adres &lt;b&gt;%4$s&lt;/b&gt; is toegvoegd aan onze lijst.</label>
+			<label index="v_registration_created">%3$s heeft een nieuw account aangemaakt in %1$s.</label>
+			<label index="v_registration_updated_subject">Uw profiel in &lt;b&gt;%1$s&lt;/b&gt; in aangepast.</label>
+			<label index="v_registration_updated_message1">Bedankt voor het actueel houden van uw profiel.</label>
+			<label index="v_registration_updated">%3$s heeft zijn of haar profiel aangepast in %1$s.</label>
+			<label index="v_invitation_confirm">De uitnodiging is verstuurd.</label>
+			<label index="v_invitation_account_was_created">De gebruikersnaam &lt;b&gt;%2$s&lt;/b&gt; is aangemaakt. Een uitnodiging ter bevestiging van de registratie in &lt;b&gt;%1$s&lt;/b&gt; is verzonden aan &lt;b&gt;%3$s&lt;/b&gt; naar het email adres &lt;b&gt;%4$s&lt;/b&gt;.</label>
+			<label index="v_invitation_instructions1">U krijgt toegang tot het deel &lt;b&gt;%1$s&lt;/b&gt; van onze website nadat u uw registratie heeft bevestigd. Volg de instructies zoals beschreven in het bevestigingsbericht om de registratie af te ronden.</label>
+			<label index="v_please_confirm">Bevestig aub uw registratie.</label>
+			<label index="v_your_account_was_created">Uw gebruikersnaam &lt;b&gt;%2$s&lt;/b&gt; is aangemaakt. Wij sturen u een bericht via het email adres &lt;b&gt;%4$s&lt;/b&gt; zodat u de registratie kunt bevestigen met &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_follow_instructions1">Om zijn of haar registratie te bevestigen in &lt;b&gt;%1$s&lt;/b&gt; zal de uitgenodigde de instructies in het uitnodigingsbericht moeten volgen.</label>
+			<label index="v_registration_initiated_subject">Bevestig aub uw registratie in &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_initiated_message1">Wij verzenden u dit bericht omdat u zich wenst te registreren in &lt;b&gt;%1$s&lt;/b&gt;. U zult toegang krijgen tot het &lt;b&gt;%1$s&lt;/b&gt; gedeelte van onze website nadat u uw registratie heeft bevestigd. Volg de link om uw registratie te bevestigen:</label>
+			<label index="v_registration_initiated_message2">U ontvangt dit email bericht omdat wij ons ervan willen verzekeren dat uw email adres correct is en zeker te zijn dat u zich registreert met uw eigen email adres. Wanneer om de één of andere reden u dit email bericht heeft ontvangen zonder dat u zich heeft geregistreerd, volg dan de link:</label>
+			<label index="v_registration_initiated">%3$s is begonnen met zijn of haar registratie in %1$s.</label>
+			<label index="v_registration_invited_subject">Uitnodiging om te registreren in &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_invited_message1">Wij dachten dat u mogelijk geïnteresseerd zou kunnen zijn in de registratie in &lt;b&gt;%1$s&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;  Wij hebben de volgende gebruikersnaam voor u aangemaakt: &lt;b&gt;%2$s&lt;/b&gt; en wachtwoord &lt;b&gt;%5$s&lt;/b&gt;.&lt;br /&gt;&lt;br /&gt;  Wij zenden u dit bericht zodat u de registratie kunt bevestigen in &lt;b&gt;%1$s&lt;/b&gt;. U kunt toegang krijgen tot het gedeelte gereserveerd voor &lt;b&gt;%1$s&lt;/b&gt; nadat u de registratie bevestigd hebt. U kunt ook uw wachtwoord en profiel aanpassen.&lt;br /&gt;&lt;br /&gt;  Indien u deze uitnodiging ter registratie in &lt;b&gt;%1$s&lt;/b&gt; wilt bevestigen volg dan de link:</label>
+			<label index="v_registration_invited_message2">U zult dit bericht niet twee maal ontvangen. Wanneer u zich niet wenst te registreren in &lt;b&gt;%1$s&lt;/b&gt;, volg dan deze link of negeer dit bericht.</label>
+			<label index="v_registration_invited">Een uitnodiging voor registratie in %1$s is verzonden aan %3$s.</label>
+			<label index="v_registration_confirmed_subject">Dank u voor uw registratie in &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_confirmed_message1">Uw gebruikersnaam &lt;b&gt;%2$s&lt;/b&gt; is succesvol bevestigd.</label>
+			<label index="v_registration_confirmed_message2">Uw email adres &lt;b&gt;%4$s&lt;/b&gt; is toegevoegd aan onze lijst.</label>
+			<label index="v_registration_confirmed">%3$s heeft zijn of haar registratie bevestigd %1$s.</label>
+			<label index="v_registration_cancelled_subject">Bedankt voor uw bezoek.</label>
+			<label index="v_registration_cancelled_message1">Uw registratie in &lt;b&gt;%1$s&lt;/b&gt; is geannuleerd.</label>
+			<label index="v_registration_cancelled_message2">Uw gebruikernaam &lt;b&gt;%2$s&lt;/b&gt; en adres &lt;b&gt;%4$s&lt;/b&gt; zijn verwijderd uit onze lijst.</label>
+			<label index="v_registration_cancelled">%3$s heeft zijn of haar registratie in %1$s geannuleerd.</label>
+			<label index="v_registration_deleted_subject">Bedankt voor uw registratie in &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_deleted_message1">U zult niet langer email van ons ontvangen.</label>
+			<label index="v_registration_deleted_message2">Uw gebruikersnaam &lt;b&gt;%2$s&lt;/b&gt; en uw adres &lt;b&gt;%4$s&lt;/b&gt; zijn uit onze lijst verwijderd.</label>
+			<label index="v_registration_deleted">%3$s verwijderde zijn (haar) account van %1$s.</label>
+			<label index="evalErrors_uniqueGlobal">De waarde bestaat al. Vul aub een nieuwe waarde in.</label>
+			<label index="evalErrors_uniqueLocal">De waarde bestaat al. Vul aub een nieuwe waarde in.</label>
+			<label index="evalErrors_twice">Vul aub dezelfde waarde twee keer in.</label>
+			<label index="evalErrors_email">Vul aub een geldig email adres in.</label>
+			<label index="evalErrors_required">Vul aub een waarde in!</label>
+			<label index="evalErrors_atLeast">U moet minimaal %s karakters invoeren!</label>
+			<label index="evalErrors_atMost">U mag niet meer dan %s karakters invoeren!</label>
+			<label index="evalErrors_date">Gebruik aub een geldig datumformaat (yyyy-mm-dd)!</label>
+		</languageKey>
+	</data>
+	<orig_hash type="array">
+		<languageKey index="nl" type="array">
+			<label index="unsupported" type="integer">119784024</label>
+			<label index="username" type="integer">267343380</label>
+			<label index="missing_username" type="integer">92243670</label>
+			<label index="evalErrors_uniqueGlobal_username" type="integer">13859222</label>
+			<label index="evalErrors_uniqueLocal_username" type="integer">13859222</label>
+			<label index="evalErrors_atLeast_username" type="integer">84768618</label>
+			<label index="evalErrors_atMost_username" type="integer">192128341</label>
+			<label index="password" type="integer">187963993</label>
+			<label index="password_repeat" type="integer">230540631</label>
+			<label index="missing_password" type="integer">133474083</label>
+			<label index="evalErrors_twice_password" type="integer">100088493</label>
+			<label index="evalErrors_atLeast_password" type="integer">229887894</label>
+			<label index="evalErrors_atMost_password" type="integer">48104863</label>
+			<label index="name" type="integer">81871034</label>
+			<label index="missing_name" type="integer">42766906</label>
+			<label index="missing_invitation_name" type="integer">237116924</label>
+			<label index="first_name" type="integer">107522264</label>
+			<label index="missing_first_name" type="integer">254988613</label>
+			<label index="missing_invitation_first_name" type="integer">161073984</label>
+			<label index="last_name" type="integer">199614645</label>
+			<label index="missing_last_name" type="integer">93026003</label>
+			<label index="missing_invitation_last_name" type="integer">221550578</label>
+			<label index="date_of_birth" type="integer">99495875</label>
+			<label index="missing_date_of_birth" type="integer">193016331</label>
+			<label index="missing_invitation_date_of_birth" type="integer">164305076</label>
+			<label index="address" type="integer">46079327</label>
+			<label index="missing_address" type="integer">2981800</label>
+			<label index="missing_invitation_address" type="integer">79926535</label>
+			<label index="city" type="integer">201307921</label>
+			<label index="missing_city" type="integer">88466666</label>
+			<label index="missing_invitation_city" type="integer">954485</label>
+			<label index="zone" type="integer">163099424</label>
+			<label index="missing_zone" type="integer">75437945</label>
+			<label index="missing_invitation_zone" type="integer">172729572</label>
+			<label index="country" type="integer">258260574</label>
+			<label index="missing_country" type="integer">139826955</label>
+			<label index="zip" type="integer">229014119</label>
+			<label index="missing_zip" type="integer">63279561</label>
+			<label index="missing_invitation_zip" type="integer">88140999</label>
+			<label index="static_info_country" type="integer">258260574</label>
+			<label index="missing_static_info_country" type="integer">107678717</label>
+			<label index="missing_invitation_static_info_country" type="integer">21663366</label>
+			<label index="telephone" type="integer">33624454</label>
+			<label index="missing_telephone" type="integer">20131394</label>
+			<label index="missing_invitation_telephone" type="integer">176333917</label>
+			<label index="fax" type="integer">14875483</label>
+			<label index="missing_fax" type="integer">164496421</label>
+			<label index="missing_invitation_fax" type="integer">5760007</label>
+			<label index="email" type="integer">233919839</label>
+			<label index="missing_email" type="integer">232829479</label>
+			<label index="evalErrors_email_email" type="integer">43492470</label>
+			<label index="evalErrors_uniqueLocal_email" type="integer">82200280</label>
+			<label index="module_sys_dmail_html" type="integer">217450124</label>
+			<label index="yes" type="integer">154974727</label>
+			<label index="no" type="integer">196073266</label>
+			<label index="module_sys_dmail_category" type="integer">49070812</label>
+			<label index="missing_module_sys_dmail_category" type="integer">28452518</label>
+			<label index="missing_invitation_module_sys_dmail_category" type="integer">28452518</label>
+			<label index="language" type="integer">8937228</label>
+			<label index="missing_language" type="integer">240820837</label>
+			<label index="missing_invitation_language" type="integer">202609153</label>
+			<label index="title" type="integer">85903807</label>
+			<label index="missing_title" type="integer">142129133</label>
+			<label index="missing_invitation_title" type="integer">252424715</label>
+			<label index="company" type="integer">98955432</label>
+			<label index="missing_company" type="integer">267242006</label>
+			<label index="missing_invitation_company" type="integer">10673826</label>
+			<label index="www" type="integer">78145407</label>
+			<label index="missing_www" type="integer">144168132</label>
+			<label index="missing_invitation_www" type="integer">115068597</label>
+			<label index="evalErrors_wwwURL_www" type="integer">99130820</label>
+			<label index="image" type="integer">191981461</label>
+			<label index="missing_image" type="integer">160791491</label>
+			<label index="missing_invitation_image" type="integer">37426884</label>
+			<label index="evalErrors_allowed_image" type="integer">79858507</label>
+			<label index="evalErrors_max_size_image" type="integer">167713473</label>
+			<label index="icon_delete" type="integer">200610258</label>
+			<label index="file_view" type="integer">70589694</label>
+			<label index="button_register" type="integer">69429754</label>
+			<label index="button_confirm_register" type="integer">229002237</label>
+			<label index="button_back_to_form" type="integer">89148461</label>
+			<label index="button_update" type="integer">88944263</label>
+			<label index="button_confirm_update" type="integer">257788373</label>
+			<label index="button_enter" type="integer">253252053</label>
+			<label index="button_confirm_delete" type="integer">86829346</label>
+			<label index="button_cancel_delete" type="integer">85643543</label>
+			<label index="click_here_to_register" type="integer">97408071</label>
+			<label index="click_here_to_edit" type="integer">9474030</label>
+			<label index="click_here_to_delete" type="integer">203483403</label>
+			<label index="enter_account_info" type="integer">22090475</label>
+			<label index="enter_invitation_account_info" type="integer">234361878</label>
+			<label index="required_info_notice" type="integer">181889998</label>
+			<label index="copy_paste_link" type="integer">37891874</label>
+			<label index="excuse_us" type="integer">157937515</label>
+			<label index="registration_problem" type="integer">78064278</label>
+			<label index="registration_sorry" type="integer">90470925</label>
+			<label index="registration_help" type="integer">225103863</label>
+			<label index="kind_regards" type="integer">98899985</label>
+			<label index="v_really_wish_to_delete" type="integer">103827854</label>
+			<label index="v_verify_before_create" type="integer">144270893</label>
+			<label index="v_verify_invitation_before_create" type="integer">25528841</label>
+			<label index="v_edit_your_account" type="integer">211462604</label>
+			<label index="v_verify_before_update" type="integer">268339676</label>
+			<label index="v_dear" type="integer">22571722</label>
+			<label index="v_now_enter_your_username" type="integer">118347696</label>
+			<label index="v_notification" type="integer">222665243</label>
+			<label index="v_registration_created_subject" type="integer">57963284</label>
+			<label index="v_registration_created_message1" type="integer">211616797</label>
+			<label index="v_registration_created_message2" type="integer">17275902</label>
+			<label index="v_registration_created" type="integer">145745705</label>
+			<label index="v_registration_updated_subject" type="integer">102718275</label>
+			<label index="v_registration_updated_message1" type="integer">205645671</label>
+			<label index="v_registration_updated" type="integer">102534628</label>
+			<label index="v_invitation_confirm" type="integer">257625334</label>
+			<label index="v_invitation_account_was_created" type="integer">254150382</label>
+			<label index="v_invitation_instructions1" type="integer">158303528</label>
+			<label index="v_please_confirm" type="integer">149321470</label>
+			<label index="v_your_account_was_created" type="integer">7052615</label>
+			<label index="v_follow_instructions1" type="integer">188453913</label>
+			<label index="v_registration_initiated_subject" type="integer">20054798</label>
+			<label index="v_registration_initiated_message1" type="integer">205748724</label>
+			<label index="v_registration_initiated_message2" type="integer">130654754</label>
+			<label index="v_registration_initiated" type="integer">12890932</label>
+			<label index="v_registration_invited_subject" type="integer">41301218</label>
+			<label index="v_registration_invited_message1" type="integer">169168342</label>
+			<label index="v_registration_invited_message2" type="integer">87904454</label>
+			<label index="v_registration_invited" type="integer">154347795</label>
+			<label index="v_registration_confirmed_subject" type="integer">152977865</label>
+			<label index="v_registration_confirmed_message1" type="integer">211616797</label>
+			<label index="v_registration_confirmed_message2" type="integer">222390683</label>
+			<label index="v_registration_confirmed" type="integer">128559884</label>
+			<label index="v_registration_cancelled_subject" type="integer">7568402</label>
+			<label index="v_registration_cancelled_message1" type="integer">130305124</label>
+			<label index="v_registration_cancelled_message2" type="integer">267612193</label>
+			<label index="v_registration_cancelled" type="integer">17197480</label>
+			<label index="v_registration_deleted_subject" type="integer">19101350</label>
+			<label index="v_registration_deleted_message1" type="integer">55207665</label>
+			<label index="v_registration_deleted_message2" type="integer">267612193</label>
+			<label index="v_registration_deleted" type="integer">194725906</label>
+			<label index="evalErrors_uniqueGlobal" type="integer">8886710</label>
+			<label index="evalErrors_uniqueLocal" type="integer">8886710</label>
+			<label index="evalErrors_twice" type="integer">227039926</label>
+			<label index="evalErrors_email" type="integer">135361076</label>
+			<label index="evalErrors_required" type="integer">158614496</label>
+			<label index="evalErrors_atLeast" type="integer">100400175</label>
+			<label index="evalErrors_atMost" type="integer">35494949</label>
+			<label index="evalErrors_date" type="integer">89544415</label>
+		</languageKey>
+	</orig_hash>
+	<orig_text type="array">
+		<languageKey index="nl" type="array">
+			<label index="unsupported">unsupported</label>
+			<label index="username">Preferred username:</label>
+			<label index="missing_username">Please try again!</label>
+			<label index="evalErrors_uniqueGlobal_username">This username already exist. Please enter a different username.</label>
+			<label index="evalErrors_uniqueLocal_username">This username already exist. Please enter a different username.</label>
+			<label index="evalErrors_atLeast_username">The username must contain at least %s characters.</label>
+			<label index="evalErrors_atMost_username">The username must contain at most %s characters.</label>
+			<label index="password">Password:</label>
+			<label index="password_repeat">Repeat:</label>
+			<label index="missing_password">Please enter a password!</label>
+			<label index="evalErrors_twice_password">You must enter the same password twice.</label>
+			<label index="evalErrors_atLeast_password">The password must contain at least %s characters.</label>
+			<label index="evalErrors_atMost_password">The password must contain at most %s characters.</label>
+			<label index="name">Name:</label>
+			<label index="missing_name">Please enter your name!</label>
+			<label index="missing_invitation_name">Please enter a name!</label>
+			<label index="first_name">First name:</label>
+			<label index="missing_first_name">Please enter your first name!</label>
+			<label index="missing_invitation_first_name">Please enter a first name!</label>
+			<label index="last_name">Last name:</label>
+			<label index="missing_last_name">Please enter your surname!</label>
+			<label index="missing_invitation_last_name">Please enter a surname!</label>
+			<label index="date_of_birth">Date of birth (yyyy-mm-dd):</label>
+			<label index="missing_date_of_birth">Please enter your date of birth!</label>
+			<label index="missing_invitation_date_of_birth">Please enter a date of birth!</label>
+			<label index="address">Address:</label>
+			<label index="missing_address">Please enter your address!</label>
+			<label index="missing_invitation_address">Please enter an address!</label>
+			<label index="city">City:</label>
+			<label index="missing_city">Please enter the name of your city!</label>
+			<label index="missing_invitation_city">Please enter the name of a city!</label>
+			<label index="zone">County/province:</label>
+			<label index="missing_zone">Please select your County or Province!</label>
+			<label index="missing_invitation_zone">Please select a County or Province!</label>
+			<label index="country">Country:</label>
+			<label index="missing_country">Please enter the name of your country!</label>
+			<label index="zip">Postal code:</label>
+			<label index="missing_zip">Please enter your Postcode!</label>
+			<label index="missing_invitation_zip">Please enter a Postcode!</label>
+			<label index="static_info_country">Country:</label>
+			<label index="missing_static_info_country">Please select your country!</label>
+			<label index="missing_invitation_static_info_country">Please select a country!</label>
+			<label index="telephone">Telephone:</label>
+			<label index="missing_telephone">Please enter your phone number!</label>
+			<label index="missing_invitation_telephone">Please enter a phone number!</label>
+			<label index="fax">Fax:</label>
+			<label index="missing_fax">Please enter your fax number!</label>
+			<label index="missing_invitation_fax">Please enter a fax number!</label>
+			<label index="email">E-mail:</label>
+			<label index="missing_email">A valid e-mail is required.</label>
+			<label index="evalErrors_email_email">According to our verifications, the e-mail you entered is not valid. Perhaps it was not entered correctly?</label>
+			<label index="evalErrors_uniqueLocal_email">This e-mail address already exist.</label>
+			<label index="module_sys_dmail_html">Receive HTML e-mails?</label>
+			<label index="yes">Yes</label>
+			<label index="no">No</label>
+			<label index="module_sys_dmail_category">Receive news on any of these subjects?</label>
+			<label index="missing_module_sys_dmail_category">Please select at least one subject!</label>
+			<label index="missing_invitation_module_sys_dmail_category">Please select at least one subject!</label>
+			<label index="language">Language:</label>
+			<label index="missing_language">Please select your preferred language!</label>
+			<label index="missing_invitation_language">Please select a preferred language!</label>
+			<label index="title">Title:</label>
+			<label index="missing_title">Please enter your title!</label>
+			<label index="missing_invitation_title">Please enter a title!</label>
+			<label index="company">Company:</label>
+			<label index="missing_company">Please enter the name of your company!</label>
+			<label index="missing_invitation_company">Please enter the name of a company!</label>
+			<label index="www">Homepage:</label>
+			<label index="missing_www">Please enter the address of your homepage!</label>
+			<label index="missing_invitation_www">Please enter a homepage address!</label>
+			<label index="evalErrors_wwwURL_www">According to our verifications, the homepage address you entered is not valid. Perhaps it was not entered correctly?</label>
+			<label index="image">Photographs:</label>
+			<label index="missing_image">Please enter your photograph!</label>
+			<label index="missing_invitation_image">Please enter a photograph!</label>
+			<label index="evalErrors_allowed_image">The file extension %s is not allowed.</label>
+			<label index="evalErrors_max_size_image">The file size should not exceed %s KB.</label>
+			<label index="icon_delete">Delete!</label>
+			<label index="file_view">View</label>
+			<label index="button_register">Create account</label>
+			<label index="button_confirm_register">Create account now!</label>
+			<label index="button_back_to_form">Back to form</label>
+			<label index="button_update">Update profile</label>
+			<label index="button_confirm_update">Update profile now!</label>
+			<label index="button_enter">Enter</label>
+			<label index="button_confirm_delete">Yes, delete account</label>
+			<label index="button_cancel_delete">No, cancel</label>
+			<label index="click_here_to_register">Not a member yet? click here to register.</label>
+			<label index="click_here_to_edit">Click here to edit your profile or delete your account.</label>
+			<label index="click_here_to_delete">Click here to delete your membership.</label>
+			<label index="enter_account_info">Please fill in the information of your membership:</label>
+			<label index="enter_invitation_account_info">Please fill in the information of the account for the invited person:</label>
+			<label index="required_info_notice">Please make sure that you fill in your details for the fields marked *</label>
+			<label index="copy_paste_link">Or copy and paste it into your browser.&lt;br&gt;</label>
+			<label index="excuse_us">Please forgive us for any inconvenience we may have caused you.&lt;br&gt;&lt;br&gt;</label>
+			<label index="registration_problem">There seems to be a problem.</label>
+			<label index="registration_sorry">We are sorry that it was not possible to complete this process.</label>
+			<label index="registration_help">If the problem persists, please contact us at the following e-mail address and we will be pleased to help you:</label>
+			<label index="kind_regards">Kind regards,</label>
+			<label index="v_really_wish_to_delete">Do you really wish to delete your membership &lt;b&gt;%2$s&lt;/b&gt;?</label>
+			<label index="v_verify_before_create">Please verify that all the information is correct before your membership with the name: &lt;b&gt;%2$s&lt;/b&gt; will be created&lt;br&gt;</label>
+			<label index="v_verify_invitation_before_create">Please verify that all the data of &lt;b&gt;%3$s&lt;/b&gt; is correct before the membership with the name: &lt;b&gt;%2$s&lt;/b&gt; will be created</label>
+			<label index="v_edit_your_account">Edit the information of your membership &lt;b&gt;%2$s&lt;/b&gt;</label>
+			<label index="v_verify_before_update">Please verify that all the information is correct before your membership &lt;b&gt;%2$s&lt;/b&gt; will be updated</label>
+			<label index="v_dear">Dear %3$s,</label>
+			<label index="v_now_enter_your_username">You may now enter with your username &lt;b&gt;%2$s&lt;/b&gt; and your password:</label>
+			<label index="v_notification">Notification:</label>
+			<label index="v_registration_created_subject">Thank you for joining us at: &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_created_message1">Your membership &lt;b&gt;%2$s&lt;/b&gt; has been confirmed.</label>
+			<label index="v_registration_created_message2">Your e-mail address &lt;b&gt;%4$s&lt;/b&gt; has been added to our list of members.</label>
+			<label index="v_registration_created">%3$s created a new membership with %1$s.</label>
+			<label index="v_registration_updated_subject">Your membership details with &lt;b&gt;%1$s&lt;/b&gt; have been updated.</label>
+			<label index="v_registration_updated_message1">Thank your for keeping your profile up-to-date.</label>
+			<label index="v_registration_updated">%3$s updated his(her) profile with %1$s.</label>
+			<label index="v_invitation_confirm">The invitation has been sent.</label>
+			<label index="v_invitation_account_was_created">The membership &lt;b&gt;%2$s&lt;/b&gt; has been created. An invitation to confirm your registration with &lt;b&gt;%1$s&lt;/b&gt; was sent to &lt;b&gt;%3$s&lt;/b&gt; at the e-mail address &lt;b&gt;%4$s&lt;/b&gt;.</label>
+			<label index="v_invitation_instructions1">You will have access to the section &lt;b&gt;%1$s&lt;/b&gt; of our website only after you will have confirmed your registration.&lt;br&gt;Please follow the instructions given in the confirmation message in order to complete the registration procedure.</label>
+			<label index="v_please_confirm">Please confirm your registration.</label>
+			<label index="v_your_account_was_created">Your membership &lt;b&gt;%2$s&lt;/b&gt; has been created. We are sending a message to your e-mail address &lt;b&gt;%4$s&lt;/b&gt; so that you can confirm your registration with &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_follow_instructions1">In order to confirm your registration with &lt;b&gt;%1$s&lt;/b&gt;, you will have to follow the instructions given in the invitation message.</label>
+			<label index="v_registration_initiated_subject">Please confirm your registration with &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_initiated_message1">Thank you for your application to become a member of &lt;b&gt;%1$s&lt;/b&gt;. &lt;br&gt;Everyone is welcome to browse around our website but you will need to confirm your membership to have unrestricted access to all areas.&lt;br&gt;&lt;br&gt;To confirm your membership please click on this link:</label>
+			<label index="v_registration_initiated_message2">If, for any reason, you do not wish to continue the registration process, or you have received this message in error, please click on this link:</label>
+			<label index="v_registration_initiated">%3$s initiated his(her) registration in %1$s.</label>
+			<label index="v_registration_invited_subject">Invitation to register with: &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_invited_message1">We thought you might be interested in registering with: &lt;b&gt;%1$s&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;
+
+We have created an account for you with username &lt;b&gt;%2$s&lt;/b&gt; and password &lt;b&gt;%5$s&lt;/b&gt;.&lt;br /&gt;&lt;br /&gt;
+
+We are sending you this message so that you may confirm that you wish to register with &lt;b&gt;%1$s&lt;/b&gt;. You will be able to access the section reserved to &lt;b&gt;%1$s&lt;/b&gt; only after confirming your registration. You will also be able to change your password and account profile.&lt;br /&gt;&lt;br /&gt;
+
+If you wish to accept our invitation and confirm your registration in &lt;b&gt;%1$s&lt;/b&gt;, please follow this link:</label>
+			<label index="v_registration_invited_message2">You will not receive this message twice. If you wish to decline our invitation and do not wish to register in &lt;b&gt;%1$s&lt;/b&gt;, please follow this link or just ignore this message:</label>
+			<label index="v_registration_invited">An invitation to register in %1$s was sent to %3$s.</label>
+			<label index="v_registration_confirmed_subject">Thank you for registering with &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_confirmed_message1">Your membership &lt;b&gt;%2$s&lt;/b&gt; has been confirmed.</label>
+			<label index="v_registration_confirmed_message2">Your e-mail address &lt;b&gt;%4$s&lt;/b&gt; has been added to our list.</label>
+			<label index="v_registration_confirmed">%3$s confirmed his(her) registration with %1$s.</label>
+			<label index="v_registration_cancelled_subject">Your registration has been cancelled.</label>
+			<label index="v_registration_cancelled_message1">As requested, we have cancelled your membership &lt;b&gt;%2$s&lt;/b&gt; and your e-mail address &lt;b&gt;%4$s&lt;/b&gt; has been deleted from our list.&lt;br&gt;</label>
+			<label index="v_registration_cancelled_message2">You will still be able to browse the pages of &lt;b&gt;%1$s&lt;/b&gt; for which membership is not necessary, if you wish.&lt;br&gt;&lt;br&gt;If you ever change your mind, you may re-join us and we will be pleased to welcome you again.&lt;br&gt;</label>
+			<label index="v_registration_cancelled">%3$s cancelled his(her) registration with %1$s.</label>
+			<label index="v_registration_deleted_subject">Your membership with &lt;b&gt;%1$s&lt;/b&gt; has been ended.</label>
+			<label index="v_registration_deleted_message1">As requested, we have ended your membership &lt;b&gt;%2$s&lt;/b&gt; and your e-mail address &lt;b&gt;%4$s&lt;/b&gt; has been deleted from our list.&lt;br&gt;</label>
+			<label index="v_registration_deleted_message2">You will still be able to browse the pages of &lt;b&gt;%1$s&lt;/b&gt; for which membership is not necessary, if you wish.&lt;br&gt;&lt;br&gt;If you ever change your mind, you may re-join us and we will be pleased to welcome you again.&lt;br&gt;</label>
+			<label index="v_registration_deleted">%3$s deleted his(her) account from %1$s.</label>
+			<label index="evalErrors_uniqueGlobal">This value already exist. Please enter a new value.</label>
+			<label index="evalErrors_uniqueLocal">This value already exist. Please enter a new value.</label>
+			<label index="evalErrors_twice">Please enter the same value twice.</label>
+			<label index="evalErrors_email">Please enter a valid e-mail address.</label>
+			<label index="evalErrors_required">Please enter a value!</label>
+			<label index="evalErrors_atLeast">You must enter at least %s characters!</label>
+			<label index="evalErrors_atMost">You must enter at most %s characters!</label>
+			<label index="evalErrors_date">Please enter a valid date in format yyyy-mm-dd!</label>
+		</languageKey>
+	</orig_text>
+</T3locallangExt>
