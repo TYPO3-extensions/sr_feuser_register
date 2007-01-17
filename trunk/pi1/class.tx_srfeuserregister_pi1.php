@@ -2,8 +2,8 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 1999-2003 Kasper Skaarhoj (kasper@typo3.com)
-*  (c) 2004-2006 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca)>
+*  (c) 1999-2003 Kasper Skaarhoj (kasper2007@typo3.com)
+*  (c) 2004-2007 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca)>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -31,7 +31,7 @@
  *
  * $Id$
  * 
- * @author Kasper Skaarhoj <kasper@typo3.com>
+ * @author Kasper Skaarhoj <kasper2007@typo3.com>
  * @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
  *
  *
@@ -103,6 +103,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		var $fieldList; // List of fields from fe_admin_fieldList
 		var $requiredArr; // List of required fields
 		var $fileFunc = ''; // Set to a basic_filefunc object for file uploads
+		var $freeCap; // object of type tx_srfreecap_pi2
 
 		function main($content, $conf) {
 			global $TSFE, $TCA, $TYPO3_CONF_VARS;
@@ -263,6 +264,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 				if ($this->conf[$this->cmdKey.'.']['generateUsername']) {
 					$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('username')));
 				}
+
+				if ($this->conf[$this->cmdKey.'.']['generatePassword'] && $this->cmdKey != 'edit') {
+					$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('password')));
+				}
+
 				if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername']) {
 					$this->conf[$this->cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1), array('username')));
 					if ($this->cmdKey == 'create' || $this->cmdKey == 'invite') {
@@ -314,6 +320,16 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 
 				// Fetching the template file
 			$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
+
+			// RALPH BRUGGER added free captcha support
+			if (t3lib_extMgm::isLoaded('sr_freecap') ) {
+				require_once(t3lib_extMgm::extPath('sr_freecap').'pi2/class.tx_srfreecap_pi2.php');
+				$this->freeCap = t3lib_div::makeInstance('tx_srfreecap_pi2');
+			}
+			if (is_object($this->freeCap)) {
+				$this->markerArray = array_merge($this->markerArray, $this->freeCap->makeCaptcha());
+			}
+			// RALPH BRUGGER 
 
 				// Set globally substituted markers, fonts and colors.
 			if ($this->conf['templateStyle'] != 'css-styled') {
@@ -511,13 +527,16 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 						t3lib_div::intval_positive($this->dataArr['pid']);
 						break;
 				}
+				if ($this->conf[$this->cmdKey.'.']['generatePassword'] && $this->cmdKey != 'edit') {
+					unset($this->conf[$this->cmdKey.'.']['evalValues.']['password']);
+				}
 				if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'] || ($this->conf[$this->cmdKey.'.']['generateUsername'] && $this->cmdKey != 'edit')) {
 					unset($this->conf[$this->cmdKey.'.']['evalValues.']['username']);
 				}
 				if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'] && $this->cmdKey == 'edit' && $this->conf['setfixed']) {
-						unset($this->conf[$this->cmdKey.'.']['evalValues.']['email']);
+					unset($this->conf[$this->cmdKey.'.']['evalValues.']['email']);
 				}
-				
+
 				reset($this->conf[$this->cmdKey.'.']['evalValues.']);
 				while (list($theField, $theValue) = each($this->conf[$this->cmdKey.'.']['evalValues.'])) {
 					$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
@@ -664,6 +683,23 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 								$tempArr[] = $theField;
 								$this->inError[$theField] = true;
 								$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'Please enter a valid date.');
+							}
+							break;
+							// RALPH BRUGGER added captcha  feature>
+							case 'captcha':
+							if (is_object($this->freeCap))	{
+								// Store the sr_freecap word_hash
+								// sr_freecap will invalidate the word_hash after calling checkWord
+								session_start();
+								$sr_freecap_word_hash = $_SESSION[$this->freeCap->extKey.'_word_hash'];
+								if (!$this->freeCap->checkWord( $this->dataArr['captcha_response'])) {
+									$tempArr[] = $theField;
+									$this->inError[$theField] = true;
+									$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'invalid!');
+								} else {
+									// Restore sr_freecap word_hash
+									$_SESSION[$this->freeCap->extKey.'_word_hash'] = $sr_freecap_word_hash;
+								}
 							}
 							break;
 						}
@@ -896,12 +932,16 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		function overrideValues() {
 			// Addition of overriding values
 			if (is_array($this->conf[$this->cmdKey.'.']['overrideValues.'])) {
-				reset($this->conf[$this->cmdKey.'.']['overrideValues.']);
-				while (list($theField, $theValue) = each($this->conf[$this->cmdKey.'.']['overrideValues.'])) {
+				foreach ($this->conf[$this->cmdKey.'.']['overrideValues.'] as $theField => $theValue) {
 					if ($theField == 'usergroup' && $this->theTable == 'fe_users' && $this->conf[$this->cmdKey.'.']['allowUserGroupSelection']) {
 						$this->dataArr[$theField] = implode(',', array_merge(array_diff(t3lib_div::trimExplode(',', $this->dataArr[$theField], 1), t3lib_div::trimExplode(',', $theValue, 1)), t3lib_div::trimExplode(',', $theValue, 1)));
 					} else {
-						$this->dataArr[$theField] = $theValue;
+						$stdWrap = $this->conf[$this->cmdKey.'.']['overrideValues.'][$theField.'.'];
+						if ($stdWrap)	{
+							$this->dataArr[$theField] = $this->cObj->stdWrap($theValue, $stdWrap);
+						} else {
+							$this->dataArr[$theField] = $theValue;
+						}
 					}
 				}
 			}
@@ -954,12 +994,23 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		
 		/**
 		 * Assigns a value to the password if this is an invitation and password encryption with kb_md5fepw is enabled
+                 * or if we are creating and generatePassword is set.
 		 *
 		 * @return void  done directly on array $this->dataArr
 		 */
 		function setPassword() {
-			if ($this->cmdKey == 'invite' && $this->useMd5Password) {
-				$this->dataArr['password'] = tx_kbmd5fepw_funcs::generatePassword(intval($GLOBALS['TSFE']->config['plugin.']['tx_newloginbox_pi1.']['defaultPasswordLength']) ? intval($GLOBALS['TSFE']->config['plugin.']['tx_newloginbox_pi1.']['defaultPasswordLength']) : 5);
+
+			if (
+				($this->cmdKey == 'invite' && ($this->useMd5Password || $this->conf[$this->cmdKey.'.']['generatePassword'])) ||
+
+				($this->cmdKey == 'create' && $this->conf[$this->cmdKey.'.']['generatePassword'])
+			)	{
+
+				if ($this->useMd5Password) {
+					$this->dataArr['password'] = tx_kbmd5fepw_funcs::generatePassword(intval($GLOBALS['TSFE']->config['plugin.']['tx_newloginbox_pi1.']['defaultPasswordLength']) ? intval($GLOBALS['TSFE']->config['plugin.']['tx_newloginbox_pi1.']['defaultPasswordLength']) : 5);
+				} else {
+					$this->dataArr['password'] = substr(md5(uniqid(microtime(), 1)), 0, intval($this->conf[$this->cmdKey.'.']['generatePassword']));
+				}
 			}
 		}
 		
@@ -2192,12 +2243,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 										$deftext = $itemArray[$i][0];
 										$deftext = substr($deftext, 0, strlen($deftext) - 2);										
 									}
-									// while (($label = $this->getLLFromString($itemArray[$i][0],false)) != '' || $i < count ($itemArray) || $bUseTCA && ($label = $this->getLLFromString($deftext.'.'.$i,false)) != '') {
 
-									// for ($i = 0; $i < count ($itemArray); $i++) {
 									$i = 0;
 									foreach ($itemArray as $k => $item)	{
-										$label = $this->getLLFromString($item[0],false);
+										$label = $this->getLLFromString($item[0],true);
 										if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
 											$colContent .= '<dt><input class="' . $this->pi_getClassName('checkbox') . '" id="'. $this->pi_getClassName($colName) . '-' . $i .'" name="FE['.$this->theTable.']['.$colName.']['.$k.']" value="'.$k.'" type="checkbox"  ' . (in_array($k, $valuesArray) ? 'checked="checked"' : '') . ' /></dt>
 													<dd><label for="'. $this->pi_getClassName($colName) . '-' . $i .'">'.$label.'</label></dd>';

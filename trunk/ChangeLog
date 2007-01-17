@@ -1,3 +1,10 @@
+2007-01-17 Franz Holzinger  <kontakt@fholzinger.com>
+	* Version 2.5.5
+	* enable overrideValues setup with stdWrap function call - by Jens Hirschfeld <Jens.Hirschfeld@KeepOut.de>
+	* If useEmailAsUsername is set, and the user changes their email address, the username will also be changed.
+	* automatic password generation by Dennis S. Hennen <dennis@28studios.com>
+	* Ralph Brugger <Ralph.Brugger@linkpool.de> added captcha feature
+
 2006-12-29 Franz Holzinger  <kontakt@fholzinger.com>
 	* Version 2.5.4
 	* enable always INFOMAIL when function compileMail has been reached

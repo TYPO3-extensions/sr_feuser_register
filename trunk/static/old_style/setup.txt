@@ -48,6 +48,8 @@ plugin.tx_srfeuserregister_pi1 {
 		fields = {$plugin.tx_srfeuserregister_pi1.formFields}
 		required = {$plugin.tx_srfeuserregister_pi1.requiredFields}
 		useEmailAsUsername = {$plugin.tx_srfeuserregister_pi1.useEmailAsUsername}
+		generateUsername = {$plugin.tx_srfeuserregister_pi1.generateUsername}
+		generatePassword = {$plugin.tx_srfeuserregister_pi1.generatePassword}
 		allowUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowUserGroupSelection}
 
 		defaultValues {
@@ -85,6 +87,12 @@ plugin.tx_srfeuserregister_pi1 {
 			module_sys_dmail_category =
 			module_sys_dmail_html =
 			usergroup =
+		}
+	}
+
+	select {
+		email {
+			module_sys_dmail_category.wrap = | <br/>
 		}
 	}
 
