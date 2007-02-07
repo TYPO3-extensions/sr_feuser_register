@@ -3153,7 +3153,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			
 			if (is_array($itemArray))	{
 				foreach ($itemArray as $k => $row)	{
-					$key = intval($row[1]);
+					$key = $row[1];
 					$rc [$key] = $row;
 				}
 			}
