@@ -1295,14 +1295,12 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 					// Must be logged in OR be authenticated by the aC code in order to edit
 					// If the recUid selects a record.... (no check here)
 					$this->markerArray = $this->addMd5EventsMarkers($this->markerArray, 'edit');
-					if (is_array($origArr)) {
-						if ( !strcmp($this->authCode, $this->theCode) || $this->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($this->theTable, $origArr, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
-							// Display the form, if access granted.
-							$content = $this->displayEditForm($origArr);
-						} else {
-							// Else display error, that you could not edit that particular record...
-							$content = $this->getPlainTemplate('###TEMPLATE_NO_PERMISSIONS###');
-						}
+					if ( !strcmp($this->authCode, $theCode) || $this->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($this->theTable, $origArr, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
+						// Display the form, if access granted.
+						$content = $this->displayEditForm($origArr);
+					} else {
+						// Else display error, that you could not edit that particular record...
+						$content = $this->getPlainTemplate('###TEMPLATE_NO_PERMISSIONS###');
 					}
 				} else {
 					// This is if there is no login user. This must tell that you must login. Perhaps link to a page with create-user or login information.
