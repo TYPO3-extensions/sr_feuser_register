@@ -35,16 +35,25 @@ if (!defined ('FH_LIBRARY_EXTkey')) {
 	define('FH_LIBRARY_EXTkey','fh_library');
 }
 
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['useFlexforms'] = $_EXTCONF['useFlexforms'];
-if (!t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
-	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['useFlexforms'] = 0;
+if (!defined ('STATIC_INFO_TABLES_EXTkey')) {
+	define('STATIC_INFO_TABLES_EXTkey','static_info_tables');
 }
 
 if (t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['useFlexforms'] = $_EXTCONF['useFlexforms'];
 	if (!defined ('PATH_BE_fh_library')) {
 		define('PATH_BE_fh_library', t3lib_extMgm::extPath(FH_LIBRARY_EXTkey));
 	}
+} else {
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['useFlexforms'] = 0;
 }
+
+if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey)) {
+	if (!defined ('PATH_BE_static_info_tables')) {
+		define('PATH_BE_static_info_tables', t3lib_extMgm::extPath(STATIC_INFO_TABLES_EXTkey));
+	}
+}
+
 
 if (t3lib_extMgm::isLoaded('tt_products')) {
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tt_products']['extendingTCA'][] = SR_FEUSER_REGISTER_EXTkey;

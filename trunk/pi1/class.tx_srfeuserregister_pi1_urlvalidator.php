@@ -23,7 +23,7 @@
 	***************************************************************/
 	 
 /**
- * This class contains a function to validate url's devloped by:
+ * This class contains a function to validate url's developed by:
  *
  * $Id$
  * 
