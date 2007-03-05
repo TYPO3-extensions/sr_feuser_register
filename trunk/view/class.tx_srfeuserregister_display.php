@@ -50,38 +50,28 @@ class tx_srfeuserregister_display {
 	var $data;
 	var $marker;
 	var $tca;
+	var $control;
 	var $auth;
-
-	var $previewLabel;
-	var $cmdKey;
+	
+	var $extKey;  // The extension key.
 	var $setfixedEnabled;
-	var $thePid;
-	var $loginPID;
-	var $templateCode;
-	var $site_url;
 	var $prefixId;
-	var $useMd5Password;
 	var $cObj;
 
 
-	function init(&$pibase, &$conf, &$config, &$data, &$marker, &$tca, &$auth)	{
+	function init(&$pibase, &$conf, &$config, &$data, &$marker, &$tca, &$control, &$auth)	{
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
 		$this->config = &$config;
 		$this->data = &$data;
 		$this->marker = &$marker;
 		$this->tca = &$tca;
+		$this->control = &$control;
 		$this->auth = &$auth;
 
-		$this->previewLabel = $this->pibase->previewLabel;
-		$this->cmdKey = $pibase->cmdKey;
+		$this->extKey = $pibase->extKey;
 		$this->setfixedEnabled = $pibase->setfixedEnabled;
-		$this->thePid = $pibase->thePid;
-		$this->loginPID = $pibase->loginPID;
-		$this->templateCode = &$pibase->templateCode;
-		$this->site_url = $pibase->site_url;
 		$this->prefixId = $pibase->prefixId;
-		$this->useMd5Password = $pibase->useMd5Password;
 		$this->cObj = &$pibase->cObj;
 	}
 
@@ -92,9 +82,9 @@ class tx_srfeuserregister_display {
 	* @param array  $origArr: the array coming from the database
 	* @return string  the template with substituted markers
 	*/
-	function editForm($origArr) {
+	function editForm($origArr,$cmd,$cmdKey) {
 		global $TSFE;
-		
+
 		$currentArr = is_array($this->data->dataArr) ? $this->data->dataArr+$origArr: $origArr;
 		if(is_array($this->data->dataArr)) {
 			foreach ($currentArr AS $key => $value) {
@@ -106,34 +96,35 @@ class tx_srfeuserregister_display {
 				}
 			}
 		}
-		$templateCode = $this->cObj->getSubpart($this->templateCode, '###TEMPLATE_EDIT'.$this->previewLabel.'###');
-		if (!$this->conf['linkToPID'] || !$this->conf['linkToPIDAddButton'] || !($this->previewLabel || !$this->conf['edit.']['preview'])) {
+		$templateCode = $this->cObj->getSubpart($this->data->templateCode, '###TEMPLATE_EDIT'.$this->marker->getPreviewLabel.'###');
+		if (!$this->conf['linkToPID'] || !$this->conf['linkToPIDAddButton'] || !($this->control->getMode() == MODE_PREVIEW || !$this->conf['edit.']['preview'])) {
 			$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_LINKTOPID_ADD_BUTTON###', '');
 		}
 		
-		$failure = t3lib_div::_GP('noWarnings') ? '': $this->failure;
+		$failure = t3lib_div::_GP('noWarnings') ? '': $this->data->getFailure();
 		if (!$failure) {
 			$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
 		}
+		$markerArray = $this->marker->getArray();
 		$templateCode = $this->removeRequired($templateCode, $failure);
-		$markerArray = $this->cObj->fillInMarkerArray($this->marker->getArray(), $currentArr, '',TRUE, 'FIELD_', TRUE);
-		$markerArray = $this->marker->addStaticInfoMarkers($markerArray, $currentArr);
-		$markerArray = $this->tca->addTcaMarkers($markerArray, $currentArr, true);
-		$markerArray = $this->tca->addTcaMarkers($markerArray, $currentArr);
-		$markerArray = $this->marker->addLabelMarkers($markerArray, $currentArr);
-		$markerArray = $this->marker->addFileUploadMarkers('image', $markerArray, $currentArr);
+		$markerArray = $this->cObj->fillInMarkerArray($markerArray, $currentArr, '',TRUE, 'FIELD_', TRUE);
+		$this->marker->addStaticInfoMarkers($markerArray, $currentArr);
+		$this->tca->addTcaMarkers($markerArray, $currentArr, true);
+		$this->tca->addTcaMarkers($markerArray, $currentArr);
+		$this->marker->addLabelMarkers($markerArray, $currentArr);
+		$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $currentArr);
 		$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
 		$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->data->theTable.'][uid]" value="'.$currentArr['uid'].'" />';
 		if ($this->data->theTable != 'fe_users') {
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[aC]" value="'.$this->auth->authCode($origArr).'" />';
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[cmd]" value="edit" />';
-		} elseif ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'] && $this->conf['templateStyle'] != 'css-styled') {
+		} elseif ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $this->conf['templateStyle'] != 'css-styled') {
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->data->theTable.'][username]" value="'.$currentArr['username'].'" />';
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$this->data->theTable.'][email]" value="'.$currentArr['email'].'" />';
 		}
-		$markerArray = $this->marker->addHiddenFieldsMarkers($markerArray, $currentArr);
+		$this->marker->addHiddenFieldsMarkers($markerArray, $currentArr);
 		$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
-		if ($this->conf['templateStyle'] != 'css-styled' || !$this->previewLabel) {
+		if ($this->conf['templateStyle'] != 'css-styled' || !$this->control->getMode() == MODE_PREVIEW) {
 			if ($this->conf['templateStyle'] == 'css-styled') {
 				$form = $this->pibase->pi_getClassName($this->data->theTable.'_form');
 			} else {
@@ -157,8 +148,8 @@ class tx_srfeuserregister_display {
 	function createScreen($cmd = 'create') {
 		global $TSFE;
 		
+		$cmdKey = $this->control->getCmdKey();
 		if ($this->conf['create']) {
-			
 				// <Pieter Verstraelen added registrationProcess hooks>
 				// Call all beforeConfirmCreate hooks before the record has been shown and confirmed
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'])) {
@@ -170,24 +161,26 @@ class tx_srfeuserregister_display {
 				}
 			}
 				// </Pieter Verstraelen added registrationProcess hooks>
-			
-			$key = ($cmd == 'invite') ? 'INVITE': 'CREATE';
-			$this->marker->setArray($this->marker->addMd5EventsMarkers($this->marker->getArray(), 'create'));
-			$templateCode = $this->cObj->getSubpart($this->templateCode, ((!($this->data->theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $cmd == 'invite') ? '###TEMPLATE_'.$key.$this->previewLabel.'###':'###TEMPLATE_CREATE_LOGIN###'));
 
-			$failure = t3lib_div::_GP('noWarnings') ? '': $this->failure;
+			$key = ($cmd == 'invite') ? 'INVITE': 'CREATE';
+			$markerArray = $this->marker->getArray();
+			$this->marker->addMd5EventsMarkers($markerArray, 'create');
+			// $this->marker->setArray($markerArray);
+			$templateCode = $this->cObj->getSubpart($this->data->templateCode, ((!($this->data->theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $cmd == 'invite') ? '###TEMPLATE_'.$key.$this->marker->getPreviewLabel().'###':'###TEMPLATE_CREATE_LOGIN###'));
+
+			$failure = t3lib_div::_GP('noWarnings') ? FALSE: $this->data->getFailure();
 			if (!$failure) $templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
-			
+
 			$templateCode = $this->removeRequired($templateCode, $failure);
-			$markerArray = $this->cObj->fillInMarkerArray($this->marker->getArray(), $this->data->dataArr, '',TRUE, 'FIELD_', TRUE);
-			$markerArray = $this->marker->addStaticInfoMarkers($markerArray, $this->data->dataArr);
-			$markerArray = $this->tca->addTcaMarkers($markerArray, $this->data->dataArr);
-			$markerArray = $this->marker->addFileUploadMarkers('image', $markerArray, $this->data->dataArr);
-			$markerArray = $this->marker->addLabelMarkers($markerArray, $this->data->dataArr);
+			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $this->data->dataArr, '',TRUE, 'FIELD_', TRUE);
+			$this->marker->addStaticInfoMarkers($markerArray, $this->data->dataArr);
+			$this->tca->addTcaMarkers($markerArray, $this->data->dataArr);
+			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $this->data->dataArr);
+			$this->marker->addLabelMarkers($markerArray, $this->data->dataArr);
 			$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
-			$markerArray = $this->marker->addHiddenFieldsMarkers($markerArray, $this->data->dataArr);
+			$this->marker->addHiddenFieldsMarkers($markerArray, $this->data->dataArr);
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
-			if ($this->conf['templateStyle'] != 'css-styled' || !$this->previewLabel) {
+			if ($this->conf['templateStyle'] != 'css-styled' || !$this->control->getMode() == MODE_PREVIEW) {
 				if ($this->conf['templateStyle'] == 'css-styled') {
 					$form = $this->pibase->pi_getClassName($this->data->theTable.'_form');
 				} else {
@@ -209,7 +202,7 @@ class tx_srfeuserregister_display {
 	*
 	* @return string  the template with substituted markers
 	*/
-	function editScreen() {
+	function editScreen($cmd, $cmdKey) {
 		global $TSFE;
 		
 		if ($this->conf['edit']) {
@@ -232,10 +225,12 @@ class tx_srfeuserregister_display {
 			if (is_array($origArr) && ( ($this->data->theTable == 'fe_users' && $TSFE->loginUser) || $this->auth->aCAuth($origArr) || !strcmp($this->auth->authCode, $theCode) ) ) {
 				// Must be logged in OR be authenticated by the aC code in order to edit
 				// If the recUid selects a record.... (no check here)
-				$this->marker->setArray($this->marker->addMd5EventsMarkers($this->marker->getArray(), 'edit'));
+				$markerArray = '';
+				$this->marker->addMd5EventsMarkers($markerArray, 'edit');
+				$this->marker->setArray($markerArray);
 				if ( !strcmp($this->auth->authCode, $theCode) || $this->auth->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($this->data->theTable, $origArr, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 					// Display the form, if access granted.
-					$content = $this->editForm($origArr);
+					$content = $this->editForm($origArr, $cmd, $cmdKey);
 				} else {
 					// Else display error, that you could not edit that particular record...
 					$content = $this->getPlainTemplate('###TEMPLATE_NO_PERMISSIONS###');
@@ -306,13 +301,17 @@ class tx_srfeuserregister_display {
 	* @return string  the template with substituted parts and markers
 	*/
 	function getPlainTemplate($key, $r = '') {
-		$templateCode = $this->cObj->getSubpart($this->templateCode, $key);
-		$markerArray = is_array($r) ? $this->cObj->fillInMarkerArray($this->marker->getArray(), $r, '',TRUE, 'FIELD_', TRUE) : $this->marker->getArray();
-		$markerArray = $this->marker->addStaticInfoMarkers($markerArray, $r);
-		$markerArray = $this->tca->addTcaMarkers($markerArray, $r, true);
-		$markerArray = $this->marker->addLabelMarkers($markerArray, $r);
+		$templateCode = $this->cObj->getSubpart($this->data->templateCode, $key);
+		$markerArray = $this->marker->getArray();
+		if (is_array($r))	{
+			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $r, '',TRUE, 'FIELD_', TRUE);
+		}
+		$this->marker->addStaticInfoMarkers($markerArray, $r);
+		$this->tca->addTcaMarkers($markerArray, $r, true);
+		$this->marker->addLabelMarkers($markerArray, $r);
 		$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
-		return $this->cObj->substituteMarkerArray($templateCode, $markerArray);
+		$rc = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
+		return $rc;
 	}	// getPlainTemplate
 
 
@@ -330,7 +329,8 @@ class tx_srfeuserregister_display {
 		* @return string  the template with susbstituted parts
 		*/
 	function removeRequired($templateCode, $failure = '') {
-		$includedFields = t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1);
+		$cmdKey = $this->control->getCmdKey();
+		$includedFields = t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1);
 		if ($this->data->feUserData['preview'] && !in_array('username', $includedFields)) {
 			$includedFields[] = 'username';
 		}
@@ -379,11 +379,10 @@ class tx_srfeuserregister_display {
 		return $templateCode;
 	}	// removeRequired
 
-	
 	function removeHTMLComments($content) {
 		return preg_replace('/<!(?:--[\s\S]*?--\s*)?>[\t\v\n\r\f]*/','',$content);
 	}
-	
+
 	function replaceHTMLBr($content) {
 		$rc = preg_replace('/<br\s?\/>/',chr(10),$content);
 		return $rc;
