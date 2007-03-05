@@ -48,11 +48,11 @@ class tx_srfeuserregister_email {
 	var $pibase;
 	var $conf = array();
 	var $config = array();
-	var $thePid;
 	var $display;
 	var $data;
 	var $marker;
 	var $tca;
+	var $control;
 	var $auth;
 	var $infomailPrefix;
 	var $setfixedEnabled;
@@ -60,11 +60,9 @@ class tx_srfeuserregister_email {
 	var $emailMarkPrefix;
 	var $emailMarkHTMLSuffix;
 	var $HTMLMailEnabled = true;
-	var $templateCode;
 	var $cObj;
-	var $cmd;
 
-	function init(&$pibase, &$conf, &$config, &$display, &$data, &$marker, &$tca, &$auth)	{
+	function init(&$pibase, &$conf, &$config, &$display, &$data, &$marker, &$tca, &$control, &$auth)	{
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
 		$this->config = &$config;
@@ -72,10 +70,10 @@ class tx_srfeuserregister_email {
 		$this->data = &$data;
 		$this->marker = &$marker;
 		$this->tca = &$tca;
+		$this->control = &$control;
 		$this->auth = &$auth;
 
 		$this->feUserData = &$pibase->feUserData;
-		$this->thePid = $pibase->thePid;
 		$this->infomailPrefix = $pibase->infomailPrefix;
 		$this->setfixedEnabled = $pibase->setfixedEnabled;
 		$this->emailMarkAdminSuffix = $pibase->emailMarkAdminSuffix;
@@ -87,12 +85,12 @@ class tx_srfeuserregister_email {
 
 			// Setting CSS style markers if required
 		if ($this->HTMLMailEnabled) {
-			$this->marker->setArray($this->marker->addCSSStyleMarkers($this->marker->getArray()));
+			$markerArray = $this->marker->getArray();
+			$this->marker->addCSSStyleMarkers($markerArray);
+			$this->marker->setArray($markerArray);
 		}
 
-		$this->templateCode = &$pibase->templateCode;
 		$this->cObj = &$pibase->cObj;
-		$this->cmd = $pibase->cmd;
 	}
 
 	/**
@@ -102,11 +100,11 @@ class tx_srfeuserregister_email {
 		* @return	string		HTML content message
 		* @see init(),compile(), send()
 		*/
-	function sendInfo(&$markContentArray)	{
+	function sendInfo(&$markContentArray,$cmd, $cmdKey, &$templateCode)	{
 		if ($this->conf['infomail'] && $this->conf['email.']['field'])	{
 			$fetch = $this->data->feUserData['fetch'];
 			if (isset($fetch) && !empty($fetch))	{
-				$pidLock='AND pid IN ('.$this->thePid.')';
+				$pidLock = 'AND pid IN ('.$this->control->thePid.')';
 					// Getting records
 				if ( $this->data->theTable == 'fe_users' && t3lib_div::testInt($fetch) )	{
 					$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->data->theTable,'uid',$fetch,$pidLock,'','','1');
@@ -117,10 +115,10 @@ class tx_srfeuserregister_email {
 				if (is_array($DBrows))	{
 					$recipient = $DBrows[0][$this->conf['email.']['field']];
 					$this->data->dataArr = $DBrows[0];
-					$this->compile('INFOMAIL', $DBrows, trim($recipient), $markContentArray, $this->conf['setfixed.']);
+					$this->compile('INFOMAIL', $DBrows, trim($recipient), $markContentArray, $cmd, $cmdKey, $templateCode, $this->conf['setfixed.']);
 				} elseif ($this->cObj->checkEmail($fetch)) {
 					$fetchArray = array( '0' => array( 'email' => $fetch));
-					$this->compile('INFOMAIL_NORECORD', $fetchArray, $fetch, $markContentArray, array());
+					$this->compile('INFOMAIL_NORECORD', $fetchArray, $fetch, $markContentArray, $cmd, $cmdKey, $templateCode, array());
 				}
 				$content = $this->display->getPlainTemplate('###TEMPLATE_'.$this->infomailPrefix.'SENT###', (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:'')));
 			} else {
@@ -143,7 +141,7 @@ class tx_srfeuserregister_email {
 		* @param array  $setFixedConfig: a setfixed TS config array
 		* @return void
 		*/
-	function compile($key, $DBrows, $recipient, &$markContentArray, $setFixedConfig = array()) {
+	function compile($key, $DBrows, $recipient, &$markContentArray, $cmd, $cmdKey, &$templateCode, $setFixedConfig = array()) {
 		$viewOnly = true;
 		$mailContent = '';
 		$userContent['all'] = '';
@@ -151,15 +149,15 @@ class tx_srfeuserregister_email {
 		$adminContent['all'] = '';
 		if ($this->conf['email.'][$key] || ($this->setfixedEnabled && ($key == 'SETFIXED_CREATE' || $key == 'SETFIXED_CREATE_REVIEW' || $key == 'SETFIXED_INVITE' || $key == 'SETFIXED_REVIEW' || $key == 'INFOMAIL'  || $key == 'INFOMAIL_NORECORD'))) {
 			$subpartMarker = $this->emailMarkPrefix.$key;
-			$userContent['all'] = trim($this->cObj->getSubpart($this->templateCode, '###'.$subpartMarker.'###'));
+			$userContent['all'] = trim($this->cObj->getSubpart($templateCode, '###'.$subpartMarker.'###'));
 			$userContent['all'] = $this->display->removeRequired($userContent['all']);
 			$subpartMarker = $this->emailMarkPrefix.$key.$this->emailMarkHTMLSuffix;
-			$HTMLContent['all'] = ($this->HTMLMailEnabled && $this->data->dataArr['module_sys_dmail_html']) ? trim($this->cObj->getSubpart($this->templateCode, '###'.$subpartMarker.'###')):'';
+			$HTMLContent['all'] = ($this->HTMLMailEnabled && $this->data->dataArr['module_sys_dmail_html']) ? trim($this->cObj->getSubpart($templateCode, '###'.$subpartMarker.'###')):'';
 			$HTMLContent['all'] = $this->display->removeRequired($HTMLContent['all']);
 		}
 		if ($this->conf['notify.'][$key] ) {
 			$subpartMarker = '###'.$this->emailMarkPrefix.$key.$this->emailMarkAdminSuffix.'###';
-			$adminContent['all'] = trim($this->cObj->getSubpart($this->templateCode, $subpartMarker));
+			$adminContent['all'] = trim($this->cObj->getSubpart($templateCode, $subpartMarker));
 			$adminContent['all'] = $this->display->removeRequired($adminContent['all']);
 		}
 		$userContent['rec'] = $this->cObj->getSubpart($userContent['all'], '###SUB_RECORD###');
@@ -168,13 +166,14 @@ class tx_srfeuserregister_email {
 			
 		reset($DBrows);
 		while (list(, $r) = each($DBrows)) {
-			$markerArray = $this->cObj->fillInMarkerArray($this->marker->getArray(), $r, '', 0);
+			$markerArray = $this->marker->getArray();
+			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $r, '', 0);
 			$markerArray['###SYS_AUTHCODE###'] = $this->auth->authCode($r);
-			$markerArray = $this->marker->setfixed($markerArray, $setFixedConfig, $r);
-			$markerArray = $this->marker->addStaticInfoMarkers($markerArray, $r, $viewOnly);
-			$markerArray = $this->tca->addTcaMarkers($markerArray, $r, $viewOnly, 'email');
-			$markerArray = $this->marker->addFileUploadMarkers('image', $markerArray, $r, $viewOnly);
-			$markerArray = $this->marker->addLabelMarkers($markerArray, $r);
+			$this->marker->setfixed($markerArray, $setFixedConfig, $r);
+			$this->marker->addStaticInfoMarkers($markerArray, $r, $viewOnly);
+			$this->tca->addTcaMarkers($markerArray, $r, $viewOnly, 'email');
+			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $r, $viewOnly);
+			$this->marker->addLabelMarkers($markerArray, $r);
 			if ($userContent['rec']) {
 				$userContent['rec'] = $this->marker->removeStaticInfoSubparts($userContent['rec'], $markerArray, $viewOnly);
 				$userContent['accum'] .= $this->cObj->substituteMarkerArray($userContent['rec'], $markerArray);
@@ -213,7 +212,7 @@ class tx_srfeuserregister_email {
 		}
 		
 			// Check if we need to add an attachment
-		if ($this->conf['addAttachment'] && $this->conf['addAttachment.']['cmd'] == $this->cmd && $this->conf['addAttachment.']['sFK'] == $this->data->feUserData['sFK']) {
+		if ($this->conf['addAttachment'] && $this->conf['addAttachment.']['cmd'] == $this->control->getCmd() && $this->conf['addAttachment.']['sFK'] == $this->data->feUserData['sFK']) {
 			$file = ($this->conf['addAttachment.']['file']) ? $GLOBALS['TSFE']->tmpl->getFileName($this->conf['addAttachment.']['file']):
 			'';
 		}

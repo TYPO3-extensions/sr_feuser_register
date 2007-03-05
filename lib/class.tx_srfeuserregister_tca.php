@@ -48,32 +48,26 @@ class tx_srfeuserregister_tca {
 	var $conf = array();
 	var $config = array();
 	var $data;
+	var $control;
 	var $lang;
 
 	var $TCA = array();
 	var $extKey;
-	var $cmdKey;
-	var $cmd;
-	var $previewLabel;
-	var $thePid;
 	var $sys_language_content;
 	var $cObj;
 
 
-	function init(&$pibase, &$conf, &$config, &$data, &$lang)	{
+	function init(&$pibase, &$conf, &$config, &$data, &$control, &$lang)	{
 		global $TSFE, $TCA, $TYPO3_CONF_VARS;
 
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
 		$this->config = &$config;
 		$this->data = &$data;
+		$this->control = &$control;
 		$this->lang = &$lang;
 
 		$this->extKey = $pibase->extKey;
-		$this->cmdKey = $pibase->cmdKey;
-		$this->cmd = $pibase->cmd;
-		$this->previewLabel = $pibase->previewLabel;
-		$this->thePid = $pibase->thePid;
 		$this->sys_language_content = $pibase->sys_language_content;
 		$this->cObj = &$pibase->cObj;
 
@@ -133,16 +127,18 @@ class tx_srfeuserregister_tca {
 	*
 	* @param array  $markerArray: the input marker array
 	* @param array  $dataArray: the record array
-	* @return array  the output marker array
+	* @return void
 	*/
-	function addTcaMarkers($markerArray, $dataArray = '', $viewOnly = false, $activity='') {
+	function addTcaMarkers(&$markerArray, $dataArray = '', $viewOnly = false, $activity='') {
 		global $TYPO3_DB, $TCA, $TSFE;
+		$cmd = $this->control->getCmd();
+		$cmdKey = $this->control->getCmdKey();
 
 		foreach ($this->TCA['columns'] as $colName => $colSettings) {
-			if (t3lib_div::inList($this->conf[$this->cmdKey.'.']['fields'], $colName)) {
+			if (t3lib_div::inList($this->conf[$cmdKey.'.']['fields'], $colName)) {
 				$colConfig = $colSettings['config'];
 				$colContent = '';
-				if ($this->previewLabel || $viewOnly) {
+				if ($this->control->getMode() == MODE_PREVIEW || $viewOnly) {
 					// Configure preview based on input type
 					switch ($colConfig['type']) {
 						//case 'input':
@@ -245,7 +241,7 @@ class tx_srfeuserregister_tca {
 	*/
 						case 'text':
 							$colContent = '<textarea id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$this->data->theTable.']['.$colName.']"'.
-								' title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###"'.
+								' title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###"'.
 								' cols="'.($colConfig['cols']?$colConfig['cols']:30).'"'.
 								' rows="'.($colConfig['rows']?$colConfig['rows']:5).'"'.
 								'>'.($colConfig['default']?$this->lang->getLLFromString($colConfig['default']):'').'</textarea>';
@@ -255,7 +251,7 @@ class tx_srfeuserregister_tca {
 								// <Ries van Twisk added support for multiple checkboxes>
 								$colContent  = '<ul id="'. $this->pibase->pi_getClassName($colName) . '" class="tx-srfeuserregister-multiple-checkboxes">';
 								foreach ($colConfig['items'] AS $key => $value) {
-									if ($this->cmd == 'create' || $this->cmd == 'invite') {
+									if ($cmd == 'create' || $cmd == 'invite') {
 										$checked = ($colConfig['default'] & (1 << $key))?'checked="checked"':'';
 									} else {
 										$checked = ($dataArray[$colName] & (1 << $key))?'checked="checked"':'';
@@ -295,9 +291,9 @@ class tx_srfeuserregister_tca {
 								$colContent .='
 										<input id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$this->data->theTable.']['.$colName.']" value="" type="hidden" />';
 								$colContent .='
-										<dl class="' . $this->pibase->pi_getClassName('multiple-checkboxes') . '" title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
+										<dl class="' . $this->pibase->pi_getClassName('multiple-checkboxes') . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
 							} else {
-								$colContent .= '<select id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$this->data->theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($this->cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
+								$colContent .= '<select id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$this->data->theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
 							}
 							$textSchema = 'fe_users.'.$colName.'.I.';
 							$itemArray = $this->lang->getItemsLL($textSchema, true);
@@ -333,7 +329,7 @@ class tx_srfeuserregister_tca {
 									$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
 									$selectedValue = false;
 								}
-								$whereClause = ($this->data->theTable == 'fe_users' && $colName == 'usergroup') ? ' pid='.intval($this->thePid).' ' : ' 1=1';
+								$whereClause = ($this->data->theTable == 'fe_users' && $colName == 'usergroup') ? ' pid='.intval($this->control->thePid).' ' : ' 1=1';
 								if ($TCA[$colConfig['foreign_table']] && $TCA[$colConfig['foreign_table']]['ctrl']['languageField'] && $TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField']) {
 									$whereClause .= ' AND '.$TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField'].'=0';
 								}
@@ -388,13 +384,12 @@ class tx_srfeuserregister_tca {
 							$colContent .= $colConfig['type'].':'.$this->lang->pi_getLL('unsupported');
 					}
 				}
-				if ($this->previewLabel || $viewOnly) {
+				if ($this->control->getMode() == MODE_PREVIEW || $viewOnly) {
 					$markerArray['###TCA_INPUT_VALUE_'.$colName.'###'] = $colContent;
 				}
 				$markerArray['###TCA_INPUT_'.$colName.'###'] = $colContent;
 			}
 		}
-		return $markerArray;
 	}
 	// <Ries van Twisk added support for multiple checkboxes>
 

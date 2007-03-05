@@ -41,7 +41,6 @@
  *
  */
 
-require_once(PATH_BE_srfeuserregister.'pi1/class.tx_srfeuserregister_pi1_adodb_time.php');
 
 
 class tx_srfeuserregister_data {
@@ -62,7 +61,9 @@ class tx_srfeuserregister_data {
 	var $failureMsg = array();
 	var $saved = false; // is set if data is saved
 	var $theTable = 'fe_users';
-	var $thePid;
+	var $failure = 0; // is set if data did not have the required fields set.
+
+	var $extKey;
 	var $error;
 	var $sys_language_content;
 	var $fileFunc;
@@ -71,14 +72,10 @@ class tx_srfeuserregister_data {
 	var $fieldList; // List of fields from fe_admin_fieldList
 	var $requiredArr; // List of required fields
 	var $recUid;
-	var $useMd5Password;
-
-	var $adodbTime;
-
 	var $missing = array(); // array of required missing fields
 
 
-	function init(&$pibase, &$conf, &$config, &$lang, &$tca, &$auth, &$freeCap)	{
+	function init(&$pibase, &$conf, &$config, &$lang, &$tca, &$auth, &$control, &$freeCap)	{
 		global $TSFE, $TCA;
 
 		$this->pibase = &$pibase;
@@ -87,18 +84,59 @@ class tx_srfeuserregister_data {
 		$this->lang = &$lang;
 		$this->tca = &$tca;
 		$this->auth = &$auth;
+		$this->control = &$control;
 		$this->freeCap = &$freeCap;
-
-		$this->cmdKey = $pibase->cmdKey;
 		$this->cObj = &$pibase->cObj;
-		$this->cmd = $pibase->cmd;
 
-		$this->thePid = $pibase->thePid;
-		$this->error = $pibase->error;
+		$this->extKey = $extKey;
 		$this->sys_language_content = $pibase->sys_language_content;
 		$this->fileFunc = $pibase->fileFunc;
 		$this->prefixId = $pibase->prefixId;
-		$this->useMd5Password = $pibase->useMd5Password;
+
+			// Get parameters
+		$this->feUserData = t3lib_div::_GP($this->prefixId);
+debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
+		$fe = t3lib_div::_GP('FE');
+		debug ($fe, '$fe', __LINE__, __FILE__);
+		$cmdKey = $this->control->getCmdKey();
+
+		// <Steve Webster added short url feature>
+			// Get hash variable if provided and if short url feature is enabled
+		if ($this->conf['useShortUrls']) {
+			$this->cleanShortUrlCache();
+				// Check and process for short URL if the regHash GET parameter exists
+			if (isset($this->feUserData['regHash'])) {
+				$getVars = $this->getStoredURL($this->feUserData['regHash']);
+				foreach ($getVars as $k => $v ) {
+					t3lib_div::_GETset($v,$k);
+				}
+				$this->feUserData = t3lib_div::_GP($this->prefixId);
+				debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
+			}
+		}
+		// </Steve Webster added short url feature>
+
+			// Establishing compatibility with Direct Mail extension
+		$piVarArray = array('rU', 'aC', 'cmd', 'sFK');
+		foreach ($piVarArray as $k => $pivar)	{
+			if (t3lib_div::_GP($pivar))	{
+				$this->feUserData[$pivar] = t3lib_div::_GP($pivar);
+			}
+			debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
+		}
+		debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
+
+		$this->dataArr = $fe[$this->theTable];
+		debug ($this->dataArr, '$this->dataArr', __LINE__, __FILE__);
+		if (is_array($this->dataArr['module_sys_dmail_category']))	{	// no array elements are allowed for $this->cObj->fillInMarkerArray
+			$this->dataArr['module_sys_dmail_category'] = implode(',',$this->dataArr['module_sys_dmail_category']);
+		}
+
+			// Setting cmd and various switches
+		if ($this->theTable == 'fe_users' && $this->feUserData['cmd'] == 'login' ) {
+			unset($this->feUserData['cmd']);
+			debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
+		}
 
 			// Setting the list of fields allowed for editing and creation.
 		$this->fieldList = implode(',', t3lib_div::trimExplode(',', $TCA[$this->theTable]['feInterface']['fe_admin_fieldList'], 1));
@@ -107,22 +145,27 @@ class tx_srfeuserregister_data {
 			$this->adminFieldList .= ',' . trim($this->conf['addAdminFieldList']);
 		}
 
-			// prepare for handling dates before 1970
-		$this->adodbTime = t3lib_div::makeInstance('tx_srfeuserregister_pi1_adodb_time');
-
 			// Setting requiredArr to the fields in "required" fields list intersected with the total field list in order to remove invalid fields.
 		$this->requiredArr = array_intersect(
 			t3lib_div::trimExplode(',', 
-			$this->conf[$this->cmdKey.'.']['required'], 1),	
-			t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)
+			$this->conf[$cmdKey.'.']['required'], 1),
+			t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)
 		);
 
 		$this->recUid = intval($this->feUserData['rU']);
 
 			// Setting the record uid if a frontend user is logged in and we are not trying to send an invitation
-		if ($this->theTable == 'fe_users' && $TSFE->loginUser && $this->cmd != 'invite') {
+		if ($this->theTable == 'fe_users' && $TSFE->loginUser && $this->control->getCmd() != 'invite') {
 			$this->recUid = $TSFE->fe_user->user['uid'];
 		}
+
+			// Fetching the template file
+		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
+		debug ($this->dataArr, '$this->dataArr', __LINE__, __FILE__);
+	}
+
+	function getFailure()	{
+		return $this->failure;
 	}
 
 	/**
@@ -131,13 +174,14 @@ class tx_srfeuserregister_data {
 	* @return void  all overriding done directly on array $this->dataArr
 	*/
 	function overrideValues() {
+		$cmdKey = $this->control->getCmdKey();
 		// Addition of overriding values
-		if (is_array($this->conf[$this->cmdKey.'.']['overrideValues.'])) {
-			foreach ($this->conf[$this->cmdKey.'.']['overrideValues.'] as $theField => $theValue) {
-				if ($theField == 'usergroup' && $this->theTable == 'fe_users' && $this->conf[$this->cmdKey.'.']['allowUserGroupSelection']) {
+		if (is_array($this->conf[$cmdKey.'.']['overrideValues.'])) {
+			foreach ($this->conf[$cmdKey.'.']['overrideValues.'] as $theField => $theValue) {
+				if ($theField == 'usergroup' && $this->theTable == 'fe_users' && $this->conf[$cmdKey.'.']['allowUserGroupSelection']) {
 					$this->dataArr[$theField] = implode(',', array_merge(array_diff(t3lib_div::trimExplode(',', $this->dataArr[$theField], 1), t3lib_div::trimExplode(',', $theValue, 1)), t3lib_div::trimExplode(',', $theValue, 1)));
 				} else {
-					$stdWrap = $this->conf[$this->cmdKey.'.']['overrideValues.'][$theField.'.'];
+					$stdWrap = $this->conf[$cmdKey.'.']['overrideValues.'][$theField.'.'];
 					if ($stdWrap)	{
 						$this->dataArr[$theField] = $this->cObj->stdWrap($theValue, $stdWrap);
 					} else {
@@ -146,7 +190,7 @@ class tx_srfeuserregister_data {
 				}
 			}
 		}
-		if ($this->cmdKey == 'edit') {
+		if ($cmdKey == 'edit') {
 		}
 	}	// overrideValues
 
@@ -158,18 +202,21 @@ class tx_srfeuserregister_data {
 	* @return void  all initialization done directly on array $this->dataArr
 	*/
 	function defaultValues(&$markContentArray) {
+		$cmdKey = $this->control->getCmdKey();
+
 		// Addition of default values
-		if (is_array($this->conf[$this->cmdKey.'.']['defaultValues.'])) {
-			reset($this->conf[$this->cmdKey.'.']['defaultValues.']);
-			while (list($theField, $theValue) = each($this->conf[$this->cmdKey.'.']['defaultValues.'])) {
+		if (is_array($this->conf[$cmdKey.'.']['defaultValues.'])) {
+			reset($this->conf[$cmdKey.'.']['defaultValues.']);
+			while (list($theField, $theValue) = each($this->conf[$cmdKey.'.']['defaultValues.'])) {
 				$this->dataArr[$theField] = $theValue;
 			}
 		}
-		if (is_array($this->conf[$this->cmdKey.'.']['evalValues.'])) {
-			reset($this->conf[$this->cmdKey.'.']['evalValues.']);
-			while (list($theField, $theValue) = each($this->conf[$this->cmdKey.'.']['evalValues.'])) {
+		if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
+			reset($this->conf[$cmdKey.'.']['evalValues.']);
+			while (list($theField, $theValue) = each($this->conf[$cmdKey.'.']['evalValues.'])) {
 				$markContentArray['###EVAL_ERROR_FIELD_'.$theField.'###'] = '<!--no error-->';
 			}
+			debug ($markContentArray, '$markContentArray', __LINE__, __FILE__);
 		}
 	}	// defaultValues
 
@@ -181,6 +228,10 @@ class tx_srfeuserregister_data {
 	* @return void  on return, $this->failure is the list of fields which were not ok
 	*/
 	function evalValues(&$markContentArray) {
+		$cmdKey = $this->control->getCmdKey();
+		debug ($cmdKey, 'evalValues: $cmdKey', __LINE__, __FILE__);
+
+		debug ($markContentArray, 'evalValues: $markContentArray', __LINE__, __FILE__);
 		// Check required, set failure if not ok.
 		reset($this->requiredArr);
 		$tempArr = array();
@@ -190,10 +241,14 @@ class tx_srfeuserregister_data {
 				$this->missing[$theField] = true;
 			}
 		}
+		debug ($this->missing, '$this->missing', __LINE__, __FILE__);
+
 		// Evaluate: This evaluates for more advanced things than "required" does. But it returns the same error code, so you must let the required-message tell, if further evaluation has failed!
 		$recExist = 0;
-		if (is_array($this->conf[$this->cmdKey.'.']['evalValues.'])) {
-			switch($this->cmd) {
+		if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
+			$cmd = $this->control->getCmd();
+			debug ($cmd, '$cmd', __LINE__, __FILE__);
+			switch($cmd) {
 				case 'edit':
 					if (isset($this->dataArr['pid'])) {
 							// This may be tricked if the input has the pid-field set but the edit-field list does NOT allow the pid to be edited. Then the pid may be false.
@@ -202,29 +257,30 @@ class tx_srfeuserregister_data {
 						$tempRecArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $this->dataArr[uid]);
 						$recordTestPid = intval($tempRecArr['pid']);
 					}
-					$recExist = 1;
+					$recExist = ($recordTestPid != 0);
 					break;
 				default:
-					$recordTestPid = $this->thePid ? $this->thePid :
+					$recordTestPid = $this->control->thePid ? $this->control->thePid :
 					t3lib_div::intval_positive($this->dataArr['pid']);
 					break;
 			}
-			if ($this->conf[$this->cmdKey.'.']['generatePassword'] && $this->cmdKey != 'edit') {
-				unset($this->conf[$this->cmdKey.'.']['evalValues.']['password']);
+			if ($this->conf[$cmdKey.'.']['generatePassword'] && $cmdKey != 'edit') {
+				unset($this->conf[$cmdKey.'.']['evalValues.']['password']);
 			}
-			if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'] || ($this->conf[$this->cmdKey.'.']['generateUsername'] && $this->cmdKey != 'edit')) {
-				unset($this->conf[$this->cmdKey.'.']['evalValues.']['username']);
+			if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] || ($this->conf[$cmdKey.'.']['generateUsername'] && $cmdKey != 'edit')) {
+				unset($this->conf[$cmdKey.'.']['evalValues.']['username']);
 			}
-			if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'] && $this->cmdKey == 'edit' && $this->conf['setfixed']) {
-				unset($this->conf[$this->cmdKey.'.']['evalValues.']['email']);
+			if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $cmdKey == 'edit' && $this->conf['setfixed']) {
+				unset($this->conf[$cmdKey.'.']['evalValues.']['email']);
 			}
 
-			reset($this->conf[$this->cmdKey.'.']['evalValues.']);
-			while (list($theField, $theValue) = each($this->conf[$this->cmdKey.'.']['evalValues.'])) {
+			reset($this->conf[$cmdKey.'.']['evalValues.']);
+			while (list($theField, $theValue) = each($this->conf[$cmdKey.'.']['evalValues.'])) {
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
 				while (list(, $cmd) = each($listOfCommands)) {
 					$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 					$theCmd = trim($cmdParts[0]);
+					debug ($theCmd, '$theCmd', __LINE__, __FILE__);
 					switch($theCmd) {
 						case 'uniqueGlobal':
 						$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->theTable, $theField, $this->dataArr[$theField], '', '', '', '1');
@@ -233,18 +289,19 @@ class tx_srfeuserregister_data {
 								// Only issue an error if the record is not existing (if new...) and if the record with the false value selected was not our self.
 								$tempArr[] = $theField;
 								$this->inError[$theField] = true;
-								$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'The value existed already. Enter a new value.');
+								$this->failureMsg[$theField][] = $this->getFailureMsg($theField, $theCmd, 'The value existed already. Enter a new value.');
 							}
 						}
 						break;
 						case 'uniqueLocal':
 						$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->theTable, $theField, $this->dataArr[$theField], 'AND pid IN ('.$recordTestPid.')', '', '', '1');
+						debug ($DBrows, '$DBrows', __LINE__, __FILE__);
 						if (trim($this->dataArr[$theField]) && $DBrows) {
 							if (!$recExist || $DBrows[0]['uid'] != $this->dataArr['uid']) {
 								// Only issue an error if the record is not existing (if new...) and if the record with the false value selected was not our self.
 								$tempArr[] = $theField;
 								$this->inError[$theField] = true;
-								$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'The value existed already. Enter a new value.');
+								$this->failureMsg[$theField][] = $this->getFailureMsg($theField, $theCmd, 'The value existed already. Enter a new value.');
 							}
 						}
 						break;
@@ -252,21 +309,21 @@ class tx_srfeuserregister_data {
 						if (strcmp($this->dataArr[$theField], $this->dataArr[$theField.'_again'])) {
 							$tempArr[] = $theField;
 							$this->inError[$theField] = true;
-							$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'You must enter the same value twice.');
+							$this->failureMsg[$theField][] = $this->getFailureMsg($theField, $theCmd, 'You must enter the same value twice.');
 						}
 						break;
 						case 'email':
 						if (trim($this->dataArr[$theField]) && !$this->cObj->checkEmail($this->dataArr[$theField])) {
 							$tempArr[] = $theField;
 							$this->inError[$theField] = true;
-							$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'You must enter a valid email address.');
+							$this->failureMsg[$theField][] = $this->getFailureMsg($theField, $theCmd, 'You must enter a valid email address.');
 						}
 						break;
 						case 'required':
 						if (!trim($this->dataArr[$theField])) {
 							$tempArr[] = $theField;
 							$this->inError[$theField] = true;
-							$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'You must enter a value!');
+							$this->failureMsg[$theField][] = $this->getFailureMsg($theField, $theCmd, 'You must enter a value!');
 						}
 						break;
 						case 'atLeast':
@@ -274,7 +331,7 @@ class tx_srfeuserregister_data {
 						if (strlen($this->dataArr[$theField]) < $chars) {
 							$tempArr[] = $theField;
 							$this->inError[$theField] = true;
-							$this->failureMsg[$theField][] = sprintf($this->getFailure($theField, $theCmd, 'You must enter at least %s characters!'), $chars);
+							$this->failureMsg[$theField][] = sprintf($this->getFailureMsg($theField, $theCmd, 'You must enter at least %s characters!'), $chars);
 						}
 						break;
 						case 'atMost':
@@ -282,7 +339,7 @@ class tx_srfeuserregister_data {
 						if (strlen($this->dataArr[$theField]) > $chars) {
 							$tempArr[] = $theField;
 							$this->inError[$theField] = true;
-							$this->failureMsg[$theField][] = sprintf($this->getFailure($theField, $theCmd, 'You must enter at most %s characters!'), $chars);
+							$this->failureMsg[$theField][] = sprintf($this->getFailureMsg($theField, $theCmd, 'You must enter at most %s characters!'), $chars);
 						}
 						break;
 						case 'inBranch':
@@ -296,7 +353,7 @@ class tx_srfeuserregister_data {
 							if (!$pid_list || !t3lib_div::inList($pid_list, $this->dataArr[$theField])) {
 								$tempArr[] = $theField;
 								$this->inError[$theField] = true;
-								$this->failureMsg[$theField][] = sprintf($this->getFailure($theField, $theCmd, 'The value was not a valid value from this list: %s'), $pid_list);
+								$this->failureMsg[$theField][] = sprintf($this->getFailureMsg($theField, $theCmd, 'The value was not a valid value from this list: %s'), $pid_list);
 							}
 						}
 						break;
@@ -326,14 +383,14 @@ class tx_srfeuserregister_data {
 											if (!$maxSize || (filesize(PATH_site.$uploadPath.'/'.$filename) < ($maxSize * 1024))) {
 												$newFileNameList[] = $filename;
 											} else {
-												$this->failureMsg[$theField][] = sprintf($this->getFailure($theField, 'max_size', 'The file is larger than %s KB.'), $maxSize);
+												$this->failureMsg[$theField][] = sprintf($this->getFailureMsg($theField, 'max_size', 'The file is larger than %s KB.'), $maxSize);
 												$tempArr[] = $theField;
 												$this->inError[$theField] = true;
 												if(@is_file(PATH_site.$uploadPath.'/'.$filename)) @unlink(PATH_site.$uploadPath.'/'.$filename);
 											}
 										}
 									} else {
-										$this->failureMsg[$theField][] = sprintf($this->getFailure($theField, 'allowed', 'The file extension %s is not allowed.'), $fI['extension']);
+										$this->failureMsg[$theField][] = sprintf($this->getFailureMsg($theField, 'allowed', 'The file extension %s is not allowed.'), $fI['extension']);
 										$tempArr[] = $theField;
 										$this->inError[$theField] = true;
 										if (@is_file(PATH_site.$uploadPath.'/'.$filename)) { @unlink(PATH_site.$uploadPath.'/'.$filename); }
@@ -356,7 +413,7 @@ class tx_srfeuserregister_data {
 							if ($wwwURLResult['Result'] != 'EW_OK' ) {
 								$tempArr[] = $theField;
 								$this->inError[$theField] = true;
-								$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'Please enter a valid Internet site address.');
+								$this->failureMsg[$theField][] = $this->getFailureMsg($theField, $theCmd, 'Please enter a valid Internet site address.');
 							}
 						}
 						break;
@@ -364,7 +421,7 @@ class tx_srfeuserregister_data {
 						if ($this->dataArr[$theField] && !$this->evalDate($this->dataArr[$theField]) ){
 							$tempArr[] = $theField;
 							$this->inError[$theField] = true;
-							$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'Please enter a valid date.');
+							$this->failureMsg[$theField][] = $this->getFailureMsg($theField, $theCmd, 'Please enter a valid date.');
 						}
 						break;
 						// RALPH BRUGGER added captcha  feature>
@@ -377,7 +434,7 @@ class tx_srfeuserregister_data {
 							if (!$this->freeCap->checkWord( $this->dataArr['captcha_response'])) {
 								$tempArr[] = $theField;
 								$this->inError[$theField] = true;
-								$this->failureMsg[$theField][] = $this->getFailure($theField, $theCmd, 'invalid!');
+								$this->failureMsg[$theField][] = $this->getFailureMsg($theField, $theCmd, 'invalid!');
 							} else {
 								// Restore sr_freecap word_hash
 								$_SESSION[$this->freeCap->extKey.'_word_hash'] = $sr_freecap_word_hash;
@@ -388,8 +445,10 @@ class tx_srfeuserregister_data {
 				}
 				$markContentArray['###EVAL_ERROR_FIELD_'.$theField.'###'] = is_array($this->failureMsg[$theField]) ? implode($this->failureMsg[$theField], '<br />'): '<!--no error-->';
 			}
+			debug ($markContentArray, '$markContentArray', __LINE__, __FILE__);
 		}
 		$this->failure = implode($tempArr, ',');
+		debug ($this->failure, '$this->failure', __LINE__, __FILE__);
 	}	// evalValues
 
 
@@ -574,8 +633,12 @@ class tx_srfeuserregister_data {
 	*/
 	function save() {
 		global $TYPO3_DB, $TSFE;
-		
-		switch($this->cmd) {
+
+		$cmd = $this->control->getCmd();
+		$cmdKey = $this->control->getCmdKey();
+		debug ($cmd, 'save: $cmd', __LINE__, __FILE__);
+		debug ($cmdKey, '$cmdKey', __LINE__, __FILE__);
+		switch($cmd) {
 			case 'edit':
 			$theUid = $this->dataArr['uid'];
 			$origArr = $TSFE->sys_page->getRawRecord($this->theTable, $theUid);
@@ -585,11 +648,11 @@ class tx_srfeuserregister_data {
 				$newFieldList = implode(',', array_intersect(explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->conf['edit.']['fields'], 1)));
 				$newFieldList = implode(',', array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->adminFieldList))));
 					// Do not reset the name if we have no new value
-				if (!in_array('name', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)) && !in_array('first_name', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)) && !in_array('last_name', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1))) {
+				if (!in_array('name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)) && !in_array('first_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)) && !in_array('last_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1))) {
 					$newFieldList  = implode(',', array_diff(explode(',', $newFieldList), array('name')));
 				}
 					// Do not reset the username if we have no new value
-				if (!in_array('username', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)) ) {
+				if (!in_array('username', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)) ) {
 					$newFieldList  = implode(',', array_diff(explode(',', $newFieldList), array('username')));
 				}
 				if ($this->auth->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($this->theTable, $origArr, $TSFE->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
@@ -620,15 +683,17 @@ class tx_srfeuserregister_data {
 			}
 			break;
 			default:
-			if (is_array($this->conf[$this->cmdKey.'.'])) {
-				$newFieldList = implode(',', array_intersect(explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)));
+			debug ($this->conf[$cmdKey.'.'], '$this->conf['.$cmdKey.'.]', __LINE__, __FILE__);
+			if (is_array($this->conf[$cmdKey.'.'])) {
+				$newFieldList = implode(',', array_intersect(explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)));
 				$newFieldList  = implode(',', array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->adminFieldList))));
 				$parsedArray = array();
 				$parsedArray = $this->parseOutgoingData($this->dataArr);
-				if ($this->cmdKey == 'invite' && $this->useMd5Password) {
+				debug ($parsedArray, 'save +++ $parsedArray', __LINE__, __FILE__);
+				if ($cmdKey == 'invite' && $this->control->useMd5Password) {
 					$parsedArray['password'] = md5($this->dataArr['password']);
 				}
-				$res = $this->cObj->DBgetInsert($this->theTable, $this->thePid, $parsedArray, $newFieldList, TRUE);
+				$res = $this->cObj->DBgetInsert($this->theTable, $this->control->thePid, $parsedArray, $newFieldList, TRUE);
 				$newId = $TYPO3_DB->sql_insert_id();
 
 					// Enable users to own them self.
@@ -669,7 +734,7 @@ class tx_srfeuserregister_data {
 					}
 				}
 					// </Ries van Twisk added registrationProcess hooks>
-				if ($this->cmdKey == 'invite' && $this->useMd5Password) {
+				if ($cmdKey == 'invite' && $this->control->useMd5Password) {
 					$this->currentArr['password'] = $this->dataArr['password'];
 				}
 			}
@@ -880,9 +945,11 @@ class tx_srfeuserregister_data {
 	* @return array  updated array
 	*/
 	function modifyDataArrForFormUpdate($inputArr) {
-		if (is_array($this->conf[$this->cmdKey.'.']['evalValues.'])) {
-			reset($this->conf[$this->cmdKey.'.']['evalValues.']);
-			while (list($theField, $theValue) = each($this->conf[$this->cmdKey.'.']['evalValues.'])) {
+		$cmdKey = $this->control->getCmdKey();
+
+		if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
+			reset($this->conf[$cmdKey.'.']['evalValues.']);
+			while (list($theField, $theValue) = each($this->conf[$cmdKey.'.']['evalValues.'])) {
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
 				while (list(, $cmd) = each($listOfCommands)) {
 					$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
@@ -909,12 +976,12 @@ class tx_srfeuserregister_data {
 					$theCmd = trim($cmdParts[0]);
 					switch($theCmd) {
 						case 'multiple':
-						if (isset($inputArr[$theField]) && !$this->isPreview()) {
+						if (isset($inputArr[$theField]) && !$this->control->isPreview()) {
 							$inputArr[$theField] = explode(',', $inputArr[$theField]);
 						}
 						break;
 						case 'checkArray':
-						if ($inputArr[$theField] && !$this->isPreview()) {
+						if ($inputArr[$theField] && !$this->control->isPreview()) {
 							for($a = 0; $a <= 30; $a++) {
 								if ($inputArr[$theField] & pow(2, $a)) {
 									$alt_theField = $theField.']['.$a;
@@ -939,20 +1006,24 @@ class tx_srfeuserregister_data {
 	* @return void  done directly on array $this->dataArr
 	*/
 	function setName() {
-		if (in_array('name', explode(',', $this->fieldList)) && !in_array('name', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1))
-			&& in_array('first_name', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1)) && in_array('last_name', t3lib_div::trimExplode(',', $this->conf[$this->cmdKey.'.']['fields'], 1))  ) {
+		$cmdKey = $this->control->getCmdKey();
+
+		if (in_array('name', explode(',', $this->fieldList)) && !in_array('name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1))
+			&& in_array('first_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)) && in_array('last_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1))  ) {
 			$this->dataArr['name'] = trim(trim($this->dataArr['first_name']).' '.trim($this->dataArr['last_name']));
 		}
 	}	// setName
 
-	
+
 	/**
 		* Moves email into username if useEmailAsUsername is set
 		*
 		* @return void  done directly on array $this->dataArr
 		*/
 	function setUsername() {
-		if ($this->conf[$this->cmdKey.'.']['useEmailAsUsername'] && $this->theTable == "fe_users" && t3lib_div::inList($this->fieldList, 'username') && !$this->failureMsg['email']) {
+		$cmdKey = $this->control->getCmdKey();
+
+		if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $this->theTable == "fe_users" && t3lib_div::inList($this->fieldList, 'username') && !$this->failureMsg['email']) {
 			$this->dataArr['username'] = trim($this->dataArr['email']);
 		}
 	}	// setUsername
@@ -966,30 +1037,26 @@ class tx_srfeuserregister_data {
 		* @return void  done directly on array $this->dataArr
 		*/
 	function setPassword() {
+		$cmdKey = $this->control->getCmdKey();
+		debug ($cmdKey, '$cmdKey', __LINE__, __FILE__);
 
 		if (
-			($this->cmdKey == 'invite' && ($this->useMd5Password || $this->conf[$this->cmdKey.'.']['generatePassword'])) ||
+			($cmdKey == 'invite' && ($this->control->useMd5Password || $this->conf[$cmdKey.'.']['generatePassword'])) ||
 
-			($this->cmdKey == 'create' && $this->conf[$this->cmdKey.'.']['generatePassword'])
+			($cmdKey == 'create' && $this->conf[$cmdKey.'.']['generatePassword'])
 		)	{
 
-			if ($this->useMd5Password) {
-				$this->dataArr['password'] = tx_kbmd5fepw_funcs::generatePassword(intval($GLOBALS['TSFE']->config['plugin.']['tx_newloginbox_pi1.']['defaultPasswordLength']) ? intval($GLOBALS['TSFE']->config['plugin.']['tx_newloginbox_pi1.']['defaultPasswordLength']) : 5);
+			if ($this->control->useMd5Password) {
+				$length = intval($GLOBALS['TSFE']->config['plugin.']['tx_newloginbox_pi1.']['defaultPasswordLength']);
+				if (!$length)	{
+					$length = 5;
+				}
+				$this->dataArr['password'] = tx_kbmd5fepw_funcs::generatePassword( $length );
 			} else {
-				$this->dataArr['password'] = substr(md5(uniqid(microtime(), 1)), 0, intval($this->conf[$this->cmdKey.'.']['generatePassword']));
+				$this->dataArr['password'] = substr(md5(uniqid(microtime(), 1)), 0, intval($this->conf[$cmdKey.'.']['generatePassword']));
 			}
 		}
 	}	// setPassword
-
-
-	/**
-	* Checks if preview display is on.
-	*
-	* @return boolean  true if preview display is on
-	*/
-	function isPreview() {
-		return ($this->conf[$this->cmdKey.'.']['preview'] && $this->feUserData['preview']);
-	}	// isPreview
 
 
 	/**
@@ -1000,12 +1067,12 @@ class tx_srfeuserregister_data {
 	* @param string  $label: a default error message provided by the invoking function
 	* @return string  the error message to be displayed
 	*/
-	function getFailure($theField, $theCmd, $label) {
+	function getFailureMsg($theField, $theCmd, $label) {
 		$failureLabel = $this->lang->pi_getLL('evalErrors_'.$theCmd.'_'.$theField);
 		$failureLabel = $failureLabel ? $failureLabel : $this->lang->pi_getLL('evalErrors_'.$theCmd);
 		$failureLabel = $failureLabel ? $failureLabel : (isset($this->conf['evalErrors.'][$theField.'.'][$theCmd]) ? $this->conf['evalErrors.'][$theField.'.'][$theCmd] : $label);
 		return $failureLabel;
-	}	// getFailure
+	}	// getFailureMsg
 
 
 
@@ -1037,8 +1104,15 @@ class tx_srfeuserregister_data {
 						}
 						break;
 						case 'adodb_date':
+						if (!is_object($adodbTime))	{
+							include_once(PATH_BE_srfeuserregister.'pi1/class.tx_srfeuserregister_pi1_adodb_time.php');
+
+							// prepare for handling dates before 1970
+							$adodbTime = t3lib_div::makeInstance('tx_srfeuserregister_pi1_adodb_time');
+						}
+
 						if($origArr[$theField]) {
-							$parsedArr[$theField] = $this->adodbTime->adodb_date( 'Y-m-d', $origArr[$theField]);
+							$parsedArr[$theField] = $adodbTime->adodb_date( 'Y-m-d', $origArr[$theField]);
 						}
 						if (!$parsedArr[$theField]) {
 							unset($parsedArr[$theField]);
@@ -1069,7 +1143,7 @@ class tx_srfeuserregister_data {
 				}
 			}
 		}
-		
+
 		return $parsedArr;
 	}	// parseIncomingData
 	
@@ -1114,14 +1188,21 @@ class tx_srfeuserregister_data {
 							}
 							list($year,$month,$day) = split('-', $parsedArr[$theField], 3);
 
-							$parsedArr[$theField] = $this->adodbTime->adodb_mktime(0,0,0,$month,$day,$year);
+							if (!is_object($adodbTime))	{
+								include_once(PATH_BE_srfeuserregister.'pi1/class.tx_srfeuserregister_pi1_adodb_time.php');
+	
+								// prepare for handling dates before 1970
+								$adodbTime = t3lib_div::makeInstance('tx_srfeuserregister_pi1_adodb_time');
+							}
+
+							$parsedArr[$theField] = $adodbTime->adodb_mktime(0,0,0,$month,$day,$year);
 						}
 						break;
 					}
 				}
 			}
 		}
-		
+
 			// update the MM relation count field
 		$fieldsList = array_keys($parsedArr);
 		foreach ($this->tca->TCA['columns'] as $colName => $colSettings) {	// +++
@@ -1162,6 +1243,45 @@ class tx_srfeuserregister_data {
 		}
 	}	// evalFileError
 
+
+	/**
+		*  Get the stored variables using the hash value to access the database
+		*/
+	function getStoredURL($regHash) {
+		global $TYPO3_DB;
+		
+			// get the serialised array from the DB based on the passed hash value
+		$varArray = array();
+		$res = $TYPO3_DB->exec_SELECTquery('params','cache_md5params','md5hash='.$TYPO3_DB->fullQuoteStr($regHash,'cache_md5params'));
+		while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
+			$varArray = unserialize($row['params']);
+		}
+			// convert the array to one that will be properly incorporated into the GET global array.
+		$retArray = array();
+		reset($varArray);
+		while (list($key, $val) = each($varArray)){
+			$search = array('[\]]', '[\[]');
+			$replace = array ( '\']', '\'][\'');
+			$newkey = "['" . preg_replace($search, $replace, $key);
+			eval("\$retArr".$newkey."='$val';");
+		}
+		return $retArr;
+	}	// getStoredURL
+
+
+
+	/**
+		*  Clears obsolete hashes used for short url's
+		*/
+	function cleanShortUrlCache() {
+		global $TYPO3_DB;
+
+		$shortUrlLife = intval($this->conf['shortUrlLife']) ? strval(intval($this->conf['shortUrlLife'])) : '30';
+
+		$max_life = time() - (86400 * intval($shortUrlLife));
+		$res = $TYPO3_DB->exec_DELETEquery('cache_md5params', 'tstamp<' . $max_life . ' AND type=99');	
+	}	// cleanShortUrlCache
+	// </Steve Webster added short url feature>
 
 
 }
