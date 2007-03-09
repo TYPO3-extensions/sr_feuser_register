@@ -73,9 +73,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 	var $inError = array(); // array of fields with eval errors other than absence
 	var $nc = ''; // "&no_cache=1" if you want that parameter sent.
 	var $additionalUpdateFields = '';
-	var $emailMarkPrefix = 'EMAIL_TEMPLATE_';
-	var $emailMarkAdminSuffix = '_ADMIN';
-	var $emailMarkHTMLSuffix = '_HTML';
 	var $sys_language_content;
 	var $charset = 'iso-8859-1'; // charset to be used in emails and form conversions
 	var $fileFunc = ''; // Set to a basic_filefunc object for file uploads
@@ -133,7 +130,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		$this->lang->pi_loadLL();
 
 		$this->data->init($this, $this->conf, $this->config,$this->lang, $this->tca, $this->auth, $this->control, $this->freeCap);
-		debug ($this->data->dataArr, '$this->data->dataArr', __LINE__, __FILE__);
 
 		$this->control->init($this, $this->conf, $this->config, $this->display, $this->data, $this->marker, $this->auth, $this->email, $this->tca);
 
@@ -154,61 +150,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$this->setfixedEnabled = $this->conf['setfixed'];
 		}
 	
-		$cmdKey = $this->control->getCmdKey();
-
-		if (!t3lib_extMgm::isLoaded('direct_mail')) {
-			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('module_sys_dmail_category')));
-			$this->conf[$cmdKey.'.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'], 1), array('module_sys_dmail_category')));
-		}
-		
-		if ($this->data->theTable == 'fe_users') {
-			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'] . ',username', 1)));
-			$this->conf[$cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'] . ',username', 1)));
-			if ($this->conf[$cmdKey.'.']['generateUsername']) {
-				$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('username')));
-			}
-
-			if ($this->conf[$cmdKey.'.']['generatePassword'] && $cmdKey != 'edit') {
-				$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('password')));
-			}
-
-			if ($this->conf[$cmdKey.'.']['useEmailAsUsername']) {
-				$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('username')));
-				if ($cmdKey == 'create' || $cmdKey == 'invite') {
-					$this->conf[$cmdKey.'.']['fields'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'] . ',email', 1));
-					$this->conf[$cmdKey.'.']['required'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'] . ',email', 1));
-				}
-				if ($cmdKey == 'edit' && $this->conf['setfixed']) {
-					$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('email')));
-				}
-			}
-			if ($this->conf[$cmdKey.'.']['allowUserGroupSelection']) {
-				$this->conf[$cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'] . ',usergroup', 1)));
-				$this->conf[$cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'] . ',usergroup', 1)));
-				if ($cmdKey == 'edit' && is_array($this->conf['setfixed.'])) {
-					if ($this->conf['enableAdminReview'] && is_array($this->conf['setfixed.']['ACCEPT.'])) {
-						$this->conf[$cmdKey.'.']['overrideValues.']['usergroup'] = $this->conf['setfixed.']['ACCEPT.']['usergroup'];
-					} elseif ($this->conf['setfixed'] && is_array($this->conf['setfixed.']['APPROVE.'])) {
-						$this->conf[$cmdKey.'.']['overrideValues.']['usergroup'] = $this->conf['setfixed.']['APPROVE.']['usergroup'];
-					}
-				}
-			} else {
-				$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('usergroup')));
-			}
-			if ($cmdKey == 'invite') {
-				if ($this->control->useMd5Password) {
-					$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('password')));
-					if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
-						unset($this->conf[$cmdKey.'.']['evalValues.']['password']);
-					}
-				}
-				if ($this->conf['enableAdminReview']) {
-					if ($this->setfixedEnabled && is_array($this->conf['setfixed.']['ACCEPT.']) && is_array($this->conf['setfixed.']['APPROVE.'])) {
-						$this->conf['setfixed.']['APPROVE.'] = $this->conf['setfixed.']['ACCEPT.'];
-					}
-				}
-			}
-		}
 
 		$this->auth->init($this, $this->conf, $this->config, $this->data->feUserData['aC']);
 

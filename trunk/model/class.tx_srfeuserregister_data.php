@@ -70,7 +70,6 @@ class tx_srfeuserregister_data {
 	var $prefixId;
 	var $adminFieldList = 'username,password,name,disable,usergroup,by_invitation';
 	var $fieldList; // List of fields from fe_admin_fieldList
-	var $requiredArr; // List of required fields
 	var $recUid;
 	var $missing = array(); // array of required missing fields
 
@@ -95,9 +94,7 @@ class tx_srfeuserregister_data {
 
 			// Get parameters
 		$this->feUserData = t3lib_div::_GP($this->prefixId);
-debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 		$fe = t3lib_div::_GP('FE');
-		debug ($fe, '$fe', __LINE__, __FILE__);
 		$cmdKey = $this->control->getCmdKey();
 
 		// <Steve Webster added short url feature>
@@ -111,7 +108,6 @@ debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 					t3lib_div::_GETset($v,$k);
 				}
 				$this->feUserData = t3lib_div::_GP($this->prefixId);
-				debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 			}
 		}
 		// </Steve Webster added short url feature>
@@ -122,21 +118,17 @@ debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 			if (t3lib_div::_GP($pivar))	{
 				$this->feUserData[$pivar] = t3lib_div::_GP($pivar);
 			}
-			debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 		}
-		debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 
 		$this->dataArr = $fe[$this->theTable];
-		debug ($this->dataArr, '$this->dataArr', __LINE__, __FILE__);
 		if (is_array($this->dataArr['module_sys_dmail_category']))	{	// no array elements are allowed for $this->cObj->fillInMarkerArray
 			$this->dataArr['module_sys_dmail_category'] = implode(',',$this->dataArr['module_sys_dmail_category']);
 		}
 
 			// Setting cmd and various switches
-		if ($this->theTable == 'fe_users' && $this->feUserData['cmd'] == 'login' ) {
-			unset($this->feUserData['cmd']);
-			debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
-		}
+// 		if ($this->theTable == 'fe_users' && $this->feUserData['cmd'] == 'login' ) {
+// 			unset($this->feUserData['cmd']);
+// 		}
 
 			// Setting the list of fields allowed for editing and creation.
 		$this->fieldList = implode(',', t3lib_div::trimExplode(',', $TCA[$this->theTable]['feInterface']['fe_admin_fieldList'], 1));
@@ -144,13 +136,6 @@ debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 		if (trim($this->conf['addAdminFieldList'])) {
 			$this->adminFieldList .= ',' . trim($this->conf['addAdminFieldList']);
 		}
-
-			// Setting requiredArr to the fields in "required" fields list intersected with the total field list in order to remove invalid fields.
-		$this->requiredArr = array_intersect(
-			t3lib_div::trimExplode(',', 
-			$this->conf[$cmdKey.'.']['required'], 1),
-			t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)
-		);
 
 		$this->recUid = intval($this->feUserData['rU']);
 
@@ -161,11 +146,19 @@ debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 
 			// Fetching the template file
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
-		debug ($this->dataArr, '$this->dataArr', __LINE__, __FILE__);
 	}
 
 	function getFailure()	{
 		return $this->failure;
+	}
+
+	function getFeUserData ($k)	{
+		$rc = $this->feUserData[$k];
+		return $rc;
+	}
+
+	function setFeUserData ($k, $value)	{
+		$this->feUserData[$k] = $value;
 	}
 
 	/**
@@ -216,7 +209,6 @@ debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 			while (list($theField, $theValue) = each($this->conf[$cmdKey.'.']['evalValues.'])) {
 				$markContentArray['###EVAL_ERROR_FIELD_'.$theField.'###'] = '<!--no error-->';
 			}
-			debug ($markContentArray, '$markContentArray', __LINE__, __FILE__);
 		}
 	}	// defaultValues
 
@@ -229,25 +221,21 @@ debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 	*/
 	function evalValues(&$markContentArray) {
 		$cmdKey = $this->control->getCmdKey();
-		debug ($cmdKey, 'evalValues: $cmdKey', __LINE__, __FILE__);
+		$requiredArray = $this->control->getRequiredArray();
 
-		debug ($markContentArray, 'evalValues: $markContentArray', __LINE__, __FILE__);
 		// Check required, set failure if not ok.
-		reset($this->requiredArr);
 		$tempArr = array();
-		while (list(, $theField) = each($this->requiredArr)) {
+		foreach ($requiredArray as $k => $theField)	{
 			if (!trim($this->dataArr[$theField]) && trim($this->dataArr[$theField]) != '0') {
 				$tempArr[] = $theField;
 				$this->missing[$theField] = true;
 			}
 		}
-		debug ($this->missing, '$this->missing', __LINE__, __FILE__);
 
 		// Evaluate: This evaluates for more advanced things than "required" does. But it returns the same error code, so you must let the required-message tell, if further evaluation has failed!
 		$recExist = 0;
 		if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
 			$cmd = $this->control->getCmd();
-			debug ($cmd, '$cmd', __LINE__, __FILE__);
 			switch($cmd) {
 				case 'edit':
 					if (isset($this->dataArr['pid'])) {
@@ -280,7 +268,6 @@ debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 				while (list(, $cmd) = each($listOfCommands)) {
 					$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 					$theCmd = trim($cmdParts[0]);
-					debug ($theCmd, '$theCmd', __LINE__, __FILE__);
 					switch($theCmd) {
 						case 'uniqueGlobal':
 						$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->theTable, $theField, $this->dataArr[$theField], '', '', '', '1');
@@ -295,7 +282,6 @@ debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 						break;
 						case 'uniqueLocal':
 						$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->theTable, $theField, $this->dataArr[$theField], 'AND pid IN ('.$recordTestPid.')', '', '', '1');
-						debug ($DBrows, '$DBrows', __LINE__, __FILE__);
 						if (trim($this->dataArr[$theField]) && $DBrows) {
 							if (!$recExist || $DBrows[0]['uid'] != $this->dataArr['uid']) {
 								// Only issue an error if the record is not existing (if new...) and if the record with the false value selected was not our self.
@@ -445,10 +431,8 @@ debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 				}
 				$markContentArray['###EVAL_ERROR_FIELD_'.$theField.'###'] = is_array($this->failureMsg[$theField]) ? implode($this->failureMsg[$theField], '<br />'): '<!--no error-->';
 			}
-			debug ($markContentArray, '$markContentArray', __LINE__, __FILE__);
 		}
 		$this->failure = implode($tempArr, ',');
-		debug ($this->failure, '$this->failure', __LINE__, __FILE__);
 	}	// evalValues
 
 
@@ -636,8 +620,6 @@ debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 
 		$cmd = $this->control->getCmd();
 		$cmdKey = $this->control->getCmdKey();
-		debug ($cmd, 'save: $cmd', __LINE__, __FILE__);
-		debug ($cmdKey, '$cmdKey', __LINE__, __FILE__);
 		switch($cmd) {
 			case 'edit':
 			$theUid = $this->dataArr['uid'];
@@ -683,13 +665,11 @@ debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 			}
 			break;
 			default:
-			debug ($this->conf[$cmdKey.'.'], '$this->conf['.$cmdKey.'.]', __LINE__, __FILE__);
 			if (is_array($this->conf[$cmdKey.'.'])) {
 				$newFieldList = implode(',', array_intersect(explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)));
 				$newFieldList  = implode(',', array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->adminFieldList))));
 				$parsedArray = array();
 				$parsedArray = $this->parseOutgoingData($this->dataArr);
-				debug ($parsedArray, 'save +++ $parsedArray', __LINE__, __FILE__);
 				if ($cmdKey == 'invite' && $this->control->useMd5Password) {
 					$parsedArray['password'] = md5($this->dataArr['password']);
 				}
@@ -1038,7 +1018,6 @@ debug ($this->feUserData, '$this->feUserData', __LINE__, __FILE__);
 		*/
 	function setPassword() {
 		$cmdKey = $this->control->getCmdKey();
-		debug ($cmdKey, '$cmdKey', __LINE__, __FILE__);
 
 		if (
 			($cmdKey == 'invite' && ($this->control->useMd5Password || $this->conf[$cmdKey.'.']['generatePassword'])) ||

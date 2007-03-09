@@ -54,11 +54,11 @@ class tx_srfeuserregister_email {
 	var $tca;
 	var $control;
 	var $auth;
-	var $infomailPrefix;
+	var $infomailPrefix = 'INFOMAIL_';
+	var $emailMarkPrefix = 'EMAIL_TEMPLATE_';
+	var $emailMarkAdminSuffix = '_ADMIN';
+	var $emailMarkHTMLSuffix = '_HTML';
 	var $setfixedEnabled;
-	var $emailMarkAdminSuffix;
-	var $emailMarkPrefix;
-	var $emailMarkHTMLSuffix;
 	var $HTMLMailEnabled = true;
 	var $cObj;
 
@@ -74,11 +74,7 @@ class tx_srfeuserregister_email {
 		$this->auth = &$auth;
 
 		$this->feUserData = &$pibase->feUserData;
-		$this->infomailPrefix = $pibase->infomailPrefix;
 		$this->setfixedEnabled = $pibase->setfixedEnabled;
-		$this->emailMarkAdminSuffix = $pibase->emailMarkAdminSuffix;
-		$this->emailMarkPrefix = $pibase->emailMarkPrefix;
-		$this->emailMarkHTMLSuffix = $pibase->emailMarkHTMLSuffix;
 		if (isset($this->conf['email.']['HTMLMail'])) {
 			$this->HTMLMailEnabled = $this->conf['email.']['HTMLMail'];
 		}
@@ -120,9 +116,13 @@ class tx_srfeuserregister_email {
 					$fetchArray = array( '0' => array( 'email' => $fetch));
 					$this->compile('INFOMAIL_NORECORD', $fetchArray, $fetch, $markContentArray, $cmd, $cmdKey, $templateCode, array());
 				}
-				$content = $this->display->getPlainTemplate('###TEMPLATE_'.$this->infomailPrefix.'SENT###', (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:'')));
+				$content = $this->display->getPlainTemplate($this->emailMarkPrefix.$this->infomailPrefix.'SENT###', (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:'')));
+
+				if (!$content)	{ // compatibility until 1.1.2010
+					$content = $this->display->getPlainTemplate('###TEMPLATE_'.$this->infomailPrefix.'SENT###', (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:'')));
+				}
 			} else {
-				$content = $this->display->getPlainTemplate('###TEMPLATE_INFOMAIL###');
+				$content = $this->display->getPlainTemplate($this->emailMarkPrefix.$this->infomailPrefix.'EMPTY###');
 			}
 		} else {
 			$content='Configuration error: infomail option is not available or emailField is not setup in TypoScript';
@@ -173,7 +173,7 @@ class tx_srfeuserregister_email {
 			$this->marker->addStaticInfoMarkers($markerArray, $r, $viewOnly);
 			$this->tca->addTcaMarkers($markerArray, $r, $viewOnly, 'email');
 			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $r, $viewOnly);
-			$this->marker->addLabelMarkers($markerArray, $r);
+			$this->marker->addLabelMarkers($markerArray, $r, $this->control->getRequiredArray());
 			if ($userContent['rec']) {
 				$userContent['rec'] = $this->marker->removeStaticInfoSubparts($userContent['rec'], $markerArray, $viewOnly);
 				$userContent['accum'] .= $this->cObj->substituteMarkerArray($userContent['rec'], $markerArray);

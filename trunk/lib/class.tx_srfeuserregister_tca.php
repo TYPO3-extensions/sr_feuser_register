@@ -338,7 +338,7 @@ class tx_srfeuserregister_tca {
 								}
 								$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
 								$res = $TYPO3_DB->exec_SELECTquery('*', $colConfig['foreign_table'], $whereClause, '', $TCA[$colConfig['foreign_table']]['ctrl']['sortby']);
-								if (!in_array($colName, $this->data->requiredArr)) {
+								if (!in_array($colName, $this->control->getRequiredArray())) {
 									if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
 										$colContent .='';
 									} else {

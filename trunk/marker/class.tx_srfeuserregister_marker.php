@@ -147,7 +147,6 @@ class tx_srfeuserregister_marker {
 
 	function getArray()	{
 		return $this->markerArray;
-		debug ($this->markerArray, 'getArray: $this->markerArray', __LINE__, __FILE__);
 	}
 
 	function setArray($param, $value = '')	{
@@ -242,9 +241,10 @@ class tx_srfeuserregister_marker {
 	*
 	* @param array  $markerArray: the input marker array
 	* @param array  $dataArray: the record array
+	* @param array  $requiredArray: the required fields array
 	* @return void
 	*/
-	function addLabelMarkers(&$markerArray, &$dataArray) {
+	function addLabelMarkers(&$markerArray, &$dataArray, &$requiredArray) {
 		if (!$markerArray)	{
 			$markerArray = $this->getArray();
 		}
@@ -252,7 +252,6 @@ class tx_srfeuserregister_marker {
 		// Data field labels
 		$infoFields = t3lib_div::trimExplode(',', $this->data->fieldList, 1);
 		while (list(, $fName) = each($infoFields)) {
-			debug ($fName, 'addLabelMarkers: $fName', __LINE__, __FILE__);
 			$markerkey = $this->cObj->caseshift($fName,'upper');
 			$markerArray['###LABEL_'.$markerkey.'###'] = $this->lang->pi_getLL($fName) ? $this->lang->pi_getLL($fName) : $this->lang->getLLFromString($this->tca->TCA['columns'][$fName]['label']);
 			$markerArray['###TOOLTIP_'.$markerkey.'###'] = $this->lang->pi_getLL('tooltip_' . $fName);
@@ -276,7 +275,7 @@ class tx_srfeuserregister_marker {
 				$markerArray['###FIELD_'.$fName.'_CHECKED###'] = ($dataArray[$fName])?'checked':'';
 				$markerArray['###LABEL_'.$fName.'_CHECKED###'] = ($dataArray[$fName])?$this->lang->pi_getLL('yes'):$this->lang->pi_getLL('no');
 			}
-			if (in_array(trim($fName), $this->data->requiredArr) ) {
+			if (in_array(trim($fName), $requiredArray) ) {
 				$markerArray['###REQUIRED_'.$markerkey.'###'] = '<span>*</span>';
 				$markerArray['###MISSING_'.$markerkey.'###'] = $this->lang->pi_getLL('missing_'.$fName);
 				$markerArray['###MISSING_INVITATION_'.$markerkey.'###'] = $this->lang->pi_getLL('missing_invitation_'.$fName);
@@ -323,7 +322,6 @@ class tx_srfeuserregister_marker {
 			$markerArray['###LABEL_'.$this->cObj->caseshift($labelName,'upper').'###'] = sprintf($this->lang->pi_getLL($labelName), $this->thePidTitle, $dataArray['username'], $dataArray['name'], $dataArray['email'], $dataArray['password']); 
 		}
 
-		debug ($markerArray, 'addLabelMarkers: $markerArray', __LINE__, __FILE__);
 	}	// addLabelMarkers
 
 
@@ -487,7 +485,6 @@ class tx_srfeuserregister_marker {
 		}
 		$markerArray['###FORM_ONSUBMIT###'] = $onSubmit;
 		$markerArray['###HIDDENFIELDS###'] = $extraHidden;
-		debug ($markerArray, '$markerArray', __LINE__, __FILE__);
 	}	// addMd5LoginMarkers
 	
 
