@@ -71,6 +71,7 @@ class tx_srfeuserregister_control {
 	var $backURL;
 	var $mode = MODE_NORMAL;	// internal modes: MODE_NORMAL, MODE_PREVIEW
 	var $thePid = 0;
+	var $requiredArray; // List of required fields
 
 	function init(&$pibase, &$conf, &$config, &$display, &$data, &$marker, &$auth, &$email, &$tca)	{
 		global $TYPO3_CONF_VARS, $TSFE;
@@ -93,7 +94,6 @@ class tx_srfeuserregister_control {
 
 
 		$this->loginPID = intval($this->conf['loginPID']) ? strval(intval($this->conf['loginPID'])) : $TSFE->id;
-
 		$cmd = $this->data->feUserData['cmd'] ? $this->data->feUserData['cmd'] : $this->cObj->caseshift($this->cObj->data['select_key'],'lower');
 		if ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['useFlexforms'] && t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
 				// FE BE library for flexform functions
@@ -114,11 +114,73 @@ class tx_srfeuserregister_control {
 		}
 
 		if ($cmd == 'edit' || $cmd == 'invite') {
-			$this->setCmdKey($cmd);
+			$cmdKey = $cmd;
 		} else {
-			$this->setCmdKey('create');
+			$cmdKey = 'create';
+		}
+		$this->setCmdKey($cmdKey);
+
+		if (!t3lib_extMgm::isLoaded('direct_mail')) {
+			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('module_sys_dmail_category')));
+			$this->conf[$cmdKey.'.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'], 1), array('module_sys_dmail_category')));
+		}
+		
+		if ($this->data->theTable == 'fe_users') {
+			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'] . ',username', 1)));
+			$this->conf[$cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'] . ',username', 1)));
+			if ($this->conf[$cmdKey.'.']['generateUsername']) {
+				$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('username')));
+			}
+
+			if ($this->conf[$cmdKey.'.']['generatePassword'] && $cmdKey != 'edit') {
+				$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('password')));
+			}
+
+			if ($this->conf[$cmdKey.'.']['useEmailAsUsername']) {
+				$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('username')));
+				if ($cmdKey == 'create' || $cmdKey == 'invite') {
+					$this->conf[$cmdKey.'.']['fields'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'] . ',email', 1));
+					$this->conf[$cmdKey.'.']['required'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'] . ',email', 1));
+				}
+				if ($cmdKey == 'edit' && $this->conf['setfixed']) {
+					$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('email')));
+				}
+			}
+			if ($this->conf[$cmdKey.'.']['allowUserGroupSelection']) {
+				$this->conf[$cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'] . ',usergroup', 1)));
+				$this->conf[$cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'] . ',usergroup', 1)));
+				if ($cmdKey == 'edit' && is_array($this->conf['setfixed.'])) {
+					if ($this->conf['enableAdminReview'] && is_array($this->conf['setfixed.']['ACCEPT.'])) {
+						$this->conf[$cmdKey.'.']['overrideValues.']['usergroup'] = $this->conf['setfixed.']['ACCEPT.']['usergroup'];
+					} elseif ($this->conf['setfixed'] && is_array($this->conf['setfixed.']['APPROVE.'])) {
+						$this->conf[$cmdKey.'.']['overrideValues.']['usergroup'] = $this->conf['setfixed.']['APPROVE.']['usergroup'];
+					}
+				}
+			} else {
+				$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('usergroup')));
+			}
+			if ($cmdKey == 'invite') {
+				if ($this->control->useMd5Password) {
+					$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('password')));
+					if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
+						unset($this->conf[$cmdKey.'.']['evalValues.']['password']);
+					}
+				}
+				if ($this->conf['enableAdminReview']) {
+					if ($this->setfixedEnabled && is_array($this->conf['setfixed.']['ACCEPT.']) && is_array($this->conf['setfixed.']['APPROVE.'])) {
+						$this->conf['setfixed.']['APPROVE.'] = $this->conf['setfixed.']['ACCEPT.'];
+					}
+				}
+			}
 		}
 
+			// Setting requiredArr to the fields in "required" fields list intersected with the total field list in order to remove invalid fields.
+		$requiredArray = array_intersect(
+			t3lib_div::trimExplode(',', 
+			$this->conf[$cmdKey.'.']['required'], 1),
+			t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)
+		);
+		$this->setRequiredArray($requiredArray);
 		$this->setCmd($cmd);
 
 			// Initialise password encryption
@@ -149,6 +211,14 @@ class tx_srfeuserregister_control {
 		$this->cmdKey = $cmdKey;
 	}
 
+	function &getRequiredArray ()	{
+		return $this->requiredArray;
+	}
+
+	function setRequiredArray (&$requiredArray)	{
+		$this->requiredArray = $requiredArray;
+	}
+
 	/**
 	* All processing of the codes is done here
 	*
@@ -163,7 +233,7 @@ class tx_srfeuserregister_control {
 		// Ralf Hettinger: avoid data from edit forms being visible by back buttoning to client side cached pages
 		// This only solves data being visible by back buttoning for edit forms.
 		// It won't help against data being visible by back buttoning in create forms.
-		$noLoginCommands = array('','create','invite','setfixed','infomail');
+		$noLoginCommands = array('','create','invite','setfixed','infomail','login');
 		if (!$GLOBALS['TSFE']->loginUser && !(in_array($cmd,$noLoginCommands))) {
 			$cmd = '';
 			$this->setCmd($cmd);
@@ -200,21 +270,21 @@ class tx_srfeuserregister_control {
 			$markerArray = $this->marker->getArray();
 			$this->data->defaultValues($markerArray); // If no incoming data, this will set the default values.
 			$this->marker->setArray($markerArray);
-			$this->data->feUserData['preview'] = 0; // No preview if data is not received
+			$this->data->setFeUserData('preview', 0); // No preview if data is not received
 		}
 		if ($this->data->failure) {
-			$this->data->feUserData['preview'] = 0;
+			$this->data->setFeUserData('preview', 0);
 		}
 
 		 // No preview flag if a evaluation failure has occured
-		if ($this->data->feUserData['preview'])	{
+		if ($this->data->getFeUserData('preview'))	{
 			$this->marker->setPreviewLabel('_PREVIEW');
 			$this->setMode (MODE_PREVIEW);
 		}
 		$this->backURL = rawurldecode($this->data->feUserData['backURL']);
 
 			// If data is submitted, we take care of it here.
-		if ($cmd == 'delete' && !$this->data->feUserData['preview'] && !$this->data->feUserData['doNotSave'] ) {
+		if ($cmd == 'delete' && !$this->data->getFeUserData('preview') && !$this->data->getFeUserData('doNotSave') ) {
 			// Delete record if delete command is sent + the preview flag is NOT set.
 			$this->data->deleteRecord();
 		}
@@ -258,7 +328,7 @@ class tx_srfeuserregister_control {
 			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $this->data->currentArr, '',TRUE, 'FIELD_', TRUE);
 			$this->marker->addStaticInfoMarkers($markerArray, $this->data->currentArr);
 			$this->tca->addTcaMarkers($markerArray, $this->data->currentArr, true);
-			$this->marker->addLabelMarkers($markerArray, $this->data->currentArr);
+			$this->marker->addLabelMarkers($markerArray, $this->data->currentArr, $this->getRequiredArray());
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 
 			$markerArray = $this->marker->getArray(); // compile uses its own markerArray
@@ -292,7 +362,7 @@ class tx_srfeuserregister_control {
 				// If there was an error, we return the template-subpart with the error message
 			$templateCode = $this->cObj->getSubpart($this->data->templateCode, $this->data->error);
 			$markerArray = $this->marker->getArray();
-			$this->marker->addLabelMarkers($markerArray, $this->data->dataArr);
+			$this->marker->addLabelMarkers($markerArray, $this->data->dataArr,$this->getRequiredArray());
 			$this->marker->setArray($markerArray);
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 		} else {
@@ -310,8 +380,8 @@ class tx_srfeuserregister_control {
 						$this->setfixedEnabled = 1;
 					}
 					$markerArray = $this->marker->getArray();
-					$content = $this->email->sendInfo($markerArray, $this->getCmd(),
-					$this->getCmdKey(), $this->data->templateCode);
+					$content = $this->email->sendInfo($markerArray, $cmd, 
+						$this->getCmdKey(), $this->data->templateCode);
 					break;
 				case 'delete':
 					$content = $this->display->deleteScreen();
@@ -323,6 +393,9 @@ class tx_srfeuserregister_control {
 				case 'create':
 					$content = $this->display->createScreen($cmd);
 					break;
+				case 'login':
+					// nothing. The login parameters are processed by TYPO3 Core
+					break;
 				default:
 					if ($this->data->theTable == 'fe_users' && $TSFE->loginUser) {
 						$content = $this->display->createScreen($cmd);
@@ -332,6 +405,7 @@ class tx_srfeuserregister_control {
 					break;
 			}
 		}
+
 		return $content;
 	}
 
