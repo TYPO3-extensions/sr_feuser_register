@@ -1,0 +1,51 @@
+<T3DataStructure>
+	<meta>
+	    <langDisable>1</langDisable>
+	</meta>
+	  <ROOT>
+	    <type>array</type>
+	    <el>
+	      <display_mode>
+			<TCEforms>
+				<label>LLL:EXT:sr_feuser_register/locallang_db.xml:tt_content.pi1_flexform.display_mode</label>
+				<config>
+					<type>select</type>
+					<items>
+					    <numindex index="1">
+							<numindex index="0">LLL:EXT:sr_feuser_register/locallang_db.xml:tt_content.pi1_flexform.display_mode.1</numindex>
+							<numindex index="1"></numindex>
+					    </numindex>
+					    <numindex index="2">
+							<numindex index="0">LLL:EXT:sr_feuser_register/locallang_db.xml:tt_content.pi1_flexform.display_mode.3</numindex>
+							<numindex index="1">create</numindex>
+					    </numindex>
+					    <numindex index="3">
+						    <numindex index="0">LLL:EXT:sr_feuser_register/locallang_db.xml:tt_content.pi1_flexform.display_mode.4</numindex>
+						    <numindex index="1">delete</numindex>
+					    </numindex>
+					    <numindex index="4">
+							<numindex index="0">LLL:EXT:sr_feuser_register/locallang_db.xml:tt_content.pi1_flexform.display_mode.5</numindex>
+							<numindex index="1">invite</numindex>
+					    </numindex>
+					    <numindex index="5">
+							<numindex index="0">LLL:EXT:sr_feuser_register/locallang_db.xml:tt_content.pi1_flexform.display_mode.7</numindex>
+							<numindex index="1">edit</numindex>
+					    </numindex>
+					    <numindex index="6">
+						    <numindex index="0">LLL:EXT:sr_feuser_register/locallang_db.xml:tt_content.pi1_flexform.display_mode.8</numindex>
+						    <numindex index="1">setfixed</numindex>
+					    </numindex>
+					    <numindex index="7">
+						    <numindex index="0">LLL:EXT:sr_feuser_register/locallang_db.xml:tt_content.pi1_flexform.display_mode.9</numindex>
+						    <numindex index="1">infomail</numindex>
+					    </numindex>
+					</items>
+					<size>7</size>
+					<minitems>0</minitems>
+					<maxitems>1</maxitems>
+				</config>
+			</TCEforms>
+	      </display_mode>
+	    </el>
+	  </ROOT>
+</T3DataStructure>
