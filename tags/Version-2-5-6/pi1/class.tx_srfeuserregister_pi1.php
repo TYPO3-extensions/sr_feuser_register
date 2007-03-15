@@ -151,7 +151,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		}
 	
 
-		$this->auth->init($this, $this->conf, $this->config, $this->data->feUserData['aC']);
+		$this->auth->init($this, $this->conf, $this->config, $this->data->getFeUserData('aC'));
 
 		$this->marker->init($this, $this->conf, $this->config, $this->data, $this->tca, $this->lang, $this->control, $this->auth, $this->freeCap);
 

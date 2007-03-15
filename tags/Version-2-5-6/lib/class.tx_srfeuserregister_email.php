@@ -73,7 +73,6 @@ class tx_srfeuserregister_email {
 		$this->control = &$control;
 		$this->auth = &$auth;
 
-		$this->feUserData = &$pibase->feUserData;
 		$this->setfixedEnabled = $pibase->setfixedEnabled;
 		if (isset($this->conf['email.']['HTMLMail'])) {
 			$this->HTMLMailEnabled = $this->conf['email.']['HTMLMail'];
@@ -98,19 +97,20 @@ class tx_srfeuserregister_email {
 		*/
 	function sendInfo(&$markContentArray,$cmd, $cmdKey, &$templateCode)	{
 		if ($this->conf['infomail'] && $this->conf['email.']['field'])	{
-			$fetch = $this->data->feUserData['fetch'];
+			$fetch = $this->data->getFeUserData('fetch');
+			$theTable = $this->data->getTable();
 			if (isset($fetch) && !empty($fetch))	{
 				$pidLock = 'AND pid IN ('.$this->control->thePid.')';
 					// Getting records
-				if ( $this->data->theTable == 'fe_users' && t3lib_div::testInt($fetch) )	{
-					$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->data->theTable,'uid',$fetch,$pidLock,'','','1');
+				if ( $theTable == 'fe_users' && t3lib_div::testInt($fetch) )	{
+					$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($theTable,'uid',$fetch,$pidLock,'','','1');
 				} elseif ($fetch) {	// $this->conf['email.']['field'] must be a valid field in the table!
-					$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->data->theTable,$this->conf['email.']['field'],$fetch,$pidLock,'','','100');
+					$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($theTable,$this->conf['email.']['field'],$fetch,$pidLock,'','','100');
 				}
 					// Processing records
 				if (is_array($DBrows))	{
 					$recipient = $DBrows[0][$this->conf['email.']['field']];
-					$this->data->dataArr = $DBrows[0];
+					$this->data->setDataArray($DBrows[0]);
 					$this->compile('INFOMAIL', $DBrows, trim($recipient), $markContentArray, $cmd, $cmdKey, $templateCode, $this->conf['setfixed.']);
 				} elseif ($this->cObj->checkEmail($fetch)) {
 					$fetchArray = array( '0' => array( 'email' => $fetch));
@@ -152,7 +152,7 @@ class tx_srfeuserregister_email {
 			$userContent['all'] = trim($this->cObj->getSubpart($templateCode, '###'.$subpartMarker.'###'));
 			$userContent['all'] = $this->display->removeRequired($userContent['all']);
 			$subpartMarker = $this->emailMarkPrefix.$key.$this->emailMarkHTMLSuffix;
-			$HTMLContent['all'] = ($this->HTMLMailEnabled && $this->data->dataArr['module_sys_dmail_html']) ? trim($this->cObj->getSubpart($templateCode, '###'.$subpartMarker.'###')):'';
+			$HTMLContent['all'] = ($this->HTMLMailEnabled && $this->data->getDataArray('module_sys_dmail_html')) ? trim($this->cObj->getSubpart($templateCode, '###'.$subpartMarker.'###')):'';
 			$HTMLContent['all'] = $this->display->removeRequired($HTMLContent['all']);
 		}
 		if ($this->conf['notify.'][$key] ) {
@@ -212,7 +212,7 @@ class tx_srfeuserregister_email {
 		}
 		
 			// Check if we need to add an attachment
-		if ($this->conf['addAttachment'] && $this->conf['addAttachment.']['cmd'] == $this->control->getCmd() && $this->conf['addAttachment.']['sFK'] == $this->data->feUserData['sFK']) {
+		if ($this->conf['addAttachment'] && $this->conf['addAttachment.']['cmd'] == $this->control->getCmd() && $this->conf['addAttachment.']['sFK'] == $this->data->getFeUserData('sFK')) {
 			$file = ($this->conf['addAttachment.']['file']) ? $GLOBALS['TSFE']->tmpl->getFileName($this->conf['addAttachment.']['file']):
 			'';
 		}
@@ -237,7 +237,7 @@ class tx_srfeuserregister_email {
 			$this->cObj->sendNotifyEmail($adminContent, $admin, '', $this->conf['email.']['from'], $this->conf['email.']['fromName'], $recipient);
 		}
 		// Send mail to front end user
-		if ($this->HTMLMailEnabled && $HTMLContent && ($this->data->dataArr['module_sys_dmail_html'] || ($this->data->saved && $this->data->currentArr['module_sys_dmail_html']))) {
+		if ($this->HTMLMailEnabled && $HTMLContent && ($this->data->getDataArray('module_sys_dmail_html') || ($this->data->saved && $this->data->currentArr['module_sys_dmail_html']))) {
 			$this->sendHTML($HTMLContent, $content, $recipient, '', $this->conf['email.']['from'], $this->conf['email.']['fromName'], '', $fileAttachment);
 		} else {
 			$this->cObj->sendNotifyEmail($content, $recipient, '', $this->conf['email.']['from'], $this->conf['email.']['fromName']);
