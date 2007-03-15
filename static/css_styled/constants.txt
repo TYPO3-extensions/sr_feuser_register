@@ -1,3 +1,7 @@
+
+## $Id$
+
+
 plugin.tx_srfeuserregister_pi1 {
 
     # cat=plugin.tx_srfeuserregister_pi1/file; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template file
