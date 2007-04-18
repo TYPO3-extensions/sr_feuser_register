@@ -94,8 +94,8 @@ class tx_srfeuserregister_marker {
 
 		$this->thePidTitle = trim($this->conf['pidTitleOverride']) ? trim($this->conf['pidTitleOverride']) : $row['title'];
 
-		$this->site_url = $this->control->site_url;
-		$this->prefixId = $pibase->prefixId;
+		$this->site_url = $this->control->getSiteUrl();
+		$this->prefixId = $this->control->prefixId;
 
 		$this->staticInfo = $pibase->staticInfo;
 		$this->setfixedEnabled = $pibase->setfixedEnabled;
@@ -334,6 +334,7 @@ class tx_srfeuserregister_marker {
 	* @return void
 	*/
 	function addURLMarkers(&$markerArray) {
+		$backUrl = rawurldecode($this->data->getFeUserData('backURL'));
 		if (!$markerArray)	{
 			$markerArray = $this->getArray();
 		}
@@ -359,7 +360,6 @@ class tx_srfeuserregister_marker {
 		$vars['rU'] = $this->data->getRecUid();
 		$vars['preview'] = '1';
 		$markerArray['###DELETE_URL###'] = $this->control->getUrl('', $this->pidArray['edit'].','.$GLOBALS['TSFE']->type, $vars);
-		
 		$vars['backURL'] = rawurlencode($markerArray['###FORM_URL###']);
 		$vars['cmd'] = 'create';
 		$markerArray['###REGISTER_URL###'] = $this->control->getUrl('', $this->pidArray['register'].','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
@@ -372,7 +372,7 @@ class tx_srfeuserregister_marker {
 			
 		$markerArray['###THE_PID###'] = $this->control->thePid;
 		$markerArray['###THE_PID_TITLE###'] = $this->thePidTitle;
-		$markerArray['###BACK_URL###'] = $this->control->backURL;
+		$markerArray['###BACK_URL###'] = $backUrl;
 		$markerArray['###SITE_NAME###'] = $this->conf['email.']['fromName'];
 		$markerArray['###SITE_URL###'] = $this->site_url;
 		$markerArray['###SITE_WWW###'] = t3lib_div::getIndpEnv('TYPO3_HOST_ONLY');
@@ -382,7 +382,7 @@ class tx_srfeuserregister_marker {
 			$cmd = $this->control->getCmd();
 			$markerArray['###HIDDENFIELDS###'] = ($cmd ? '<input type="hidden" name="'.$this->prefixId.'[cmd]" value="'.$cmd.'" />':'');
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($this->auth->authCode?'<input type="hidden" name="'.$this->prefixId.'[aC]" value="'.$this->auth->authCode.'" />':'');
-			$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($this->control->backURL?'<input type="hidden" name="'.$this->prefixId.'[backURL]" value="'.htmlspecialchars($this->control->backURL).'" />':'');
+			$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($backUrl?'<input type="hidden" name="'.$this->prefixId.'[backURL]" value="'.htmlspecialchars($backUrl).'" />':'');
 		}
 	}	// addURLMarkers
 
