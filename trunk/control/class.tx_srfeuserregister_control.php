@@ -285,7 +285,9 @@ class tx_srfeuserregister_control {
 			$markerArray = $this->marker->getArray();
 			$this->data->defaultValues($markerArray); // If no incoming data, this will set the default values.
 			$this->marker->setArray($markerArray);
-			$this->data->setFeUserData('preview', 0); // No preview if data is not received
+			if ($cmd != 'delete')	{
+				$this->data->setFeUserData('preview', 0); // No preview if data is not received and deleted
+			}
 		}
 		if ($this->data->getFailure()) {
 			$this->data->setFeUserData('preview', 0);
@@ -432,6 +434,14 @@ class tx_srfeuserregister_control {
 
 	function setMode($mode)	{
 		$this->mode = $mode;
+	}
+
+	function getSiteUrl ()	{
+		return $this->site_url;
+	}
+
+	function setSiteUrl ($site_url)	{
+		$this->site_url = $site_url;
 	}
 
 	function login ()	{
