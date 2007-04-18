@@ -149,16 +149,12 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		if (isset($this->conf['setfixed'])) {
 			$this->setfixedEnabled = $this->conf['setfixed'];
 		}
-	
 
-		$this->auth->init($this, $this->conf, $this->config, $this->data->feUserData['aC']);
-
+		$this->auth->init($this, $this->conf, $this->config, $this->data->getFeUserData('aC'));
 		$this->marker->init($this, $this->conf, $this->config, $this->data, $this->tca, $this->lang, $this->control, $this->auth, $this->freeCap);
-
 		$this->tca->init($this, $this->conf, $this->config, $this->data, $this->control, $this->lang);
 		$this->display->init($this, $this->conf, $this->config, $this->data, $this->marker, $this->tca, $this->control, $this->auth);
 		$this->email->init($this, $this->conf, $this->config, $this->display, $this->data, $this->marker, $this->tca, $this->control, $this->auth);
-
 	}	// init
 
 

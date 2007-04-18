@@ -73,9 +73,9 @@ class tx_srfeuserregister_tca {
 
 			// get the table definition
 		$TSFE->includeTCA();
-		$this->TCA = $TCA[$this->data->theTable];
+		$this->TCA = $TCA[$this->data->getTable()];
 		if ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['uploadFolder'])	{
-			$this->TCA[$this->data->theTable]['columns']['image']['config']['uploadfolder'] = $TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['uploadFolder'];
+			$this->TCA[$this->data->getTable()]['columns']['image']['config']['uploadfolder'] = $TYPO3_CONF_VARS['EXTCONF'][$this->extKey]['uploadFolder'];
 		}
 	}
 
@@ -133,6 +133,7 @@ class tx_srfeuserregister_tca {
 		global $TYPO3_DB, $TCA, $TSFE;
 		$cmd = $this->control->getCmd();
 		$cmdKey = $this->control->getCmdKey();
+		$theTable = $this->data->getTable();
 
 		foreach ($this->TCA['columns'] as $colName => $colSettings) {
 			if (t3lib_div::inList($this->conf[$cmdKey.'.']['fields'], $colName)) {
@@ -192,7 +193,7 @@ class tx_srfeuserregister_tca {
 								} else if ($colConfig['foreign_table']) {
 									t3lib_div::loadTCA($colConfig['foreign_table']);
 									$reservedValues = array();
-									if ($this->data->theTable == 'fe_users' && $colName == 'usergroup') {
+									if ($theTable == 'fe_users' && $colName == 'usergroup') {
 										$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
 									}
 									$valuesArray = array_diff($valuesArray, $reservedValues);
@@ -208,7 +209,7 @@ class tx_srfeuserregister_tca {
 											);
 										$i = 0;
 										while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
-											if ($this->data->theTable == 'fe_users' && $colName == 'usergroup') {
+											if ($theTable == 'fe_users' && $colName == 'usergroup') {
 												$row = $this->data->getUsergroupOverlay($row);
 											} elseif ($localizedRow = $TSFE->sys_page->getRecordOverlay($colConfig['foreign_table'], $row, $this->sys_language_content)) {
 												$row = $localizedRow;
@@ -240,7 +241,7 @@ class tx_srfeuserregister_tca {
 							break;
 	*/
 						case 'text':
-							$colContent = '<textarea id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$this->data->theTable.']['.$colName.']"'.
+							$colContent = '<textarea id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']"'.
 								' title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###"'.
 								' cols="'.($colConfig['cols']?$colConfig['cols']:30).'"'.
 								' rows="'.($colConfig['rows']?$colConfig['rows']:5).'"'.
@@ -256,18 +257,18 @@ class tx_srfeuserregister_tca {
 									} else {
 										$checked = ($dataArray[$colName] & (1 << $key))?'checked="checked"':'';
 									}
-									$colContent .= '<li><input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . 'id="' . $this->pibase->pi_getClassName($colName) . '-' . $key .  '" name="FE['.$this->data->theTable.']['.$colName.'][]" value="'.$key.'" '.$checked.' /><label for="' . $this->pibase->pi_getClassName($colName) . '-' . $key .  '">'.$this->lang->getLLFromString($colConfig['items'][$key][0]).'</label></li>';					
+									$colContent .= '<li><input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . 'id="' . $this->pibase->pi_getClassName($colName) . '-' . $key .  '" name="FE['.$theTable.']['.$colName.'][]" value="'.$key.'" '.$checked.' /><label for="' . $this->pibase->pi_getClassName($colName) . '-' . $key .  '">'.$this->lang->getLLFromString($colConfig['items'][$key][0]).'</label></li>';					
 								}
 								$colContent .= '</ul>';
 								// </Ries van Twisk added support for multiple checkboxes>
 							} else {
-								$colContent = '<input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . 'id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$this->data->theTable.']['.$colName.']"' . ($dataArray[$colName]?'checked="checked"':'') . ' />';
+								$colContent = '<input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . 'id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']"' . ($dataArray[$colName]?'checked="checked"':'') . ' />';
 							}
 							break;
 
 						case 'radio':
 							for ($i = 0; $i < count ($colConfig['items']); ++$i) {
-								$colContent .= '<input type="radio"' . $this->pibase->pi_classParam('radio') . ' id="'. $this->pibase->pi_getClassName($colName) . '-' . $i . '" name="FE['.$this->data->theTable.']['.$colName.']"'.
+								$colContent .= '<input type="radio"' . $this->pibase->pi_classParam('radio') . ' id="'. $this->pibase->pi_getClassName($colName) . '-' . $i . '" name="FE['.$theTable.']['.$colName.']"'.
 										' value="'.$i.'" '.($i==0?'checked="checked"':'').' />' .
 										'<label for="' . $this->pibase->pi_getClassName($colName) . '-' . $i . '">' . $this->lang->getLLFromString($colConfig['items'][$i][0]) . '</label>';
 							}
@@ -284,16 +285,16 @@ class tx_srfeuserregister_tca {
 							} else {
 								$multiple = '';
 							}
-							if ($this->data->theTable == 'fe_users' && $colName == 'usergroup' && !$this->conf['allowMultipleUserGroupSelection']) {
+							if ($theTable == 'fe_users' && $colName == 'usergroup' && !$this->conf['allowMultipleUserGroupSelection']) {
 								$multiple = '';
 							}
 							if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
 								$colContent .='
-										<input id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$this->data->theTable.']['.$colName.']" value="" type="hidden" />';
+										<input id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']" value="" type="hidden" />';
 								$colContent .='
 										<dl class="' . $this->pibase->pi_getClassName('multiple-checkboxes') . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
 							} else {
-								$colContent .= '<select id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$this->data->theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
+								$colContent .= '<select id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
 							}
 							$textSchema = 'fe_users.'.$colName.'.I.';
 							$itemArray = $this->lang->getItemsLL($textSchema, true);
@@ -315,7 +316,7 @@ class tx_srfeuserregister_tca {
 								foreach ($itemArray as $k => $item)	{
 									$label = $this->lang->getLLFromString($item[0],true);
 									if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-										$colContent .= '<dt><input class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $i .'" name="FE['.$this->data->theTable.']['.$colName.']['.$k.']" value="'.$k.'" type="checkbox"  ' . (in_array($k, $valuesArray) ? 'checked="checked"' : '') . ' /></dt>
+										$colContent .= '<dt><input class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $i .'" name="FE['.$theTable.']['.$colName.']['.$k.']" value="'.$k.'" type="checkbox"  ' . (in_array($k, $valuesArray) ? 'checked="checked"' : '') . ' /></dt>
 												<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $i .'">'.$label.'</label></dd>';
 									} else {
 										$colContent .= '<option value="'.$k. '" ' . (in_array($k, $valuesArray) ? 'selected="selected"' : '') . '>' . $label.'</option>';
@@ -325,11 +326,11 @@ class tx_srfeuserregister_tca {
 							} else if ($colConfig['foreign_table']) {
 								t3lib_div::loadTCA($colConfig['foreign_table']);
 								$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
-								if ($this->data->theTable == 'fe_users' && $colName == 'usergroup') {
+								if ($theTable == 'fe_users' && $colName == 'usergroup') {
 									$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
 									$selectedValue = false;
 								}
-								$whereClause = ($this->data->theTable == 'fe_users' && $colName == 'usergroup') ? ' pid='.intval($this->control->thePid).' ' : ' 1=1';
+								$whereClause = ($theTable == 'fe_users' && $colName == 'usergroup') ? ' pid='.intval($this->control->thePid).' ' : ' 1=1';
 								if ($TCA[$colConfig['foreign_table']] && $TCA[$colConfig['foreign_table']]['ctrl']['languageField'] && $TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField']) {
 									$whereClause .= ' AND '.$TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField'].'=0';
 								}
@@ -346,7 +347,7 @@ class tx_srfeuserregister_tca {
 									}
 								}
 								while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
-									if ($this->data->theTable == 'fe_users' && $colName == 'usergroup') {
+									if ($theTable == 'fe_users' && $colName == 'usergroup') {
 										if (!in_array($row['uid'], $reservedValues)) {
 											$row = $this->data->getUsergroupOverlay($row);
 											$selected = (in_array($row['uid'], $valuesArray) ? 'selected="selected"' : '');
@@ -355,7 +356,7 @@ class tx_srfeuserregister_tca {
 											}
 											$selectedValue = $selected ? true: $selectedValue;
 											if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-												$colContent .= '<dt><input  class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row['uid'] .'" name="FE['.$this->data->theTable.']['.$colName.']['.$row['uid'].'"]" value="'.$row['uid'].'" type="checkbox" ' . $selected ?'checked="checked"':'' . ' /></dt>
+												$colContent .= '<dt><input  class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row['uid'].'"]" value="'.$row['uid'].'" type="checkbox" ' . $selected ?'checked="checked"':'' . ' /></dt>
 														<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row['uid'] .'">'.$row[$titleField].'</label></dd>';
 											} else {
 												$colContent .= '<option value="'.$row['uid'].'"' . $selected . '>'.$row[$titleField].'</option>';
@@ -366,7 +367,7 @@ class tx_srfeuserregister_tca {
 											$row = $localizedRow;
 										}
 										if ($colConfig['renderMode']=='checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-											$colContent .= '<dt><input  class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row['uid'] .'" name="FE['.$this->data->theTable.']['.$colName.']['.$row['uid']. ']" value="'.$row['uid'].'" type="checkbox" ' . (in_array($row['uid'], $valuesArray) ? 'checked="checked"' : '') . ' /></dt>
+											$colContent .= '<dt><input  class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row['uid']. ']" value="'.$row['uid'].'" type="checkbox" ' . (in_array($row['uid'], $valuesArray) ? 'checked="checked"' : '') . ' /></dt>
 													<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row['uid'] .'">'.$row[$titleField].'</label></dd>';
 										} else {
 											$colContent .= '<option value="'.$row['uid'].'"' . (in_array($row['uid'], $valuesArray) ? 'selected="selected"' : '') . '>'.$row[$titleField].'</option>';
