@@ -40,8 +40,7 @@
 require_once(PATH_tslib.'class.tslib_pibase.php');
 	// To get the pid language overlay:
 require_once(PATH_t3lib.'class.t3lib_page.php');
-	// For use with images:
-require_once (PATH_t3lib.'class.t3lib_basicfilefunc.php');
+
 	// For translating items from other extensions
 // require_once (t3lib_extMgm::extPath('lang').'lang.php');
 
@@ -75,7 +74,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 	var $additionalUpdateFields = '';
 	var $sys_language_content;
 	var $charset = 'iso-8859-1'; // charset to be used in emails and form conversions
-	var $fileFunc = ''; // Set to a basic_filefunc object for file uploads
 	var $freeCap; // object of type tx_srfreecap_pi2
 	var $auth; // object of type tx_srfeuserregister_auth
 	var $control; // object of type tx_srfeuserregister_control
@@ -141,10 +139,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		if ($TSFE->metaCharset) {
 			$this->charset = $TSFE->csConvObj->parse_charset($TSFE->metaCharset);
 		}
-
-			// Initialise fileFunc object
-		$this->fileFunc = t3lib_div::makeInstance('t3lib_basicFileFunctions');
-
 
 		if (isset($this->conf['setfixed'])) {
 			$this->setfixedEnabled = $this->conf['setfixed'];

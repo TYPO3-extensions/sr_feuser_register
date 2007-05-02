@@ -41,6 +41,8 @@
  *
  */
 
+	// For use with images:
+require_once (PATH_t3lib.'class.t3lib_basicfilefunc.php');
 
 
 class tx_srfeuserregister_data {
@@ -63,11 +65,11 @@ class tx_srfeuserregister_data {
 	var $theTable = 'fe_users';
 	var $addTableArray = array();
 	var $failure = 0; // is set if data did not have the required fields set.
+	var $fileFunc = ''; // Set to a basic_filefunc object for file uploads
 
 	var $extKey;
 	var $error;
 	var $sys_language_content;
-	var $fileFunc;
 	var $prefixId;
 	var $adminFieldList = 'username,password,name,disable,usergroup,by_invitation';
 	var $fieldList; // List of fields from fe_admin_fieldList
@@ -98,6 +100,9 @@ class tx_srfeuserregister_data {
 		$fe = t3lib_div::_GP('FE');
 		$cmdKey = $this->control->getCmdKey();
 		$theTable = $this->getTable();
+
+			// Initialise fileFunc object
+		$this->fileFunc = t3lib_div::makeInstance('t3lib_basicFileFunctions');
 
 		// <Steve Webster added short url feature>
 			// Get hash variable if provided and if short url feature is enabled
