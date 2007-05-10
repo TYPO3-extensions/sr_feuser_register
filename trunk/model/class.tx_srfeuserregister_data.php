@@ -196,6 +196,24 @@ class tx_srfeuserregister_data {
 		return $rc;
 	}
 
+	function setCurrentArr ($currentArr, $k=0)	{
+		if ($k)	{
+			$this->currentArr[$k] = $currentArr;
+		} else {
+			$this->currentArr = $currentArr;
+		}
+	}
+
+	function getCurrentArr ($k=0)	{
+
+		if ($k)	{
+			$rc = $this->currentArr[$k];
+		} else {
+			$rc = $this->currentArr;
+		} 
+		return $rc;
+	}
+
 	function setDataArray ($dataArray)	{
 		$this->dataArray = $dataArray;
 	}
@@ -691,8 +709,8 @@ class tx_srfeuserregister_data {
 
 						// Post-edit processing: call user functions and hooks
 					$rawRecord = $TSFE->sys_page->getRawRecord($theTable, $theUid);
-					$this->currentArr = $this->parseIncomingData($rawRecord);
-					$this->pibase->userProcess_alt($this->conf['edit.']['userFunc_afterSave'], $this->conf['edit.']['userFunc_afterSave.'], array('rec' => $this->currentArr, 'origRec' => $origArr));
+					$this->setCurrentArr ($this->parseIncomingData($rawRecord));
+					$this->pibase->userProcess_alt($this->conf['edit.']['userFunc_afterSave'], $this->conf['edit.']['userFunc_afterSave.'], array('rec' => $this->getCurrentArr(), 'origRec' => $origArr));
 
 						// <Ries van Twisk added registrationProcess hooks>
 						// Call all afterSaveEdit hooks after the record has been edited and saved
@@ -700,7 +718,7 @@ class tx_srfeuserregister_data {
 						foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'] as $classRef) {
 							$hookObj= &t3lib_div::getUserObj($classRef);
 							if (method_exists($hookObj, 'registrationProcess_afterSaveEdit')) {
-								$hookObj->registrationProcess_afterSaveEdit($this->currentArr, $this);
+								$hookObj->registrationProcess_afterSaveEdit($this->getCurrentArr(), $this);
 							}
 						}
 					}
@@ -746,8 +764,8 @@ class tx_srfeuserregister_data {
 				$this->saved = true;
 
 					// Post-create processing: call user functions and hooks
-				$this->currentArr = $this->parseIncomingData($TSFE->sys_page->getRawRecord($theTable, $newId));
-				$this->pibase->userProcess_alt($this->conf['create.']['userFunc_afterSave'], $this->conf['create.']['userFunc_afterSave.'], array('rec' => $this->currentArr));
+				$this->setCurrentArr ($this->parseIncomingData($TSFE->sys_page->getRawRecord($theTable, $newId)));
+				$this->pibase->userProcess_alt($this->conf['create.']['userFunc_afterSave'], $this->conf['create.']['userFunc_afterSave.'], array('rec' => $this->getCurrentArr()));
 
 					// <Ries van Twisk added registrationProcess hooks>
 					// Call all afterSaveCreate hooks after the record has been created and saved
@@ -755,13 +773,13 @@ class tx_srfeuserregister_data {
 					foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'] as $classRef) {
 						$hookObj= &t3lib_div::getUserObj($classRef);
 						if (method_exists($hookObj, 'registrationProcess_afterSaveCreate')) {
-							$hookObj->registrationProcess_afterSaveCreate($this->currentArr, $this);
+							$hookObj->registrationProcess_afterSaveCreate($this->getCurrentArr(), $this);
 						}
 					}
 				}
 					// </Ries van Twisk added registrationProcess hooks>
 				if ($cmdKey == 'invite' && $this->control->useMd5Password) {
-					$this->currentArr['password'] = $this->dataArray['password'];
+					$this->setCurrentArr($this->getDataArray('password'),'password');
 				}
 			}
 			break;
@@ -805,7 +823,7 @@ class tx_srfeuserregister_data {
 						}
 						$res = $this->cObj->DBgetDelete($theTable, $this->recUid, true);
 						$this->deleteMMRelations($theTable, $this->getRecUid(), $origArr);
-						$this->currentArr = $origArr;
+						$this->setCurrentArr($origArr);
 						$this->saved = true;
 					} else {
 						$this->error = '###TEMPLATE_NO_PERMISSIONS###';
