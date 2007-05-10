@@ -282,14 +282,17 @@ class tx_srfeuserregister_display {
 					} else {
 						// Else display error, that you could not edit that particular record...
 						$content = $this->getPlainTemplate('###TEMPLATE_NO_PERMISSIONS###');
+
 					}
 				}
 			} else {
 				// Finally this is if there is no login user. This must tell that you must login. Perhaps link to a page with create-user or login information.
 				if ( $theTable == 'fe_users' ) {
 					$content = $this->getPlainTemplate('###TEMPLATE_AUTH###');
+
 				} else {
 					$content = $this->getPlainTemplate('###TEMPLATE_NO_PERMISSIONS###');
+
 				}
 			}
 		} else {

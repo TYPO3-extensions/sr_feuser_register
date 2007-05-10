@@ -61,10 +61,6 @@ class tx_srfeuserregister_marker {
 	var $staticInfo;
 	var $setfixedEnabled;
 
-	var $confirmPID;
-	var $confirmInvitationPID;
-
-	var $pidArray = array();
 	var $markerArray = array();
 	var $sys_language_content;
 	var $confirmType;
@@ -105,16 +101,6 @@ class tx_srfeuserregister_marker {
 		if ($this->conf['confirmType'] == '0' ) {
 			$this->confirmType = '0';
 		};
-
-		// set the pid's
-		$registerPID = intval($this->conf['registerPID']) ? strval(intval($this->conf['registerPID'])) : $TSFE->id;
-		$editPID = intval($this->conf['editPID']) ? strval(intval($this->conf['editPID'])) : $TSFE->id;
-		$infomailPID = intval($this->conf['infomailPID']) ? strval(intval($this->conf['infomailPID'])) : $registerPID;
-		$this->confirmPID = intval($this->conf['confirmPID']) ? strval(intval($this->conf['confirmPID'])) : $registerPID;
-		$this->confirmInvitationPID = intval($this->conf['confirmInvitationPID']) ? strval(intval($this->conf['confirmInvitationPID'])) : $this->confirmPID;
-		$loginPID = $this->control->loginPID;
-
-		$this->pidArray = array('edit' => $editPID, 'register' => $registerPID, 'login' => $loginPID, 'infomail' => $infomailPID);
 
 			// Initialise static info library
 		$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
@@ -180,10 +166,10 @@ class tx_srfeuserregister_marker {
 		if (!$markerArray)	{
 			$markerArray = $this->getArray();
 		}
+
 		if ($this->setfixedEnabled && is_array($setfixed) ) {
 			$setfixedpiVars = array();
 			$theTable = $this->data->getTable();
-
 			reset($setfixed);
 			while (list($theKey, $data) = each($setfixed)) {
 				if (strstr($theKey, '.') ) {
@@ -191,7 +177,7 @@ class tx_srfeuserregister_marker {
 				}
 				unset($setfixedpiVars);
 				$recCopy = $r;
-				$setfixedpiVars[$this->prefixId.'[rU]'] = $r[uid];
+				$setfixedpiVars[$this->prefixId.'[rU]'] = $r['uid'];
 
 				if ( $theTable != 'fe_users' && $theKey == 'EDIT' ) {
 // 					$setfixedpiVars[$this->prefixId.'[cmd]'] = 'edit';
@@ -207,7 +193,7 @@ class tx_srfeuserregister_marker {
 					} else {
 						$setfixedpiVars[$this->prefixId.'[aC]'] = $this->auth->authCode($r);
 					}
-					$linkPID = $this->editPID;
+					$linkPID = $this->control->getPID('edit');
 				} else {
 					$setfixedpiVars[$this->prefixId.'[cmd]'] = 'setfixed';
 					$setfixedpiVars[$this->prefixId.'[sFK]'] = $theKey;
@@ -219,9 +205,10 @@ class tx_srfeuserregister_marker {
 						}
 					}
 					$setfixedpiVars[$this->prefixId.'[aC]'] = $this->auth->setfixedHash($recCopy, $data['_FIELDLIST']);
-					$linkPID = $this->confirmPID;
+					$linkPID = $this->control->getPID('confirm');
 					if ($this->control->getCmd() == 'invite') {
-						$linkPID = $this->confirmInvitationPID;
+						$linkPID = $this->control->getPID('confirmInvitation');
+
 					}
 				}
 				if (t3lib_div::_GP('L') && !t3lib_div::inList($GLOBALS['TSFE']->config['config']['linkVars'], 'L')) {
@@ -232,7 +219,10 @@ class tx_srfeuserregister_marker {
 					$thisHash = $this->storeFixedPiVars($setfixedpiVars);
 					$setfixedpiVars = array($this->prefixId.'[regHash]' => $thisHash);
 				}
-				$markerArray['###SETFIXED_'.$this->cObj->caseshift($theKey,'upper').'_URL###'] = ($TSFE->absRefPrefix ? '' : $this->site_url) . $this->cObj->getTypoLink_URL($linkPID.','.$this->confirmType, $setfixedpiVars);
+				$conf = array();
+				$conf['disableGroupAccessCheck'] = TRUE;
+				$url = $this->cObj->getTypoLink_URL($linkPID.','.$this->confirmType, $setfixedpiVars, '', $conf);
+				$markerArray['###SETFIXED_'.$this->cObj->caseshift($theKey,'upper').'_URL###'] = ($TSFE->absRefPrefix ? '' : $this->site_url) . $url;
 			}
 		}
 	}	// setfixed
@@ -353,23 +343,21 @@ class tx_srfeuserregister_marker {
 
 		$markerArray['###FORM_NAME###'] = $form; // $this->conf['formName'];
 		$unsetVars['cmd'] = '';
-
 		$vars['cmd'] = $this->control->getCmd();
 		$vars['backURL'] = rawurlencode($this->control->getUrl('', $GLOBALS['TSFE']->id.','.$GLOBALS['TSFE']->type, $vars));
 		$vars['cmd'] = 'delete';
 		$vars['rU'] = $this->data->getRecUid();
 		$vars['preview'] = '1';
-		$markerArray['###DELETE_URL###'] = $this->control->getUrl('', $this->pidArray['edit'].','.$GLOBALS['TSFE']->type, $vars);
+		$markerArray['###DELETE_URL###'] = $this->control->getUrl('', $this->control->getPID('edit').','.$GLOBALS['TSFE']->type, $vars);
 		$vars['backURL'] = rawurlencode($markerArray['###FORM_URL###']);
 		$vars['cmd'] = 'create';
-		$markerArray['###REGISTER_URL###'] = $this->control->getUrl('', $this->pidArray['register'].','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
+		$markerArray['###REGISTER_URL###'] = $this->control->getUrl('', $this->control->getPID('register').','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
 		$vars['cmd'] = 'edit';
-		$markerArray['###EDIT_URL###'] = $this->control->getUrl('', $this->pidArray['edit'].','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
+		$markerArray['###EDIT_URL###'] = $this->control->getUrl('', $this->control->getPID('edit').','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
 		$vars['cmd'] = 'login';
-		$markerArray['###LOGIN_FORM###'] = $this->control->getUrl('', $this->pidArray['login'].','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
+		$markerArray['###LOGIN_FORM###'] = $this->control->getUrl('', $this->control->getPID('login').','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
 		$vars['cmd'] = 'infomail';
-		$markerArray['###INFOMAIL_URL###'] = $this->control->getUrl('', $this->pidArray['infomail'].','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
-			
+		$markerArray['###INFOMAIL_URL###'] = $this->control->getUrl('', $this->control->getPID('infomail').','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
 		$markerArray['###THE_PID###'] = $this->control->thePid;
 		$markerArray['###THE_PID_TITLE###'] = $this->thePidTitle;
 		$markerArray['###BACK_URL###'] = $backUrl;
@@ -384,6 +372,7 @@ class tx_srfeuserregister_marker {
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($this->auth->authCode?'<input type="hidden" name="'.$this->prefixId.'[aC]" value="'.$this->auth->authCode.'" />':'');
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($backUrl?'<input type="hidden" name="'.$this->prefixId.'[backURL]" value="'.htmlspecialchars($backUrl).'" />':'');
 		}
+
 	}	// addURLMarkers
 
 	
@@ -571,33 +560,6 @@ class tx_srfeuserregister_marker {
 			}";
 		return $JSPart;
 	}	// getMD5Submit
-
-
-	/**
-		* Adds CSS styles marker to a marker array for substitution in an HTML email message
-		*
-		* @param array  $markerArray: the input marker array
-		* @return void
-		*/
-	function addCSSStyleMarkers(&$markerArray) {
-		if (!$markerArray)	{
-			$markerArray = $this->getArray();
-		}
-		$HTMLMailEnabled = $this->conf['email.'][HTMLMail];
-		if ($HTMLMailEnabled ) {
-			if ($this->conf['templateStyle'] == 'css-styled') {
-				$markerArray['###CSS_STYLES###'] = '	/*<![CDATA[*/
-<!--';
-				$markerArray['###CSS_STYLES###'] .= $this->cObj->fileResource($this->conf['email.']['HTMLMailCSS']);
-				$markerArray['###CSS_STYLES###'] .= '
--->
-/*]]>*/';
-			} else {
-				$markerArray['###CSS_STYLES###'] = $this->cObj->fileResource($this->conf['email.']['HTMLMailCSS']);
-			}
-		}
-		return $markerArray;
-	}	// addCSSStyleMarkers
 
 
 	/**

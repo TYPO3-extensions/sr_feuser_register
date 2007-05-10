@@ -60,7 +60,6 @@ class tx_srfeuserregister_control {
 	var $marker;
 	var $cObj;
 	var $setfixedEnabled;
-	var $loginPID;
 	var $site_url;
 	var $prefixId;
 	var $extKey;
@@ -71,6 +70,7 @@ class tx_srfeuserregister_control {
 	var $backURL;
 	var $mode = MODE_NORMAL;	// internal modes: MODE_NORMAL, MODE_PREVIEW
 	var $thePid = 0;
+	var $pid = array();
 	var $requiredArray; // List of required fields
 
 	function init(&$pibase, &$conf, &$config, &$display, &$data, &$marker, &$auth, &$email, &$tca)	{
@@ -92,7 +92,6 @@ class tx_srfeuserregister_control {
 		$this->email = &$email;
 		$this->tca = &$tca;
 
-		$this->loginPID = intval($this->conf['loginPID']) ? strval(intval($this->conf['loginPID'])) : $TSFE->id;
 		$cmd = $this->data->getFeUserData('cmd');
 		if (!$cmd)	{
 			$cmd = $this->cObj->data['select_key'];
@@ -196,8 +195,7 @@ class tx_srfeuserregister_control {
 			$this->conf['enableAutoLoginOnCreate'] = FALSE;
 		}
 
-			// Setting the record uid if a frontend user is logged in and we are not trying to send an invitation
-		if ($theTable == 'fe_users' && $TSFE->loginUser && $cmd != 'invite') {
+		if ($theTable == 'fe_users' && $TSFE->loginUser && $cmd != 'invite' && $cmd != 'setfixed') {
 			$recUid = $TSFE->fe_user->user['uid'];
 		} else {
 			$recUid = intval($this->data->getFeUserData('rU'));
@@ -207,6 +205,44 @@ class tx_srfeuserregister_control {
 		$this->site_url = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
 		$this->thePid = intval($this->conf['pid']) ? strval(intval($this->conf['pid'])) : $TSFE->id;
 
+		$pidTypeArray = array('login', 'register', 'edit', 'infomail', 'confirm', 'confirmInvitation');
+		// set the pid's
+
+		foreach ($pidTypeArray as $k => $type)	{
+			$this->setPid ($type, $this->conf[$type.'PID']);
+		}
+
+	}
+
+	function getPID($type)	{
+		global $TSFE;
+
+		$rc = $TSFE->id;
+ 		if (isset($this->pid[$type]))	{
+			$rc = $this->pid[$type];
+		}
+
+		return $rc;
+	}
+
+	function setPID($type, $pid)	{
+		global $TSFE;
+
+		if (!intval($pid))	{
+			switch ($type)	{
+				case 'infomail':
+				case 'confirm':
+					$pid = $this->getPID('register');
+					break;
+				case 'confirmInvitation':
+					$pid = $this->getPID('confirm');
+					break;
+				default:
+					$pid = $TSFE->id;
+					break;
+			}
+		}
+		$this->pid[$type] = $pid;
 	}
 
 	function getCmd() {
@@ -325,7 +361,7 @@ class tx_srfeuserregister_control {
 						$this->marker->addMd5LoginMarkers($markerArray);
 						$this->marker->setArray($markerArray);
 						if ($this->useMd5Password) {
-							$this->data->currentArr['password'] = '';
+							$this->data->setCurrentArr('','password');
 						}
 					}
 				default:
@@ -342,18 +378,18 @@ class tx_srfeuserregister_control {
 				// Display confirmation message
 			$templateCode = $this->cObj->getSubpart($this->data->templateCode, '###TEMPLATE_'.$key.'###');
 			$markerArray = $this->marker->getArray();
-			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $this->data->currentArr, '',TRUE, 'FIELD_', TRUE);
-			$this->marker->addStaticInfoMarkers($markerArray, $this->data->currentArr);
-			$this->tca->addTcaMarkers($markerArray, $this->data->currentArr, true);
-			$this->marker->addLabelMarkers($markerArray, $this->data->currentArr, $this->getRequiredArray());
+			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $this->data->getCurrentArr(), '',TRUE, 'FIELD_', TRUE);
+			$this->marker->addStaticInfoMarkers($markerArray, $this->data->getCurrentArr());
+			$this->tca->addTcaMarkers($markerArray, $this->data->getCurrentArr(), true);
+			$this->marker->addLabelMarkers($markerArray, $this->data->getCurrentArr(), $this->getRequiredArray());
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 
 			$markerArray = $this->marker->getArray(); // compile uses its own markerArray
 				// Send email message(s)
 			$this->email->compile(
 				$key,
-				array($this->data->currentArr),
-				$this->data->currentArr[$this->conf['email.']['field']],
+				$this->data->getCurrentArr(),
+				$this->data->getCurrentArr($this->conf['email.']['field']),
 				$markerArray,
 				$this->getCmd(),
 				$this->getCmdKey(),
@@ -448,12 +484,12 @@ class tx_srfeuserregister_control {
 		global $TSFE;
 
 		$loginVars = array();
-		$loginVars['user'] = $this->data->currentArr['username'];
-		$loginVars['pass'] = $this->data->currentArr['password'];
+		$loginVars['user'] = $this->data->getCurrentArr('username');
+		$loginVars['pass'] = $this->data->getCurrentArr('password');
 		$loginVars['pid'] = $this->thePid;
 		$loginVars['logintype'] = 'login';
 		$loginVars['redirect_url'] = htmlspecialchars(trim($this->conf['autoLoginRedirect_url']));
-		header('Location: '.t3lib_div::locationHeaderUrl(($TSFE->absRefPrefix ? '' : $this->site_url).$this->cObj->getTypoLink_URL($this->loginPID.','.$TSFE->type, $loginVars)));
+		header('Location: '.t3lib_div::locationHeaderUrl(($TSFE->absRefPrefix ? '' : $this->site_url).$this->cObj->getTypoLink_URL($this->getPID('login').','.$TSFE->type, $loginVars)));
 	}
 
 	/**
@@ -467,7 +503,7 @@ class tx_srfeuserregister_control {
 	* @return string  generated link or url
 	*/
 	function getUrl($tag = '', $id, $vars = array(), $unsetVars = array(), $usePiVars = true) {
-			
+
 		$vars = (array) $vars;
 		$unsetVars = (array) $unsetVars;
 		if ($usePiVars) {
@@ -485,8 +521,9 @@ class tx_srfeuserregister_control {
 		} else {
 			$rc = $this->cObj->getTypoLink_URL($id, $piVars);
 		}
-		
+
 		$rc = htmlspecialchars($rc);
+
 		return $rc;
 	}	// get_url
 
@@ -502,6 +539,7 @@ class tx_srfeuserregister_control {
 
 		if ($this->setfixedEnabled) {
 			$theTable = $this->data->getTable();
+
 			$origArr = $TSFE->sys_page->getRawRecord($theTable, $this->data->getRecUid());
 			$origUsergroup = $origArr['usergroup'];
 			$setfixedUsergroup = '';
@@ -517,7 +555,6 @@ class tx_srfeuserregister_control {
 					$fieldArr[] = $field;
 				}
 			}
-
 			$theCode = $this->auth->setfixedHash($origArr, $origArr['_FIELDLIST']);
 
 			if (!strcmp($this->auth->authCode, $theCode)) {
@@ -551,11 +588,11 @@ class tx_srfeuserregister_control {
 					}
 					$newFieldList = implode(array_intersect(t3lib_div::trimExplode(',', $this->data->fieldList), t3lib_div::trimExplode(',', implode($fieldArr, ','), 1)), ',');
 					$res = $this->cObj->DBgetUpdate($theTable, $this->data->getRecUid(), $origArr, $newFieldList, true);
-					$this->data->currentArr = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable,$this->data->getRecUid());
+					$this->data->setCurrentArr($GLOBALS['TSFE']->sys_page->getRawRecord($theTable,$this->data->getRecUid()));
 					$modArray=array();
-					$this->data->currentArr = $this->tca->modifyTcaMMfields($this->data->currentArr,$modArray);
+					$this->data->setCurrentArr ($this->tca->modifyTcaMMfields($this->data->currentArr,$modArray));
 					$origArr = array_merge ($origArr, $modArray);
-					$this->pibase->userProcess_alt($this->conf['setfixed.']['userFunc_afterSave'],$this->conf['setfixed.']['userFunc_afterSave.'],array('rec'=>$this->data->currentArr, 'origRec'=>$origArr));
+					$this->pibase->userProcess_alt($this->conf['setfixed.']['userFunc_afterSave'],$this->conf['setfixed.']['userFunc_afterSave.'],array('rec'=>$this->data->getCurrentArr(), 'origRec'=>$origArr));
 
 						// Hook: confirmRegistrationClass_postProcess
 					foreach($hookObjectsArr as $hookObj)    {

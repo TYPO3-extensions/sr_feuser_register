@@ -72,6 +72,7 @@ class tx_srfeuserregister_email {
 		$this->tca = &$tca;
 		$this->control = &$control;
 		$this->auth = &$auth;
+		$this->cObj = &$pibase->cObj;
 
 		$this->setfixedEnabled = $pibase->setfixedEnabled;
 		if (isset($this->conf['email.']['HTMLMail'])) {
@@ -81,11 +82,9 @@ class tx_srfeuserregister_email {
 			// Setting CSS style markers if required
 		if ($this->HTMLMailEnabled) {
 			$markerArray = $this->marker->getArray();
-			$this->marker->addCSSStyleMarkers($markerArray);
+			$this->addCSSStyleMarkers($markerArray);
 			$this->marker->setArray($markerArray);
 		}
-
-		$this->cObj = &$pibase->cObj;
 	}
 
 	/**
@@ -143,26 +142,27 @@ class tx_srfeuserregister_email {
 		*/
 	function compile($key, $DBrows, $recipient, &$markContentArray, $cmd, $cmdKey, &$templateCode, $setFixedConfig = array()) {
 		$viewOnly = true;
-		$mailContent = '';
-		$userContent['all'] = '';
-		$HTMLContent['all'] = '';
-		$adminContent['all'] = '';
+		$content = array('user' => array(), 'HTML' => array(), 'admin' => array(), 'mail' => array());
+		$content['mail'] = '';
+		$content['user']['all'] = '';
+		$content['HTML']['all'] = '';
+		$content['admin']['all'] = '';
 		if ($this->conf['email.'][$key] || ($this->setfixedEnabled && ($key == 'SETFIXED_CREATE' || $key == 'SETFIXED_CREATE_REVIEW' || $key == 'SETFIXED_INVITE' || $key == 'SETFIXED_REVIEW' || $key == 'INFOMAIL'  || $key == 'INFOMAIL_NORECORD'))) {
 			$subpartMarker = $this->emailMarkPrefix.$key;
-			$userContent['all'] = trim($this->cObj->getSubpart($templateCode, '###'.$subpartMarker.'###'));
-			$userContent['all'] = $this->display->removeRequired($userContent['all']);
+			$content ['user']['all'] = trim($this->cObj->getSubpart($templateCode, '###'.$subpartMarker.'###'));
+			$content['user']['all'] = $this->display->removeRequired($content['user']['all']);
 			$subpartMarker = $this->emailMarkPrefix.$key.$this->emailMarkHTMLSuffix;
-			$HTMLContent['all'] = ($this->HTMLMailEnabled && $this->data->getDataArray('module_sys_dmail_html')) ? trim($this->cObj->getSubpart($templateCode, '###'.$subpartMarker.'###')):'';
-			$HTMLContent['all'] = $this->display->removeRequired($HTMLContent['all']);
+			$content['HTML']['all'] = ($this->HTMLMailEnabled && $this->data->getDataArray('module_sys_dmail_html')) ? trim($this->cObj->getSubpart($templateCode, '###'.$subpartMarker.'###')):'';
+			$content['HTML']['all'] = $this->display->removeRequired($content['HTML']['all']);
 		}
 		if ($this->conf['notify.'][$key] ) {
 			$subpartMarker = '###'.$this->emailMarkPrefix.$key.$this->emailMarkAdminSuffix.'###';
-			$adminContent['all'] = trim($this->cObj->getSubpart($templateCode, $subpartMarker));
-			$adminContent['all'] = $this->display->removeRequired($adminContent['all']);
+			$content['admin']['all'] = trim($this->cObj->getSubpart($templateCode, $subpartMarker));
+			$content['admin']['all'] = $this->display->removeRequired($content['admin']['all']);
 		}
-		$userContent['rec'] = $this->cObj->getSubpart($userContent['all'], '###SUB_RECORD###');
-		$HTMLContent['rec'] = $this->cObj->getSubpart($HTMLContent['all'], '###SUB_RECORD###');
-		$adminContent['rec'] = $this->cObj->getSubpart($adminContent['all'], '###SUB_RECORD###');
+		$content['user']['rec'] = $this->cObj->getSubpart($content['user']['all'], '###SUB_RECORD###');
+		$content['HTML']['rec'] = $this->cObj->getSubpart($content['HTML']['all'], '###SUB_RECORD###');
+		$content['admin']['rec'] = $this->cObj->getSubpart($content['admin']['all'], '###SUB_RECORD###');
 			
 		reset($DBrows);
 		while (list(, $r) = each($DBrows)) {
@@ -174,49 +174,47 @@ class tx_srfeuserregister_email {
 			$this->tca->addTcaMarkers($markerArray, $r, $viewOnly, 'email');
 			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $r, $viewOnly);
 			$this->marker->addLabelMarkers($markerArray, $r, $this->control->getRequiredArray());
-			if ($userContent['rec']) {
-				$userContent['rec'] = $this->marker->removeStaticInfoSubparts($userContent['rec'], $markerArray, $viewOnly);
-				$userContent['accum'] .= $this->cObj->substituteMarkerArray($userContent['rec'], $markerArray);
+			if ($content['user']['rec']) {
+				$content['user']['rec'] = $this->marker->removeStaticInfoSubparts($content['user']['rec'], $markerArray, $viewOnly);
+				$content['user']['accum'] .= $this->cObj->substituteMarkerArray($content['user']['rec'], $markerArray);
 			}
-			if ($HTMLContent['rec']) {
-				$HTMLContent['rec'] = $this->marker->removeStaticInfoSubparts($HTMLContent['rec'], $markerArray, $viewOnly);
-				$HTMLContent['accum'] .= $this->cObj->substituteMarkerArray($HTMLContent['rec'], $markerArray);
+			if ($content['HTML']['rec']) {
+				$content['HTML']['rec'] = $this->marker->removeStaticInfoSubparts($content['HTML']['rec'], $markerArray, $viewOnly);
+				$content['HTML']['accum'] .= $this->cObj->substituteMarkerArray($content['HTML']['rec'], $markerArray);
 			}
-			if ($adminContent['rec']) {
-				$adminContent['rec'] = $this->marker->removeStaticInfoSubparts($adminContent['rec'], $markerArray, $viewOnly);
-				$adminContent['accum'] .= $this->cObj->substituteMarkerArray($adminContent['rec'], $markerArray);
+			if ($content['admin']['rec']) {
+				$content['admin']['rec'] = $this->marker->removeStaticInfoSubparts($content['admin']['rec'], $markerArray, $viewOnly);
+				$content['admin']['accum'] .= $this->cObj->substituteMarkerArray($content['admin']['rec'], $markerArray);
 			}
 		}
 		
 			// Substitute the markers and eliminate HTML markup from plain text versions, but preserve <http://...> constructs
-		if ($userContent['all']) {
-			$userContent['final'] .= $this->cObj->substituteSubpart($userContent['all'], '###SUB_RECORD###', $userContent['accum']);
-			$userContent['final'] = str_replace('###http', '<http', strip_tags(str_replace('<http', '###http', $userContent['final'])));
-			$userContent['final'] = $this->display->removeHTMLComments($userContent['final']);
-			$userContent['final'] = $this->display->replaceHTMLBr($userContent['final']);
+		if ($content['user']['all']) {
+			$content['user']['final'] .= $this->cObj->substituteSubpart($content['user']['all'], '###SUB_RECORD###', $content['user']['accum']);
+			$content['user']['final'] = str_replace('###http', '<http', strip_tags(str_replace('<http', '###http', $content['user']['final'])));
+			$content['user']['final'] = $this->display->removeHTMLComments($content['user']['final']);
+			$content['user']['final'] = $this->display->replaceHTMLBr($content['user']['final']);
 		}
-		if ($HTMLContent['all']) {
-			$HTMLContent['final'] .= $this->cObj->substituteSubpart($HTMLContent['all'], '###SUB_RECORD###', $this->pibase->pi_wrapInBaseClass($HTMLContent['accum']));
-			$HTMLContent['final'] = $this->cObj->substituteMarkerArray($HTMLContent['final'], $markerArray);			 
+		if ($content['HTML']['all']) {
+			$content['HTML']['final'] .= $this->cObj->substituteSubpart($content['HTML']['all'], '###SUB_RECORD###', $this->pibase->pi_wrapInBaseClass($content['HTML']['accum']));
+			$content['HTML']['final'] = $this->cObj->substituteMarkerArray($content['HTML']['final'], $markerArray);			 
 		}
-		if ($adminContent['all']) {
-			$adminContent['final'] .= $this->cObj->substituteSubpart($adminContent['all'], '###SUB_RECORD###', $adminContent['accum']);
-			// $adminContent['final'] = str_replace('###http', '<http', strip_tags(str_replace('<http', '###http', $adminContent['final'])));
-			$adminContent['final'] = $this->display->removeHTMLComments($adminContent['final']);
-			$adminContent['final'] = $this->display->replaceHTMLBr($adminContent['final']);
+		if ($content['admin']['all']) {
+			$content['admin']['final'] .= $this->cObj->substituteSubpart($content['admin']['all'], '###SUB_RECORD###', $content['admin']['accum']);
+			// $content['admin']['final'] = str_replace('###http', '<http', strip_tags(str_replace('<http', '###http', $content['admin']['final'])));
+			$content['admin']['final'] = $this->display->removeHTMLComments($content['admin']['final']);
+			$content['admin']['final'] = $this->display->replaceHTMLBr($content['admin']['final']);
 		}
-			
 		if (t3lib_div::testInt($recipient)) {
 			$fe_userRec = $GLOBALS['TSFE']->sys_page->getRawRecord('fe_users', $recipient);
 			$recipient = $fe_userRec['email'];
 		}
-		
 			// Check if we need to add an attachment
 		if ($this->conf['addAttachment'] && $this->conf['addAttachment.']['cmd'] == $this->control->getCmd() && $this->conf['addAttachment.']['sFK'] == $this->data->getFeUserData('sFK')) {
 			$file = ($this->conf['addAttachment.']['file']) ? $GLOBALS['TSFE']->tmpl->getFileName($this->conf['addAttachment.']['file']):
 			'';
 		}
-		$this->send($recipient, $this->conf['email.']['admin'], $userContent['final'], $adminContent['final'], $HTMLContent['final'], $file);
+		$this->send($recipient, $this->conf['email.']['admin'], $content['user']['final'], $content['admin']['final'], $content['HTML']['final'], $file);
 	}
 
 
@@ -226,29 +224,56 @@ class tx_srfeuserregister_email {
 	* @param string  $recipient: email address
 	* @param string  $admin: email address
 	* @param string  $content: plain content for the recipient
-	* @param string  $adminContent: plain content for admin
-	* @param string  $HTMLContent: HTML content for the recipient
+	* @param string  $content['admin']: plain content for admin
+	* @param string  $content['HTML']: HTML content for the recipient
 	* @param string  $fileAttachment: file name
 	* @return void
 	*/
-	function send($recipient, $admin, $content = '', $adminContent = '', $HTMLContent = '', $fileAttachment = '') {
+	function send($recipient, $admin, $content = '', $adminContent = '', $HTMLcontent = '', $fileAttachment = '') {
+
 		// Send mail to admin
 		if ($admin && $adminContent) {
 			$this->cObj->sendNotifyEmail($adminContent, $admin, '', $this->conf['email.']['from'], $this->conf['email.']['fromName'], $recipient);
 		}
 		// Send mail to front end user
-		if ($this->HTMLMailEnabled && $HTMLContent && ($this->data->getDataArray('module_sys_dmail_html') || ($this->data->saved && $this->data->currentArr['module_sys_dmail_html']))) {
-			$this->sendHTML($HTMLContent, $content, $recipient, '', $this->conf['email.']['from'], $this->conf['email.']['fromName'], '', $fileAttachment);
+		if ($this->HTMLMailEnabled && $HTMLcontent && ($this->data->getDataArray('module_sys_dmail_html') || ($this->data->saved && $this->data->currentArr['module_sys_dmail_html']))) {
+			$this->sendHTML($HTMLcontent, $content, $recipient, '', $this->conf['email.']['from'], $this->conf['email.']['fromName'], '', $fileAttachment);
 		} else {
 			$this->cObj->sendNotifyEmail($content, $recipient, '', $this->conf['email.']['from'], $this->conf['email.']['fromName']);
 		}
 	}
 
+	/**
+		* Adds CSS styles marker to a marker array for substitution in an HTML email message
+		*
+		* @param array  $markerArray: the input marker array
+		* @return void
+		*/
+	function addCSSStyleMarkers(&$markerArray) {
+		if (!$markerArray)	{
+			$markerArray = $this->getArray();
+		}
+		$HTMLMailEnabled = $this->conf['email.'][HTMLMail];
+		if ($HTMLMailEnabled ) {
+			if ($this->conf['templateStyle'] == 'css-styled') {
+				$markerArray['###CSS_STYLES###'] = '	/*<![CDATA[*/
+';
+				$markerArray['###CSS_STYLES###'] .= $this->cObj->fileResource($this->conf['email.']['HTMLMailCSS']);
+				$markerArray['###CSS_STYLES###'] .= '
+/*]]>*/';
+			} else {
+				$markerArray['###CSS_STYLES###'] = $this->cObj->fileResource($this->conf['email.']['HTMLMailCSS']);
+			}
+		}
+		return $markerArray;
+	}	// addCSSStyleMarkers
+
+
 
 	/**
 	* Invokes the HTML mailing class
 	*
-	* @param string  $HTMLContent: HTML version of the message
+	* @param string  $content['HTML']: HTML version of the message
 	* @param string  $PLAINContent: plain version of the message
 	* @param string  $recipient: email address
 	* @param string  $dummy: ''
@@ -258,10 +283,10 @@ class tx_srfeuserregister_email {
 	* @param string  $fileAttachment: file name
 	* @return void
 	*/
-	function sendHTML($HTMLContent, $PLAINContent, $recipient, $dummy, $fromEmail, $fromName, $replyTo = '', $fileAttachment = '') {
+	function sendHTML($contentHTML, $PLAINContent, $recipient, $dummy, $fromEmail, $fromName, $replyTo = '', $fileAttachment = '') {
 		// HTML
 		if (trim($recipient)) {
-			$parts = spliti('<title>|</title>', $HTMLContent, 3);
+			$parts = spliti('<title>|</title>', $contentHTML, 3);
 			$subject = trim($parts[1]) ? strip_tags(trim($parts[1])) : 'Front end user registration message';
 				
 			$Typo3_htmlmail = t3lib_div::makeInstance('t3lib_htmlmail');
@@ -284,8 +309,8 @@ class tx_srfeuserregister_email {
 			}
 				
 			// HTML
-			if (trim($HTMLContent)) {
-				$Typo3_htmlmail->theParts['html']['content'] = $HTMLContent;
+			if (trim($content['HTML'])) {
+				$Typo3_htmlmail->theParts['html']['content'] = $contentHTML;
 				$Typo3_htmlmail->theParts['html']['path'] = '';
 				$Typo3_htmlmail->extractMediaLinks();
 				$Typo3_htmlmail->extractHyperLinks();
