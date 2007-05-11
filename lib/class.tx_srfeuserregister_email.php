@@ -163,9 +163,8 @@ class tx_srfeuserregister_email {
 		$content['user']['rec'] = $this->cObj->getSubpart($content['user']['all'], '###SUB_RECORD###');
 		$content['HTML']['rec'] = $this->cObj->getSubpart($content['HTML']['all'], '###SUB_RECORD###');
 		$content['admin']['rec'] = $this->cObj->getSubpart($content['admin']['all'], '###SUB_RECORD###');
-			
 		reset($DBrows);
-		while (list(, $r) = each($DBrows)) {
+		foreach ($DBrows as $k => $r)	{
 			$markerArray = $this->marker->getArray();
 			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $r, '', 0);
 			$markerArray['###SYS_AUTHCODE###'] = $this->auth->authCode($r);
@@ -187,17 +186,18 @@ class tx_srfeuserregister_email {
 				$content['admin']['accum'] .= $this->cObj->substituteMarkerArray($content['admin']['rec'], $markerArray);
 			}
 		}
-		
+
 			// Substitute the markers and eliminate HTML markup from plain text versions, but preserve <http://...> constructs
 		if ($content['user']['all']) {
 			$content['user']['final'] .= $this->cObj->substituteSubpart($content['user']['all'], '###SUB_RECORD###', $content['user']['accum']);
+
 			$content['user']['final'] = str_replace('###http', '<http', strip_tags(str_replace('<http', '###http', $content['user']['final'])));
 			$content['user']['final'] = $this->display->removeHTMLComments($content['user']['final']);
 			$content['user']['final'] = $this->display->replaceHTMLBr($content['user']['final']);
 		}
 		if ($content['HTML']['all']) {
 			$content['HTML']['final'] .= $this->cObj->substituteSubpart($content['HTML']['all'], '###SUB_RECORD###', $this->pibase->pi_wrapInBaseClass($content['HTML']['accum']));
-			$content['HTML']['final'] = $this->cObj->substituteMarkerArray($content['HTML']['final'], $markerArray);			 
+			$content['HTML']['final'] = $this->cObj->substituteMarkerArray($content['HTML']['final'], $markerArray);
 		}
 		if ($content['admin']['all']) {
 			$content['admin']['final'] .= $this->cObj->substituteSubpart($content['admin']['all'], '###SUB_RECORD###', $content['admin']['accum']);
@@ -214,6 +214,7 @@ class tx_srfeuserregister_email {
 			$file = ($this->conf['addAttachment.']['file']) ? $GLOBALS['TSFE']->tmpl->getFileName($this->conf['addAttachment.']['file']):
 			'';
 		}
+
 		$this->send($recipient, $this->conf['email.']['admin'], $content['user']['final'], $content['admin']['final'], $content['HTML']['final'], $file);
 	}
 
@@ -236,11 +237,11 @@ class tx_srfeuserregister_email {
 			$this->cObj->sendNotifyEmail($adminContent, $admin, '', $this->conf['email.']['from'], $this->conf['email.']['fromName'], $recipient);
 		}
 		// Send mail to front end user
-		if ($this->HTMLMailEnabled && $HTMLcontent && ($this->data->getDataArray('module_sys_dmail_html') || ($this->data->saved && $this->data->currentArr['module_sys_dmail_html']))) {
-			$this->sendHTML($HTMLcontent, $content, $recipient, '', $this->conf['email.']['from'], $this->conf['email.']['fromName'], '', $fileAttachment);
-		} else {
-			$this->cObj->sendNotifyEmail($content, $recipient, '', $this->conf['email.']['from'], $this->conf['email.']['fromName']);
+		if (!$this->HTMLMailEnabled) {
+			$HTMLcontent = '';
 		}
+
+		$this->sendHTML($HTMLcontent, $content, $recipient, '', $this->conf['email.']['from'], $this->conf['email.']['fromName'], '', $fileAttachment);
 	}
 
 	/**
@@ -283,15 +284,15 @@ class tx_srfeuserregister_email {
 	* @param string  $fileAttachment: file name
 	* @return void
 	*/
-	function sendHTML($contentHTML, $PLAINContent, $recipient, $dummy, $fromEmail, $fromName, $replyTo = '', $fileAttachment = '') {
+	function sendHTML($HTMLContent, $PLAINContent, $recipient, $dummy, $fromEmail, $fromName, $replyTo = '', $fileAttachment = '') {
 		// HTML
 		if (trim($recipient)) {
-			$parts = spliti('<title>|</title>', $contentHTML, 3);
+			$parts = spliti('<title>|</title>', $HTMLContent, 3);
 			$subject = trim($parts[1]) ? strip_tags(trim($parts[1])) : 'Front end user registration message';
 				
 			$Typo3_htmlmail = t3lib_div::makeInstance('t3lib_htmlmail');
 			$Typo3_htmlmail->start();
-			$Typo3_htmlmail->mailer = 'Typo3 HTMLMail';
+			$Typo3_htmlmail->mailer = 'TYPO3 HTMLMail';
 			$Typo3_htmlmail->subject = $subject;
 			$Typo3_htmlmail->from_email = $fromEmail;
 			$Typo3_htmlmail->returnPath = $fromEmail;
@@ -309,8 +310,8 @@ class tx_srfeuserregister_email {
 			}
 				
 			// HTML
-			if (trim($content['HTML'])) {
-				$Typo3_htmlmail->theParts['html']['content'] = $contentHTML;
+			if (trim($contentHTML)) {
+				$Typo3_htmlmail->theParts['html']['content'] = $HTMLContent;
 				$Typo3_htmlmail->theParts['html']['path'] = '';
 				$Typo3_htmlmail->extractMediaLinks();
 				$Typo3_htmlmail->extractHyperLinks();

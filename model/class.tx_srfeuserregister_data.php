@@ -205,12 +205,11 @@ class tx_srfeuserregister_data {
 	}
 
 	function getCurrentArr ($k=0)	{
-
 		if ($k)	{
 			$rc = $this->currentArr[$k];
 		} else {
 			$rc = $this->currentArr;
-		} 
+		}
 		return $rc;
 	}
 

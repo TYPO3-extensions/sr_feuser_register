@@ -388,7 +388,7 @@ class tx_srfeuserregister_control {
 				// Send email message(s)
 			$this->email->compile(
 				$key,
-				$this->data->getCurrentArr(),
+				array($this->data->getCurrentArr()),
 				$this->data->getCurrentArr($this->conf['email.']['field']),
 				$markerArray,
 				$this->getCmd(),
@@ -590,7 +590,7 @@ class tx_srfeuserregister_control {
 					$res = $this->cObj->DBgetUpdate($theTable, $this->data->getRecUid(), $origArr, $newFieldList, true);
 					$this->data->setCurrentArr($GLOBALS['TSFE']->sys_page->getRawRecord($theTable,$this->data->getRecUid()));
 					$modArray=array();
-					$this->data->setCurrentArr ($this->tca->modifyTcaMMfields($this->data->currentArr,$modArray));
+					$this->data->setCurrentArr ($this->tca->modifyTcaMMfields($this->data->getCurrentArr(),$modArray));
 					$origArr = array_merge ($origArr, $modArray);
 					$this->pibase->userProcess_alt($this->conf['setfixed.']['userFunc_afterSave'],$this->conf['setfixed.']['userFunc_afterSave.'],array('rec'=>$this->data->getCurrentArr(), 'origRec'=>$origArr));
 
@@ -621,6 +621,7 @@ class tx_srfeuserregister_control {
 				}
 				// Compiling email
 				$this->data->setDataArray($origArr);
+
 				$this->email->compile(
 					SETFIXED_PREFIX.$setfixedSufffix,
 					array($origArr),
@@ -635,6 +636,7 @@ class tx_srfeuserregister_control {
 				if ($theTable == 'fe_users') { 
 						// If applicable, send admin a request to review the registration request
 					if ($this->conf['enableAdminReview'] && $this->data->getFeUserData('sFK') == 'APPROVE' && !$origArr['by_invitation']) {
+
 						$this->email->compile(
 							SETFIXED_PREFIX.'REVIEW',
 							array($origArr),
