@@ -40,10 +40,35 @@
             <label index="fe_groups_language_overlay.title">Translated user group name</label>
         </languageKey>
         <languageKey index="dk" type="array">
-            <label index="tt_content.list_type">Front End Bruger Registrering</label>
-            <label index="fe_users.static_info_country">Land:</label>
-            <label index="fe_users.zone">Stat/Provins/Amt:</label>
-            <label index="fe_users.language">Sprog:</label>
+		<label index="tt_content.list_type">Front End Bruger Registrering</label>
+		<label index="tt_content.pi1_flexform.display_mode">Visnings type</label>
+		<label index="tt_content.pi1_flexform.display_mode.1">Standart</label>
+		<label index="tt_content.pi1_flexform.display_mode.3">Opret</label>
+		<label index="tt_content.pi1_flexform.display_mode.4">Slet</label>
+		<label index="tt_content.pi1_flexform.display_mode.5">Inviter</label>
+		<label index="tt_content.pi1_flexform.display_mode.7">Ret</label>
+		<label index="tt_content.pi1_flexform.display_mode.8">Setfixed</label>
+		<label index="tt_content.pi1_flexform.display_mode.9">Infomail</label>
+		<label index="fe_users.static_info_country">Land:</label>
+		<label index="fe_users.zone">Stat/Provins/Amt:</label>
+		<label index="fe_users.language">Sprog:</label>
+		<label index="fe_users.first_name">Fornavn:</label>
+		<label index="fe_users.last_name">Efternavn:</label>
+		<label index="fe_users.module_sys_dmail_html">Modtag mails i HTML format?</label>
+		<label index="fe_users.date_of_birth">Fødselsdag:</label>
+		<label index="fe_users.gender">Køn:</label>
+		<label index="fe_users.gender.I.0">Mand</label>
+		<label index="fe_users.gender.I.1">Kvinde</label>
+		<label index="fe_users.status">Status:</label>
+		<label index="fe_users.status.I.1">Studerende</label>
+		<label index="fe_users.status.I.2">Søger fuldtids job</label>
+		<label index="fe_users.status.I.3">Arbejde</label>
+		<label index="fe_users.status.I.4">Pensioneret</label>
+		<label index="fe_users.status.I.5">Søger deltids jon</label>
+		<label index="fe_users.comments">Kommentarer:</label>
+		<label index="fe_users.by_invitation">Blev inviteret:</label>
+		<label index="fe_groups_language_overlay">User Group Alternative Language</label>
+		<label index="fe_groups_language_overlay.title">Translated user group name</label>
         </languageKey>
         <languageKey index="de" type="array">
             <label index="tt_content.list_type">Front End Benutzer Registrierung</label>

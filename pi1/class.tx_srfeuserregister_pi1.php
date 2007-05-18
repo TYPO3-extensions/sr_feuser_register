@@ -40,8 +40,7 @@
 require_once(PATH_tslib.'class.tslib_pibase.php');
 	// To get the pid language overlay:
 require_once(PATH_t3lib.'class.t3lib_page.php');
-	// For use with images:
-require_once (PATH_t3lib.'class.t3lib_basicfilefunc.php');
+
 	// For translating items from other extensions
 // require_once (t3lib_extMgm::extPath('lang').'lang.php');
 
@@ -75,7 +74,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 	var $additionalUpdateFields = '';
 	var $sys_language_content;
 	var $charset = 'iso-8859-1'; // charset to be used in emails and form conversions
-	var $fileFunc = ''; // Set to a basic_filefunc object for file uploads
 	var $freeCap; // object of type tx_srfreecap_pi2
 	var $auth; // object of type tx_srfeuserregister_auth
 	var $control; // object of type tx_srfeuserregister_control
@@ -142,23 +140,15 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$this->charset = $TSFE->csConvObj->parse_charset($TSFE->metaCharset);
 		}
 
-			// Initialise fileFunc object
-		$this->fileFunc = t3lib_div::makeInstance('t3lib_basicFileFunctions');
-
-
 		if (isset($this->conf['setfixed'])) {
 			$this->setfixedEnabled = $this->conf['setfixed'];
 		}
-	
 
 		$this->auth->init($this, $this->conf, $this->config, $this->data->getFeUserData('aC'));
-
 		$this->marker->init($this, $this->conf, $this->config, $this->data, $this->tca, $this->lang, $this->control, $this->auth, $this->freeCap);
-
 		$this->tca->init($this, $this->conf, $this->config, $this->data, $this->control, $this->lang);
 		$this->display->init($this, $this->conf, $this->config, $this->data, $this->marker, $this->tca, $this->control, $this->auth);
 		$this->email->init($this, $this->conf, $this->config, $this->display, $this->data, $this->marker, $this->tca, $this->control, $this->auth);
-
 	}	// init
 
 

@@ -24,12 +24,14 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
-*
-* Example of hook handler for extension Front End User Registration (sr_feuser_register)
-*
-* @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
-*
-*/
+ *
+ * Example of hook handler for extension Front End User Registration (sr_feuser_register)
+ *
+ * $Id$
+ *
+ * @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
+ *
+ */
 	 // $invokingObj is a reference to the invoking object
 
 class tx_srfeuserregister_hooksHandler {

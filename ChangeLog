@@ -1,3 +1,20 @@
+2007-05-18 Franz Holzinger  <kontakt@fholzinger.com>
+	* use first line of plain text emails as the subject
+	* when there is already an items array in TCA and also records from a foreign table, then both will be added
+
+2007-05-10 Franz Holzinger  <kontakt@fholzinger.com>
+	* use t3lib_htmlmail also for sending of plain text emails
+	* fix bugs with invite (see bug #5588)
+	* Version 2.5.6 relaunch
+
+2007-05-02 Franz Holzinger  <kontakt@fholzinger.com>
+	* Danish backend texts
+	* fix bug with not possible image upload
+	* Version 2.5.6 relaunch
+
+2007-04-18 Franz Holzinger  <kontakt@fholzinger.com>
+	* Version 2.5.6 relaunch
+
 2007-03-15 Franz Holzinger  <kontakt@fholzinger.com>
 	* Version 2.5.6 relaunch
 	* fix bugs caused by restructuring of code

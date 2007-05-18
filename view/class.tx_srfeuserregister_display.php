@@ -87,7 +87,7 @@ class tx_srfeuserregister_display {
 
 		$dataArray = $this->data->dataArray;
 		$theTable = $this->data->getTable();
-		$currentArr = array_merge($dataArray, $origArr);
+		$currentArr = array_merge($origArr, $dataArray);
 		foreach ($currentArr AS $key => $value) {
 			// If the type is check, ...
 			if (($this->tca->TCA['columns'][$key]['config']['type'] == 'check') && is_array($this->tca->TCA['columns'][$key]['config']['items'])) {
@@ -96,11 +96,11 @@ class tx_srfeuserregister_display {
 				}
 			}
 		}
-		$templateCode = $this->cObj->getSubpart($this->data->templateCode, '###TEMPLATE_EDIT'.$this->marker->getPreviewLabel.'###');
+		$templateCode = $this->cObj->getSubpart($this->data->templateCode, '###TEMPLATE_EDIT'.$this->marker->getPreviewLabel().'###');
 		if (!$this->conf['linkToPID'] || !$this->conf['linkToPIDAddButton'] || !($this->control->getMode() == MODE_PREVIEW || !$this->conf['edit.']['preview'])) {
 			$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_LINKTOPID_ADD_BUTTON###', '');
 		}
-		
+
 		$failure = t3lib_div::_GP('noWarnings') ? '': $this->data->getFailure();
 		if (!$failure) {
 			$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
@@ -131,7 +131,7 @@ class tx_srfeuserregister_display {
 				$form = $theTable.'_form';
 			}
 			$modData = $this->data->modifyDataArrForFormUpdate($currentArr);
-			$updateJS = $this->cObj->getUpdateJS($modData, $form, 'FE['.$theTable.']', $this->data->fieldList.$this->additionalUpdateFields);
+			$updateJS = $this->cObj->getUpdateJS($modData, $form, 'FE['.$theTable.']', $this->data->fieldList.$this->data->additionalUpdateFields);
 			$content .= $updateJS; 
 			if ($this->conf['templateStyle'] == 'css-styled') {
 				$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
@@ -189,7 +189,7 @@ class tx_srfeuserregister_display {
 				} else {
 					$form = $theTable.'_form';
 				}
-				$content .= $this->cObj->getUpdateJS($this->data->modifyDataArrForFormUpdate($dataArray), $form, 'FE['.$theTable.']', $this->data->fieldList.$this->additionalUpdateFields);
+				$content .= $this->cObj->getUpdateJS($this->data->modifyDataArrForFormUpdate($dataArray), $form, 'FE['.$theTable.']', $this->data->fieldList.$this->data->additionalUpdateFields);
 				if ($this->conf['templateStyle'] == 'css-styled') {
 					$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
 				}
@@ -206,11 +206,10 @@ class tx_srfeuserregister_display {
 	*/
 	function editScreen($cmd, $cmdKey) {
 		global $TSFE;
-		
+
 		if ($this->conf['edit']) {
 			$theTable = $this->data->getTable();
 			$dataArray = $this->data->getDataArray();
-
 			// If editing is enabled
 			$origArr = $TSFE->sys_page->getRawRecord($theTable, $dataArray['uid']?$dataArray['uid']:$this->data->getRecUid());
 			if( $theTable != 'fe_users' && $this->conf['setfixed.']['edit.']['_FIELDLIST']) {
@@ -225,8 +224,10 @@ class tx_srfeuserregister_display {
 				}
 				$theCode = $this->auth->setfixedHash($origArr, $origArr['_FIELDLIST']);
 			}
-			if (is_array($origArr)) $origArr = $this->data->parseIncomingData($origArr);
-			
+			if (is_array($origArr))	{
+				$origArr = $this->data->parseIncomingData($origArr);
+			}
+
 			if (is_array($origArr) && ( ($theTable == 'fe_users' && $TSFE->loginUser) || $this->auth->aCAuth($origArr) || !strcmp($this->auth->authCode, $theCode) ) ) {
 				// Must be logged in OR be authenticated by the aC code in order to edit
 				// If the recUid selects a record.... (no check here)
@@ -281,14 +282,17 @@ class tx_srfeuserregister_display {
 					} else {
 						// Else display error, that you could not edit that particular record...
 						$content = $this->getPlainTemplate('###TEMPLATE_NO_PERMISSIONS###');
+
 					}
 				}
 			} else {
 				// Finally this is if there is no login user. This must tell that you must login. Perhaps link to a page with create-user or login information.
 				if ( $theTable == 'fe_users' ) {
 					$content = $this->getPlainTemplate('###TEMPLATE_AUTH###');
+
 				} else {
 					$content = $this->getPlainTemplate('###TEMPLATE_NO_PERMISSIONS###');
+
 				}
 			}
 		} else {
@@ -352,7 +356,7 @@ class tx_srfeuserregister_display {
 				if (!t3lib_div::inList($failure, $fName)) {
 					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_'.$fName.'###', '');
 					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_'.$fName.'###', '');
-				} else if (!$this->inError[$fName]) {
+				} else if (!$this->data->inError[$fName]) {
 					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_'.$fName.'###', '');
 				}
 			} else {
