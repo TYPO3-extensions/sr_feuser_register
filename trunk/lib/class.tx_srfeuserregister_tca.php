@@ -190,7 +190,8 @@ class tx_srfeuserregister_tca {
 										$text = $this->lang->getLLFromString($itemKeyArray[$valuesArray[$i]][0]);
 										$colContent .= $this->cObj->stdWrap($text,$stdWrap);
 									}
-								} else if ($colConfig['foreign_table']) {
+								}
+								if ($colConfig['foreign_table']) {
 									t3lib_div::loadTCA($colConfig['foreign_table']);
 									$reservedValues = array();
 									if ($theTable == 'fe_users' && $colName == 'usergroup') {
@@ -303,13 +304,13 @@ class tx_srfeuserregister_tca {
 								$itemArray = $colConfig['items'];
 								$bUseTCA = true;
 							}
-							
+
 							if (is_array($itemArray)) {
 								$itemArray = $this->getItemKeyArray($itemArray);
 								$i = 0;
 								if ($bUseTCA)	{
 									$deftext = $itemArray[$i][0];
-									$deftext = substr($deftext, 0, strlen($deftext) - 2);										
+									$deftext = substr($deftext, 0, strlen($deftext) - 2);
 								}
 
 								$i = 0;
@@ -323,7 +324,9 @@ class tx_srfeuserregister_tca {
 									}
 									$i++;
 								}
-							} else if ($colConfig['foreign_table']) {
+							} 
+							if ($colConfig['foreign_table']) {
+
 								t3lib_div::loadTCA($colConfig['foreign_table']);
 								$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
 								if ($theTable == 'fe_users' && $colName == 'usergroup') {
@@ -340,8 +343,8 @@ class tx_srfeuserregister_tca {
 								$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
 								$res = $TYPO3_DB->exec_SELECTquery('*', $colConfig['foreign_table'], $whereClause, '', $TCA[$colConfig['foreign_table']]['ctrl']['sortby']);
 								if (!in_array($colName, $this->control->getRequiredArray())) {
-									if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-										$colContent .='';
+									if ($colConfig['renderMode'] == 'checkbox' || $colContent)	{
+										// nothing
 									} else {
 										$colContent .= '<option value="" ' . ($valuesArray[0] ? '' : 'selected="selected"') . '></option>';
 									}
@@ -357,7 +360,7 @@ class tx_srfeuserregister_tca {
 											$selectedValue = $selected ? true: $selectedValue;
 											if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
 												$colContent .= '<dt><input  class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row['uid'].'"]" value="'.$row['uid'].'" type="checkbox" ' . $selected ?'checked="checked"':'' . ' /></dt>
-														<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row['uid'] .'">'.$row[$titleField].'</label></dd>';
+												<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row['uid'] .'">'.$row[$titleField].'</label></dd>';
 											} else {
 												$colContent .= '<option value="'.$row['uid'].'"' . $selected . '>'.$row[$titleField].'</option>';
 											}
@@ -368,7 +371,7 @@ class tx_srfeuserregister_tca {
 										}
 										if ($colConfig['renderMode']=='checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
 											$colContent .= '<dt><input  class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row['uid']. ']" value="'.$row['uid'].'" type="checkbox" ' . (in_array($row['uid'], $valuesArray) ? 'checked="checked"' : '') . ' /></dt>
-													<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row['uid'] .'">'.$row[$titleField].'</label></dd>';
+											<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row['uid'] .'">'.$row[$titleField].'</label></dd>';
 										} else {
 											$colContent .= '<option value="'.$row['uid'].'"' . (in_array($row['uid'], $valuesArray) ? 'selected="selected"' : '') . '>'.$row[$titleField].'</option>';
 										}
@@ -402,7 +405,7 @@ class tx_srfeuserregister_tca {
 	*/
 	function getItemKeyArray($itemArray) {
 		$rc = array();
-		
+
 		if (is_array($itemArray))	{
 			foreach ($itemArray as $k => $row)	{
 				$key = $row[1];

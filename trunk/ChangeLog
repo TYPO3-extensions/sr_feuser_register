@@ -1,3 +1,7 @@
+2007-05-18 Franz Holzinger  <kontakt@fholzinger.com>
+	* use first line of plain text emails as the subject
+	* when there is already an items array in TCA and also records from a foreign table, then both will be added
+
 2007-05-10 Franz Holzinger  <kontakt@fholzinger.com>
 	* use t3lib_htmlmail also for sending of plain text emails
 	* fix bugs with invite (see bug #5588)

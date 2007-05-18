@@ -521,43 +521,47 @@ class tx_srfeuserregister_marker {
 		$JSPart = '
 			';
 		if ($cmd == 'edit') {
-			$JSPart .= "var pw_change = 0;
-			";
+			$JSPart .= 'var pw_change = 0;
+			';
 		}
-		$JSPart .= "function enc_form(form) {
-				var pass = form['FE[" . $theTable . "][password]'].value;
-				var pass_again = form['FE[" . $theTable . "][password_again]'].value;
-				";
+		$JSPart .= 'function enc_form(form) {
+				var pass = form[\'FE[' . $theTable . '][password]\'].value;
+				var pass_again = form[\'FE[' . $theTable . '][password_again]\'].value;
+				';
 		if ($cmd != 'edit') {
-			$JSPart .= "if (pass == '') {
-					alert('" . $this->lang->pi_getLL('missing_password') . "');
-					form['FE[" . $theTable . "][password]'].select();
-					form['FE[" . $theTable . "][password]'].focus();
+			$JSPart .= 'if (pass == \'\') {
+					alert(\'' . $this->lang->pi_getLL('missing_password') . '\');
+					form[\'FE[' . $theTable . '][password]\'].select();
+					form[\'FE[' . $theTable . '][password]\'].focus();
 					return false;
 				}
-				";
+				';
 		}
-		$JSPart .= "if (pass != pass_again) {
-					alert('" . $this->lang->pi_getLL('evalErrors_twice_password') . "');
-					form['FE[" . $theTable . "][password]'].select();
-					form['FE[" . $theTable . "][password]'].focus();
+		$JSPart .= 'if (pass != pass_again) {
+					alert(\'' . $this->lang->pi_getLL('evalErrors_twice_password') . '\');
+					form[\'FE[' . $theTable . '][password]\'].select();
+					form[\'FE[' . $theTable . '][password]\'].focus();
 					return false;
 				}
-				";
+				';
 		if ($cmd == 'edit') {
-			$JSPart .= "if (pw_change) {
-					";
+			$JSPart .= 'if (pw_change) {
+				';
 		}
-		$JSPart .= "var enc_pass = MD5(pass);
-					form['FE[" . $theTable . "][password]'].value = enc_pass;
-					form['FE[" . $theTable . "][password_again]'].value = enc_pass;
-				";
-		if ($cmd == 'edit') {
-			$JSPart .= "}
-				";
+		if ($cmd == 'create') {
+			$JSPart .= 'if (!enc_pass) {
+			';
 		}
-		$JSPart .= "return true;
-			}";
+		$JSPart .= 'var enc_pass = MD5(pass);
+					form[\'FE[' . $theTable . '][password]\'].value = enc_pass;
+					form[\'FE[' . $theTable . '][password_again]\'].value = enc_pass;
+				';
+		if ($cmd == 'create' || $cmd == 'edit') {
+			$JSPart .= '}
+			';
+		}
+		$JSPart .= 'return true;
+			}';
 		return $JSPart;
 	}	// getMD5Submit
 
