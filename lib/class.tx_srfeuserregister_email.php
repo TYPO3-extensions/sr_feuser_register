@@ -254,7 +254,7 @@ class tx_srfeuserregister_email {
 		if (!$markerArray)	{
 			$markerArray = $this->getArray();
 		}
-		$HTMLMailEnabled = $this->conf['email.'][HTMLMail];
+		$HTMLMailEnabled = $this->conf['email.']['HTMLMail'];
 		if ($HTMLMailEnabled ) {
 			if ($this->conf['templateStyle'] == 'css-styled') {
 				$markerArray['###CSS_STYLES###'] = '	/*<![CDATA[*/
@@ -287,9 +287,16 @@ class tx_srfeuserregister_email {
 	function sendHTML($HTMLContent, $PLAINContent, $recipient, $dummy, $fromEmail, $fromName, $replyTo = '', $fileAttachment = '') {
 		// HTML
 		if (trim($recipient)) {
-			$parts = spliti('<title>|</title>', $HTMLContent, 3);
-			$subject = trim($parts[1]) ? strip_tags(trim($parts[1])) : 'Front end user registration message';
-				
+			$defaultSubject = 'Front end user registration message';
+			if ($HTMLContent)	{
+				$parts = spliti('<title>|</title>', $HTMLContent, 3);
+				$subject = trim($parts[1]) ? strip_tags(trim($parts[1])) : $defaultSubject;
+			} else {
+				$parts = split(chr(10),$PLAINContent,2);    // First line is subject
+				$subject = trim($parts[0]) ? trim($parts[0]) : $defaultSubject;
+				$PLAINContent = trim($parts[1]);
+			}
+
 			$Typo3_htmlmail = t3lib_div::makeInstance('t3lib_htmlmail');
 			$Typo3_htmlmail->start();
 			$Typo3_htmlmail->mailer = 'TYPO3 HTMLMail';
@@ -303,14 +310,14 @@ class tx_srfeuserregister_email {
 			$Typo3_htmlmail->replyto_name = implode(' ' , t3lib_div::trimExplode(',', $Typo3_htmlmail->replyto_name));
 			$Typo3_htmlmail->organisation = '';
 			$Typo3_htmlmail->priority = 3;
-				
+
 			// ATTACHMENT
 			if ($fileAttachment && file_exists($fileAttachment)) {
 				$Typo3_htmlmail->addAttachment($fileAttachment);
 			}
-				
+
 			// HTML
-			if (trim($contentHTML)) {
+			if (trim($HTMLContent)) {
 				$Typo3_htmlmail->theParts['html']['content'] = $HTMLContent;
 				$Typo3_htmlmail->theParts['html']['path'] = '';
 				$Typo3_htmlmail->extractMediaLinks();
