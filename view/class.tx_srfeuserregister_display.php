@@ -178,7 +178,6 @@ class tx_srfeuserregister_display {
 			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $dataArray, '',TRUE, 'FIELD_', TRUE);
 			$this->marker->addStaticInfoMarkers($markerArray, $dataArray);
 			$this->tca->addTcaMarkers($markerArray, $dataArray);
-debug ($markerArray, '$markerArray', __LINE__, __FILE__);
 			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $dataArray);
 			$this->marker->addLabelMarkers($markerArray, $dataArray, $this->control->getRequiredArray());
 			$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
@@ -196,7 +195,6 @@ debug ($markerArray, '$markerArray', __LINE__, __FILE__);
 				}
 			}
 		}
-debug ($content, '$content', __LINE__, __FILE__);
 		return $content;
 	} // createScreen
 
