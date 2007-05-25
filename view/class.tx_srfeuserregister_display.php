@@ -85,7 +85,7 @@ class tx_srfeuserregister_display {
 	function editForm($origArr,$cmd,$cmdKey) {
 		global $TSFE;
 
-		$dataArray = $this->data->dataArray;
+		$dataArray = $this->data->getDataArray();
 		$theTable = $this->data->getTable();
 		$currentArr = array_merge($origArr, $dataArray);
 		foreach ($currentArr AS $key => $value) {
