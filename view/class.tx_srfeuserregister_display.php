@@ -85,7 +85,7 @@ class tx_srfeuserregister_display {
 	function editForm($origArr,$cmd,$cmdKey) {
 		global $TSFE;
 
-		$dataArray = $this->data->dataArray;
+		$dataArray = $this->data->getDataArray();
 		$theTable = $this->data->getTable();
 		$currentArr = array_merge($origArr, $dataArray);
 		foreach ($currentArr AS $key => $value) {
@@ -178,6 +178,7 @@ class tx_srfeuserregister_display {
 			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $dataArray, '',TRUE, 'FIELD_', TRUE);
 			$this->marker->addStaticInfoMarkers($markerArray, $dataArray);
 			$this->tca->addTcaMarkers($markerArray, $dataArray);
+debug ($markerArray, '$markerArray', __LINE__, __FILE__);
 			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $dataArray);
 			$this->marker->addLabelMarkers($markerArray, $dataArray, $this->control->getRequiredArray());
 			$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
@@ -195,6 +196,7 @@ class tx_srfeuserregister_display {
 				}
 			}
 		}
+debug ($content, '$content', __LINE__, __FILE__);
 		return $content;
 	} // createScreen
 
