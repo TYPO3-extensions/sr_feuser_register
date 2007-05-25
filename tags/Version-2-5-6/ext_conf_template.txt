@@ -1,0 +1,12 @@
+
+  # cat=basic; type=string; label=Image upload folder: Specify the name of the image upload folder. Default is /uploads/tx_srfeuserregister.
+uploadFolder = uploads/tx_srfeuserregister
+
+  # cat=basic; type=string; label=Allowed image types: Specify the list of acceptable file extensions for the front end user images. Default is png, jpg, jpeg, gif, tif, tiff.
+imageTypes = png, jpg, jpeg, gif, tif, tiff
+
+  # cat=basic; type=int+; label=Maximun image size: Specify the maximum size of uploaded image files, in number of KB's. Default is 250.
+imageMaxSize = 250
+
+  # cat=basic/enable; type=boolean; label=Use Flexforms: Enable the use of Flexforms in the backend. Extension fh_library version 0.0.4+ must be installed. Default is 1.
+useFlexforms = 1

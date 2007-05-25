@@ -1,0 +1,9 @@
+/* Default stylesheet for the html mails of tx_feuser_register extension */
+body { background:#ffffff none; scrollbar-face-color:#35006D; scrollbar-shadow-color:#35006D }
+.tx-srfeuserregister-pi1 p { font-family:Verdana, sans-serif; font-size:12px; line-height:125%; color:#35006d; margin-top:8px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; padding-right:3px; padding-left:3px; text-indent:0px; }
+.tx-srfeuserregister-pi1 a:link { background-color:transparent; color:navy; text-decoration:none; font-weight:bold;}
+.tx-srfeuserregister-pi1 a:visited { background-color:transparent; color:navy; font-weight:bold; text-decoration:none; }
+.tx-srfeuserregister-pi1 a:hover { background-color:transparent; color:#333333; text-decoration:none; }
+.tx-srfeuserregister-pi1 a:active { background-color:transparent; color:navy; font-weight:bold; text-decoration:none; }
+.tx-srfeuserregister-pi1 td { vertical-align:top;  font-family:Verdana, sans-serif; font-size:12px; line-height:125%; color:#35006d; margin-top:8px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; padding-right:3px; padding-left:3px; text-indent:0px;}
+.tx-srfeuserregister-pi1 td.tx-srfeuserregister-pi1-frame { padding-right:0px; padding-left:0px; }
