@@ -1,6 +1,0 @@
-Front End User Registration
-
-Typo3 Extention sr_feuser_register
-
-This is just a sample attachment file
-
