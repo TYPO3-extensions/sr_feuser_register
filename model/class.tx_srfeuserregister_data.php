@@ -62,7 +62,7 @@ class tx_srfeuserregister_data {
 	var $cObj;
 	var $failureMsg = array();
 	var $saved = false; // is set if data is saved
-	var $theTable = 'fe_users';
+	var $theTable;
 	var $addTableArray = array();
 	var $failure = 0; // is set if data did not have the required fields set.
 	var $fileFunc = ''; // Set to a basic_filefunc object for file uploads
@@ -71,13 +71,13 @@ class tx_srfeuserregister_data {
 	var $error;
 	var $sys_language_content;
 	var $prefixId;
-	var $adminFieldList = 'username,password,name,disable,usergroup,by_invitation';
+	var $adminFieldList;
 	var $fieldList; // List of fields from fe_admin_fieldList
 	var $recUid;
 	var $missing = array(); // array of required missing fields
 
 
-	function init(&$pibase, &$conf, &$config, &$lang, &$tca, &$auth, &$control, &$freeCap)	{
+	function init(&$pibase, &$conf, &$config, &$lang, &$tca, &$auth, &$control, &$freeCap, $theTable, &$adminFieldList)	{
 		global $TSFE, $TCA;
 
 		$this->pibase = &$pibase;
@@ -89,7 +89,6 @@ class tx_srfeuserregister_data {
 		$this->control = &$control;
 		$this->freeCap = &$freeCap;
 		$this->cObj = &$pibase->cObj;
-
 		$this->extKey = $extKey;
 		$this->sys_language_content = $pibase->sys_language_content;
 		$this->fileFunc = $pibase->fileFunc;
@@ -99,7 +98,9 @@ class tx_srfeuserregister_data {
 		$this->feUserData = t3lib_div::_GP($this->prefixId);
 		$fe = t3lib_div::_GP('FE');
 		$cmdKey = $this->control->getCmdKey();
+		$this->setTable($theTable);
 		$theTable = $this->getTable();
+		$this->setAdminFieldList($adminFieldList);
 
 			// Initialise fileFunc object
 		$this->fileFunc = t3lib_div::makeInstance('t3lib_basicFileFunctions');
@@ -127,9 +128,10 @@ class tx_srfeuserregister_data {
 			}
 		}
 
-		$this->dataArray = $fe[$theTable];
-		if (is_array($this->dataArray['module_sys_dmail_category']))	{	// no array elements are allowed for $this->cObj->fillInMarkerArray
-			$this->dataArray['module_sys_dmail_category'] = implode(',',$this->dataArray['module_sys_dmail_category']);
+		$this->setDataArray($fe[$theTable]);
+		$module_sys_dmail_category = $this->getDataArray('module_sys_dmail_category');
+		if (is_array($module_sys_dmail_category))	{	// no array elements are allowed for $this->cObj->fillInMarkerArray
+			$this->setDataArray(implode(',',$module_sys_dmail_category), 'module_sys_dmail_category');
 		}
 
 			// Setting cmd and various switches
@@ -137,15 +139,35 @@ class tx_srfeuserregister_data {
 // 			unset($this->feUserData['cmd']);
 // 		}
 
+
 			// Setting the list of fields allowed for editing and creation.
-		$this->fieldList = implode(',', t3lib_div::trimExplode(',', $TCA[$theTable]['feInterface']['fe_admin_fieldList'], 1));
-		$this->adminFieldList = implode(',', array_intersect( explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->adminFieldList, 1)));
+		$fieldlist = implode(',', t3lib_div::trimExplode(',', $TCA[$theTable]['feInterface']['fe_admin_fieldList'], 1));
+		$this->setFieldList($fieldlist);
+		$adminFieldList = implode(',', array_intersect( explode(',', $fieldlist), t3lib_div::trimExplode(',', $this->getAdminFieldList(), 1)));
+
 		if (trim($this->conf['addAdminFieldList'])) {
-			$this->adminFieldList .= ',' . trim($this->conf['addAdminFieldList']);
+			$adminFieldList .= ',' . trim($this->conf['addAdminFieldList']);
 		}
+		$this->setAdminFieldList($adminFieldList);
 
 			// Fetching the template file
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
+	}
+
+	function getFieldList()	{
+		return $this->fieldList;
+	}
+
+	function setFieldList(&$fieldList)	{
+		$this->fieldList = $fieldList;
+	}
+
+	function getAdminFieldList()	{
+		return $this->adminFieldList;
+	}
+
+	function setAdminFieldList($adminFieldList)	{
+		$this->adminFieldList = $adminFieldList;
 	}
 
 	function getFailure()	{
@@ -169,6 +191,10 @@ class tx_srfeuserregister_data {
 		return $this->theTable;
 	}
 
+	function setTable ($theTable)	{
+		$this->theTable = $theTable;
+	}
+
 	function setRecUid($uid)	{
 		$this->recUid = $uid;
 	}
@@ -184,6 +210,15 @@ class tx_srfeuserregister_data {
 	function addTableArray ($table)	{
 		if (!in_array($table, $this->addTableArray))	{
 			$this->addTableArray[] = $table;
+		}
+	}
+
+	function setDataArray ($dataArray, $k=0)	{
+
+		if ($k)	{
+			$this->currentArr[$k] = $dataArray;
+		} else {
+			$this->dataArray = $dataArray;
 		}
 	}
 
@@ -213,9 +248,6 @@ class tx_srfeuserregister_data {
 		return $rc;
 	}
 
-	function setDataArray ($dataArray)	{
-		$this->dataArray = $dataArray;
-	}
 
 	function resetDataArray()	{
 		$this->dataArray = array();
@@ -678,7 +710,7 @@ class tx_srfeuserregister_data {
 	* @return void  sets $this->saved
 	*/
 	function save() {
-		global $TYPO3_DB, $TSFE;
+		global $TYPO3_DB, $TSFE, $TYPO3_CONF_VARS;
 
 		$cmd = $this->control->getCmd();
 		$cmdKey = $this->control->getCmdKey();
@@ -690,8 +722,8 @@ class tx_srfeuserregister_data {
 				// Fetch the original record to check permissions
 			if ($this->conf['edit'] && ($TSFE->loginUser || $this->auth->aCAuth($origArr))) {
 					// Must be logged in in order to edit  (OR be validated by email)
-				$newFieldList = implode(',', array_intersect(explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->conf['edit.']['fields'], 1)));
-				$newFieldList = implode(',', array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->adminFieldList))));
+				$newFieldList = implode(',', array_intersect(explode(',', $this->getFieldList()), t3lib_div::trimExplode(',', $this->conf['edit.']['fields'], 1)));
+				$newFieldList = implode(',', array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->getAdminFieldList()))));
 					// Do not reset the name if we have no new value
 				if (!in_array('name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)) && !in_array('first_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)) && !in_array('last_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1))) {
 					$newFieldList  = implode(',', array_diff(explode(',', $newFieldList), array('name')));
@@ -713,8 +745,8 @@ class tx_srfeuserregister_data {
 
 						// <Ries van Twisk added registrationProcess hooks>
 						// Call all afterSaveEdit hooks after the record has been edited and saved
-					if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'])) {
-						foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'] as $classRef) {
+					if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'])) {
+						foreach  ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'] as $classRef) {
 							$hookObj= &t3lib_div::getUserObj($classRef);
 							if (method_exists($hookObj, 'registrationProcess_afterSaveEdit')) {
 								$hookObj->registrationProcess_afterSaveEdit($this->getCurrentArr(), $this);
@@ -729,8 +761,8 @@ class tx_srfeuserregister_data {
 			break;
 			default:
 			if (is_array($this->conf[$cmdKey.'.'])) {
-				$newFieldList = implode(',', array_intersect(explode(',', $this->fieldList), t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)));
-				$newFieldList  = implode(',', array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->adminFieldList))));
+				$newFieldList = implode(',', array_intersect(explode(',', $this->getFieldList()), t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)));
+				$newFieldList  = implode(',', array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->getAdminFieldList()))));
 				$parsedArray = array();
 				$parsedArray = $this->parseOutgoingData($this->dataArray);
 				if ($cmdKey == 'invite' && $this->control->useMd5Password) {
@@ -768,7 +800,7 @@ class tx_srfeuserregister_data {
 
 					// <Ries van Twisk added registrationProcess hooks>
 					// Call all afterSaveCreate hooks after the record has been created and saved
-				if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'])) {
+				if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'])) {
 					foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'] as $classRef) {
 						$hookObj= &t3lib_div::getUserObj($classRef);
 						if (method_exists($hookObj, 'registrationProcess_afterSaveCreate')) {
@@ -792,6 +824,8 @@ class tx_srfeuserregister_data {
 	* @return void  sets $this->saved
 	*/
 	function deleteRecord() {
+		global $TYPO3_CONF_VARS;
+
 		$theTable = $this->getTable();
 		if ($this->conf['delete']) {
 			// If deleting is enabled
@@ -806,8 +840,8 @@ class tx_srfeuserregister_data {
 
 							// <Ries van Twisk added registrationProcess hooks>
 							// Call all beforeSaveDelete hooks BEFORE the record is deleted
-						if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'])) {
-							foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'] as $classRef) {
+						if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'])) {
+							foreach  ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'] as $classRef) {
 								$hookObj= &t3lib_div::getUserObj($classRef);
 								if (method_exists($hookObj, 'registrationProcess_beforeSaveDelete')) {
 									$hookObj->registrationProcess_beforeSaveDelete($origArr, $this);
@@ -1049,7 +1083,7 @@ class tx_srfeuserregister_data {
 	function setName() {
 		$cmdKey = $this->control->getCmdKey();
 
-		if (in_array('name', explode(',', $this->fieldList)) && !in_array('name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1))
+		if (in_array('name', explode(',', $this->getFieldList())) && !in_array('name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1))
 			&& in_array('first_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)) && in_array('last_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1))  ) {
 			$this->dataArray['name'] = trim(trim($this->dataArray['first_name']).' '.trim($this->dataArray['last_name']));
 		}
@@ -1064,7 +1098,7 @@ class tx_srfeuserregister_data {
 	function setUsername() {
 		$cmdKey = $this->control->getCmdKey();
 
-		if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $this->getTable() == "fe_users" && t3lib_div::inList($this->fieldList, 'username') && !$this->failureMsg['email']) {
+		if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $this->getTable() == "fe_users" && t3lib_div::inList($this->getFieldList(), 'username') && !$this->failureMsg['email']) {
 			$this->dataArray['username'] = trim($this->dataArray['email']);
 		}
 	}	// setUsername

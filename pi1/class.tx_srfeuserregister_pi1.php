@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 1999-2003 Kasper Skaarhoj (kasper2007@typo3.com)
+*  (c) 1999-2003 Kasper Skårhøj <kasperYYYY@typo3.com>
 *  (c) 2004-2007 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca)>
 *  All rights reserved
 *
@@ -31,8 +31,10 @@
  *
  * $Id$
  * 
- * @author Kasper Skaarhoj <kasper2007@typo3.com>
- * @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
+ * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
+ * @author	Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
+ * @author	Franz Holzinger <kontakt@fholzinger.com>
+ * @maintainer	Franz Holzinger <kontakt@fholzinger.com> 
  *
  *
  */
@@ -66,7 +68,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 	var $prefixId = 'tx_srfeuserregister_pi1';  // Same as class name
 	var $scriptRelPath = 'pi1/class.tx_srfeuserregister_pi1.php'; // Path to this script relative to the extension dir.
 	var $extKey = 'sr_feuser_register';  // The extension key.
-		
+
 	var $setfixedEnabled = 1;
 	var $incomingData = FALSE;
 	var $inError = array(); // array of fields with eval errors other than absence
@@ -84,12 +86,12 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 	var $tca;  // object of type tx_srfeuserregister_tca
 	var $marker; // object of type tx_srfeuserregister_marker
 
-
 	function main($content, &$conf) {
 		global $TSFE;
 		$failure = false; // is set if data did not have the required fields set.
+		$adminFieldList = 'username,password,name,disable,usergroup,by_invitation';
 
-		$this->init($conf);	
+		$this->init($conf, 'fe_users', $adminFieldList);	
 
 		$error_message = '';
 		$content = $this->control->doProcessing ($error_message);
@@ -104,7 +106,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 	*
 	* @return void
 	*/
-	function init(&$conf) {
+	function init(&$conf, $theTable, &$adminFieldList) {
 		global $TSFE, $TCA, $TYPO3_CONF_VARS;
 
 			// plugin initialization
@@ -123,11 +125,9 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		$this->display = t3lib_div::makeInstance('tx_srfeuserregister_display');
 		$this->email = t3lib_div::makeInstance('tx_srfeuserregister_email');
 		$this->control = t3lib_div::makeInstance('tx_srfeuserregister_control');
-
 		$this->lang->init($this, $this->conf, $this->config);
 		$this->lang->pi_loadLL();
-
-		$this->data->init($this, $this->conf, $this->config,$this->lang, $this->tca, $this->auth, $this->control, $this->freeCap);
+		$this->data->init($this, $this->conf, $this->config,$this->lang, $this->tca, $this->auth, $this->control, $this->freeCap, $theTable, $adminFieldList);
 
 		$this->control->init($this, $this->conf, $this->config, $this->display, $this->data, $this->marker, $this->auth, $this->email, $this->tca);
 

@@ -23,6 +23,7 @@ CREATE TABLE fe_users (
   module_sys_dmail_html tinyint(3) unsigned DEFAULT '0' NOT NULL
 );
 
+
 CREATE TABLE fe_groups_language_overlay (
 	uid int(11) unsigned DEFAULT '0' NOT NULL auto_increment,
 	pid int(11) unsigned DEFAULT '0' NOT NULL,
@@ -36,3 +37,7 @@ CREATE TABLE fe_groups_language_overlay (
 	PRIMARY KEY (uid),
 	KEY parent (pid)
 );
+
+
+
+

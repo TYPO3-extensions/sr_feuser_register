@@ -1,3 +1,6 @@
+2007-05-26 Franz Holzinger  <kontakt@fholzinger.com>
+	* fix bug 5641: modifications needed to make sr_email_subsribe working again
+
 2007-05-18 Franz Holzinger  <kontakt@fholzinger.com>
 	* use first line of plain text emails as the subject
 	* when there is already an items array in TCA and also records from a foreign table, then both will be added

@@ -535,7 +535,7 @@ class tx_srfeuserregister_control {
 	* @return string  the template with substituted markers
 	*/ 
 	function processSetFixed(&$markContentArray) {
-		global $TSFE;
+		global $TSFE, $TYPO3_CONF_VARS;;
 
 		if ($this->setfixedEnabled) {
 			$theTable = $this->data->getTable();
@@ -575,8 +575,8 @@ class tx_srfeuserregister_control {
 					}
 						// Hook: first we initialize the hooks
 					$hookObjectsArr = array();
-					if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['confirmRegistrationClass'])) {
-						foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['confirmRegistrationClass'] as $classRef) {
+					if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$this->prefixId]['confirmRegistrationClass'])) {
+						foreach  ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$this->prefixId]['confirmRegistrationClass'] as $classRef) {
 							$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 						}
 					}

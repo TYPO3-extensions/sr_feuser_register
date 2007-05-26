@@ -37,9 +37,9 @@ $TCA['fe_users']['columns']['email']['config']['max'] = '255';
 $TCA['fe_users']['columns']['telephone']['config']['max'] = '25';
 $TCA['fe_users']['columns']['fax']['config']['max'] = '25';
 
-$TCA['fe_users']['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['uploadFolder'];
-$TCA['fe_users']['columns']['image']['config']['max_size'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageMaxSize'];
-$TCA['fe_users']['columns']['image']['config']['allowed'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageTypes'];
+$TCA['fe_users']['columns']['image']['config']['uploadfolder'] = $TYPO3_CONF_VARS['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['uploadFolder'];
+$TCA['fe_users']['columns']['image']['config']['max_size'] = $TYPO3_CONF_VARS['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageMaxSize'];
+$TCA['fe_users']['columns']['image']['config']['allowed'] = $TYPO3_CONF_VARS['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageTypes'];
 
 t3lib_extMgm::addTCAcolumns('fe_users', Array(
 		'static_info_country' => Array (

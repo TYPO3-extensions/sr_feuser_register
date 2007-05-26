@@ -65,6 +65,8 @@ class tx_srfeuserregister_marker {
 	var $sys_language_content;
 	var $confirmType;
 	var $cObj;
+	var $buttonLabelsList;
+	var $otherLabelsList;
 
 
 	function init(&$pibase, &$conf, &$config, &$data, &$tca, &$lang, &$control, &$auth, &$freeCap)	{
@@ -129,6 +131,51 @@ class tx_srfeuserregister_marker {
 		}
 		$this->setArray($markerArray);
 
+				// Button labels
+		$buttonLabelsList = 'register,confirm_register,back_to_form,update,confirm_update,enter,confirm_delete,cancel_delete,update_and_more';
+
+		$this->setButtonLabelsList ($buttonLabelsList);
+
+		$otherLabelsList = 'yes,no,password_repeat,tooltip_password_again,tooltip_invitation_password_again,click_here_to_register,tooltip_click_here_to_register,click_here_to_edit,tooltip_click_here_to_edit,click_here_to_delete,tooltip_click_here_to_delete'.
+			',copy_paste_link,enter_account_info,enter_invitation_account_info,required_info_notice,excuse_us,'.
+			',tooltip_login_username,tooltip_login_password,'.
+			',registration_problem,registration_sorry,registration_clicked_twice,registration_help,kind_regards,kind_regards_cre,kind_regards_del,kind_regards_ini,kind_regards_inv,kind_regards_upd'.
+			',v_verify_before_create,v_verify_invitation_before_create,v_verify_before_update,v_really_wish_to_delete,v_edit_your_account'.
+			',v_dear,v_now_enter_your_username,v_notification'.
+			',v_registration_created,v_registration_created_subject,v_registration_created_message1,v_registration_created_message2,v_registration_created_message3'.
+			',v_to_the_administrator'.
+			',v_registration_review_subject,v_registration_review_message1,v_registration_review_message2,v_registration_review_message3'.
+			',v_please_confirm,v_your_account_was_created,v_follow_instructions1,v_follow_instructions2,v_follow_instructions_review1,v_follow_instructions_review2'.
+			',v_invitation_confirm,v_invitation_account_was_created,v_invitation_instructions1'.
+			',v_registration_initiated,v_registration_initiated_subject,v_registration_initiated_message1,v_registration_initiated_message2,v_registration_initiated_message3,v_registration_initiated_review1,v_registration_initiated_review2'.
+			',v_registration_invited,v_registration_invited_subject,v_registration_invited_message1,v_registration_invited_message2'.
+			',v_registration_infomail_message1'.
+			',v_registration_confirmed,v_registration_confirmed_subject,v_registration_confirmed_message1,v_registration_confirmed_message2,v_registration_confirmed_review1,v_registration_confirmed_review2'.
+			',v_registration_cancelled,v_registration_cancelled_subject,v_registration_cancelled_message1,v_registration_cancelled_message2'.
+			',v_registration_accepted,v_registration_accepted_subject,v_registration_accepted_message1,v_registration_accepted_message2'.
+			',v_registration_refused,v_registration_refused_subject,v_registration_refused_message1,v_registration_refused_message2'.
+			',v_registration_accepted_subject2,v_registration_accepted_message3,v_registration_accepted_message4'.
+			',v_registration_refused_subject2,v_registration_refused_message3,v_registration_refused_message4'.
+			',v_registration_entered_subject,v_registration_entered_message1,v_registration_entered_message2'.
+			',v_registration_updated,v_registration_updated_subject,v_registration_updated_message1'.
+			',v_registration_deleted,v_registration_deleted_subject,v_registration_deleted_message1,v_registration_deleted_message2';
+		$this->setOtherLabelsList($otherLabelsList);
+	}
+
+	function getButtonLabelsList()	{
+		return $this->buttonLabelsList;
+	}
+
+	function setButtonLabelsList(&$buttonLabelsList)	{
+		$this->buttonLabelsList = $buttonLabelsList;
+	}
+
+	function getOtherLabelsList()	{
+		return $this->otherLabelsList;
+	}
+
+	function setOtherLabelsList(&$otherLabelsList)	{
+		$this->otherLabelsList = $otherLabelsList;
 	}
 
 
@@ -237,12 +284,14 @@ class tx_srfeuserregister_marker {
 	* @return void
 	*/
 	function addLabelMarkers(&$markerArray, &$dataArray, &$requiredArray) {
+		global $TYPO3_CONF_VARS;
+
 		if (!$markerArray)	{
 			$markerArray = $this->getArray();
 		}
 
 		// Data field labels
-		$infoFields = t3lib_div::trimExplode(',', $this->data->fieldList, 1);
+		$infoFields = t3lib_div::trimExplode(',', $this->data->getFieldList(), 1);
 		while (list(, $fName) = each($infoFields)) {
 			$markerkey = $this->cObj->caseshift($fName,'upper');
 			$markerArray['###LABEL_'.$markerkey.'###'] = $this->lang->pi_getLL($fName) ? $this->lang->pi_getLL($fName) : $this->lang->getLLFromString($this->tca->TCA['columns'][$fName]['label']);
@@ -250,7 +299,7 @@ class tx_srfeuserregister_marker {
 			$markerArray['###TOOLTIP_INVITATION_'.$markerkey.'###'] = $this->lang->pi_getLL('tooltip_invitation_' . $fName);
 			// <Ries van Twisk added support for multiple checkboxes>
 			$colConfig = $this->tca->TCA['columns'][$fName]['config'];
-			
+
 			if ($colConfig['type'] == 'select' && $colConfig['items'])	{ // (is_array($dataArray[$fName])) {
 				$colContent = '';
 				$markerArray['###FIELD_'.$fName.'_CHECKED###'] = '';
@@ -275,43 +324,21 @@ class tx_srfeuserregister_marker {
 				$markerArray['###REQUIRED_'.$markerkey.'###'] = '';
 			}
 		}
-		// Button labels
-		$buttonLabelsList = 'register,confirm_register,back_to_form,update,confirm_update,enter,confirm_delete,cancel_delete,update_and_more';
-		$buttonLabels = t3lib_div::trimExplode(',', $buttonLabelsList, 1);
-		while (list(, $labelName) = each($buttonLabels) ) {
-			$markerArray['###LABEL_BUTTON_'.$this->cObj->caseshift($labelName,'upper').'###'] = $this->lang->pi_getLL('button_'.$labelName);
-		}
 
-		$otherLabelsList = 'yes,no,password_repeat,tooltip_password_again,tooltip_invitation_password_again,click_here_to_register,tooltip_click_here_to_register,click_here_to_edit,tooltip_click_here_to_edit,click_here_to_delete,tooltip_click_here_to_delete'.
-			',copy_paste_link,enter_account_info,enter_invitation_account_info,required_info_notice,excuse_us,'.
-			',tooltip_login_username,tooltip_login_password,'.
-			',registration_problem,registration_sorry,registration_clicked_twice,registration_help,kind_regards,kind_regards_cre,kind_regards_del,kind_regards_ini,kind_regards_inv,kind_regards_upd'.
-			',v_verify_before_create,v_verify_invitation_before_create,v_verify_before_update,v_really_wish_to_delete,v_edit_your_account'.
-			',v_dear,v_now_enter_your_username,v_notification'.
-			',v_registration_created,v_registration_created_subject,v_registration_created_message1,v_registration_created_message2,v_registration_created_message3'.
-			',v_to_the_administrator'.
-			',v_registration_review_subject,v_registration_review_message1,v_registration_review_message2,v_registration_review_message3'.
-			',v_please_confirm,v_your_account_was_created,v_follow_instructions1,v_follow_instructions2,v_follow_instructions_review1,v_follow_instructions_review2'.
-			',v_invitation_confirm,v_invitation_account_was_created,v_invitation_instructions1'.
-			',v_registration_initiated,v_registration_initiated_subject,v_registration_initiated_message1,v_registration_initiated_message2,v_registration_initiated_message3,v_registration_initiated_review1,v_registration_initiated_review2'.
-			',v_registration_invited,v_registration_invited_subject,v_registration_invited_message1,v_registration_invited_message2'.
-			',v_registration_infomail_message1'.
-			',v_registration_confirmed,v_registration_confirmed_subject,v_registration_confirmed_message1,v_registration_confirmed_message2,v_registration_confirmed_review1,v_registration_confirmed_review2'.
-			',v_registration_cancelled,v_registration_cancelled_subject,v_registration_cancelled_message1,v_registration_cancelled_message2'.
-			',v_registration_accepted,v_registration_accepted_subject,v_registration_accepted_message1,v_registration_accepted_message2'.
-			',v_registration_refused,v_registration_refused_subject,v_registration_refused_message1,v_registration_refused_message2'.
-			',v_registration_accepted_subject2,v_registration_accepted_message3,v_registration_accepted_message4'.
-			',v_registration_refused_subject2,v_registration_refused_message3,v_registration_refused_message4'.
-			',v_registration_entered_subject,v_registration_entered_message1,v_registration_entered_message2'.
-			',v_registration_updated,v_registration_updated_subject,v_registration_updated_message1'.
-			',v_registration_deleted,v_registration_deleted_subject,v_registration_deleted_message1,v_registration_deleted_message2';
-			
+		$buttonLabels = t3lib_div::trimExplode(',', $this->getButtonLabelsList(), 1);
+		while (list(, $labelName) = each($buttonLabels) ) {
+			if ($labelName)	{
+				$markerArray['###LABEL_BUTTON_'.$this->cObj->caseshift($labelName,'upper').'###'] = $this->lang->pi_getLL('button_'.$labelName);
+			}
+		}
+		$otherLabelsList = $this->getOtherLabelsList();
+
 		if (isset($this->conf['extraLabels']) && $this->conf['extraLabels'] != '') {
 			$otherLabelsList .= ',' . $this->conf['extraLabels'];
 		}
 		$otherLabels = t3lib_div::trimExplode(',', $otherLabelsList, 1);
 		while (list(, $labelName) = each($otherLabels) ) {
-			$markerArray['###LABEL_'.$this->cObj->caseshift($labelName,'upper').'###'] = sprintf($this->lang->pi_getLL($labelName), $this->thePidTitle, $dataArray['username'], $dataArray['name'], $dataArray['email'], $dataArray['password']); 
+			$markerArray['###LABEL_'.$this->cObj->caseshift($labelName,'upper').'###'] = sprintf($this->lang->pi_getLL($labelName), $this->thePidTitle, $dataArray['username'], $dataArray['name'], $dataArray['email'], $dataArray['password']);
 		}
 
 	}	// addLabelMarkers
@@ -479,6 +506,8 @@ class tx_srfeuserregister_marker {
 		* @return void
 		*/
 	function addMd5LoginMarkers(&$markerArray) {
+		global $TYPO3_CONF_VARS;
+
 		if (!$markerArray)	{
 			$markerArray = $this->getArray();
 		}
@@ -488,7 +517,7 @@ class tx_srfeuserregister_marker {
 				// Hook used by kb_md5fepw extension by Kraft Bernhard <kraftb@gmx.net>
 				// This hook allows to call User JS functions.
 				// The methods should also set the required JS functions to get included
-			$loginFormOnSubmitFuncs = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['newloginbox']['loginFormOnSubmitFuncs'];
+			$loginFormOnSubmitFuncs = $TYPO3_CONF_VARS['EXTCONF']['newloginbox']['loginFormOnSubmitFuncs'];
 			if (is_array($loginFormOnSubmitFuncs)) {
 				$_params = array (); 
 				$onSubmitAr = array();
@@ -698,7 +727,7 @@ class tx_srfeuserregister_marker {
 		*  Store the setfixed vars and return a replacement hash
 		*/
 	function storeFixedPiVars($vars) {
-		global $TYPO3_DB, $TYPO3_CONF_VARS;
+		global $TYPO3_DB;
 		
 			// create a unique hash value
 		$regHash_array = t3lib_div::cHashParams(t3lib_div::implodeArrayForUrl('',$vars));

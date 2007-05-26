@@ -53,14 +53,20 @@ class tx_srfeuserregister_auth {
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
 		$this->config = &$config;
-
-		$this->authCode = $authCode;
+		$this->setAuthCode ($authCode);
 
 			// Setting the authCode length
 		$this->config['codeLength'] = intval($this->conf['authcodeFields.']['codeLength']) ? intval($this->conf['authcodeFields.']['codeLength']) : 8;
 
 	}
 
+	function setAuthCode($code)	{
+		$this->authCode = $code;
+	}
+
+	function getAuthCode()	{
+		return $this->authCode;
+	}
 
 	/**
 	* Computes the authentication code
@@ -70,6 +76,8 @@ class tx_srfeuserregister_auth {
 	* @return string  the code
 	*/
 	function authCode($r, $extra = '') {
+		global $TYPO3_CONF_VARS;
+
 		$l = $this->config['codeLength'];
 		if ($this->conf['authcodeFields']) {
 			$fieldArr = t3lib_div::trimExplode(',', $this->conf['authcodeFields'], 1);
@@ -81,7 +89,7 @@ class tx_srfeuserregister_auth {
 			if ($this->conf['authcodeFields.']['addDate']) {
 				$value .= '|'.date($this->conf['authcodeFields.']['addDate']);
 			}
-			$value .= $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
+			$value .= $TYPO3_CONF_VARS['SYS']['encryptionKey'];
 			return substr(md5($value), 0, $l);
 		}
 	}	// authCode
@@ -108,6 +116,8 @@ class tx_srfeuserregister_auth {
 	* @return string  the hash value
 	*/
 	function setfixedHash($recCopy, $fields = '') {
+		global $TYPO3_CONF_VARS;
+
 		$recCopy_temp=array();
 		if ($fields) {
 			$fieldArr = t3lib_div::trimExplode(',', $fields, 1);
@@ -119,9 +129,10 @@ class tx_srfeuserregister_auth {
 			$recCopy_temp = $recCopy;
 		}
 		$preKey = implode('|',$recCopy_temp);
-		$authCode = $preKey.'|'.$this->conf['authcodeFields.']['addKey'].'|'.$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
+		$authCode = $preKey.'|'.$this->conf['authcodeFields.']['addKey'].'|'.$TYPO3_CONF_VARS['SYS']['encryptionKey'];
 		$authCode = substr(md5($authCode), 0, $this->config['codeLength']);
 		//$authcode = t3lib_div::stdAuthCode($recCopy,$fields,$this->codeLength);
+
 		return $authCode;
 	}	// setfixedHash
 
