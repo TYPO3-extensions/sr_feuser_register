@@ -115,13 +115,21 @@ class tx_srfeuserregister_email {
 					$fetchArray = array( '0' => array( 'email' => $fetch));
 					$this->compile('INFOMAIL_NORECORD', $fetchArray, $fetch, $markContentArray, $cmd, $cmdKey, $templateCode, array());
 				}
-				$content = $this->display->getPlainTemplate($this->emailMarkPrefix.$this->infomailPrefix.'SENT###', (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:'')));
+				$content = 
+					$this->display->getPlainTemplate(
+						$this->emailMarkPrefix.$this->infomailPrefix.'SENT###', (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:''))
+					);
 
 				if (!$content)	{ // compatibility until 1.1.2010
-					$content = $this->display->getPlainTemplate('###TEMPLATE_'.$this->infomailPrefix.'SENT###', (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:'')));
+					$content = 
+						$this->display->getPlainTemplate(
+							'###TEMPLATE_'.$this->infomailPrefix.'SENT###', (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:''))
+						);
 				}
 			} else {
-				$content = $this->display->getPlainTemplate($this->emailMarkPrefix.$this->infomailPrefix.'EMPTY###');
+				$content = $this->display->getPlainTemplate(
+					$this->emailMarkPrefix.$this->infomailPrefix.'EMPTY###'
+				);
 			}
 		} else {
 			$content='Configuration error: infomail option is not available or emailField is not setup in TypoScript';
@@ -141,6 +149,7 @@ class tx_srfeuserregister_email {
 		* @return void
 		*/
 	function compile($key, $DBrows, $recipient, &$markContentArray, $cmd, $cmdKey, &$templateCode, $setFixedConfig = array()) {
+
 		$viewOnly = true;
 		$content = array('user' => array(), 'HTML' => array(), 'admin' => array(), 'mail' => array());
 		$content['mail'] = '';
