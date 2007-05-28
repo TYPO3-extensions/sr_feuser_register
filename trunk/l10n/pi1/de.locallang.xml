@@ -358,7 +358,7 @@
 			<label index="evalErrors_atMost">Der Wert darf höchstens %s Zeichen enthalten!</label>
 			<label index="evalErrors_atMost_informal">Der Wert darf höchstens %s Zeichen enthalten!</label>
 			<label index="evalErrors_date">Bitte geben Sie ein gültiges Datum im Format jjjj-mm-tt ein!</label>
-			<label index="evalErrors_date_informal">Bitte gib ein gültiges Datum im Format tt-mm-jjjj ein!</label>
+			<label index="evalErrors_date_informal">Bitte gib ein gültiges Datum im Format jjjj-mm-tt ein!</label>
 		</languageKey>
 	</data>
 	<orig_hash type="array">
