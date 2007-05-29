@@ -24,7 +24,7 @@
 			<label index="last_name">Achternaam:</label>
 			<label index="missing_last_name">Vul aub uw achternaam in!</label>
 			<label index="missing_invitation_last_name">Vul aub een achternaam in!</label>
-			<label index="date_of_birth">Geboortedatum (dd-mm-yyyy):</label>
+			<label index="date_of_birth">Geboortedatum (yyyy-mm-dd):</label>
 			<label index="missing_date_of_birth">Vul aub uw geboortedatum in!</label>
 			<label index="missing_invitation_date_of_birth">Vul aub een geboortedatum in!</label>
 			<label index="address">Adres:</label>

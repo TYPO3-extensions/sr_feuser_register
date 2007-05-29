@@ -99,7 +99,6 @@ class tx_srfeuserregister_data {
 		$fe = t3lib_div::_GP('FE');
 		$cmdKey = $this->control->getCmdKey();
 		$this->setTable($theTable);
-		$theTable = $this->getTable();
 		$this->setAdminFieldList($adminFieldList);
 
 			// Initialise fileFunc object
@@ -345,21 +344,11 @@ class tx_srfeuserregister_data {
 					t3lib_div::intval_positive($pid);
 					break;
 			}
-			if ($this->conf[$cmdKey.'.']['generatePassword'] && $cmdKey != 'edit') {
-				unset($this->conf[$cmdKey.'.']['evalValues.']['password']);
-			}
-			if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] || ($this->conf[$cmdKey.'.']['generateUsername'] && $cmdKey != 'edit')) {
-				unset($this->conf[$cmdKey.'.']['evalValues.']['username']);
-			}
-			if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $cmdKey == 'edit' && $this->conf['setfixed']) {
-				unset($this->conf[$cmdKey.'.']['evalValues.']['email']);
-			}
 
-			reset($this->conf[$cmdKey.'.']['evalValues.']);
+			foreach($this->conf[$cmdKey.'.']['evalValues.'] as $theField => $theValue) {
 
-			while (list($theField, $theValue) = each($this->conf[$cmdKey.'.']['evalValues.'])) {
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
-				while (list(, $cmd) = each($listOfCommands)) {
+				foreach ($listOfCommands as $k => $cmd)	{
 					$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 					$theCmd = trim($cmdParts[0]);
 					switch($theCmd) {
@@ -673,7 +662,7 @@ class tx_srfeuserregister_data {
 		}
 		$fileNameList = array();
 		if (is_array($this->dataArray[$theField]) && count($this->dataArray[$theField])) {
-			while (list($i, $file) = each($this->dataArray[$theField])) {
+			foreach($this->dataArray[$theField] as $i => $file) {
 				if (is_array($file)) {
 					if ($uploadPath && $file['submit_delete']) {
 						if(@is_file(PATH_site.$uploadPath.'/'.$file['name'])) @unlink(PATH_site.$uploadPath.'/'.$file['name']);
@@ -685,6 +674,7 @@ class tx_srfeuserregister_data {
 				}
 			}
 		}
+
 		if ($uploadPath && is_array($_FILES['FE']['name'][$theTable][$theField]) && $this->evalFileError($_FILES['FE']['error'])) {
 			reset($_FILES['FE']['name'][$theTable][$theField]);
 			while (list($i, $filename) = each($_FILES['FE']['name'][$theTable][$theField])) {
@@ -1023,10 +1013,9 @@ class tx_srfeuserregister_data {
 		$cmdKey = $this->control->getCmdKey();
 
 		if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
-			reset($this->conf[$cmdKey.'.']['evalValues.']);
-			while (list($theField, $theValue) = each($this->conf[$cmdKey.'.']['evalValues.'])) {
+			foreach($this->conf[$cmdKey.'.']['evalValues.'] as $theField => $theValue) {
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
-				while (list(, $cmd) = each($listOfCommands)) {
+				foreach($listOfCommands as $k => $cmd) {
 					$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 					$theCmd = trim($cmdParts[0]);
 					switch($theCmd) {
@@ -1043,10 +1032,9 @@ class tx_srfeuserregister_data {
 			}
 		}
 		if (is_array($this->conf['parseValues.'])) {
-			reset($this->conf['parseValues.']);
-			while (list($theField, $theValue) = each($this->conf['parseValues.'])) {
+			foreach($this->conf['parseValues.'] as $theField => $theValue) {
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
-				while (list(, $cmd) = each($listOfCommands)) {
+				foreach($listOfCommands as $k => $cmd) {
 					$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 					$theCmd = trim($cmdParts[0]);
 					switch($theCmd) {

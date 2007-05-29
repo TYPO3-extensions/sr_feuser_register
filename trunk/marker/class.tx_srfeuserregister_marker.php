@@ -658,7 +658,7 @@ class tx_srfeuserregister_marker {
 		if ($dataArray[$theField]) {
 			$filenames = explode(',', $dataArray[$theField]);
 		}
-		if ($this->control->getMode() == MODE_PREVIEW || $viewOnly) {
+		if ($viewOnly) {
 			$markerArray['###UPLOAD_PREVIEW_' . $theField . '###'] = $this->buildFileUploader($theField, $this->tca->TCA['columns'][$theField]['config'], $cmd, $cmdKey, $filenames, 'FE['.$theTable.']', true);
 		} else {
 			$markerArray['###UPLOAD_' . $theField . '###'] = $this->buildFileUploader($theField, $this->tca->TCA['columns'][$theField]['config'], $cmd, $cmdKey, $filenames, 'FE['.$theTable.']');
@@ -666,21 +666,20 @@ class tx_srfeuserregister_marker {
 	}	// addFileUploadMarkers
 
 
-	function addHiddenFieldsMarkers(&$markerArray, $dataArray = array()) {
+	function addHiddenFieldsMarkers(&$markerArray, $cmdKey, $mode, $dataArray = array()) {
 		if (!$markerArray)	{
 			$markerArray = $this->getArray();
 		}
-		$cmdKey = $this->control->getCmdKey();
 		$theTable = $this->data->getTable();
 
-		if ($this->conf[$cmdKey.'.']['preview'] && $this->control->getMode() != MODE_PREVIEW) {
+		if ($this->conf[$cmdKey.'.']['preview'] && $mode != MODE_PREVIEW) {
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[preview]" value="1" />';
 			if ($theTable == 'fe_users' && $cmdKey == 'edit' && $this->conf[$cmdKey.'.']['useEmailAsUsername']) {
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][username]" value="'. htmlspecialchars($dataArray['username']).'" />';
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][email]" value="'. htmlspecialchars($dataArray['email']).'" />';
 			}
 		}
-		if ($this->control->getMode() == MODE_PREVIEW && $this->conf['templateStyle'] == 'css-styled') {
+		if ($mode == MODE_PREVIEW && $this->conf['templateStyle'] == 'css-styled') {
 			$fields = explode(',', $this->conf[$cmdKey.'.']['fields']);
 			$fields = array_diff($fields, array( 'hidden', 'disable'));
 			if ($theTable == 'fe_users') {

@@ -88,7 +88,7 @@ class tx_srfeuserregister_lang {
 				if ($text != '')	{
 					$rc[] = array($text, $i);
 				}
-			}				
+			}
 		} else {
 			foreach ($valuesArray as $k => $i)	{
 				$text = $this->pi_getLL($textSchema.$i);

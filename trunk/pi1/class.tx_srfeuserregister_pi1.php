@@ -88,14 +88,13 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 
 	function main($content, &$conf) {
 		global $TSFE;
+
 		$failure = false; // is set if data did not have the required fields set.
 		$adminFieldList = 'username,password,name,disable,usergroup,by_invitation';
-
 		$this->init($conf, 'fe_users', $adminFieldList);	
 
 		$error_message = '';
 		$content = $this->control->doProcessing ($error_message);
-
 		$rc = $this->pi_wrapInBaseClass($content);
 		return $rc; 
 	}

@@ -178,6 +178,20 @@ class tx_srfeuserregister_control {
 			}
 		}
 
+
+		if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
+			if ($this->conf[$cmdKey.'.']['generatePassword'] && $cmdKey != 'edit') {
+				unset($this->conf[$cmdKey.'.']['evalValues.']['password']);
+			}
+			if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] || ($this->conf[$cmdKey.'.']['generateUsername'] && $cmdKey != 'edit')) {
+				unset($this->conf[$cmdKey.'.']['evalValues.']['username']);
+			}
+			if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $cmdKey == 'edit' && $this->conf['setfixed']) {
+				unset($this->conf[$cmdKey.'.']['evalValues.']['email']);
+			}
+		}
+
+
 			// Setting requiredArr to the fields in "required" fields list intersected with the total field list in order to remove invalid fields.
 		$requiredArray = array_intersect(
 			t3lib_div::trimExplode(',', 
@@ -201,10 +215,8 @@ class tx_srfeuserregister_control {
 			$recUid = intval($this->data->getFeUserData('rU'));
 		}
 		$this->data->setRecUid ($recUid);
-
 		$this->site_url = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
 		$this->thePid = intval($this->conf['pid']) ? strval(intval($this->conf['pid'])) : $TSFE->id;
-
 		$pidTypeArray = array('login', 'register', 'edit', 'infomail', 'confirm', 'confirmInvitation');
 		// set the pid's
 
@@ -383,7 +395,6 @@ class tx_srfeuserregister_control {
 			$this->tca->addTcaMarkers($markerArray, $this->data->getCurrentArr(), true);
 			$this->marker->addLabelMarkers($markerArray, $this->data->getCurrentArr(), $this->getRequiredArray());
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
-
 			$markerArray = $this->marker->getArray(); // compile uses its own markerArray
 				// Send email message(s)
 			$this->email->compile(
@@ -391,7 +402,7 @@ class tx_srfeuserregister_control {
 				array($this->data->getCurrentArr()),
 				$this->data->getCurrentArr($this->conf['email.']['field']),
 				$markerArray,
-				$this->getCmd(),
+				$cmd,
 				$this->getCmdKey(),
 				$this->data->templateCode,
 				$this->conf['setfixed.']
@@ -399,7 +410,7 @@ class tx_srfeuserregister_control {
 
 				// Link to on edit save
 				// backURL may link back to referring process
-			if ($this->data->getTable() == 'fe_users' && 
+			if ($theTable == 'fe_users' && 
 				$cmd == 'edit' && 
 				($this->backURL || ($this->conf['linkToPID'] && ($this->data->getFeUserData('linkToPID') || !$this->conf['linkToPIDAddButton']))) ) {
 				$destUrl = ($this->backURL ? $this->backURL : ($TSFE->absRefPrefix ? '' : $this->site_url).$this->cObj->getTypoLink_URL($this->conf['linkToPID'].','.$TSFE->type));
@@ -442,20 +453,20 @@ class tx_srfeuserregister_control {
 					$content = $this->display->deleteScreen();
 					break;
 				case 'edit':
-					$content = $this->display->editScreen($cmd, $this->getCmdKey());
+					$content = $this->display->editScreen($cmd, $this->getCmdKey(), $this->getMode());
 					break;
 				case 'invite':
 				case 'create':
-					$content = $this->display->createScreen($cmd);
+					$content = $this->display->createScreen($cmd, $this->getCmdKey(),  $this->getMode());
 					break;
 				case 'login':
 					// nothing. The login parameters are processed by TYPO3 Core
 					break;
 				default:
 					if ($theTable == 'fe_users' && $TSFE->loginUser) {
-						$content = $this->display->createScreen($cmd);
+						$content = $this->display->createScreen($cmd, $this->getCmdKey(), $this->getMode());
 					} else {
-						$content = $this->display->editScreen($cmd, $this->getCmdKey());
+						$content = $this->display->editScreen($cmd, $this->getCmdKey(), $this->getMode());
 					}
 					break;
 			}
