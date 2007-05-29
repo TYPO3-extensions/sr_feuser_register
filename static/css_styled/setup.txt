@@ -1,5 +1,5 @@
 
-## $Id$
+# $Id$
 
 plugin.tx_srfeuserregister_pi1 {
 

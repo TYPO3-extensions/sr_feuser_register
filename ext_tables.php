@@ -6,7 +6,7 @@ t3lib_extMgm::addStaticFile(SR_FEUSER_REGISTER_EXTkey, 'static/old_style/', 'FE 
 
 t3lib_div::loadTCA('tt_content');
 
-if ($TYPO3_CONF_VARS['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['useFlexforms']==1) {
+if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['useFlexforms']==1) {
 	$TCA['tt_content']['types']['list']['subtypes_excludelist'][SR_FEUSER_REGISTER_EXTkey.'_pi1']='layout,select_key';
 	$TCA['tt_content']['types']['list']['subtypes_addlist'][SR_FEUSER_REGISTER_EXTkey.'_pi1']='pi_flexform';
 	t3lib_extMgm::addPiFlexFormValue(SR_FEUSER_REGISTER_EXTkey.'_pi1', 'FILE:EXT:'.SR_FEUSER_REGISTER_EXTkey.'/pi1/flexform_ds_pi1.xml');
@@ -39,136 +39,137 @@ $TCA['fe_users']['columns']['email']['config']['max'] = '255';
 $TCA['fe_users']['columns']['telephone']['config']['max'] = '25';
 $TCA['fe_users']['columns']['fax']['config']['max'] = '25';
 
-$TCA['fe_users']['columns']['image']['config']['uploadfolder'] = $TYPO3_CONF_VARS['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['uploadFolder'];
-$TCA['fe_users']['columns']['image']['config']['max_size'] = $TYPO3_CONF_VARS['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageMaxSize'];
-$TCA['fe_users']['columns']['image']['config']['allowed'] = $TYPO3_CONF_VARS['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageTypes'];
+
+$TCA['fe_users']['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['uploadfolder'];
+$TCA['fe_users']['columns']['image']['config']['max_size'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageMaxSize'];
+$TCA['fe_users']['columns']['image']['config']['allowed'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageTypes'];
 
 t3lib_extMgm::addTCAcolumns('fe_users', Array(
-		'static_info_country' => Array (
-			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.static_info_country',
-			'config' => Array (
-				'type' => 'input',
-				'size' => '5',
-				'max' => '3',
-				'eval' => '',
-				'default' => ''
-			)
-		),
-		'zone' => Array (
-			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.zone',
-			'config' => Array (
-				'type' => 'input',
-				'size' => '20',
-				'max' => '40',
-				'eval' => 'trim',
-				'default' => ''
-			)
-		),
-		'language' => Array (
-			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.language',
-			'config' => Array (
-				'type' => 'input',
-				'size' => '4',
-				'max' => '2',
-				'eval' => '',
-				'default' => ''
-			)
-		),
-		'first_name' => Array (
-			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.first_name',
-			'config' => Array (
-				'type' => 'input',
-				'size' => '20',
-				'max' => '50',
-				'eval' => 'trim',
-				'default' => ''
-			)
-		),
-		'last_name' => Array (
-			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.last_name',
-			'config' => Array (
-				'type' => 'input',
-				'size' => '20',
-				'max' => '50',
-				'eval' => 'trim',
-				'default' => ''
-			)
-		),
-		'date_of_birth' => Array (
-			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.date_of_birth',
-			'config' => Array (
-				'type' => 'input',
-				'size' => '10',
-				'max' => '20',
-				'eval' => 'date',
-				'checkbox' => '0',
-				'default' => ''
-			)
-		),
-		'gender' => Array (
-			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender',
-			'config' => Array (
-				'type' => 'radio',
-				'items' => Array (
-					Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender.I.0', '0'),
-					Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender.I.1', '1'),
-				),
-			)
-		),
-		'status' => Array (
-			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status',
-			'config' => Array (
-				'type' => 'select',
-				'items' => Array (
-					Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.0', '0'),
-					Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.1', '1'),
-					Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.2', '2'),
-					Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.3', '3'),
-					Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.4', '4'),
-				),
-				'size' => 1,
-				'maxitems' => 1,
-			)
-		),
-		'comments' => Array (
-			'exclude' => 0,
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.comments',
-			'config' => Array (
-				'type' => 'text',
-				'rows' => '5',
-				'cols' => '48'
-			)
-		),
-		'by_invitation' => Array (
-			'exclude' => 0,	
-			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.by_invitation',
-			'config' => Array (
-				'type' => 'check',
-				'default' => '0'
-			)
-		),
+	'static_info_country' => Array (
+		'exclude' => 0,
+		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.static_info_country',
+		'config' => Array (
+			'type' => 'input',
+			'size' => '5',
+			'max' => '3',
+			'eval' => '',
+			'default' => ''
+		)
+	),
+	'zone' => Array (
+		'exclude' => 0,
+		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.zone',
+		'config' => Array (
+			'type' => 'input',
+			'size' => '20',
+			'max' => '40',
+			'eval' => 'trim',
+			'default' => ''
+		)
+	),
+	'language' => Array (
+		'exclude' => 0,
+		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.language',
+		'config' => Array (
+			'type' => 'input',
+			'size' => '4',
+			'max' => '2',
+			'eval' => '',
+			'default' => ''
+		)
+	),
+	'first_name' => Array (
+		'exclude' => 0,
+		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.first_name',
+		'config' => Array (
+			'type' => 'input',
+			'size' => '20',
+			'max' => '50',
+			'eval' => 'trim',
+			'default' => ''
+		)
+	),
+	'last_name' => Array (
+		'exclude' => 0,
+		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.last_name',
+		'config' => Array (
+			'type' => 'input',
+			'size' => '20',
+			'max' => '50',
+			'eval' => 'trim',
+			'default' => ''
+		)
+	),
+	'date_of_birth' => Array (
+		'exclude' => 0,
+		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.date_of_birth',
+		'config' => Array (
+			'type' => 'input',
+			'size' => '10',
+			'max' => '20',
+			'eval' => 'date',
+			'checkbox' => '0',
+			'default' => ''
+		)
+	),
+	'gender' => Array (
+		'exclude' => 0,
+		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender',
+		'config' => Array (
+			'type' => 'radio',
+			'items' => Array (
+				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender.I.0', '0'),
+				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender.I.1', '1'),
+			),
+		)
+	),
+	'status' => Array (
+		'exclude' => 0,
+		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status',
+		'config' => Array (
+			'type' => 'select',
+			'items' => Array (
+				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.0', '0'),
+				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.1', '1'),
+				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.2', '2'),
+				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.3', '3'),
+				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.4', '4'),
+			),
+			'size' => 1,
+			'maxitems' => 1,
+		)
+	),
+	'comments' => Array (
+		'exclude' => 0,
+		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.comments',
+		'config' => Array (
+			'type' => 'text',
+			'rows' => '5',
+			'cols' => '48'
+		)
+	),
+	'by_invitation' => Array (
+		'exclude' => 0,	
+		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.by_invitation',
+		'config' => Array (
+			'type' => 'check',
+			'default' => '0'
+		)
+	),
 ));
 
-$TCA['fe_users']['interface']['showRecordFieldList'] = str_replace('country', 'zone,static_info_country,country,language', $TCA['fe_users']['interface']['showRecordFieldList']);
-$TCA['fe_users']['interface']['showRecordFieldList'] = str_replace('title', 'gender,first_name,last_name,status,date_of_birth,title', $TCA['fe_users']['interface']['showRecordFieldList']);
+$TCA['fe_users']['interface']['showRecordFieldList'] = str_replace(',country', ',zone,static_info_country,country,language', $TCA['fe_users']['interface']['showRecordFieldList']);
+$TCA['fe_users']['interface']['showRecordFieldList'] = str_replace(',title', ',gender,first_name,last_name,status,date_of_birth,title', $TCA['fe_users']['interface']['showRecordFieldList']);
 
-$TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace('country', 'zone,static_info_country,country,language,comments', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
-$TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace('title', 'gender,first_name,last_name,status,title', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
+$TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace(',country', ',zone,static_info_country,country,language,comments', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
+$TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace(',title', ',gender,first_name,last_name,status,title', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
 $TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',image,disable,date_of_birth,by_invitation';
 
-$TCA['fe_users']['types']['0']['showitem'] = str_replace('country', 'zone,static_info_country,country,language', $TCA['fe_users']['types']['0']['showitem']);
-$TCA['fe_users']['types']['0']['showitem'] = str_replace('address', 'status,address', $TCA['fe_users']['types']['0']['showitem']);
-$TCA['fe_users']['types']['0']['showitem'] = str_replace('www', 'www,comments,by_invitation', $TCA['fe_users']['types']['0']['showitem']);
+$TCA['fe_users']['types']['0']['showitem'] = str_replace(',country', ',zone,static_info_country,country,language', $TCA['fe_users']['types']['0']['showitem']);
+$TCA['fe_users']['types']['0']['showitem'] = str_replace(',address', ',status,address', $TCA['fe_users']['types']['0']['showitem']);
+$TCA['fe_users']['types']['0']['showitem'] = str_replace(',www', ',www,comments,by_invitation', $TCA['fe_users']['types']['0']['showitem']);
 
-$TCA['fe_users']['palettes']['2']['showitem'] = str_replace('title', 'gender,first_name,last_name,title', $TCA['fe_users']['palettes']['2']['showitem']);
+$TCA['fe_users']['palettes']['2']['showitem'] = str_replace(',title', ',gender,first_name,last_name,title', $TCA['fe_users']['palettes']['2']['showitem']);
 
 	// fe_users modified
 if (!t3lib_extMgm::isLoaded('direct_mail')) {
