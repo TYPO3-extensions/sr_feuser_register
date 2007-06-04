@@ -74,7 +74,7 @@ class tx_srfeuserregister_email {
 		$this->auth = &$auth;
 		$this->cObj = &$pibase->cObj;
 
-		$this->setfixedEnabled = $pibase->setfixedEnabled;
+		$this->setfixedEnabled = $control->setfixedEnabled;
 		if (isset($this->conf['email.']['HTMLMail'])) {
 			$this->HTMLMailEnabled = $this->conf['email.']['HTMLMail'];
 		}

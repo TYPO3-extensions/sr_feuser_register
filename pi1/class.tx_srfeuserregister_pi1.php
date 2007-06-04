@@ -69,9 +69,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 	var $scriptRelPath = 'pi1/class.tx_srfeuserregister_pi1.php'; // Path to this script relative to the extension dir.
 	var $extKey = 'sr_feuser_register';  // The extension key.
 
-	var $setfixedEnabled = 1;
 	var $incomingData = FALSE;
-	var $inError = array(); // array of fields with eval errors other than absence
 	var $nc = ''; // "&no_cache=1" if you want that parameter sent.
 	var $additionalUpdateFields = '';
 	var $sys_language_content;
@@ -137,10 +135,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			// prepare for character set settings
 		if ($TSFE->metaCharset) {
 			$this->charset = $TSFE->csConvObj->parse_charset($TSFE->metaCharset);
-		}
-
-		if (isset($this->conf['setfixed'])) {
-			$this->setfixedEnabled = $this->conf['setfixed'];
 		}
 
 		$this->auth->init($this, $this->conf, $this->config, $this->data->getFeUserData('aC'));

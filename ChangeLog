@@ -1,3 +1,7 @@
+2007-06-04 Franz Holzinger  <kontakt@fholzinger.com>
+	* fix bug 5329: The inError property has been missing in the data object
+	* fix bug 5687: setfixed could not be turned off
+
 2007-05-29 Franz Holzinger  <kontakt@fholzinger.com>
 	* fix bug 5256: replace also the ',' in str_replace in order not avoid replacement of other fields with the same name but from other extensions.
 	* fix bug 5397: images could not be uploaded and have not been shown

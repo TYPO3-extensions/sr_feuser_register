@@ -59,7 +59,7 @@ class tx_srfeuserregister_control {
 	var $cmd;
 	var $marker;
 	var $cObj;
-	var $setfixedEnabled;
+	var $setfixedEnabled = 1;
 	var $site_url;
 	var $prefixId;
 	var $extKey;
@@ -83,7 +83,6 @@ class tx_srfeuserregister_control {
 		$this->data = &$data;
 		$this->marker = &$marker;
 		$this->cObj = &$pibase->cObj;
-		$this->setfixedEnabled = $pibase->setfixedEnabled;
 		$this->site_url = $pibase->site_url;
 		$this->prefixId = $pibase->prefixId;
 		$this->extKey = $pibase->extKey;
@@ -191,6 +190,9 @@ class tx_srfeuserregister_control {
 			}
 		}
 
+		if (isset($this->conf['setfixed'])) {
+			$this->setfixedEnabled = $this->conf['setfixed'];
+		}
 
 			// Setting requiredArr to the fields in "required" fields list intersected with the total field list in order to remove invalid fields.
 		$requiredArray = array_intersect(
@@ -569,7 +571,7 @@ class tx_srfeuserregister_control {
 			$theCode = $this->auth->setfixedHash($origArr, $origArr['_FIELDLIST']);
 
 			if (!strcmp($this->auth->authCode, $theCode)) {
-				if ($this->data->getFeUserData('sFK') == 'DELETE' || $this->data->getFeUserData('sFK') == 'REFUSE') {
+				if ($this->data->getFeUserData('sFK') === 'DELETE' || $this->data->getFeUserData('sFK') === 'REFUSE') {
 					if (!$this->tca->TCA['ctrl']['delete'] || $this->conf['forceFileDelete']) {
 						// If the record is fully deleted... then remove the image attached.
 						$this->data->deleteFilesFromRecord($this->data->getRecUid());
@@ -614,7 +616,7 @@ class tx_srfeuserregister_control {
 				}
 
 				// Outputting template
-				if ($theTable == 'fe_users' && ($this->data->getFeUserData('sFK') == 'APPROVE' || $this->data->getFeUserData('sFK') == 'ENTER')) {
+				if ($theTable == 'fe_users' && ($this->data->getFeUserData('sFK') === 'APPROVE' || $this->data->getFeUserData('sFK') == 'ENTER')) {
 					$markerArray = $this->marker->getArray();
 					$this->marker->addMd5LoginMarkers($markerArray);
 					$this->marker->setArray($markerArray);
@@ -623,7 +625,7 @@ class tx_srfeuserregister_control {
 					}
 				}
 				$setfixedSufffix = $this->data->getFeUserData('sFK');
-				if ($this->conf['enableAdminReview'] && $this->data->getFeUserData('sFK') == 'APPROVE' && !$origArr['by_invitation']) {
+				if ($this->conf['enableAdminReview'] && $this->data->getFeUserData('sFK') === 'APPROVE' && !$origArr['by_invitation']) {
 					$setfixedSufffix .= '_REVIEW';
 				}
 				$content = $this->display->getPlainTemplate('###TEMPLATE_' . SETFIXED_PREFIX . 'OK_' . $setfixedSufffix . '###', $origArr);
@@ -646,7 +648,7 @@ class tx_srfeuserregister_control {
 
 				if ($theTable == 'fe_users') { 
 						// If applicable, send admin a request to review the registration request
-					if ($this->conf['enableAdminReview'] && $this->data->getFeUserData('sFK') == 'APPROVE' && !$origArr['by_invitation']) {
+					if ($this->conf['enableAdminReview'] && $this->data->getFeUserData('sFK') === 'APPROVE' && !$origArr['by_invitation']) {
 
 						$this->email->compile(
 							SETFIXED_PREFIX.'REVIEW',
@@ -661,7 +663,7 @@ class tx_srfeuserregister_control {
 					}
 
 						// Auto-login on confirmation
-					if ($this->conf['enableAutoLoginOnConfirmation'] && ($this->data->getFeUserData('sFK') == 'APPROVE' || $this->data->getFeUserData('sFK') == 'ENTER')) {
+					if ($this->conf['enableAutoLoginOnConfirmation'] && ($this->data->getFeUserData('sFK') === 'APPROVE' || $this->data->getFeUserData('sFK') == 'ENTER')) {
 						$this->login();
 						exit;
 					}
