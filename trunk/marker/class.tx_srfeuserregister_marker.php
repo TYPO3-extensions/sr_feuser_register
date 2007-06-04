@@ -83,7 +83,6 @@ class tx_srfeuserregister_marker {
 
 		$this->cObj = &$pibase->cObj;
 
-
 			// set the title language overlay
 		$pidRecord = t3lib_div::makeInstance('t3lib_pageSelect');
 		$pidRecord->init(0);
@@ -94,9 +93,8 @@ class tx_srfeuserregister_marker {
 
 		$this->site_url = $this->control->getSiteUrl();
 		$this->prefixId = $this->control->prefixId;
-
 		$this->staticInfo = $pibase->staticInfo;
-		$this->setfixedEnabled = $pibase->setfixedEnabled;
+		$this->setfixedEnabled = $control->setfixedEnabled;
 		$this->sys_language_content = $pibase->sys_language_content;
 
 		$this->confirmType = intval($this->conf['confirmType']) ? strval(intval($this->conf['confirmType'])) : $TSFE->type;
@@ -292,41 +290,45 @@ class tx_srfeuserregister_marker {
 
 		// Data field labels
 		$infoFields = t3lib_div::trimExplode(',', $this->data->getFieldList(), 1);
-		while (list(, $fName) = each($infoFields)) {
-			$markerkey = $this->cObj->caseshift($fName,'upper');
-			$markerArray['###LABEL_'.$markerkey.'###'] = $this->lang->pi_getLL($fName) ? $this->lang->pi_getLL($fName) : $this->lang->getLLFromString($this->tca->TCA['columns'][$fName]['label']);
-			$markerArray['###TOOLTIP_'.$markerkey.'###'] = $this->lang->pi_getLL('tooltip_' . $fName);
-			$markerArray['###TOOLTIP_INVITATION_'.$markerkey.'###'] = $this->lang->pi_getLL('tooltip_invitation_' . $fName);
-			// <Ries van Twisk added support for multiple checkboxes>
-			$colConfig = $this->tca->TCA['columns'][$fName]['config'];
 
-			if ($colConfig['type'] == 'select' && $colConfig['items'])	{ // (is_array($dataArray[$fName])) {
+		foreach($infoFields as $k => $theField) {
+			$markerkey = $this->cObj->caseshift($theField,'upper');
+			$markerArray['###LABEL_'.$markerkey.'###'] = $this->lang->pi_getLL($theField) ? $this->lang->pi_getLL($theField) : $this->lang->getLLFromString($this->tca->TCA['columns'][$theField]['label']);
+			$markerArray['###TOOLTIP_'.$markerkey.'###'] = $this->lang->pi_getLL('tooltip_' . $theField);
+			$markerArray['###TOOLTIP_INVITATION_'.$markerkey.'###'] = $this->lang->pi_getLL('tooltip_invitation_' . $theField);
+			// <Ries van Twisk added support for multiple checkboxes>
+			$colConfig = $this->tca->TCA['columns'][$theField]['config'];
+
+			if ($colConfig['type'] == 'select' && $colConfig['items'])	{ // (is_array($dataArray[$theField])) {
 				$colContent = '';
-				$markerArray['###FIELD_'.$fName.'_CHECKED###'] = '';
-				$markerArray['###LABEL_'.$fName.'_CHECKED###'] = '';
-				$this->data->dataArray['###POSTVARS_'.$fName.'###'] = '';
-				$fieldArray = t3lib_div::trimExplode(',', $dataArray[$fName]);
+				$markerArray['###FIELD_'.$theField.'_CHECKED###'] = '';
+				$markerArray['###LABEL_'.$theField.'_CHECKED###'] = '';
+				$this->data->dataArray['###POSTVARS_'.$theField.'###'] = '';
+				$fieldArray = t3lib_div::trimExplode(',', $dataArray[$theField]);
 				foreach ($fieldArray AS $key => $value) {
-					$markerArray['###FIELD_'.$fName.'_CHECKED###'] .= '- '.$this->lang->getLLFromString($colConfig['items'][$value][0]).'<br />';
-					$markerArray['###LABEL_'.$fName.'_CHECKED###'] .= '- '.$this->lang->getLLFromString($colConfig['items'][$value][0]).'<br />';
-					$markerArray['###POSTVARS_'.$fName.'###'] .= chr(10).'	<input type="hidden" name="FE[fe_users]['.$fName.']['.$key.']" value ="'.$value.'" />';
+					$markerArray['###FIELD_'.$theField.'_CHECKED###'] .= '- '.$this->lang->getLLFromString($colConfig['items'][$value][0]).'<br />';
+					$markerArray['###LABEL_'.$theField.'_CHECKED###'] .= '- '.$this->lang->getLLFromString($colConfig['items'][$value][0]).'<br />';
+					$markerArray['###POSTVARS_'.$theField.'###'] .= chr(10).'	<input type="hidden" name="FE[fe_users]['.$theField.']['.$key.']" value ="'.$value.'" />';
 				}
 			// </Ries van Twisk added support for multiple checkboxes>
 			} else {
-				$markerArray['###FIELD_'.$fName.'_CHECKED###'] = ($dataArray[$fName])?'checked':'';
-				$markerArray['###LABEL_'.$fName.'_CHECKED###'] = ($dataArray[$fName])?$this->lang->pi_getLL('yes'):$this->lang->pi_getLL('no');
+				$markerArray['###FIELD_'.$theField.'_CHECKED###'] = ($dataArray[$theField])?'checked':'';
+				$markerArray['###LABEL_'.$theField.'_CHECKED###'] = ($dataArray[$theField])?$this->lang->pi_getLL('yes'):$this->lang->pi_getLL('no');
 			}
-			if (in_array(trim($fName), $requiredArray) ) {
+
+			if (in_array(trim($theField), $requiredArray) ) {
 				$markerArray['###REQUIRED_'.$markerkey.'###'] = '<span>*</span>';
-				$markerArray['###MISSING_'.$markerkey.'###'] = $this->lang->pi_getLL('missing_'.$fName);
-				$markerArray['###MISSING_INVITATION_'.$markerkey.'###'] = $this->lang->pi_getLL('missing_invitation_'.$fName);
+				$markerArray['###MISSING_'.$markerkey.'###'] = $this->lang->pi_getLL('missing_'.$theField);
+				$markerArray['###MISSING_INVITATION_'.$markerkey.'###'] = $this->lang->pi_getLL('missing_invitation_'.$theField);
 			} else {
 				$markerArray['###REQUIRED_'.$markerkey.'###'] = '';
+				$markerArray['###MISSING_'.$markerkey.'###'] = '';
+				$markerArray['###MISSING_INVITATION_'.$markerkey.'###'] = '';
 			}
 		}
 
 		$buttonLabels = t3lib_div::trimExplode(',', $this->getButtonLabelsList(), 1);
-		while (list(, $labelName) = each($buttonLabels) ) {
+		foreach($buttonLabels as $k => $labelName) {
 			if ($labelName)	{
 				$markerArray['###LABEL_BUTTON_'.$this->cObj->caseshift($labelName,'upper').'###'] = $this->lang->pi_getLL('button_'.$labelName);
 			}
@@ -337,7 +339,7 @@ class tx_srfeuserregister_marker {
 			$otherLabelsList .= ',' . $this->conf['extraLabels'];
 		}
 		$otherLabels = t3lib_div::trimExplode(',', $otherLabelsList, 1);
-		while (list(, $labelName) = each($otherLabels) ) {
+		foreach($otherLabels as $k => $labelName) {
 			$markerArray['###LABEL_'.$this->cObj->caseshift($labelName,'upper').'###'] = sprintf($this->lang->pi_getLL($labelName), $this->thePidTitle, $dataArray['username'], $dataArray['name'], $dataArray['email'], $dataArray['password']);
 		}
 
@@ -598,16 +600,16 @@ class tx_srfeuserregister_marker {
 	/**
 	* Builds a file uploader
 	*
-	* @param string  $fName: the field name
+	* @param string  $theField: the field name
 	* @param array  $config: the field TCA config
 	* @param array  $filenames: array of uploaded file names
 	* @param string  $prefix: the field name prefix
 	* @return string  generated HTML uploading tags
 	*/
-	function buildFileUploader($fName, $config, $cmd, $cmdKey, $filenames = array(), $prefix, $viewOnly = false) {
+	function buildFileUploader($theField, $config, $cmd, $cmdKey, $filenames = array(), $prefix, $viewOnly = false) {
 		$HTMLContent = '';
 		$size = $config['maxitems'];
-		$cmdParts = split('\[|\]', $this->conf[$cmdKey.'.']['evalValues.'][$fName]);
+		$cmdParts = split('\[|\]', $this->conf[$cmdKey.'.']['evalValues.'][$theField]);
 		if(!empty($cmdParts[1])) $size = min($size, intval($cmdParts[1]));
 		$size = $size ? $size : 1;
 		$number = $size - sizeof($filenames);
@@ -624,15 +626,15 @@ class tx_srfeuserregister_marker {
 		} else {
 			for($i = 0; $i < sizeof($filenames); $i++) {
 				if ($this->conf['templateStyle'] == 'css-styled') {
-					$HTMLContent .= $filenames[$i] . '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="'.$prefix.'['.$fName.']['.$i.'][submit_delete]" value="1" title="'.$this->lang->pi_getLL('icon_delete').'" alt="' . $this->lang->pi_getLL('icon_delete'). '"' . $this->pibase->pi_classParam('delete-icon') . ' onclick=\'if(confirm("' . $this->lang->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' />'
+					$HTMLContent .= $filenames[$i] . '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="'.$prefix.'['.$theField.']['.$i.'][submit_delete]" value="1" title="'.$this->lang->pi_getLL('icon_delete').'" alt="' . $this->lang->pi_getLL('icon_delete'). '"' . $this->pibase->pi_classParam('delete-icon') . ' onclick=\'if(confirm("' . $this->lang->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' />'
 							. '<a href="' . $dir.'/' . $filenames[$i] . '"' . $this->pibase->pi_classParam('file-view') . 'target="_blank" title="' . $this->lang->pi_getLL('file_view') . '">' . $this->lang->pi_getLL('file_view') . '</a><br />';
 				} else {
-					$HTMLContent .= $filenames[$i] . '&nbsp;&nbsp;<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="'.$prefix.'['.$fName.']['.$i.'][submit_delete]" value="1" title="'.$this->lang->pi_getLL('icon_delete').'" alt="' . $this->lang->pi_getLL('icon_delete'). '"' . $this->pibase->pi_classParam('icon') . ' onclick=\'if(confirm("' . $this->lang->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' />&nbsp;&nbsp;<small><a href="' . $dir.'/' . $filenames[$i] . '" target="_blank">' . $this->lang->pi_getLL('file_view') . '</a></small><br />';
+					$HTMLContent .= $filenames[$i] . '&nbsp;&nbsp;<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="'.$prefix.'['.$theField.']['.$i.'][submit_delete]" value="1" title="'.$this->lang->pi_getLL('icon_delete').'" alt="' . $this->lang->pi_getLL('icon_delete'). '"' . $this->pibase->pi_classParam('icon') . ' onclick=\'if(confirm("' . $this->lang->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' />&nbsp;&nbsp;<small><a href="' . $dir.'/' . $filenames[$i] . '" target="_blank">' . $this->lang->pi_getLL('file_view') . '</a></small><br />';
 				}
-				$HTMLContent .= '<input type="hidden" name="' . $prefix . '[' . $fName . '][' . $i . '][name]' . '" value="' . $filenames[$i] . '" />';
+				$HTMLContent .= '<input type="hidden" name="' . $prefix . '[' . $theField . '][' . $i . '][name]' . '" value="' . $filenames[$i] . '" />';
 			}
 			for ($i = sizeof($filenames); $i < $number + sizeof($filenames); $i++) {
-				$HTMLContent .= '<input id="'. $this->pibase->pi_getClassName($fName) . '-' . ($i-sizeof($filenames)) . '" name="'.$prefix.'['.$fName.']['.$i.']'.'" title="' . $this->lang->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'image') . '" size="40" type="file" '.$this->pibase->pi_classParam('uploader').' /><br />';
+				$HTMLContent .= '<input id="'. $this->pibase->pi_getClassName($theField) . '-' . ($i-sizeof($filenames)) . '" name="'.$prefix.'['.$theField.']['.$i.']'.'" title="' . $this->lang->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'image') . '" size="40" type="file" '.$this->pibase->pi_classParam('uploader').' /><br />';
 			}
 		}
 
@@ -691,8 +693,8 @@ class tx_srfeuserregister_marker {
 					$fields = array_merge($fields, array( 'email'));
 				}
 			}
-			while (list(, $fName) = each($fields)) {
-				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.']['.$fName.']" value="'. htmlspecialchars($dataArray[$fName]).'" />';
+			while (list(, $theField) = each($fields)) {
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.']['.$theField.']" value="'. htmlspecialchars($dataArray[$theField]).'" />';
 			}
 		}
 	}	// addHiddenFieldsMarkers
@@ -709,7 +711,7 @@ class tx_srfeuserregister_marker {
 		if (!$markerArray)	{
 			$markerArray = $this->getArray();
 		}
-		if ($this->control->getMode() == MODE_PREVIEW || $viewOnly) {
+		if ($this->control->getMode() === MODE_PREVIEW || $viewOnly) {
 			if (!$markerArray['###FIELD_zone###'] ) {
 				return $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_zone###', '');
 			}

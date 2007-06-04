@@ -54,7 +54,6 @@ class tx_srfeuserregister_display {
 	var $auth;
 	
 	var $extKey;  // The extension key.
-	var $setfixedEnabled;
 	var $prefixId;
 	var $cObj;
 
@@ -70,7 +69,6 @@ class tx_srfeuserregister_display {
 		$this->auth = &$auth;
 
 		$this->extKey = $pibase->extKey;
-		$this->setfixedEnabled = $pibase->setfixedEnabled;
 		$this->prefixId = $pibase->prefixId;
 		$this->cObj = &$pibase->cObj;
 	}
@@ -146,7 +144,7 @@ class tx_srfeuserregister_display {
 	*
 	* @return string  the template with substituted markers
 	*/
-	function createScreen($cmd = 'create', $cmdKey, $mode) {
+	function createScreen($cmd='create', $cmdKey, $mode) {
 		global $TSFE, $TYPO3_CONF_VARS;
 
 		if ($this->conf['create']) {
@@ -177,7 +175,7 @@ class tx_srfeuserregister_display {
 			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $dataArray, '',TRUE, 'FIELD_', TRUE);
 			$this->marker->addStaticInfoMarkers($markerArray, $dataArray);
 			$this->tca->addTcaMarkers($markerArray, $dataArray);
-			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $dataArray, $this->control->getMode() == MODE_PREVIEW);
+			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $dataArray, $this->control->getMode() === MODE_PREVIEW);
 			$this->marker->addLabelMarkers($markerArray, $dataArray, $this->control->getRequiredArray());
 			$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
 			$this->marker->addHiddenFieldsMarkers($markerArray, $cmdKey, $mode, $dataArray);
@@ -350,25 +348,25 @@ class tx_srfeuserregister_display {
 			$infoFields[] = 'module_sys_dmail_category';
 			$infoFields[] = 'module_sys_dmail_html';
 		}
-		reset($infoFields);
-		while (list(, $fName) = each($infoFields)) {
-			if (in_array(trim($fName), $requiredArray) ) {
-				if (!t3lib_div::inList($failure, $fName)) {
-					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_'.$fName.'###', '');
-					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_'.$fName.'###', '');
-				} else if (!$this->data->inError[$fName]) {
-					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_'.$fName.'###', '');
+
+		foreach($infoFields as $k => $theField) {
+			if (in_array(trim($theField), $requiredArray) ) {
+				if (!t3lib_div::inList($failure, $theField)) {
+					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_'.$theField.'###', '');
+					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_'.$theField.'###', '');
+				} else if (!$this->data->inError[$theField]) {
+					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_'.$theField.'###', '');
 				}
 			} else {
-				if (!in_array(trim($fName), $includedFields)) {
-					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_'.$fName.'###', '');
+				if (!in_array(trim($theField), $includedFields)) {
+					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_'.$theField.'###', '');
 				} else {
-					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_'.$fName.'###', '');
-					if (!t3lib_div::inList($failure, $fName)) {
-						$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_'.$fName.'###', '');
+					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_'.$theField.'###', '');
+					if (!t3lib_div::inList($failure, $theField)) {
+						$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_'.$theField.'###', '');
 					}
-					if (is_array($this->conf['parseValues.']) && strstr($this->conf['parseValues.'][$fName],'checkArray')) {
-						$listOfCommands = t3lib_div::trimExplode(',', $this->conf['parseValues.'][$fName], 1);
+					if (is_array($this->conf['parseValues.']) && strstr($this->conf['parseValues.'][$theField],'checkArray')) {
+						$listOfCommands = t3lib_div::trimExplode(',', $this->conf['parseValues.'][$theField], 1);
 						while (list(, $cmd) = each($listOfCommands)) {
 							$cmdParts = split('\[|\]', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 							$theCmd = trim($cmdParts[0]);
@@ -377,7 +375,7 @@ class tx_srfeuserregister_display {
 									$positions = t3lib_div::trimExplode(';', $cmdParts[1]);
 									for($i=0; $i<10; $i++) {
 										if(!in_array($i, $positions)) {
-											$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_'.$fName.'_'.$i.'###', '');
+											$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_'.$theField.'_'.$i.'###', '');
 										}
 									}
 								break;

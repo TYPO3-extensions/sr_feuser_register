@@ -75,6 +75,7 @@ class tx_srfeuserregister_data {
 	var $fieldList; // List of fields from fe_admin_fieldList
 	var $recUid;
 	var $missing = array(); // array of required missing fields
+	var $inError = array(); // array of fields with eval errors other than absence
 
 
 	function init(&$pibase, &$conf, &$config, &$lang, &$tca, &$auth, &$control, &$freeCap, $theTable, &$adminFieldList)	{
@@ -286,21 +287,22 @@ class tx_srfeuserregister_data {
 	* @return void  all initialization done directly on array $this->dataArray
 	*/
 	function defaultValues(&$markContentArray) {
+
 		$cmdKey = $this->control->getCmdKey();
 
 		// Addition of default values
 		if (is_array($this->conf[$cmdKey.'.']['defaultValues.'])) {
 			reset($this->conf[$cmdKey.'.']['defaultValues.']);
-			while (list($theField, $theValue) = each($this->conf[$cmdKey.'.']['defaultValues.'])) {
+			foreach($this->conf[$cmdKey.'.']['defaultValues.'] as $theField => $theValue) {
 				$this->dataArray[$theField] = $theValue;
 			}
 		}
 		if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
-			reset($this->conf[$cmdKey.'.']['evalValues.']);
-			while (list($theField, $theValue) = each($this->conf[$cmdKey.'.']['evalValues.'])) {
+			foreach($this->conf[$cmdKey.'.']['evalValues.'] as $theField => $theValue) {
 				$markContentArray['###EVAL_ERROR_FIELD_'.$theField.'###'] = '<!--no error-->';
 			}
 		}
+
 	}	// defaultValues
 
 
@@ -515,6 +517,7 @@ class tx_srfeuserregister_data {
 				$markContentArray['###EVAL_ERROR_FIELD_'.$theField.'###'] = is_array($this->failureMsg[$theField]) ? implode($this->failureMsg[$theField], '<br />'): '<!--no error-->';
 			}
 		}
+
 		$this->failure = implode($tempArr, ',');
 	}	// evalValues
 
