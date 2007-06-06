@@ -76,6 +76,7 @@ class tx_srfeuserregister_data {
 	var $recUid;
 	var $missing = array(); // array of required missing fields
 	var $inError = array(); // array of fields with eval errors other than absence
+	var $templateCode;
 
 
 	function init(&$pibase, &$conf, &$config, &$lang, &$tca, &$auth, &$control, &$freeCap, $theTable, &$adminFieldList)	{
@@ -151,7 +152,15 @@ class tx_srfeuserregister_data {
 		$this->setAdminFieldList($adminFieldList);
 
 			// Fetching the template file
-		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
+		$this->setTemplateCode($this->cObj->fileResource($this->conf['templateFile']));
+	}
+
+	function &getTemplateCode()	{
+		return $this->templateCode;
+	}
+
+	function setTemplateCode(&$templateCode)	{
+		$this->templateCode = $templateCode;
 	}
 
 	function getFieldList()	{

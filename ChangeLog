@@ -1,3 +1,6 @@
+2007-06-07 Franz Holzinger  <kontakt@fholzinger.com>
+	* fix bug with missing getTemplateCode function in data object
+
 2007-06-04 Franz Holzinger  <kontakt@fholzinger.com>
 	* fix bug 5329: The inError property has been missing in the data object
 	* fix bug 5687: setfixed could not be turned off

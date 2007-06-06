@@ -355,7 +355,6 @@ class tx_srfeuserregister_control {
 			// Delete record if delete command is sent + the preview flag is NOT set.
 			$this->data->deleteRecord();
 		}
-
 			// Display forms
 		if ($this->data->saved) {
 				// Displaying the page here that says, the record has been saved. You're able to include the saved values by markers.
@@ -390,7 +389,7 @@ class tx_srfeuserregister_control {
 					break;
 			}
 				// Display confirmation message
-			$templateCode = $this->cObj->getSubpart($this->data->templateCode, '###TEMPLATE_'.$key.'###');
+			$templateCode = $this->cObj->getSubpart($this->data->getTemplateCode(), '###TEMPLATE_'.$key.'###');
 			$markerArray = $this->marker->getArray();
 			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $this->data->getCurrentArr(), '',TRUE, 'FIELD_', TRUE);
 			$this->marker->addStaticInfoMarkers($markerArray, $this->data->getCurrentArr());
@@ -406,7 +405,7 @@ class tx_srfeuserregister_control {
 				$markerArray,
 				$cmd,
 				$this->getCmdKey(),
-				$this->data->templateCode,
+				$templateCode,
 				$this->conf['setfixed.']
 			);
 
@@ -428,7 +427,7 @@ class tx_srfeuserregister_control {
 			}
 		} else if($this->data->error) {
 				// If there was an error, we return the template-subpart with the error message
-			$templateCode = $this->cObj->getSubpart($this->data->templateCode, $this->data->error);
+			$templateCode = $this->cObj->getSubpart($this->data->getTemplateCode(), $this->data->error);
 			$markerArray = $this->marker->getArray();
 			$this->marker->addLabelMarkers($markerArray, $this->data->getDataArray(),$this->getRequiredArray());
 			$this->marker->setArray($markerArray);
@@ -449,7 +448,7 @@ class tx_srfeuserregister_control {
 					}
 					$markerArray = $this->marker->getArray();
 					$content = $this->email->sendInfo($markerArray, $cmd, 
-						$this->getCmdKey(), $this->data->templateCode);
+						$this->getCmdKey(), $this->data->getTemplateCode());
 					break;
 				case 'delete':
 					$content = $this->display->deleteScreen();
@@ -642,7 +641,7 @@ class tx_srfeuserregister_control {
 					$markContentArray,
 					$this->getCmd(),
 					$this->getCmdKey(),
-					$this->data->templateCode,
+					$this->data->getTemplateCode(),
 					$this->conf['setfixed.']
 				);
 
@@ -657,7 +656,7 @@ class tx_srfeuserregister_control {
 							$markContentArray,
 							$this->getCmd(),
 							$this->getCmdKey(),
-							$this->data->templateCode,
+							$this->data->getTemplateCode(),
 							$this->conf['setfixed.']
 						);
 					}
