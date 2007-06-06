@@ -94,7 +94,7 @@ class tx_srfeuserregister_display {
 				}
 			}
 		}
-		$templateCode = $this->cObj->getSubpart($this->data->templateCode, '###TEMPLATE_EDIT'.$this->marker->getPreviewLabel().'###');
+		$templateCode = $this->cObj->getSubpart($this->data->getTemplateCode(), '###TEMPLATE_EDIT'.$this->marker->getPreviewLabel().'###');
 		if (!$this->conf['linkToPID'] || !$this->conf['linkToPIDAddButton'] || !($mode == MODE_PREVIEW || !$this->conf['edit.']['preview'])) {
 			$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_LINKTOPID_ADD_BUTTON###', '');
 		}
@@ -167,7 +167,7 @@ class tx_srfeuserregister_display {
 			$markerArray = $this->marker->getArray();
 			$this->marker->addMd5EventsMarkers($markerArray, 'create');
 			// $this->marker->setArray($markerArray);
-			$templateCode = $this->cObj->getSubpart($this->data->templateCode, ((!($theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $cmd == 'invite') ? '###TEMPLATE_'.$key.$this->marker->getPreviewLabel().'###':'###TEMPLATE_CREATE_LOGIN###'));
+			$templateCode = $this->cObj->getSubpart($this->data->getTemplateCode(), ((!($theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $cmd == 'invite') ? '###TEMPLATE_'.$key.$this->marker->getPreviewLabel().'###':'###TEMPLATE_CREATE_LOGIN###'));
 
 			$failure = t3lib_div::_GP('noWarnings') ? FALSE: $this->data->getFailure();
 			if (!$failure) $templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
@@ -309,7 +309,8 @@ class tx_srfeuserregister_display {
 	* @return string  the template with substituted parts and markers
 	*/
 	function getPlainTemplate($key, $r = '') {
-		$templateCode = $this->cObj->getSubpart($this->data->templateCode, $key);
+		$templateCode = $this->data->getTemplateCode();
+		$templateCode = $this->cObj->getSubpart($templateCode, $key);
 		$markerArray = $this->marker->getArray();
 		if (is_array($r))	{
 			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $r, '',TRUE, 'FIELD_', TRUE);
