@@ -63,7 +63,7 @@ class tx_srfeuserregister_control {
 	var $site_url;
 	var $prefixId;
 	var $extKey;
-	var $useMd5Password;
+	var $useMd5Password = FALSE;
 	var $auth;
 	var $email;
 	var $tca;
@@ -86,7 +86,6 @@ class tx_srfeuserregister_control {
 		$this->site_url = $pibase->site_url;
 		$this->prefixId = $pibase->prefixId;
 		$this->extKey = $pibase->extKey;
-		$this->useMd5Password = $pibase->useMd5Password;
 		$this->auth = &$auth;
 		$this->email = &$email;
 		$this->tca = &$tca;
@@ -128,6 +127,14 @@ class tx_srfeuserregister_control {
 		}
 
 		$theTable = $this->data->getTable();
+
+			// Initialise password encryption
+		if ($theTable == 'fe_users' && $this->conf['useMd5Password']) {
+			$this->useMd5Password = TRUE;
+			$this->conf['enableAutoLoginOnConfirmation'] = FALSE;
+			$this->conf['enableAutoLoginOnCreate'] = FALSE;
+		}
+
 		if ($theTable == 'fe_users') {
 			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'] . ',username', 1)));
 			$this->conf[$cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'] . ',username', 1)));
@@ -162,8 +169,8 @@ class tx_srfeuserregister_control {
 			} else {
 				$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('usergroup')));
 			}
-			if ($cmdKey == 'invite') {
-				if ($this->control->useMd5Password) {
+			if ($cmdKey === 'invite') {
+				if ($this->useMd5Password) {
 					$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('password')));
 					if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
 						unset($this->conf[$cmdKey.'.']['evalValues.']['password']);
@@ -202,14 +209,6 @@ class tx_srfeuserregister_control {
 		);
 		$this->setRequiredArray($requiredArray);
 		$this->setCmd($cmd);
-
-			// Initialise password encryption
-		if ($theTable == 'fe_users' && t3lib_extMgm::isLoaded('kb_md5fepw')) {
-			require_once(t3lib_extMgm::extPath('kb_md5fepw').'class.tx_kbmd5fepw_funcs.php');
-			$this->useMd5Password = TRUE;
-			$this->conf['enableAutoLoginOnConfirmation'] = FALSE;
-			$this->conf['enableAutoLoginOnCreate'] = FALSE;
-		}
 
 		if ($theTable == 'fe_users' && $TSFE->loginUser && $cmd != 'invite' && $cmd != 'setfixed') {
 			$recUid = $TSFE->fe_user->user['uid'];
@@ -405,7 +404,7 @@ class tx_srfeuserregister_control {
 				$markerArray,
 				$cmd,
 				$this->getCmdKey(),
-				$templateCode,
+				$this->data->getTemplateCode(),
 				$this->conf['setfixed.']
 			);
 

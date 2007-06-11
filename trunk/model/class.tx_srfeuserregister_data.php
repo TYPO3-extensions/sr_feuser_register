@@ -1114,19 +1114,27 @@ class tx_srfeuserregister_data {
 		$cmdKey = $this->control->getCmdKey();
 
 		if (
-			($cmdKey == 'invite' && ($this->control->useMd5Password || $this->conf[$cmdKey.'.']['generatePassword'])) ||
+			($cmdKey === 'invite' && ($this->control->useMd5Password || $this->conf[$cmdKey.'.']['generatePassword'])) ||
 
-			($cmdKey == 'create' && $this->conf[$cmdKey.'.']['generatePassword'])
+			($cmdKey === 'create' && $this->conf[$cmdKey.'.']['generatePassword'])
 		)	{
 
+			$genLength = intval($this->conf[$cmdKey.'.']['generatePassword']);
+			$genPassword = substr(md5(uniqid(microtime(), 1)), 0, $genLength);
 			if ($this->control->useMd5Password) {
 				$length = intval($GLOBALS['TSFE']->config['plugin.']['tx_newloginbox_pi1.']['defaultPasswordLength']);
 				if (!$length)	{
-					$length = 5;
+					$length = ($genLength ? $genLength : 32);
 				}
-				$this->dataArray['password'] = tx_kbmd5fepw_funcs::generatePassword( $length );
+
+				if (t3lib_extMgm::isLoaded('kb_md5fepw'))	{
+					include_once(t3lib_extMgm::extPath('kb_md5fepw').'class.tx_kbmd5fepw_funcs.php');
+					$this->dataArray['password'] = tx_kbmd5fepw_funcs::generatePassword( $length );
+				} else {
+					$this->dataArray['password'] = md5($genPassword);
+				}
 			} else {
-				$this->dataArray['password'] = substr(md5(uniqid(microtime(), 1)), 0, intval($this->conf[$cmdKey.'.']['generatePassword']));
+				$this->dataArray['password'] = $genPassword;
 			}
 		}
 	}	// setPassword

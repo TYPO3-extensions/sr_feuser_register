@@ -23,7 +23,7 @@ t3lib_extMgm::addPlugin(Array('LLL:EXT:'.SR_FEUSER_REGISTER_EXTkey.'/locallang_d
 t3lib_div::loadTCA('fe_users');
 $TCA['fe_users']['columns']['username']['config']['eval'] = 'nospace,uniqueInPid,required';
 
-if (t3lib_extMgm::isLoaded('newloginbox') && t3lib_extMgm::isLoaded('kb_md5fepw') && strstr($TCA['fe_users']['columns']['password']['config']['eval'], 'md5')) {
+if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['useMd5Password'] && strstr($TCA['fe_users']['columns']['password']['config']['eval'], 'md5')) {
 	$TCA['fe_users']['columns']['password']['config']['eval'] = 'nospace,required,md5,password';
 } else {
 	$TCA['fe_users']['columns']['password']['config']['eval'] = 'nospace,required';

@@ -1,3 +1,7 @@
+2007-06-11 Franz Holzinger  <kontakt@fholzinger.com>
+	* rename ###EMAIL_TEMPLATE_INFOMAIL_EMPTY### back to ###TEMPLATE_INFOMAIL### because it is not sent in an email
+	* fix bug 5766: no notification emails have been sent due to wrong $templateCode variable.
+
 2007-06-07 Franz Holzinger  <kontakt@fholzinger.com>
 	* fix bug with missing getTemplateCode function in data object
 

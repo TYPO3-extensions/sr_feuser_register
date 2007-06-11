@@ -165,7 +165,7 @@ class tx_srfeuserregister_display {
 
 			$key = ($cmd == 'invite') ? 'INVITE': 'CREATE';
 			$markerArray = $this->marker->getArray();
-			$this->marker->addMd5EventsMarkers($markerArray, 'create');
+			$this->marker->addMd5EventsMarkers($markerArray, 'create', $this->control->useMd5Password);
 			// $this->marker->setArray($markerArray);
 			$templateCode = $this->cObj->getSubpart($this->data->getTemplateCode(), ((!($theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $cmd == 'invite') ? '###TEMPLATE_'.$key.$this->marker->getPreviewLabel().'###':'###TEMPLATE_CREATE_LOGIN###'));
 
@@ -230,7 +230,7 @@ class tx_srfeuserregister_display {
 				// Must be logged in OR be authenticated by the aC code in order to edit
 				// If the recUid selects a record.... (no check here)
 				$markerArray = '';
-				$this->marker->addMd5EventsMarkers($markerArray, 'edit');
+				$this->marker->addMd5EventsMarkers($markerArray, 'edit', $this->control->useMd5Password);
 				$this->marker->setArray($markerArray);
 				if ( !strcmp($this->auth->authCode, $theCode) || $this->auth->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($theTable, $origArr, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 					// Display the form, if access granted.
