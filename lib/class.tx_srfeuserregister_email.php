@@ -88,7 +88,7 @@ class tx_srfeuserregister_email {
 	}
 
 	/**
-		* Sends info mail to subscriber
+		* Sends info mail to subscriber or displays a screen to update or delete the membership
 		*
 		* @param array  Array with key/values being marker-strings/substitution values.
 		* @return	string		HTML content message
@@ -126,7 +126,7 @@ class tx_srfeuserregister_email {
 						);
 				}
 			} else {
-				$subpartkey = '###'.$this->emailMarkPrefix.$this->infomailPrefix.'EMPTY###';
+				$subpartkey = '###TEMPLATE_INFOMAIL###';
 				$content = $this->display->getPlainTemplate($subpartkey);
 			}
 		} else {
@@ -154,7 +154,7 @@ class tx_srfeuserregister_email {
 		$content['user']['all'] = '';
 		$content['HTML']['all'] = '';
 		$content['admin']['all'] = '';
-		if ($this->conf['email.'][$key] || ($this->setfixedEnabled && ($key == 'SETFIXED_CREATE' || $key == 'SETFIXED_CREATE_REVIEW' || $key == 'SETFIXED_INVITE' || $key == 'SETFIXED_REVIEW' || $key == 'INFOMAIL'  || $key == 'INFOMAIL_NORECORD'))) {
+		if ($this->conf['email.'][$key] || ($this->setfixedEnabled && ($key === 'SETFIXED_CREATE' || $key === 'SETFIXED_CREATE_REVIEW' || $key === 'SETFIXED_INVITE' || $key === 'SETFIXED_REVIEW' || $key === 'INFOMAIL'  || $key == 'INFOMAIL_NORECORD'))) {
 			$subpartMarker = $this->emailMarkPrefix.$key;
 			$content ['user']['all'] = trim($this->cObj->getSubpart($templateCode, '###'.$subpartMarker.'###'));
 			$content['user']['all'] = $this->display->removeRequired($content['user']['all']);

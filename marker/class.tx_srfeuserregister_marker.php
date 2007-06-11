@@ -483,16 +483,16 @@ class tx_srfeuserregister_marker {
 		* @param array  $markerArray: the input marker array
 		* @return void
 		*/
-	function addMd5EventsMarkers(&$markerArray,$cmd) {
+	function addMd5EventsMarkers(&$markerArray,$cmd,$useMd5Password) {
 		if (!$markerArray)	{
 			$markerArray = $this->getArray();
 		}
 		$markerArray['###FORM_ONSUBMIT###'] = '';
 		$markerArray['###PASSWORD_ONCHANGE###'] = '';
-		if ($this->control->useMd5Password) {
-			$mode = count($this->data->getDataArray) ? 'edit' : $cmd;
+		if ($useMd5Password) {
+			$cmd = (count($this->data->getDataArray) ? 'edit' : $cmd);
 			$GLOBALS['TSFE']->additionalHeaderData['MD5_script'] = '<script type="text/javascript" src="typo3/md5.js"></script>';
-			$GLOBALS['TSFE']->JSCode .= $this->getMD5Submit($mode);
+			$GLOBALS['TSFE']->JSCode .= $this->getMD5Submit($cmd);
 			$markerArray['###FORM_ONSUBMIT###'] = 'onsubmit="return enc_form(this);"';
 			if ($mode == 'edit') {
 				$markerArray['###PASSWORD_ONCHANGE###'] = 'onchange="pw_change=1; return true;"';
@@ -575,11 +575,11 @@ class tx_srfeuserregister_marker {
 					return false;
 				}
 				';
-		if ($cmd == 'edit') {
+		if ($cmd === 'edit') {
 			$JSPart .= 'if (pw_change) {
 				';
 		}
-		if ($cmd == 'create') {
+		if ($cmd === 'create') {
 			$JSPart .= 'if (!enc_pass) {
 			';
 		}
@@ -587,7 +587,7 @@ class tx_srfeuserregister_marker {
 					form[\'FE[' . $theTable . '][password]\'].value = enc_pass;
 					form[\'FE[' . $theTable . '][password_again]\'].value = enc_pass;
 				';
-		if ($cmd == 'create' || $cmd == 'edit') {
+		if ($cmd === 'create' || $cmd === 'edit') {
 			$JSPart .= '}
 			';
 		}

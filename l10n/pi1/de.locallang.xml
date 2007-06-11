@@ -194,7 +194,7 @@
 			<label index="button_enter">Eingeben</label>
 			<label index="button_confirm_delete">Ja, Konto löschen</label>
 			<label index="button_cancel_delete">Nein, abbrechen</label>
-			<label index="click_here_to_register">Zum ersten mal hier? Hier können Sie sich anmelden.</label>
+			<label index="click_here_to_register">Zum ersten mal hier? Hier können Sie sich registrieren.</label>
 			<label index="click_here_to_register_informal">Zum ersten mal hier? Hier kannst Du Dich anmelden.</label>
 			<label index="tooltip_click_here_to_register">Das ist ein Formular zur Registrierung.</label>
 			<label index="click_here_to_edit">Klicken Sie hier, um Ihre Benutzerdaten zu bearbeiten oder um Ihr Konto zu löschen.</label>
