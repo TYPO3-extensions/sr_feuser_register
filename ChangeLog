@@ -1,3 +1,8 @@
+2007-06-16 Franz Holzinger  <kontakt@fholzinger.com>
+	* fix bug with autocreation of usernames
+	* new classes for setfixed, control data and url functions
+	* fix bug with not shown status field in backend
+
 2007-06-11 Franz Holzinger  <kontakt@fholzinger.com>
 	* rename ###EMAIL_TEMPLATE_INFOMAIL_EMPTY### back to ###TEMPLATE_INFOMAIL### because it is not sent in an email
 	* fix bug 5766: no notification emails have been sent due to wrong $templateCode variable.

@@ -54,7 +54,6 @@ class tx_srfeuserregister_lang {
 	}
 
 
-
 	function getLLFromString($string, $bForce=true) {
 		global $LOCAL_LANG, $TSFE;
 		

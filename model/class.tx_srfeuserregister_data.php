@@ -44,7 +44,6 @@
 	// For use with images:
 require_once (PATH_t3lib.'class.t3lib_basicfilefunc.php');
 
-
 class tx_srfeuserregister_data {
 	var $pibase;
 	var $conf = array();
@@ -53,6 +52,7 @@ class tx_srfeuserregister_data {
 	var $tca;
 	var $auth;
 	var $freeCap;
+	var $controlData;
 
 	var $dataArray = array();
 	var $currentArr = array();
@@ -70,7 +70,6 @@ class tx_srfeuserregister_data {
 	var $extKey;
 	var $error;
 	var $sys_language_content;
-	var $prefixId;
 	var $adminFieldList;
 	var $fieldList; // List of fields from fe_admin_fieldList
 	var $recUid;
@@ -79,7 +78,7 @@ class tx_srfeuserregister_data {
 	var $templateCode;
 
 
-	function init(&$pibase, &$conf, &$config, &$lang, &$tca, &$auth, &$control, &$freeCap, $theTable, &$adminFieldList)	{
+	function init(&$pibase, &$conf, &$config, &$lang, &$tca, &$auth, &$control, &$freeCap, $theTable, &$adminFieldList, &$controlData)	{
 		global $TSFE, $TCA;
 
 		$this->pibase = &$pibase;
@@ -89,22 +88,14 @@ class tx_srfeuserregister_data {
 		$this->tca = &$tca;
 		$this->auth = &$auth;
 		$this->control = &$control;
+		$this->controlData = &$controlData;
 		$this->freeCap = &$freeCap;
 		$this->cObj = &$pibase->cObj;
 		$this->extKey = $extKey;
 		$this->sys_language_content = $pibase->sys_language_content;
 		$this->fileFunc = $pibase->fileFunc;
-		$this->prefixId = $pibase->prefixId;
 
-			// Get parameters
-		$this->feUserData = t3lib_div::_GP($this->prefixId);
-		$fe = t3lib_div::_GP('FE');
-		$cmdKey = $this->control->getCmdKey();
-		$this->setTable($theTable);
-		$this->setAdminFieldList($adminFieldList);
-
-			// Initialise fileFunc object
-		$this->fileFunc = t3lib_div::makeInstance('t3lib_basicFileFunctions');
+		$this->feUserData = t3lib_div::_GP($this->controlData->getPrefixId());
 
 		// <Steve Webster added short url feature>
 			// Get hash variable if provided and if short url feature is enabled
@@ -114,12 +105,21 @@ class tx_srfeuserregister_data {
 			if ($this->getFeUserData('regHash')) {
 				$getVars = $this->getStoredURL($this->getFeUserData('regHash'));
 				foreach ($getVars as $k => $v ) {
+					// restore former GET values
 					t3lib_div::_GETset($v,$k);
 				}
-				$this->feUserData = t3lib_div::_GP($this->prefixId);
+				$this->feUserData = t3lib_div::_GP($this->controlData->getPrefixId());
 			}
 		}
 		// </Steve Webster added short url feature>
+
+			// Get parameters
+		$fe = t3lib_div::_GP('FE');
+		$cmdKey = $this->controlData->getCmdKey();
+		$this->setAdminFieldList($adminFieldList);
+
+			// Initialise fileFunc object
+		$this->fileFunc = t3lib_div::makeInstance('t3lib_basicFileFunctions');
 
 			// Establishing compatibility with Direct Mail extension
 		$piVarArray = array('rU', 'aC', 'cmd', 'sFK');
@@ -196,14 +196,6 @@ class tx_srfeuserregister_data {
 		$this->feUserData[$k] = $value;
 	}
 
-	function getTable ()	{
-		return $this->theTable;
-	}
-
-	function setTable ($theTable)	{
-		$this->theTable = $theTable;
-	}
-
 	function setRecUid($uid)	{
 		$this->recUid = $uid;
 	}
@@ -268,11 +260,11 @@ class tx_srfeuserregister_data {
 	* @return void  all overriding done directly on array $this->dataArray
 	*/
 	function overrideValues() {
-		$cmdKey = $this->control->getCmdKey();
+		$cmdKey = $this->controlData->getCmdKey();
 		// Addition of overriding values
 		if (is_array($this->conf[$cmdKey.'.']['overrideValues.'])) {
 			foreach ($this->conf[$cmdKey.'.']['overrideValues.'] as $theField => $theValue) {
-				if ($theField == 'usergroup' && $this->getTable() == 'fe_users' && $this->conf[$cmdKey.'.']['allowUserGroupSelection']) {
+				if ($theField == 'usergroup' && $this->controlData->getTable() == 'fe_users' && $this->conf[$cmdKey.'.']['allowUserGroupSelection']) {
 					$this->dataArray[$theField] = implode(',', array_merge(array_diff(t3lib_div::trimExplode(',', $this->dataArray[$theField], 1), t3lib_div::trimExplode(',', $theValue, 1)), t3lib_div::trimExplode(',', $theValue, 1)));
 				} else {
 					$stdWrap = $this->conf[$cmdKey.'.']['overrideValues.'][$theField.'.'];
@@ -297,7 +289,7 @@ class tx_srfeuserregister_data {
 	*/
 	function defaultValues(&$markContentArray) {
 
-		$cmdKey = $this->control->getCmdKey();
+		$cmdKey = $this->controlData->getCmdKey();
 
 		// Addition of default values
 		if (is_array($this->conf[$cmdKey.'.']['defaultValues.'])) {
@@ -322,8 +314,8 @@ class tx_srfeuserregister_data {
 	* @return void  on return, $this->failure is the list of fields which were not ok
 	*/
 	function evalValues(&$markContentArray) {
-		$cmdKey = $this->control->getCmdKey();
-		$requiredArray = $this->control->getRequiredArray();
+		$cmdKey = $this->controlData->getCmdKey();
+		$requiredArray = $this->controlData->getRequiredArray();
 
 		// Check required, set failure if not ok.
 		$tempArr = array();
@@ -338,20 +330,21 @@ class tx_srfeuserregister_data {
 		// Evaluate: This evaluates for more advanced things than "required" does. But it returns the same error code, so you must let the required-message tell, if further evaluation has failed!
 		$recExist = 0;
 		if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
-			$cmd = $this->control->getCmd();
+			$cmd = $this->controlData->getCmd();
 			switch($cmd) {
 				case 'edit':
 					if ($pid) {
 							// This may be tricked if the input has the pid-field set but the edit-field list does NOT allow the pid to be edited. Then the pid may be false.
 						$recordTestPid = $pid;
 					} else {
-						$tempRecArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->getTable(), $this->getDataArray('uid'));
+						$tempRecArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->controlData->getTable(), $this->getDataArray('uid'));
 						$recordTestPid = intval($tempRecArr['pid']);
 					}
 					$recExist = ($recordTestPid != 0);
 					break;
 				default:
-					$recordTestPid = $this->control->thePid ? $this->control->thePid :
+					$thePid = $this->controlData->getPid();
+					$recordTestPid = $thePid ? $thePid :
 					t3lib_div::intval_positive($pid);
 					break;
 			}
@@ -364,7 +357,7 @@ class tx_srfeuserregister_data {
 					$theCmd = trim($cmdParts[0]);
 					switch($theCmd) {
 						case 'uniqueGlobal':
-						$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->getTable(), $theField, $this->dataArray[$theField], '', '', '', '1');
+						$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->controlData->getTable(), $theField, $this->dataArray[$theField], '', '', '', '1');
 						if (trim($this->dataArray[$theField]) && $DBrows) {
 							if (!$recExist || $DBrows[0]['uid'] != $this->dataArray['uid']) {
 								// Only issue an error if the record is not existing (if new...) and if the record with the false value selected was not our self.
@@ -375,7 +368,7 @@ class tx_srfeuserregister_data {
 						}
 						break;
 						case 'uniqueLocal':
-						$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->getTable(), $theField, $this->dataArray[$theField], 'AND pid IN ('.$recordTestPid.')', '', '', '1');
+						$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->controlData->getTable(), $theField, $this->dataArray[$theField], 'AND pid IN ('.$recordTestPid.')', '', '', '1');
 						if (trim($this->dataArray[$theField]) && $DBrows) {
 							if (!$recExist || $DBrows[0]['uid'] != $this->dataArray['uid']) {
 								// Only issue an error if the record is not existing (if new...) and if the record with the false value selected was not our self.
@@ -668,7 +661,7 @@ class tx_srfeuserregister_data {
 	* @return void
 	*/
 	function processFiles($theField) {
-		$theTable = $this->getTable();
+		$theTable = $this->controlData->getTable();
 		if (is_array($this->tca->TCA['columns'][$theField])) {
 			$uploadPath = $this->tca->TCA['columns'][$theField]['config']['uploadfolder'];
 		}
@@ -714,12 +707,14 @@ class tx_srfeuserregister_data {
 	function save() {
 		global $TYPO3_DB, $TSFE, $TYPO3_CONF_VARS;
 
-		$cmd = $this->control->getCmd();
-		$cmdKey = $this->control->getCmdKey();
-		$theTable = $this->getTable();
+		$cmd = $this->controlData->getCmd();
+		$cmdKey = $this->controlData->getCmdKey();
+		$theTable = $this->controlData->getTable();
+		$dataArray = $this->getDataArray();
+		$prefixId = $this->controlData->getPrefixId();
 		switch($cmd) {
 			case 'edit':
-			$theUid = $this->dataArray['uid'];
+			$theUid = $this->getDataArray('uid');
 			$origArr = $TSFE->sys_page->getRawRecord($theTable, $theUid);
 				// Fetch the original record to check permissions
 			if ($this->conf['edit'] && ($TSFE->loginUser || $this->auth->aCAuth($origArr))) {
@@ -735,9 +730,9 @@ class tx_srfeuserregister_data {
 					$newFieldList  = implode(',', array_diff(explode(',', $newFieldList), array('username')));
 				}
 				if ($this->auth->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($theTable, $origArr, $TSFE->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
-					$outGoingData = $this->parseOutgoingData($this->dataArray);
+					$outGoingData = $this->parseOutgoingData($dataArray);
 					$res = $this->cObj->DBgetUpdate($theTable, $theUid, $outGoingData, $newFieldList, true);
-					$this->updateMMRelations($this->dataArray);
+					$this->updateMMRelations($dataArray);
 					$this->saved = true;
 
 						// Post-edit processing: call user functions and hooks
@@ -747,8 +742,8 @@ class tx_srfeuserregister_data {
 
 						// <Ries van Twisk added registrationProcess hooks>
 						// Call all afterSaveEdit hooks after the record has been edited and saved
-					if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'])) {
-						foreach  ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'] as $classRef) {
+					if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'])) {
+						foreach  ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'] as $classRef) {
 							$hookObj= &t3lib_div::getUserObj($classRef);
 							if (method_exists($hookObj, 'registrationProcess_afterSaveEdit')) {
 								$hookObj->registrationProcess_afterSaveEdit($this->getCurrentArr(), $this);
@@ -766,17 +761,17 @@ class tx_srfeuserregister_data {
 				$newFieldList = implode(',', array_intersect(explode(',', $this->getFieldList()), t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)));
 				$newFieldList  = implode(',', array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->getAdminFieldList()))));
 				$parsedArray = array();
-				$parsedArray = $this->parseOutgoingData($this->dataArray);
-				if ($cmdKey == 'invite' && $this->control->useMd5Password) {
-					$parsedArray['password'] = md5($this->dataArray['password']);
+				$parsedArray = $this->parseOutgoingData($dataArray);
+				if ($cmdKey === 'invite' && $this->controlData->getUseMd5Password()) {
+					$parsedArray['password'] = md5($this->getDataArray('password'));
 				}
-				$res = $this->cObj->DBgetInsert($theTable, $this->control->thePid, $parsedArray, $newFieldList, TRUE);
+				$res = $this->cObj->DBgetInsert($theTable, $this->controlData->getPid(), $parsedArray, $newFieldList, TRUE);
 				$newId = $TYPO3_DB->sql_insert_id();
 
 					// Enable users to own them self.
-				if ($this->getTable() == "fe_users" && $this->conf['fe_userOwnSelf']) {
+				if ($this->controlData->getTable() === 'fe_users' && $this->conf['fe_userOwnSelf']) {
 					$extraList = '';
-					$dataArray = array();
+					$tmpDataArray = array();
 					if ($GLOBALS['TCA'][$theTable]['ctrl']['fe_cruser_id']) {
 						$field = $GLOBALS['TCA'][$theTable]['ctrl']['fe_cruser_id'];
 						$dataArray[$field] = $newId;
@@ -784,16 +779,17 @@ class tx_srfeuserregister_data {
 					}
 					if ($GLOBALS['TCA'][$theTable]['ctrl']['fe_crgroup_id']) {
 						$field = $GLOBALS['TCA'][$theTable]['ctrl']['fe_crgroup_id'];
-						list($dataArray[$field]) = explode(',', $this->dataArray['usergroup']);
-						$dataArray[$field] = intval($dataArray[$field]);
+						list($tmpDataArray[$field]) = explode(',', $this->dataArray['usergroup']);
+						$tmpDataArray[$field] = intval($tmpDataArray[$field]);
 						$extraList .= ','.$field;
 					}
-					if (count($dataArray)) {
-						$res = $this->cObj->DBgetUpdate($theTable, $newId, $dataArray, $extraList, TRUE);
+					if (count($tmpDataArray)) {
+						$res = $this->cObj->DBgetUpdate($theTable, $newId, $tmpDataArray, $extraList, TRUE);
 					}
 				}
-				$this->dataArray['uid'] = $newId;
-				$this->updateMMRelations($this->dataArray);
+				$this->setDataArray($newId, 'uid');
+				$dataArray = $this->getDataArray();
+				$this->updateMMRelations($dataArray);
 				$this->saved = true;
 
 					// Post-create processing: call user functions and hooks
@@ -802,8 +798,8 @@ class tx_srfeuserregister_data {
 
 					// <Ries van Twisk added registrationProcess hooks>
 					// Call all afterSaveCreate hooks after the record has been created and saved
-				if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'])) {
-					foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'] as $classRef) {
+				if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'])) {
+					foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'] as $classRef) {
 						$hookObj= &t3lib_div::getUserObj($classRef);
 						if (method_exists($hookObj, 'registrationProcess_afterSaveCreate')) {
 							$hookObj->registrationProcess_afterSaveCreate($this->getCurrentArr(), $this);
@@ -811,7 +807,7 @@ class tx_srfeuserregister_data {
 					}
 				}
 					// </Ries van Twisk added registrationProcess hooks>
-				if ($cmdKey == 'invite' && $this->control->useMd5Password) {
+				if ($cmdKey === 'invite' && $this->controlData->getUseMd5Password()) {
 					$this->setCurrentArr($this->getDataArray('password'),'password');
 				}
 			}
@@ -828,7 +824,8 @@ class tx_srfeuserregister_data {
 	function deleteRecord() {
 		global $TYPO3_CONF_VARS;
 
-		$theTable = $this->getTable();
+		$theTable = $this->controlData->getTable();
+		$prefixId = $this->controlData->getPrefixId();
 		if ($this->conf['delete']) {
 			// If deleting is enabled
 			$origArr = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $this->getRecUid());
@@ -842,8 +839,8 @@ class tx_srfeuserregister_data {
 
 							// <Ries van Twisk added registrationProcess hooks>
 							// Call all beforeSaveDelete hooks BEFORE the record is deleted
-						if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'])) {
-							foreach  ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'] as $classRef) {
+						if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'])) {
+							foreach  ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'] as $classRef) {
 								$hookObj= &t3lib_div::getUserObj($classRef);
 								if (method_exists($hookObj, 'registrationProcess_beforeSaveDelete')) {
 									$hookObj->registrationProcess_beforeSaveDelete($origArr, $this);
@@ -876,13 +873,13 @@ class tx_srfeuserregister_data {
 		* @return void
 		*/
 	function deleteFilesFromRecord($uid) {
-		$rec = $GLOBALS['TSFE']->sys_page->getRawRecord($this->getTable(), $uid);
+		$rec = $GLOBALS['TSFE']->sys_page->getRawRecord($this->controlData->getTable(), $uid);
 		reset($this->tca->TCA['columns']);
 		$updateFields = array();
 		while (list($field, $conf) = each($this->tca->TCA['columns'])) {
 			if ($conf['config']['type'] == "group" && $conf['config']['internal_type'] == 'file') {
 				$updateFields[$field] = '';
-				$res = $this->cObj->DBgetUpdate($this->getTable(), $uid, $updateFields, $field, true);
+				$res = $this->cObj->DBgetUpdate($this->controlData->getTable(), $uid, $updateFields, $field, true);
 				unset($updateFields[$field]);
 				$delFileArr = explode(',', $rec[$field]);
 				reset($delFileArr);
@@ -966,54 +963,6 @@ class tx_srfeuserregister_data {
 	}	// deleteMMRelations
 
 
-	/**
-		* Returns the relevant usergroup overlay record fields
-		* Adapted from t3lib_page.php
-		*
-		* @param	mixed		If $usergroup is an integer, it's the uid of the usergroup overlay record and thus the usergroup overlay record is returned. If $usergroup is an array, it's a usergroup record and based on this usergroup record the language overlay record is found and gespeichert.OVERLAYED before the usergroup record is returned.
-		* @param	integer		Language UID if you want to set an alternative value to $this->pibase->sys_language_content which is default. Should be >=0
-		* @return	array		usergroup row which is overlayed with language_overlay record (or the overlay record alone)
-		*/
-	function getUsergroupOverlay($usergroup, $languageUid = -1) {
-		global $TYPO3_DB;
-		// Initialize:
-		if ($languageUid < 0) {
-			$languageUid = $this->pibase->sys_language_content;
-		}
-
-		// If language UID is different from zero, do overlay:
-		if ($languageUid) {
-			$fieldArr = array('title');
-			if (is_array($usergroup)) {
-				$fe_groups_uid = $usergroup['uid'];
-				// Was the whole record
-				$fieldArr = array_intersect($fieldArr, array_keys($usergroup));
-				// Make sure that only fields which exist in the incoming record are overlaid!
-			} else {
-				$fe_groups_uid = $usergroup;
-				// Was the uid
-			}
-
-			if (count($fieldArr)) {
-				$whereClause = 'fe_group=' . intval($fe_groups_uid) . ' ' .
-					'AND sys_language_uid='.intval($languageUid). ' ' .
-					$this->cObj->enableFields('fe_groups_language_overlay');
-				$res = $TYPO3_DB->exec_SELECTquery(implode(',', $fieldArr), 'fe_groups_language_overlay', $whereClause);
-				if ($TYPO3_DB->sql_num_rows($res)) {
-					$row = $TYPO3_DB->sql_fetch_assoc($res);
-				}
-			}
-		}
-
-			// Create output:
-		if (is_array($usergroup)) {
-			return is_array($row) ? array_merge($usergroup, $row) : $usergroup;
-			// If the input was an array, simply overlay the newfound array and return...
-		} else {
-			return is_array($row) ? $row : array(); // always an array in return
-		}
-	}	// getUsergroupOverlay
-
 
 	/**
 	* Updates the input array from preview
@@ -1022,7 +971,7 @@ class tx_srfeuserregister_data {
 	* @return array  updated array
 	*/
 	function modifyDataArrForFormUpdate($inputArr) {
-		$cmdKey = $this->control->getCmdKey();
+		$cmdKey = $this->controlData->getCmdKey();
 
 		if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
 			foreach($this->conf[$cmdKey.'.']['evalValues.'] as $theField => $theValue) {
@@ -1081,7 +1030,7 @@ class tx_srfeuserregister_data {
 	* @return void  done directly on array $this->dataArray
 	*/
 	function setName() {
-		$cmdKey = $this->control->getCmdKey();
+		$cmdKey = $this->controlData->getCmdKey();
 
 		if (in_array('name', explode(',', $this->getFieldList())) && !in_array('name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1))
 			&& in_array('first_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)) && in_array('last_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1))  ) {
@@ -1096,9 +1045,9 @@ class tx_srfeuserregister_data {
 		* @return void  done directly on array $this->dataArray
 		*/
 	function setUsername() {
-		$cmdKey = $this->control->getCmdKey();
+		$cmdKey = $this->controlData->getCmdKey();
 
-		if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $this->getTable() == "fe_users" && t3lib_div::inList($this->getFieldList(), 'username') && !$this->failureMsg['email']) {
+		if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $this->controlData->getTable() == "fe_users" && t3lib_div::inList($this->getFieldList(), 'username') && !$this->failureMsg['email']) {
 			$this->dataArray['username'] = trim($this->dataArray['email']);
 		}
 	}	// setUsername
@@ -1111,17 +1060,17 @@ class tx_srfeuserregister_data {
 		* @return void  done directly on array $this->dataArray
 		*/
 	function setPassword() {
-		$cmdKey = $this->control->getCmdKey();
+		$cmdKey = $this->controlData->getCmdKey();
 
 		if (
-			($cmdKey === 'invite' && ($this->control->useMd5Password || $this->conf[$cmdKey.'.']['generatePassword'])) ||
+			($cmdKey === 'invite' && ($this->controlData->getUseMd5Password() || $this->conf[$cmdKey.'.']['generatePassword'])) ||
 
 			($cmdKey === 'create' && $this->conf[$cmdKey.'.']['generatePassword'])
 		)	{
 
 			$genLength = intval($this->conf[$cmdKey.'.']['generatePassword']);
 			$genPassword = substr(md5(uniqid(microtime(), 1)), 0, $genLength);
-			if ($this->control->useMd5Password) {
+			if ($this->controlData->getUseMd5Password()) {
 				$length = intval($GLOBALS['TSFE']->config['plugin.']['tx_newloginbox_pi1.']['defaultPasswordLength']);
 				if (!$length)	{
 					$length = ($genLength ? $genLength : 32);
@@ -1129,12 +1078,12 @@ class tx_srfeuserregister_data {
 
 				if (t3lib_extMgm::isLoaded('kb_md5fepw'))	{
 					include_once(t3lib_extMgm::extPath('kb_md5fepw').'class.tx_kbmd5fepw_funcs.php');
-					$this->dataArray['password'] = tx_kbmd5fepw_funcs::generatePassword( $length );
+					$this->setDataArray (tx_kbmd5fepw_funcs::generatePassword($length ),'password') ;
 				} else {
-					$this->dataArray['password'] = md5($genPassword);
+					$this->setDataArray($genPassword,'password');
 				}
 			} else {
-				$this->dataArray['password'] = $genPassword;
+				$this->setDataArray($genPassword,'password');
 			}
 		}
 	}	// setPassword
@@ -1170,7 +1119,7 @@ class tx_srfeuserregister_data {
 			reset($this->conf['parseFromDBValues.']);
 			while (list($theField, $theValue) = each($this->conf['parseFromDBValues.'])) {
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
-				while (list(, $cmd) = each($listOfCommands)) {
+				foreach($listOfCommands as $k2 => $cmd) {
 					$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 					$theCmd = trim($cmdParts[0]);
 					switch($theCmd) {
@@ -1242,7 +1191,7 @@ class tx_srfeuserregister_data {
 			reset($this->conf['parseToDBValues.']);
 			while (list($theField, $theValue) = each($this->conf['parseToDBValues.'])) {
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
-				while (list(, $cmd) = each($listOfCommands)) {
+				foreach($listOfCommands as $k2 => $cmd) {
 					$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 					$theCmd = trim($cmdParts[0]);
 					switch($theCmd) {
