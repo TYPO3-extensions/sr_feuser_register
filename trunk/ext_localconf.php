@@ -25,10 +25,12 @@ $TYPO3_CONF_VARS['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageMaxSize'] = $_EXTCO
 $TYPO3_CONF_VARS['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageTypes'] = $_EXTCONF['imageTypes'] ? $_EXTCONF['imageTypes'] : 'png,jpeg,jpg,gif,tif,tiff';
 $TYPO3_CONF_VARS['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['useMd5Password'] = $_EXTCONF['useMd5Password'] ? $_EXTCONF['useMd5Password'] : 0;
 
-	/* Example of configuration of hooks
+	/* Example of configuration of hooks */
+/*
 $TYPO3_CONF_VARS['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['confirmRegistrationClass'][] = 'EXT:sr_feuser_register/hooks/class.tx_srfeuserregister_hooksHandler.php:&tx_srfeuserregister_hooksHandler';
-$TYPO3_CONF_VARS['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess'][] = 'EXT:sr_feuser_register/hooks/class.tx_srfeuserregister_hooksHandler.php:&tx_srfeuserregister_hooksHandler';
 	*/
+
+$TYPO3_CONF_VARS['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess'][] = 'EXT:sr_feuser_register/hooks/class.tx_srfeuserregister_hooksHandler.php:&tx_srfeuserregister_hooksHandler';
 
 	// turn the use of flexforms on:
 
@@ -55,10 +57,8 @@ if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey)) {
 	}
 }
 
-
 if (t3lib_extMgm::isLoaded('tt_products')) {
 	$TYPO3_CONF_VARS['EXTCONF']['tt_products']['extendingTCA'][] = SR_FEUSER_REGISTER_EXTkey;
 }
-
 
 ?>

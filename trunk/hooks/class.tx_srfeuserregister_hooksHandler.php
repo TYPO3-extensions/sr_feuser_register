@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005, 2006 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
+*  (c) 2005, 2007 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -35,21 +35,31 @@
 	 // $invokingObj is a reference to the invoking object
 
 class tx_srfeuserregister_hooksHandler {
-
-	function registrationProcess_beforeConfirmCreate(&$recordArray, &$invokingObj) {
+	function registrationProcess_beforeConfirmCreate(&$recordArray, &$dataObj) {
 			// in the case of this hook, the record array is passed by reference
 			// in this example hook, we generate a username based on the first and last names of the user
-		if ($invokingObj->feUserData['preview'] && $invokingObj->conf[$invokingObj->cmdKey.'.']['generateUsername']) {
-			$recordArray[username] = substr(strtolower(trim($recordArray[first_name])),0,1) . substr(strtolower(trim($recordArray[last_name])),0,2);
-			$counter = 1;
-			$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($invokingObj->theTable, 'username', $recordArray[username]."$counter", 'LIMIT 1');
-			while($recordArray[username]."$counter" && $DBrows) {
-				$counter = $counter + 1;
-				$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($invokingObj->theTable, 'username', $recordArray[username]."$counter", 'LIMIT 1');
+		$cmdKey = $dataObj->controlData->getCmdKey();
+		$theTable = $dataObj->controlData->getTable();
+		if ($dataObj->getFeUserData('preview') && $dataObj->conf[$cmdKey.'.']['generateUsername']) {
+			$firstName = trim($recordArray['first_name']);
+			$lastName = trim($recordArray['last_name']);
+			$name = trim($recordArray['name']);
+			if ((!$firstName || !$lastName) && $name)	{
+				$nameArray = t3lib_div::trimExplode(' ', $name);
+				$firstName = ($firstName ? $firstName : $nameArray[0]);
+				$lastName = ($lastName ? $lastName : $nameArray[1]);
 			}
-			$recordArray[username] = $recordArray[username]."$counter";
+			$recordArray['username'] = substr(strtolower($firstName),0,5) . substr(strtolower($lastName),0,5);
+			$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($theTable, 'username', $recordArray['username'], 'LIMIT 1');
+			$counter = 0;
+			while($DBrows) {
+				$counter = $counter + 1;
+				$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($theTable, 'username', $recordArray['username'].$counter, 'LIMIT 1');
+			}
+			if ($counter)	{
+				$recordArray['username'] = $recordArray['username'].$counter;
+			}
 		}
-		echo 'beforeConfirmCreate';
 	}
 
 	function registrationProcess_afterSaveEdit($recordArray, &$invokingObj) {
@@ -73,7 +83,7 @@ class tx_srfeuserregister_hooksHandler {
 	function confirmRegistrationClass_postProcess($recordArray, &$invokingObj) {
 
 			// you may not see this echo if the page is redirected to auto-login
-		echo 'confirmRegistrationClass_preProcess';
+		echo 'confirmRegistrationClass_postProcess';
 	}
 }
 

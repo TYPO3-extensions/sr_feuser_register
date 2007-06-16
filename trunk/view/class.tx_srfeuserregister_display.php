@@ -51,10 +51,10 @@ class tx_srfeuserregister_display {
 	var $marker;
 	var $tca;
 	var $control;
+	var $controlData;
 	var $auth;
 	
 	var $extKey;  // The extension key.
-	var $prefixId;
 	var $cObj;
 
 
@@ -66,10 +66,10 @@ class tx_srfeuserregister_display {
 		$this->marker = &$marker;
 		$this->tca = &$tca;
 		$this->control = &$control;
+		$this->controlData = &$control->controlData;
 		$this->auth = &$auth;
 
 		$this->extKey = $pibase->extKey;
-		$this->prefixId = $pibase->prefixId;
 		$this->cObj = &$pibase->cObj;
 	}
 
@@ -83,8 +83,9 @@ class tx_srfeuserregister_display {
 	function editForm($origArr,$cmd,$cmdKey,$mode) {
 		global $TSFE;
 
+		$prefixId = $this->controlData->getPrefixId();
 		$dataArray = $this->data->getDataArray();
-		$theTable = $this->data->getTable();
+		$theTable = $this->controlData->getTable();
 		$currentArr = array_merge($origArr, $dataArray);
 		foreach ($currentArr AS $key => $value) {
 			// If the type is check, ...
@@ -109,13 +110,13 @@ class tx_srfeuserregister_display {
 		$this->marker->addStaticInfoMarkers($markerArray, $currentArr);
 		$this->tca->addTcaMarkers($markerArray, $currentArr, true);
 		$this->tca->addTcaMarkers($markerArray, $currentArr);
-		$this->marker->addLabelMarkers($markerArray, $currentArr, $this->control->getRequiredArray());
-		$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $currentArr, $this->control->getMode() == MODE_PREVIEW);
+		$this->marker->addLabelMarkers($markerArray, $currentArr, $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns']);
+		$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $currentArr, $this->controlData->getMode() == MODE_PREVIEW);
 		$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
 		$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][uid]" value="'.$currentArr['uid'].'" />';
 		if ($theTable != 'fe_users') {
-			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[aC]" value="'.$this->auth->authCode($origArr).'" />';
-			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$this->prefixId.'[cmd]" value="edit" />';
+			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$prefixId.'[aC]" value="'.$this->auth->authCode($origArr).'" />';
+			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$prefixId . '[cmd]" value="edit" />';
 		} elseif ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $this->conf['templateStyle'] != 'css-styled') {
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][username]" value="'.$currentArr['username'].'" />';
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][email]" value="'.$currentArr['email'].'" />';
@@ -147,27 +148,32 @@ class tx_srfeuserregister_display {
 	function createScreen($cmd='create', $cmdKey, $mode) {
 		global $TSFE, $TYPO3_CONF_VARS;
 
+		$templateCode = &$this->data->getTemplateCode();
+		$prefixId = $this->controlData->getPrefixId();
 		if ($this->conf['create']) {
-			$theTable = $this->data->getTable();
+			$theTable = $this->controlData->getTable();
 			$dataArray = $this->data->getDataArray();
 
 				// <Pieter Verstraelen added registrationProcess hooks>
 				// Call all beforeConfirmCreate hooks before the record has been shown and confirmed
-			if (is_array($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'])) {
-				foreach ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$this->prefixId]['registrationProcess'] as $classRef) {
+			if (is_array($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'])) {
+				foreach ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'] as $classRef) {
 					$hookObj= &t3lib_div::getUserObj($classRef);
 					if (method_exists($hookObj,'registrationProcess_beforeConfirmCreate')) {
-						$hookObj->registrationProcess_beforeConfirmCreate($dataArray, $this);
+						$hookObj->registrationProcess_beforeConfirmCreate($dataArray, $this->data);
 					}
 				}
+				$this->data->setDataArray($dataArray);
 			}
 				// </Pieter Verstraelen added registrationProcess hooks>
 
 			$key = ($cmd == 'invite') ? 'INVITE': 'CREATE';
 			$markerArray = $this->marker->getArray();
-			$this->marker->addMd5EventsMarkers($markerArray, 'create', $this->control->useMd5Password);
+			$this->marker->addMd5EventsMarkers($markerArray, 'create', $this->controlData->getUseMd5Password());
 			// $this->marker->setArray($markerArray);
-			$templateCode = $this->cObj->getSubpart($this->data->getTemplateCode(), ((!($theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $cmd == 'invite') ? '###TEMPLATE_'.$key.$this->marker->getPreviewLabel().'###':'###TEMPLATE_CREATE_LOGIN###'));
+
+			$subpartKey = ((!($theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $cmd == 'invite') ? '###TEMPLATE_'.$key.$this->marker->getPreviewLabel().'###':'###TEMPLATE_CREATE_LOGIN###');
+			$templateCode = $this->cObj->getSubpart($templateCode, $subpartKey);
 
 			$failure = t3lib_div::_GP('noWarnings') ? FALSE: $this->data->getFailure();
 			if (!$failure) $templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
@@ -175,8 +181,8 @@ class tx_srfeuserregister_display {
 			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $dataArray, '',TRUE, 'FIELD_', TRUE);
 			$this->marker->addStaticInfoMarkers($markerArray, $dataArray);
 			$this->tca->addTcaMarkers($markerArray, $dataArray);
-			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $dataArray, $this->control->getMode() === MODE_PREVIEW);
-			$this->marker->addLabelMarkers($markerArray, $dataArray, $this->control->getRequiredArray());
+			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $dataArray, $this->controlData->getMode() == MODE_PREVIEW);
+			$this->marker->addLabelMarkers($markerArray, $dataArray, $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns']);
 			$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
 			$this->marker->addHiddenFieldsMarkers($markerArray, $cmdKey, $mode, $dataArray);
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
@@ -206,7 +212,7 @@ class tx_srfeuserregister_display {
 		global $TSFE;
 
 		if ($this->conf['edit']) {
-			$theTable = $this->data->getTable();
+			$theTable = $this->controlData->getTable();
 			$dataArray = $this->data->getDataArray();
 			// If editing is enabled
 			$origArr = $TSFE->sys_page->getRawRecord($theTable, $dataArray['uid']?$dataArray['uid']:$this->data->getRecUid());
@@ -230,7 +236,7 @@ class tx_srfeuserregister_display {
 				// Must be logged in OR be authenticated by the aC code in order to edit
 				// If the recUid selects a record.... (no check here)
 				$markerArray = '';
-				$this->marker->addMd5EventsMarkers($markerArray, 'edit', $this->control->useMd5Password);
+				$this->marker->addMd5EventsMarkers($markerArray, 'edit', $this->controlData->getUseMd5Password());
 				$this->marker->setArray($markerArray);
 				if ( !strcmp($this->auth->authCode, $theCode) || $this->auth->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($theTable, $origArr, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 					// Display the form, if access granted.
@@ -258,7 +264,8 @@ class tx_srfeuserregister_display {
 		*/
 	function deleteScreen() {
 		if ($this->conf['delete']) {
-			$theTable = $this->data->getTable();
+			$theTable = $this->controlData->getTable();
+			$prefixId = $this->controlData->getPrefixId();
 
 			// If deleting is enabled
 			$origArr = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $this->data->getRecUid());
@@ -272,8 +279,8 @@ class tx_srfeuserregister_display {
 						// Display the form, if access granted.
 						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="rU" value="'.$this->data->getRecUid().'" />';
 						if ( $theTable != 'fe_users' ) {
-							$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$this->prefixId.'[aC]" value="'.$this->auth->authCode($origArr).'" />';
-							$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$this->prefixId.'[cmd]" value="delete" />';
+							$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$prefixId .'[aC]" value="'.$this->auth->authCode($origArr).'" />';
+							$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$prefixId .'[cmd]" value="delete" />';
 						}
 						$this->marker->setArray($markerArray);
 						$content = $this->getPlainTemplate('###TEMPLATE_DELETE_PREVIEW###', $origArr);
@@ -317,7 +324,7 @@ class tx_srfeuserregister_display {
 		}
 		$this->marker->addStaticInfoMarkers($markerArray, $r);
 		$this->tca->addTcaMarkers($markerArray, $r, true);
-		$this->marker->addLabelMarkers($markerArray, $r, $this->control->getRequiredArray());
+		$this->marker->addLabelMarkers($markerArray, $r, $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns']);
 		$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
 		$rc = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 		return $rc;
@@ -338,8 +345,8 @@ class tx_srfeuserregister_display {
 		* @return string  the template with susbstituted parts
 		*/
 	function removeRequired($templateCode, $failure = '') {
-		$cmdKey = $this->control->getCmdKey();
-		$requiredArray = $this->control->getRequiredArray();
+		$cmdKey = $this->controlData->getCmdKey();
+		$requiredArray = $this->controlData->getRequiredArray();
 		$includedFields = t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1);
 		if ($this->data->getFeUserData('preview') && !in_array('username', $includedFields)) {
 			$includedFields[] = 'username';

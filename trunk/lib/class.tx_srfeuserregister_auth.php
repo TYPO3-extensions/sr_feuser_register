@@ -78,6 +78,7 @@ class tx_srfeuserregister_auth {
 	function authCode($r, $extra = '') {
 		global $TYPO3_CONF_VARS;
 
+		$rc = '';
 		$l = $this->config['codeLength'];
 		if ($this->conf['authcodeFields']) {
 			$fieldArr = t3lib_div::trimExplode(',', $this->conf['authcodeFields'], 1);
@@ -90,8 +91,9 @@ class tx_srfeuserregister_auth {
 				$value .= '|'.date($this->conf['authcodeFields.']['addDate']);
 			}
 			$value .= $TYPO3_CONF_VARS['SYS']['encryptionKey'];
-			return substr(md5($value), 0, $l);
+			$rc = substr(md5($value), 0, $l);
 		}
+		return $rc;
 	}	// authCode
 
 
@@ -102,9 +104,11 @@ class tx_srfeuserregister_auth {
 	* @return boolean  true if the record is authenticated
 	*/
 	function aCAuth($r) {
+		$rc = false;
 		if ($this->authCode && !strcmp($this->authCode, $this->authCode($r))) {
-			return true;
+			$rc = true;
 		}
+		return $rc;
 	}	
 
 

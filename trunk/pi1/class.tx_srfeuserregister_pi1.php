@@ -48,11 +48,13 @@ require_once(PATH_t3lib.'class.t3lib_page.php');
 
 require_once(PATH_BE_srfeuserregister.'pi1/class.tx_srfeuserregister_pi1_urlvalidator.php');
 require_once(PATH_BE_srfeuserregister.'control/class.tx_srfeuserregister_control.php');
+require_once(PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_controldata.php');
 require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_auth.php');
 require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_email.php');
 require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_lang.php');
 require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_tca.php');
 require_once(PATH_BE_srfeuserregister.'marker/class.tx_srfeuserregister_marker.php');
+require_once(PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_url.php');
 require_once(PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_data.php');
 require_once(PATH_BE_srfeuserregister.'view/class.tx_srfeuserregister_display.php');
 
@@ -73,11 +75,11 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 	var $nc = ''; // "&no_cache=1" if you want that parameter sent.
 	var $additionalUpdateFields = '';
 	var $sys_language_content;
-	var $charset = 'iso-8859-1'; // charset to be used in emails and form conversions
 	var $freeCap; // object of type tx_srfreecap_pi2
 	var $auth; // object of type tx_srfeuserregister_auth
 	var $control; // object of type tx_srfeuserregister_control
 	var $data; // object of type tx_srfeuserregister_data
+	var $urlObj;
 	var $display; // object of type tx_srfeuserregister_display
 	var $email; // object of type tx_srfeuserregister_email
 	var $lang; // object of type tx_srfeuserregister_lang
@@ -115,6 +117,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		}
 
 		$this->lang = t3lib_div::makeInstance('tx_srfeuserregister_lang');
+		$this->urlObj = t3lib_div::makeInstance('tx_srfeuserregister_url');
 		$this->data = t3lib_div::makeInstance('tx_srfeuserregister_data');
 		$this->auth = t3lib_div::makeInstance('tx_srfeuserregister_auth');
 		$this->marker = t3lib_div::makeInstance('tx_srfeuserregister_marker');
@@ -122,26 +125,29 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		$this->display = t3lib_div::makeInstance('tx_srfeuserregister_display');
 		$this->email = t3lib_div::makeInstance('tx_srfeuserregister_email');
 		$this->control = t3lib_div::makeInstance('tx_srfeuserregister_control');
+		$this->controlData = t3lib_div::makeInstance('tx_srfeuserregister_controldata');
+
+		$this->controlData->init($conf, $this->prefixId, $this->piVars, $theTable);
+		$this->urlObj->init ($this->controlData, $this->cObj);
+
 		$this->lang->init($this, $this->conf, $this->config);
 		$this->lang->pi_loadLL();
-		$this->data->init($this, $this->conf, $this->config,$this->lang, $this->tca, $this->auth, $this->control, $this->freeCap, $theTable, $adminFieldList);
+		$this->data->init($this, $this->conf, $this->config,$this->lang, $this->tca, $this->auth, $this->control, $this->freeCap, $theTable, $adminFieldList, $this->controlData);
 
-		$this->control->init($this, $this->conf, $this->config, $this->display, $this->data, $this->marker, $this->auth, $this->email, $this->tca);
+		$this->control->init($this, $this->conf, $this->config, $this->controlData, $this->display, $this->data, $this->marker, $this->auth, $this->email, $this->tca);
 
 		$this->pi_USER_INT_obj = 1;
 		$this->pi_setPiVarDefaults();
 		$this->sys_language_content = t3lib_div::testInt($TSFE->config['config']['sys_language_uid']) ? intval($TSFE->config['config']['sys_language_uid']) : 0;
 
-			// prepare for character set settings
-		if ($TSFE->metaCharset) {
-			$this->charset = $TSFE->csConvObj->parse_charset($TSFE->metaCharset);
-		}
-
 		$this->auth->init($this, $this->conf, $this->config, $this->data->getFeUserData('aC'));
-		$this->marker->init($this, $this->conf, $this->config, $this->data, $this->tca, $this->lang, $this->control, $this->auth, $this->freeCap);
-		$this->tca->init($this, $this->conf, $this->config, $this->data, $this->control, $this->lang);
+		$uid=$this->data->getRecUid();
+		$backUrl = rawurldecode($this->data->getFeUserData('backURL'));
+		$authCode = $this->auth->getAuthCode();
+		$this->marker->init($this, $this->conf, $this->config, $this->tca, $this->lang, $authCode, $this->freeCap, $this->controlData, $this->urlObj, $backUrl, $uid);
+		$this->tca->init($this, $this->conf, $this->config, $this->controlData, $this->lang, $this->extKey);
 		$this->display->init($this, $this->conf, $this->config, $this->data, $this->marker, $this->tca, $this->control, $this->auth);
-		$this->email->init($this, $this->conf, $this->config, $this->display, $this->data, $this->marker, $this->tca, $this->control, $this->auth);
+		$this->email->init($this, $this->conf, $this->config, $this->display, $this->data, $this->marker, $this->tca, $this->controlData, $this->auth);
 	}	// init
 
 
