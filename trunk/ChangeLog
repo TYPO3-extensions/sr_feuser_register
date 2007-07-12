@@ -1,3 +1,6 @@
+2007-07-12 Franz Holzinger  <kontakt@fholzinger.com>
+	* fix bug 5291: new translations for Dutch by Felippe van Eekhout <feekhout@worldonline.nl>
+
 2007-06-16 Franz Holzinger  <kontakt@fholzinger.com>
 	* fix bug with autocreation of usernames
 	* new classes for setfixed, control data and url functions
