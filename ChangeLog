@@ -1,3 +1,6 @@
+2007-08-11 Franz Holzinger  <kontakt@fholzinger.com>
+	* fix bug 5223: Hooks are not included due to empty extKey variable
+
 2007-05-18 Franz Holzinger  <kontakt@fholzinger.com>
 	* use first line of plain text emails as the subject
 	* when there is already an items array in TCA and also records from a foreign table, then both will be added

@@ -90,7 +90,7 @@ class tx_srfeuserregister_data {
 		$this->freeCap = &$freeCap;
 		$this->cObj = &$pibase->cObj;
 
-		$this->extKey = $extKey;
+		$this->extKey = $pibase->extKey;
 		$this->sys_language_content = $pibase->sys_language_content;
 		$this->fileFunc = $pibase->fileFunc;
 		$this->prefixId = $pibase->prefixId;
