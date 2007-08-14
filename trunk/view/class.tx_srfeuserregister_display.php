@@ -68,7 +68,6 @@ class tx_srfeuserregister_display {
 		$this->control = &$control;
 		$this->controlData = &$control->controlData;
 		$this->auth = &$auth;
-
 		$this->extKey = $pibase->extKey;
 		$this->cObj = &$pibase->cObj;
 	}

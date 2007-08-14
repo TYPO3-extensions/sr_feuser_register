@@ -81,6 +81,7 @@ class tx_srfeuserregister_control {
 
 		$theTable = $this->controlData->getTable();
 		$cmd = $this->data->getFeUserData('cmd');
+
 		if (!$cmd)	{
 			$cmd = $this->cObj->data['select_key'];
 		}
@@ -101,7 +102,6 @@ class tx_srfeuserregister_control {
 		} else {
 			$cmd = ($cmd ? $cmd : $this->conf['defaultCODE']);
 		}
-
 		$cmd = $this->cObj->caseshift($cmd,'lower');
 
 		if ($cmd == 'edit' || $cmd == 'invite') {
@@ -189,7 +189,8 @@ class tx_srfeuserregister_control {
 		if ($theTable == 'fe_users' && $TSFE->loginUser && $cmd != 'invite' && $cmd != 'setfixed') {
 			$recUid = $TSFE->fe_user->user['uid'];
 		} else {
-			$recUid = intval($this->data->getFeUserData('rU'));
+			$recUid = $this->data->getFeUserData('rU');
+			$recUid = intval($recUid);
 		}
 		$this->data->setRecUid ($recUid);
 	}
@@ -215,7 +216,7 @@ class tx_srfeuserregister_control {
 		// This only solves data being visible by back buttoning for edit forms.
 		// It won't help against data being visible by back buttoning in create forms.
 		$noLoginCommands = array('','create','invite','setfixed','infomail','login');
-		if (!$GLOBALS['TSFE']->loginUser && !(in_array($cmd,$noLoginCommands))) {
+		if ($theTable == 'fe_users' && !$GLOBALS['TSFE']->loginUser && !(in_array($cmd,$noLoginCommands))) {
 			$cmd = '';
 			$this->controlData->setCmd($cmd);
 			$this->data->resetDataArray();
@@ -252,11 +253,11 @@ class tx_srfeuserregister_control {
 			$this->data->defaultValues($markerArray); // If no incoming data, this will set the default values.
 			$this->marker->setArray($markerArray);
 			if ($cmd != 'delete')	{
-				$this->data->setFeUserData('preview', 0); // No preview if data is not received and deleted
+				$this->data->setFeUserData(0, 'preview'); // No preview if data is not received and deleted
 			}
 		}
 		if ($this->data->getFailure()) {
-			$this->data->setFeUserData('preview', 0);
+			$this->data->setFeUserData(0, 'preview');
 		}
 
 		 // No preview flag if a evaluation failure has occured
@@ -271,9 +272,11 @@ class tx_srfeuserregister_control {
 			// Delete record if delete command is sent + the preview flag is NOT set.
 			$this->data->deleteRecord();
 		}
+
 			// Display forms
 		if ($this->data->saved) {
 				// Displaying the page here that says, the record has been saved. You're able to include the saved values by markers.
+
 			switch($cmd) {
 				case 'delete':
 					$key = 'DELETE'.SAVED_SUFFIX;
@@ -313,6 +316,7 @@ class tx_srfeuserregister_control {
 			$this->marker->addLabelMarkers($markerArray, $this->data->getCurrentArr(), $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns']);
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 			$markerArray = $this->marker->getArray(); // compile uses its own markerArray
+
 				// Send email message(s)
 			$this->email->compile(
 				$key,
@@ -341,7 +345,7 @@ class tx_srfeuserregister_control {
 					exit;
 				}
 			}
-		} else if($this->data->error) {
+		} else if ($this->data->error) {
 				// If there was an error, we return the template-subpart with the error message
 			$templateCode = $this->cObj->getSubpart($this->data->getTemplateCode(), $this->data->error);
 			$markerArray = $this->marker->getArray();
@@ -350,6 +354,7 @@ class tx_srfeuserregister_control {
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 		} else {
 				// Finally, if there has been no attempt to save. That is either preview or just displaying and empty or not correctly filled form:
+
 			switch($cmd) {
 				case 'setfixed':
 					if ($this->conf['infomail']) {
@@ -363,7 +368,7 @@ class tx_srfeuserregister_control {
 						$this->controlData->setSetfixedEnabled(1);
 					}
 					$markerArray = $this->marker->getArray();
-					$content = $this->email->sendInfo($markerArray, $cmd, 
+					$content = $this->email->sendInfo($markerArray, $cmd,
 						$this->controlData->getCmdKey(), $this->data->getTemplateCode());
 					break;
 				case 'delete':
@@ -435,7 +440,7 @@ class tx_srfeuserregister_control {
 			$theCode = $this->auth->setfixedHash($origArr, $origArr['_FIELDLIST']);
 
 			if (!strcmp($this->auth->authCode, $theCode)) {
-				if ($this->data->getFeUserData('sFK') === 'DELETE' || $this->data->getFeUserData('sFK') === 'REFUSE') {
+				if ($this->data->getFeUserData('sFK') == 'DELETE' || $this->data->getFeUserData('sFK') == 'REFUSE') {
 					if (!$this->tca->TCA['ctrl']['delete'] || $this->conf['forceFileDelete']) {
 						// If the record is fully deleted... then remove the image attached.
 						$this->data->deleteFilesFromRecord($this->data->getRecUid());
@@ -480,7 +485,7 @@ class tx_srfeuserregister_control {
 				}
 
 				// Outputting template
-				if ($theTable == 'fe_users' && ($this->data->getFeUserData('sFK') === 'APPROVE' || $this->data->getFeUserData('sFK') == 'ENTER')) {
+				if ($theTable == 'fe_users' && ($this->data->getFeUserData('sFK') == 'APPROVE' || $this->data->getFeUserData('sFK') == 'ENTER')) {
 					$markerArray = $this->marker->getArray();
 					$this->marker->addMd5LoginMarkers($markerArray);
 					$this->marker->setArray($markerArray);
@@ -489,7 +494,7 @@ class tx_srfeuserregister_control {
 					}
 				}
 				$setfixedSufffix = $this->data->getFeUserData('sFK');
-				if ($this->conf['enableAdminReview'] && $this->data->getFeUserData('sFK') === 'APPROVE' && !$origArr['by_invitation']) {
+				if ($this->conf['enableAdminReview'] && $this->data->getFeUserData('sFK') == 'APPROVE' && !$origArr['by_invitation']) {
 					$setfixedSufffix .= '_REVIEW';
 				}
 				$content = $this->display->getPlainTemplate('###TEMPLATE_' . SETFIXED_PREFIX . 'OK_' . $setfixedSufffix . '###', $origArr);
@@ -512,7 +517,7 @@ class tx_srfeuserregister_control {
 
 				if ($theTable == 'fe_users') { 
 						// If applicable, send admin a request to review the registration request
-					if ($this->conf['enableAdminReview'] && $this->data->getFeUserData('sFK') === 'APPROVE' && !$origArr['by_invitation']) {
+					if ($this->conf['enableAdminReview'] && $this->data->getFeUserData('sFK') == 'APPROVE' && !$origArr['by_invitation']) {
 
 						$this->email->compile(
 							SETFIXED_PREFIX.'REVIEW',
@@ -527,7 +532,7 @@ class tx_srfeuserregister_control {
 					}
 
 						// Auto-login on confirmation
-					if ($this->conf['enableAutoLoginOnConfirmation'] && ($this->data->getFeUserData('sFK') === 'APPROVE' || $this->data->getFeUserData('sFK') == 'ENTER')) {
+					if ($this->conf['enableAutoLoginOnConfirmation'] && ($this->data->getFeUserData('sFK') == 'APPROVE' || $this->data->getFeUserData('sFK') == 'ENTER')) {
 						$this->login();
 						exit;
 					}

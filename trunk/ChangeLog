@@ -1,3 +1,9 @@
+2007-08-14 Franz Holzinger  <kontakt@fholzinger.com>
+	* fix bug with no editing possible for sr_email_subscribe and a setfixed link
+	* fix bug 5609: informal texts did not work
+	* fix bug with not saved entries for mm relations
+	* fix bug when delete did not work with setfixed becaue the cmd has been overridden by restored regHash value
+
 2007-07-12 Franz Holzinger  <kontakt@fholzinger.com>
 	* fix bug 5291: new translations for Dutch by Felippe van Eekhout <feekhout@worldonline.nl>
 

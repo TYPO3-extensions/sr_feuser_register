@@ -98,6 +98,7 @@ class tx_srfeuserregister_email {
 		* @see init(),compile(), send()
 		*/
 	function sendInfo(&$markContentArray,$cmd, $cmdKey, &$templateCode)	{
+
 		if ($this->conf['infomail'] && $this->conf['email.']['field'])	{
 			$fetch = $this->data->getFeUserData('fetch');
 			$theTable = $this->controlData->getTable();
@@ -109,6 +110,7 @@ class tx_srfeuserregister_email {
 				} elseif ($fetch) {	// $this->conf['email.']['field'] must be a valid field in the table!
 					$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($theTable,$this->conf['email.']['field'],$fetch,$pidLock,'','','100');
 				}
+
 					// Processing records
 				if (is_array($DBrows))	{
 					$recipient = $DBrows[0][$this->conf['email.']['field']];
@@ -157,7 +159,7 @@ class tx_srfeuserregister_email {
 		$content['user']['all'] = '';
 		$content['HTML']['all'] = '';
 		$content['admin']['all'] = '';
-		if ($this->conf['email.'][$key] || ($this->controlData->getSetfixedEnabled() && ($key === 'SETFIXED_CREATE' || $key === 'SETFIXED_CREATE_REVIEW' || $key === 'SETFIXED_INVITE' || $key === 'SETFIXED_REVIEW' || $key === 'INFOMAIL'  || $key == 'INFOMAIL_NORECORD'))) {
+		if ($this->conf['email.'][$key] || ($this->controlData->getSetfixedEnabled() && ($key == 'SETFIXED_CREATE' || $key == 'SETFIXED_CREATE_REVIEW' || $key == 'SETFIXED_INVITE' || $key == 'SETFIXED_REVIEW' || $key == 'INFOMAIL'  || $key == 'INFOMAIL_NORECORD'))) {
 			$subpartMarker = $this->emailMarkPrefix.$key;
 			$content ['user']['all'] = trim($this->cObj->getSubpart($templateCode, '###'.$subpartMarker.'###'));
 			$content['user']['all'] = $this->display->removeRequired($content['user']['all']);
@@ -174,15 +176,15 @@ class tx_srfeuserregister_email {
 		$content['HTML']['rec'] = $this->cObj->getSubpart($content['HTML']['all'], '###SUB_RECORD###');
 		$content['admin']['rec'] = $this->cObj->getSubpart($content['admin']['all'], '###SUB_RECORD###');
 		reset($DBrows);
-		foreach ($DBrows as $k => $r)	{
+		foreach ($DBrows as $k => $row)	{
 			$markerArray = $this->marker->getArray();
-			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $r, '', 0);
-			$markerArray['###SYS_AUTHCODE###'] = $this->auth->authCode($r);
-			$this->setfixedObj->setfixed($markerArray, $setFixedConfig, $r, $this->controlData->getTable());
-			$this->marker->addStaticInfoMarkers($markerArray, $r, $viewOnly);
-			$this->tca->addTcaMarkers($markerArray, $r, $viewOnly, 'email');
-			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $r, $viewOnly);
-			$this->marker->addLabelMarkers($markerArray, $r, $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns']);
+			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $row, '', 0);
+			$markerArray['###SYS_AUTHCODE###'] = $this->auth->authCode($row);
+			$this->setfixedObj->setfixed($markerArray, $setFixedConfig, $row, $this->controlData->getTable());
+			$this->marker->addStaticInfoMarkers($markerArray, $row, $viewOnly);
+			$this->tca->addTcaMarkers($markerArray, $row, $viewOnly, 'email');
+			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $row, $viewOnly);
+			$this->marker->addLabelMarkers($markerArray, $row, $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns']);
 			if ($content['user']['rec']) {
 				$content['user']['rec'] = $this->marker->removeStaticInfoSubparts($content['user']['rec'], $markerArray, $viewOnly);
 				$content['user']['accum'] .= $this->cObj->substituteMarkerArray($content['user']['rec'], $markerArray);
@@ -335,7 +337,7 @@ class tx_srfeuserregister_email {
 				$Typo3_htmlmail->fetchHTMLMedia();
 				$Typo3_htmlmail->substMediaNamesInHTML(0); // 0 = relative
 				$Typo3_htmlmail->substHREFsInHTML();
-					
+
 				$Typo3_htmlmail->setHTML($Typo3_htmlmail->encodeMsg($Typo3_htmlmail->theParts['html']['content']));
 			}
 			// PLAIN
