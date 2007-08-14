@@ -30,7 +30,7 @@ CREATE TABLE fe_groups_language_overlay (
 	fe_group int(11) unsigned DEFAULT '0' NOT NULL,
 	sys_language_uid int(11) DEFAULT '0' NOT NULL,
 	title tinytext NOT NULL,
-	
+
 	PRIMARY KEY (uid),
 	KEY parent (pid)
 );

@@ -67,7 +67,6 @@ class tx_srfeuserregister_data {
 	var $failure = 0; // is set if data did not have the required fields set.
 	var $fileFunc = ''; // Set to a basic_filefunc object for file uploads
 
-	var $extKey;
 	var $error;
 	var $sys_language_content;
 	var $adminFieldList;
@@ -91,32 +90,36 @@ class tx_srfeuserregister_data {
 		$this->controlData = &$controlData;
 		$this->freeCap = &$freeCap;
 		$this->cObj = &$pibase->cObj;
-		$this->extKey = $extKey;
 		$this->sys_language_content = $pibase->sys_language_content;
 		$this->fileFunc = $pibase->fileFunc;
 
-		$this->feUserData = t3lib_div::_GP($this->controlData->getPrefixId());
+		$feUserData = t3lib_div::_GP($this->controlData->getPrefixId());
 
 		// <Steve Webster added short url feature>
 			// Get hash variable if provided and if short url feature is enabled
 		if ($this->conf['useShortUrls']) {
 			$this->cleanShortUrlCache();
 				// Check and process for short URL if the regHash GET parameter exists
-			if ($this->getFeUserData('regHash')) {
-				$getVars = $this->getStoredURL($this->getFeUserData('regHash'));
+			if ($feUserData['regHash']) {
+				$getVars = $this->getStoredURL($feUserData['regHash']);
 				foreach ($getVars as $k => $v ) {
 					// restore former GET values
 					t3lib_div::_GETset($v,$k);
 				}
-				$this->feUserData = t3lib_div::_GP($this->controlData->getPrefixId());
+				$restoredFeUserData = t3lib_div::_GP($this->controlData->getPrefixId());
+				if ($restoredFeUserData['rU'] === $feUserData['rU'])	{
+					$feUserData = array_merge ($feUserData, $restoredFeUserData);
+				} else {
+					$feUserData = $restoredFeUserData;
+				}
 			}
 		}
 		// </Steve Webster added short url feature>
 
+		$this->setFeUserData ($feUserData);
+
 			// Get parameters
 		$fe = t3lib_div::_GP('FE');
-		$cmdKey = $this->controlData->getCmdKey();
-		$this->setAdminFieldList($adminFieldList);
 
 			// Initialise fileFunc object
 		$this->fileFunc = t3lib_div::makeInstance('t3lib_basicFileFunctions');
@@ -125,7 +128,8 @@ class tx_srfeuserregister_data {
 		$piVarArray = array('rU', 'aC', 'cmd', 'sFK');
 		foreach ($piVarArray as $k => $pivar)	{
 			if (t3lib_div::_GP($pivar))	{
-				$this->setFeUserData($pivar, t3lib_div::_GP($pivar));
+				$value = t3lib_div::_GP($pivar);
+				$this->setFeUserData($value, $pivar);
 			}
 		}
 
@@ -140,15 +144,14 @@ class tx_srfeuserregister_data {
 // 			unset($this->feUserData['cmd']);
 // 		}
 
-
 			// Setting the list of fields allowed for editing and creation.
 		$fieldlist = implode(',', t3lib_div::trimExplode(',', $TCA[$theTable]['feInterface']['fe_admin_fieldList'], 1));
 		$this->setFieldList($fieldlist);
-		$adminFieldList = implode(',', array_intersect( explode(',', $fieldlist), t3lib_div::trimExplode(',', $this->getAdminFieldList(), 1)));
 
 		if (trim($this->conf['addAdminFieldList'])) {
 			$adminFieldList .= ',' . trim($this->conf['addAdminFieldList']);
 		}
+		$adminFieldList = implode(',', array_intersect( explode(',', $fieldlist), t3lib_div::trimExplode(',', $adminFieldList, 1)));
 		$this->setAdminFieldList($adminFieldList);
 
 			// Fetching the template file
@@ -192,8 +195,13 @@ class tx_srfeuserregister_data {
 		return $rc;
 	}
 
-	function setFeUserData ($k, $value)	{
-		$this->feUserData[$k] = $value;
+	function setFeUserData ($dataArray, $k='')	{
+
+		if ($k != '')	{
+			$this->feUserData[$k] = $dataArray;
+		} else {
+			$this->feUserData = $dataArray;
+		}
 	}
 
 	function setRecUid($uid)	{
@@ -214,10 +222,10 @@ class tx_srfeuserregister_data {
 		}
 	}
 
-	function setDataArray ($dataArray, $k=0)	{
+	function setDataArray ($dataArray, $k='')	{
 
-		if ($k)	{
-			$this->currentArr[$k] = $dataArray;
+		if ($k != '')	{
+			$this->dataArray[$k] = $dataArray;
 		} else {
 			$this->dataArray = $dataArray;
 		}
@@ -712,6 +720,7 @@ class tx_srfeuserregister_data {
 		$theTable = $this->controlData->getTable();
 		$dataArray = $this->getDataArray();
 		$prefixId = $this->controlData->getPrefixId();
+		$extKey = $this->controlData->getExtKey();
 		switch($cmd) {
 			case 'edit':
 			$theUid = $this->getDataArray('uid');
@@ -742,8 +751,8 @@ class tx_srfeuserregister_data {
 
 						// <Ries van Twisk added registrationProcess hooks>
 						// Call all afterSaveEdit hooks after the record has been edited and saved
-					if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'])) {
-						foreach  ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'] as $classRef) {
+					if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$extKey][$prefixId]['registrationProcess'])) {
+						foreach  ($TYPO3_CONF_VARS['EXTCONF'][$extKey][$prefixId]['registrationProcess'] as $classRef) {
 							$hookObj= &t3lib_div::getUserObj($classRef);
 							if (method_exists($hookObj, 'registrationProcess_afterSaveEdit')) {
 								$hookObj->registrationProcess_afterSaveEdit($this->getCurrentArr(), $this);
@@ -798,8 +807,8 @@ class tx_srfeuserregister_data {
 
 					// <Ries van Twisk added registrationProcess hooks>
 					// Call all afterSaveCreate hooks after the record has been created and saved
-				if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'])) {
-					foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'] as $classRef) {
+				if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$extKey][$prefixId]['registrationProcess'])) {
+					foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'] as $classRef) {
 						$hookObj= &t3lib_div::getUserObj($classRef);
 						if (method_exists($hookObj, 'registrationProcess_afterSaveCreate')) {
 							$hookObj->registrationProcess_afterSaveCreate($this->getCurrentArr(), $this);
@@ -826,6 +835,7 @@ class tx_srfeuserregister_data {
 
 		$theTable = $this->controlData->getTable();
 		$prefixId = $this->controlData->getPrefixId();
+		$extKey = $this->controlData->getExtKey();
 		if ($this->conf['delete']) {
 			// If deleting is enabled
 			$origArr = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $this->getRecUid());
@@ -839,8 +849,8 @@ class tx_srfeuserregister_data {
 
 							// <Ries van Twisk added registrationProcess hooks>
 							// Call all beforeSaveDelete hooks BEFORE the record is deleted
-						if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'])) {
-							foreach  ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'] as $classRef) {
+						if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$extKey][$prefixId]['registrationProcess'])) {
+							foreach  ($TYPO3_CONF_VARS['EXTCONF'][$extKey][$prefixId]['registrationProcess'] as $classRef) {
 								$hookObj= &t3lib_div::getUserObj($classRef);
 								if (method_exists($hookObj, 'registrationProcess_beforeSaveDelete')) {
 									$hookObj->registrationProcess_beforeSaveDelete($origArr, $this);

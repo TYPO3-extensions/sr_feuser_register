@@ -51,21 +51,22 @@ class tx_srfeuserregister_controldata {
 	var $site_url;
 	var $prefixId;
 	var $piVars;
+	var $extKey;
 	var $cmd;
 	var $cmdKey;
 	var $pid = array();
 	var $useMd5Password = FALSE;
 	var $setfixedEnabled = 1;
 
-	function init (&$conf, $prefixId, $piVars, $theTable)	{
+	function init (&$conf, $prefixId, $extKey, $piVars, $theTable)	{
 		global $TSFE;
 
 		$this->conf = &$conf;
 		$this->site_url = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
 
 		$this->prefixId = $prefixId;
+		$this->extKey = $extKey;
 		$this->piVars = $piVars;
-
 		$this->setTable($theTable);
 
 			// set the title language overlay
@@ -106,6 +107,10 @@ class tx_srfeuserregister_controldata {
 
 	function getPrefixId ()	{
 		return $this->prefixId;
+	}
+
+	function getExtKey ()	{
+		return $this->extKey;
 	}
 
 	function getPiVars ()	{

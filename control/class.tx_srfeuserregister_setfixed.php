@@ -92,7 +92,7 @@ class tx_srfeuserregister_setfixed {
 				$recCopy = $r;
 				$setfixedpiVars[$prefixId .'[rU]'] = $r['uid'];
 
-				if ( $theTable != 'fe_users' && $theKey == 'EDIT' ) {
+				if ($theTable != 'fe_users' && $theKey == 'EDIT' ) {
 					if (is_array($data) ) {
 						reset($data);
 						while (list($fieldName, $fieldValue) = each($data)) {

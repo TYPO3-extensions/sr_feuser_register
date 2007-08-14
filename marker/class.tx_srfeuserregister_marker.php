@@ -42,8 +42,6 @@
  */
 
 
-require_once(PATH_BE_static_info_tables.'pi1/class.tx_staticinfotables_pi1.php');
-
 
 class tx_srfeuserregister_marker {
 	var $pibase;
@@ -53,6 +51,7 @@ class tx_srfeuserregister_marker {
 	var $control;
 	var $controlData;
 	var $urlObj;
+	var $langObj;
 	var $tca;
 	var $authCode;
 
@@ -66,22 +65,26 @@ class tx_srfeuserregister_marker {
 	var $otherLabelsList;
 
 
-	function init(&$pibase, &$conf, &$config, &$tca, &$lang, &$authCode, &$freeCap, &$controlData, &$urlObj, $backUrl, $uid)	{
+	function init(&$pibase, &$conf, &$config, &$tca, &$langObj, &$authCode, &$freeCap, &$controlData, &$urlObj, $backUrl, $uid)	{
 		global $TSFE;
 
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
 		$this->config = &$config;
 		$this->tca = &$tca;
-		$this->lang = &$lang;
+		$this->langObj = &$langObj;
 		$this->authCode = &$authCode;
 		$this->cObj = &$pibase->cObj;
 		$this->controlData = &$controlData;
 		$this->urlObj = &$urlObj;
 
-			// Initialise static info library
-		$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
-		$this->staticInfo->init();
+		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey)) {
+			include_once(PATH_BE_static_info_tables.'pi1/class.tx_staticinfotables_pi1.php');
+
+				// Initialise static info library
+			$this->staticInfo = t3lib_div::makeInstance('tx_staticinfotables_pi1');
+			$this->staticInfo->init();
+		}
 
 		$markerArray = array();
 
@@ -212,9 +215,9 @@ class tx_srfeuserregister_marker {
 
 		foreach($infoFieldArray as $k => $theField) {
 			$markerkey = $this->cObj->caseshift($theField,'upper');
-			$markerArray['###LABEL_'.$markerkey.'###'] = $this->lang->pi_getLL($theField) ? $this->lang->pi_getLL($theField) : $this->lang->getLLFromString($TcaColumns[$theField]['label']);
-			$markerArray['###TOOLTIP_'.$markerkey.'###'] = $this->lang->pi_getLL('tooltip_' . $theField);
-			$markerArray['###TOOLTIP_INVITATION_'.$markerkey.'###'] = $this->lang->pi_getLL('tooltip_invitation_' . $theField);
+			$markerArray['###LABEL_'.$markerkey.'###'] = $this->langObj->pi_getLL($theField) ? $this->langObj->pi_getLL($theField) : $this->langObj->getLLFromString($TcaColumns[$theField]['label']);
+			$markerArray['###TOOLTIP_'.$markerkey.'###'] = $this->langObj->pi_getLL('tooltip_' . $theField);
+			$markerArray['###TOOLTIP_INVITATION_'.$markerkey.'###'] = $this->langObj->pi_getLL('tooltip_invitation_' . $theField);
 			// <Ries van Twisk added support for multiple checkboxes>
 			$colConfig = $TcaColumns[$theField]['config'];
 
@@ -225,20 +228,20 @@ class tx_srfeuserregister_marker {
 				$markerArray['###POSTVARS_'.$theField.'###'] = '';
 				$fieldArray = t3lib_div::trimExplode(',', $row[$theField]);
 				foreach ($fieldArray AS $key => $value) {
-					$markerArray['###FIELD_'.$theField.'_CHECKED###'] .= '- '.$this->lang->getLLFromString($colConfig['items'][$value][0]).'<br />';
-					$markerArray['###LABEL_'.$theField.'_CHECKED###'] .= '- '.$this->lang->getLLFromString($colConfig['items'][$value][0]).'<br />';
+					$markerArray['###FIELD_'.$theField.'_CHECKED###'] .= '- '.$this->langObj->getLLFromString($colConfig['items'][$value][0]).'<br />';
+					$markerArray['###LABEL_'.$theField.'_CHECKED###'] .= '- '.$this->langObj->getLLFromString($colConfig['items'][$value][0]).'<br />';
 					$markerArray['###POSTVARS_'.$theField.'###'] .= chr(10).'	<input type="hidden" name="FE[fe_users]['.$theField.']['.$key.']" value ="'.$value.'" />';
 				}
 			// </Ries van Twisk added support for multiple checkboxes>
-			} else {
+			} else if ($colConfig['type'] == 'check') {
 				$markerArray['###FIELD_'.$theField.'_CHECKED###'] = ($row[$theField])?'checked':'';
-				$markerArray['###LABEL_'.$theField.'_CHECKED###'] = ($row[$theField])?$this->lang->pi_getLL('yes'):$this->lang->pi_getLL('no');
+				$markerArray['###LABEL_'.$theField.'_CHECKED###'] = ($row[$theField])?$this->langObj->pi_getLL('yes'):$this->langObj->pi_getLL('no');
 			}
 
 			if (in_array(trim($theField), $requiredArray) ) {
 				$markerArray['###REQUIRED_'.$markerkey.'###'] = '<span>*</span>';
-				$markerArray['###MISSING_'.$markerkey.'###'] = $this->lang->pi_getLL('missing_'.$theField);
-				$markerArray['###MISSING_INVITATION_'.$markerkey.'###'] = $this->lang->pi_getLL('missing_invitation_'.$theField);
+				$markerArray['###MISSING_'.$markerkey.'###'] = $this->langObj->pi_getLL('missing_'.$theField);
+				$markerArray['###MISSING_INVITATION_'.$markerkey.'###'] = $this->langObj->pi_getLL('missing_invitation_'.$theField);
 			} else {
 				$markerArray['###REQUIRED_'.$markerkey.'###'] = '';
 				$markerArray['###MISSING_'.$markerkey.'###'] = '';
@@ -249,7 +252,7 @@ class tx_srfeuserregister_marker {
 		$buttonLabels = t3lib_div::trimExplode(',', $this->getButtonLabelsList(), 1);
 		foreach($buttonLabels as $k => $labelName) {
 			if ($labelName)	{
-				$markerArray['###LABEL_BUTTON_'.$this->cObj->caseshift($labelName,'upper').'###'] = $this->lang->pi_getLL('button_'.$labelName);
+				$markerArray['###LABEL_BUTTON_'.$this->cObj->caseshift($labelName,'upper').'###'] = $this->langObj->pi_getLL('button_'.$labelName);
 			}
 		}
 		$otherLabelsList = $this->getOtherLabelsList();
@@ -259,9 +262,8 @@ class tx_srfeuserregister_marker {
 		}
 		$otherLabels = t3lib_div::trimExplode(',', $otherLabelsList, 1);
 		foreach($otherLabels as $k => $labelName) {
-			$markerArray['###LABEL_'.$this->cObj->caseshift($labelName,'upper').'###'] = sprintf($this->lang->pi_getLL($labelName), $this->controlData->getPidTitle(), $row['username'], $row['name'], $row['email'], $row['password']);
+			$markerArray['###LABEL_'.$this->cObj->caseshift($labelName,'upper').'###'] = sprintf($this->langObj->pi_getLL($labelName), $this->controlData->getPidTitle(), $row['username'], $row['name'], $row['email'], $row['password']);
 		}
-
 	}	// addLabelMarkers
 
 
@@ -338,62 +340,64 @@ class tx_srfeuserregister_marker {
 			$markerArray = $this->getArray();
 		}
 
-		$cmd = $this->controlData->getCmd();
-		$theTable = $this->controlData->getTable();
-		if ($this->controlData->getMode() == MODE_PREVIEW || $viewOnly) {
-			$markerArray['###FIELD_static_info_country###'] = $this->staticInfo->getStaticInfoName('COUNTRIES', is_array($row)?$row['static_info_country']:'');
-			$markerArray['###FIELD_zone###'] = $this->staticInfo->getStaticInfoName('SUBDIVISIONS', is_array($row)?$row['zone']:'', is_array($row)?$row['static_info_country']:'');
-			if (!$markerArray['###FIELD_zone###'] ) {
-				$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$theTable.'][zone]" value="" />';
-			}
-			$markerArray['###FIELD_language###'] = $this->staticInfo->getStaticInfoName('LANGUAGES', is_array($row)?$row['language']:'');
-		} else {
-			if ($this->conf['templateStyle'] == 'css-styled') {
-				$idCountry = $this->pibase->pi_getClassName('static_info_country');
-				$titleCountry = $this->pibase->lang->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'static_info_country');
-				$idZone = $this->pibase->pi_getClassName('zone');
-				$titleZone = $this->lang->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'zone');
-				$idLanguage = $this->pibase->pi_getClassName('language');
-				$titleLanguage = $this->lang->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'language');
-			}
-			$selected = (is_array($row)?$row['static_info_country']:'');
-			$markerArray['###SELECTOR_STATIC_INFO_COUNTRY###'] = $this->staticInfo->buildStaticInfoSelector(
-				'COUNTRIES', 
-				'FE['.$theTable.']'.'[static_info_country]', 
-				'', 
-				$selected, 
-				'', 
-				$this->conf['onChangeCountryAttribute'],
-				$idCountry,
-				$titleCountry
-			);
-
-			$markerArray['###SELECTOR_ZONE###'] = 
-				$this->staticInfo->buildStaticInfoSelector(
-					'SUBDIVISIONS',
-					'FE['.$theTable.']'.'[zone]',
-					'', 
-					is_array($row)?$row['zone']:'',
-					is_array($row)?$row['static_info_country']:'',
+		if (is_object($this->staticInfo))	{
+			$cmd = $this->controlData->getCmd();
+			$theTable = $this->controlData->getTable();
+			if ($this->controlData->getMode() == MODE_PREVIEW || $viewOnly) {
+				$markerArray['###FIELD_static_info_country###'] = $this->staticInfo->getStaticInfoName('COUNTRIES', is_array($row)?$row['static_info_country']:'');
+				$markerArray['###FIELD_zone###'] = $this->staticInfo->getStaticInfoName('SUBDIVISIONS', is_array($row)?$row['zone']:'', is_array($row)?$row['static_info_country']:'');
+				if (!$markerArray['###FIELD_zone###'] ) {
+					$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$theTable.'][zone]" value="" />';
+				}
+				$markerArray['###FIELD_language###'] = $this->staticInfo->getStaticInfoName('LANGUAGES', is_array($row)?$row['language']:'');
+			} else {
+				if ($this->conf['templateStyle'] == 'css-styled') {
+					$idCountry = $this->pibase->pi_getClassName('static_info_country');
+					$titleCountry = $this->pibase->langObj->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'static_info_country');
+					$idZone = $this->pibase->pi_getClassName('zone');
+					$titleZone = $this->langObj->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'zone');
+					$idLanguage = $this->pibase->pi_getClassName('language');
+					$titleLanguage = $this->langObj->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'language');
+				}
+				$selected = (is_array($row)?$row['static_info_country']:'');
+				$markerArray['###SELECTOR_STATIC_INFO_COUNTRY###'] = $this->staticInfo->buildStaticInfoSelector(
+					'COUNTRIES',
+					'FE['.$theTable.']'.'[static_info_country]',
 					'',
-					$idZone,
-					$titleZone
+					$selected,
+					'',
+					$this->conf['onChangeCountryAttribute'],
+					$idCountry,
+					$titleCountry
 				);
-			if (!$markerArray['###SELECTOR_ZONE###'] ) {
-				$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$theTable.'][zone]" value="" />';
-			}
 
-			$markerArray['###SELECTOR_LANGUAGE###'] = 
-				$this->staticInfo->buildStaticInfoSelector(
-				'LANGUAGES',
-				'FE['.$theTable.']'.'[language]',
-				'',
-				is_array($row)?$row['language']:'',
-				'',
-				'',
-				$idLanguage,
-				$titleLanguage
-			);
+				$markerArray['###SELECTOR_ZONE###'] = 
+					$this->staticInfo->buildStaticInfoSelector(
+						'SUBDIVISIONS',
+						'FE['.$theTable.']'.'[zone]',
+						'',
+						is_array($row)?$row['zone']:'',
+						is_array($row)?$row['static_info_country']:'',
+						'',
+						$idZone,
+						$titleZone
+					);
+				if (!$markerArray['###SELECTOR_ZONE###'] ) {
+					$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$theTable.'][zone]" value="" />';
+				}
+	
+				$markerArray['###SELECTOR_LANGUAGE###'] = 
+					$this->staticInfo->buildStaticInfoSelector(
+					'LANGUAGES',
+					'FE['.$theTable.']'.'[language]',
+					'',
+					is_array($row)?$row['language']:'',
+					'',
+					'',
+					$idLanguage,
+					$titleLanguage
+				);
+			}
 		}
 	}	// addStaticInfoMarkers
 
@@ -455,7 +459,6 @@ class tx_srfeuserregister_marker {
 				$onSubmit = strlen($onSubmit) ? ' onsubmit="'.$onSubmit.'"' : '';
 				$extraHidden = implode(chr(10), $extraHiddenAr);
 			}
-
 		}
 		$markerArray['###FORM_ONSUBMIT###'] = $onSubmit;
 		$markerArray['###HIDDENFIELDS###'] = $extraHidden;
@@ -481,7 +484,7 @@ class tx_srfeuserregister_marker {
 				';
 		if ($cmd != 'edit') {
 			$JSPart .= 'if (pass == \'\') {
-					alert(\'' . $this->lang->pi_getLL('missing_password') . '\');
+					alert(\'' . $this->langObj->pi_getLL('missing_password') . '\');
 					form[\'FE[' . $theTable . '][password]\'].select();
 					form[\'FE[' . $theTable . '][password]\'].focus();
 					return false;
@@ -489,7 +492,7 @@ class tx_srfeuserregister_marker {
 				';
 		}
 		$JSPart .= 'if (pass != pass_again) {
-					alert(\'' . $this->lang->pi_getLL('evalErrors_twice_password') . '\');
+					alert(\'' . $this->langObj->pi_getLL('evalErrors_twice_password') . '\');
 					form[\'FE[' . $theTable . '][password]\'].select();
 					form[\'FE[' . $theTable . '][password]\'].focus();
 					return false;
@@ -504,9 +507,9 @@ class tx_srfeuserregister_marker {
 			';
 		}
 		$JSPart .= 'var enc_pass = MD5(pass);
-					form[\'FE[' . $theTable . '][password]\'].value = enc_pass;
-					form[\'FE[' . $theTable . '][password_again]\'].value = enc_pass;
-				';
+				form[\'FE[' . $theTable . '][password]\'].value = enc_pass;
+				form[\'FE[' . $theTable . '][password_again]\'].value = enc_pass;
+			';
 		if ($cmd == 'create' || $cmd == 'edit') {
 			$JSPart .= '}
 			';
@@ -538,23 +541,23 @@ class tx_srfeuserregister_marker {
 		if ($this->controlData->getMode() == MODE_PREVIEW || $viewOnly) {
 			for ($i = 0; $i < sizeof($filenames); $i++) {
 				if ($this->conf['templateStyle'] == 'css-styled') {
-					$HTMLContent .= $filenames[$i] . '<a href="' . $dir.'/' . $filenames[$i] . '"' . $this->pibase->pi_classParam('file-view') . '" target="_blank" title="' . $this->lang->pi_getLL('file_view') . '">' . $this->lang->pi_getLL('file_view') . '</a><br />';
+					$HTMLContent .= $filenames[$i] . '<a href="' . $dir.'/' . $filenames[$i] . '"' . $this->pibase->pi_classParam('file-view') . '" target="_blank" title="' . $this->langObj->pi_getLL('file_view') . '">' . $this->langObj->pi_getLL('file_view') . '</a><br />';
 				} else {
-					$HTMLContent .= $filenames[$i] . '&nbsp;&nbsp;<small><a href="' . $dir.'/' . $filenames[$i] . '" target="_blank">' . $this->lang->pi_getLL('file_view') . '</a></small><br />';
+					$HTMLContent .= $filenames[$i] . '&nbsp;&nbsp;<small><a href="' . $dir.'/' . $filenames[$i] . '" target="_blank">' . $this->langObj->pi_getLL('file_view') . '</a></small><br />';
 				}
 			}
 		} else {
 			for($i = 0; $i < sizeof($filenames); $i++) {
 				if ($this->conf['templateStyle'] == 'css-styled') {
-					$HTMLContent .= $filenames[$i] . '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="'.$prefix.'['.$theField.']['.$i.'][submit_delete]" value="1" title="'.$this->lang->pi_getLL('icon_delete').'" alt="' . $this->lang->pi_getLL('icon_delete'). '"' . $this->pibase->pi_classParam('delete-icon') . ' onclick=\'if(confirm("' . $this->lang->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' />'
-							. '<a href="' . $dir.'/' . $filenames[$i] . '"' . $this->pibase->pi_classParam('file-view') . 'target="_blank" title="' . $this->lang->pi_getLL('file_view') . '">' . $this->lang->pi_getLL('file_view') . '</a><br />';
+					$HTMLContent .= $filenames[$i] . '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="'.$prefix.'['.$theField.']['.$i.'][submit_delete]" value="1" title="'.$this->langObj->pi_getLL('icon_delete').'" alt="' . $this->langObj->pi_getLL('icon_delete'). '"' . $this->pibase->pi_classParam('delete-icon') . ' onclick=\'if(confirm("' . $this->langObj->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' />'
+							. '<a href="' . $dir.'/' . $filenames[$i] . '"' . $this->pibase->pi_classParam('file-view') . 'target="_blank" title="' . $this->langObj->pi_getLL('file_view') . '">' . $this->langObj->pi_getLL('file_view') . '</a><br />';
 				} else {
-					$HTMLContent .= $filenames[$i] . '&nbsp;&nbsp;<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="'.$prefix.'['.$theField.']['.$i.'][submit_delete]" value="1" title="'.$this->lang->pi_getLL('icon_delete').'" alt="' . $this->lang->pi_getLL('icon_delete'). '"' . $this->pibase->pi_classParam('icon') . ' onclick=\'if(confirm("' . $this->lang->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' />&nbsp;&nbsp;<small><a href="' . $dir.'/' . $filenames[$i] . '" target="_blank">' . $this->lang->pi_getLL('file_view') . '</a></small><br />';
+					$HTMLContent .= $filenames[$i] . '&nbsp;&nbsp;<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="'.$prefix.'['.$theField.']['.$i.'][submit_delete]" value="1" title="'.$this->langObj->pi_getLL('icon_delete').'" alt="' . $this->langObj->pi_getLL('icon_delete'). '"' . $this->pibase->pi_classParam('icon') . ' onclick=\'if(confirm("' . $this->langObj->pi_getLL('confirm_file_delete') . '")) return true; else return false;\' />&nbsp;&nbsp;<small><a href="' . $dir.'/' . $filenames[$i] . '" target="_blank">' . $this->langObj->pi_getLL('file_view') . '</a></small><br />';
 				}
 				$HTMLContent .= '<input type="hidden" name="' . $prefix . '[' . $theField . '][' . $i . '][name]' . '" value="' . $filenames[$i] . '" />';
 			}
 			for ($i = sizeof($filenames); $i < $number + sizeof($filenames); $i++) {
-				$HTMLContent .= '<input id="'. $this->pibase->pi_getClassName($theField) . '-' . ($i-sizeof($filenames)) . '" name="'.$prefix.'['.$theField.']['.$i.']'.'" title="' . $this->lang->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'image') . '" size="40" type="file" '.$this->pibase->pi_classParam('uploader').' /><br />';
+				$HTMLContent .= '<input id="'. $this->pibase->pi_getClassName($theField) . '-' . ($i-sizeof($filenames)) . '" name="'.$prefix.'['.$theField.']['.$i.']'.'" title="' . $this->langObj->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'image') . '" size="40" type="file" '.$this->pibase->pi_classParam('uploader').' /><br />';
 			}
 		}
 

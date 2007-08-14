@@ -46,13 +46,13 @@ class tx_srfeuserregister_lang {
 	var $pibase;
 	var $conf = array();
 	var $allowedSuffixes = array('formal', 'informal'); // list of allowed suffixes
+	var $LLkey;
 
-
-	function init(&$pibase, &$conf)	{
+	function init(&$pibase, &$conf, $LLkey)	{
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
+		$this->LLkey = $LLkey;
 	}
-
 
 	function getLLFromString($string, $bForce=true) {
 		global $LOCAL_LANG, $TSFE;
@@ -69,7 +69,7 @@ class tx_srfeuserregister_lang {
 		} else {
 			$rc = $string;
 		}
-		
+
 		return $rc;
 	}	// getLLFromString
 
@@ -120,7 +120,7 @@ class tx_srfeuserregister_lang {
 			// If the suffix is allowed and we have a localized string for the desired salutation, we'll take that.
 		if (isset($this->conf['salutation']) && in_array($this->conf['salutation'], $this->allowedSuffixes, 1)) {
 			$expandedKey = $key.'_'.$this->conf['salutation'];
-			if (isset($this->LOCAL_LANG[$this->LLkey][$expandedKey])) {
+			if (isset($this->pibase->LOCAL_LANG[$this->pibase->LLkey][$expandedKey])) {
 				$key = $expandedKey;
 			}
 		}
