@@ -1,3 +1,7 @@
+2007-08-29 Franz Holzinger  <kontakt@fholzinger.com>
+	* fix bug with wrong $row variable in tx_srfeuserregister_tca
+	* start with encoding in renderCharset
+
 2007-08-14 Franz Holzinger  <kontakt@fholzinger.com>
 	* fix bug with no editing possible for sr_email_subscribe and a setfixed link
 	* fix bug 5609: informal texts did not work

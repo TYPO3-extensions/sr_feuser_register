@@ -54,10 +54,8 @@ class tx_srfeuserregister_marker {
 	var $langObj;
 	var $tca;
 	var $authCode;
-
 	var $previewLabel;
 	var $staticInfo;
-
 	var $markerArray = array();
 	var $sys_language_content;
 	var $cObj;
@@ -204,7 +202,7 @@ class tx_srfeuserregister_marker {
 	* @return void
 	*/
 	function addLabelMarkers(&$markerArray, &$row, &$requiredArray, &$infoFields, &$TcaColumns) {
-		global $TYPO3_CONF_VARS;
+		global $TYPO3_CONF_VARS, $TSFE;
 
 		if (!$markerArray)	{
 			$markerArray = $this->getArray();
@@ -212,12 +210,18 @@ class tx_srfeuserregister_marker {
 
 		// Data field labels
 		$infoFieldArray = t3lib_div::trimExplode(',', $infoFields, 1);
+		$charset = $TSFE->renderCharset;
 
 		foreach($infoFieldArray as $k => $theField) {
 			$markerkey = $this->cObj->caseshift($theField,'upper');
-			$markerArray['###LABEL_'.$markerkey.'###'] = $this->langObj->pi_getLL($theField) ? $this->langObj->pi_getLL($theField) : $this->langObj->getLLFromString($TcaColumns[$theField]['label']);
+			$label = $this->langObj->pi_getLL($theField);
+			$label = ($label ? $label : $this->langObj->getLLFromString($TcaColumns[$theField]['label']));
+			$label = htmlspecialchars($label,ENT_QUOTES,$charset);
+			$markerArray['###LABEL_'.$markerkey.'###'] = $label;
 			$markerArray['###TOOLTIP_'.$markerkey.'###'] = $this->langObj->pi_getLL('tooltip_' . $theField);
-			$markerArray['###TOOLTIP_INVITATION_'.$markerkey.'###'] = $this->langObj->pi_getLL('tooltip_invitation_' . $theField);
+			$label = $this->langObj->pi_getLL('tooltip_invitation_' . $theField);
+			$label = htmlspecialchars($label,ENT_QUOTES,$charset);
+			$markerArray['###TOOLTIP_INVITATION_'.$markerkey.'###'] = $label;
 			// <Ries van Twisk added support for multiple checkboxes>
 			$colConfig = $TcaColumns[$theField]['config'];
 
@@ -234,7 +238,7 @@ class tx_srfeuserregister_marker {
 				}
 			// </Ries van Twisk added support for multiple checkboxes>
 			} else if ($colConfig['type'] == 'check') {
-				$markerArray['###FIELD_'.$theField.'_CHECKED###'] = ($row[$theField])?'checked':'';
+				$markerArray['###FIELD_'.$theField.'_CHECKED###'] = ($row[$theField]) ? 'checked' : '';
 				$markerArray['###LABEL_'.$theField.'_CHECKED###'] = ($row[$theField])?$this->langObj->pi_getLL('yes'):$this->langObj->pi_getLL('no');
 			}
 
@@ -399,6 +403,7 @@ class tx_srfeuserregister_marker {
 				);
 			}
 		}
+
 	}	// addStaticInfoMarkers
 
 
@@ -418,7 +423,7 @@ class tx_srfeuserregister_marker {
 			$GLOBALS['TSFE']->additionalHeaderData['MD5_script'] = '<script type="text/javascript" src="typo3/md5.js"></script>';
 			$GLOBALS['TSFE']->JSCode .= $this->getMD5Submit($cmd);
 			$markerArray['###FORM_ONSUBMIT###'] = 'onsubmit="return enc_form(this);"';
-			if ($mode == 'edit') {
+			if ($cmd == 'edit') {
 				$markerArray['###PASSWORD_ONCHANGE###'] = 'onchange="pw_change=1; return true;"';
 			}
 		}
