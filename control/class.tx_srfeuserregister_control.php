@@ -116,6 +116,12 @@ class tx_srfeuserregister_control {
 			$this->conf[$cmdKey.'.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'], 1), array('module_sys_dmail_category')));
 		}
 
+		$fieldConfArray = array('fields', 'required');
+		foreach ($fieldConfArray as $k => $v)	{
+			// make it ready for t3lib_div::inList which does not yet allow blanks
+			$this->conf[$cmdKey.'.'][$v] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.'][$v])));
+		}
+
 		if ($theTable == 'fe_users') {
 			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'] . ',username', 1)));
 			$this->conf[$cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'] . ',username', 1)));
@@ -354,7 +360,6 @@ class tx_srfeuserregister_control {
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 		} else {
 				// Finally, if there has been no attempt to save. That is either preview or just displaying and empty or not correctly filled form:
-
 			switch($cmd) {
 				case 'setfixed':
 					if ($this->conf['infomail']) {

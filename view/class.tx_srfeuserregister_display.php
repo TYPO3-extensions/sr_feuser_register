@@ -175,7 +175,9 @@ class tx_srfeuserregister_display {
 			$templateCode = $this->cObj->getSubpart($templateCode, $subpartKey);
 
 			$failure = t3lib_div::_GP('noWarnings') ? FALSE: $this->data->getFailure();
-			if (!$failure) $templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
+			if (!$failure)	{
+				$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
+			}
 			$templateCode = $this->removeRequired($templateCode, $failure);
 			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $dataArray, '',TRUE, 'FIELD_', TRUE);
 			$this->marker->addStaticInfoMarkers($markerArray, $dataArray);
