@@ -256,7 +256,8 @@ class tx_srfeuserregister_tca {
 						case 'check':
 							if (is_array($colConfig['items'])) {
 								// <Ries van Twisk added support for multiple checkboxes>
-								$colContent  = '<ul id="'. $this->pibase->pi_getClassName($colName) . ' " class="tx-srfeuserregister-multiple-checkboxes">';
+								$uidText = $this->pibase->pi_getClassName($colName)'-'.$row['uid'];
+								$colContent  = '<ul id="'. $uidText . ' " class="tx-srfeuserregister-multiple-checkboxes">';
 								foreach ($colConfig['items'] as $key => $value) {
 									if ($cmd == 'create' || $cmd == 'invite') {
 										$checked = ($colConfig['default'] & (1 << $key))?'checked="checked"':'';
@@ -265,10 +266,9 @@ class tx_srfeuserregister_tca {
 									}
 									$label = $this->lang->getLLFromString($colConfig['items'][$key][0]);
 									$label = htmlspecialchars($label,ENT_QUOTES,$charset);
-									$colContent .= '<li><input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . ' id="' . $this->pibase->pi_getClassName($colName) . '-' . $key .  ' " name="FE['.$theTable.']['.$colName.'][]" value="'.$key.'" '.$checked.' /><label for="' . $this->pibase->pi_getClassName($colName) . '-' . $key .  '">' . $label . '</label></li>';
+									$colContent .= '<li><input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . ' id="' . $uidText . '-' . $key .  ' " name="FE['.$theTable.']['.$colName.'][]" value="'.$key.'" '.$checked.' /><label for="' . $uidText . '-' . $key .  '">' . $label . '</label></li>';
 								}
 								$colContent .= '</ul>';
-								// </Ries van Twisk added support for multiple checkboxes>
 							} else {
 								$colContent = '<input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . ' id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']"' . ($row[$colName]?'checked="checked"':'') . ' />';
 							}

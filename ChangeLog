@@ -1,3 +1,6 @@
+2007-09-04 Franz Holzinger  <kontakt@fholzinger.com>
+	* fix bug with having same html ids many times when more records are shown
+
 2007-08-29 Franz Holzinger  <kontakt@fholzinger.com>
 	* fix bug with wrong $row variable in tx_srfeuserregister_tca
 	* start with encoding in renderCharset
