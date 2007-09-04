@@ -239,7 +239,9 @@ class tx_srfeuserregister_control {
 				$this->data->evalValues($markerArray);
 				$this->marker->setArray($markerArray);
 				if ($this->conf['evalFunc'] ) {
-					$this->data->setDataArray( $this->pibase->userProcess('evalFunc', $this->data->getDataArray()));
+					$this->data->setDataArray(
+						$this->pibase->userProcess('evalFunc', $this->data->getDataArray())
+					);
 				}
 			} else {
 				//this is either a country change submitted through the onchange event or a file deletion already processed by the parsing function
