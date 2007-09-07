@@ -357,7 +357,7 @@ class tx_srfeuserregister_marker {
 			} else {
 				if ($this->conf['templateStyle'] == 'css-styled') {
 					$idCountry = $this->pibase->pi_getClassName('static_info_country');
-					$titleCountry = $this->pibase->langObj->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'static_info_country');
+					$titleCountry = $this->langObj->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'static_info_country');
 					$idZone = $this->pibase->pi_getClassName('zone');
 					$titleZone = $this->langObj->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'zone');
 					$idLanguage = $this->pibase->pi_getClassName('language');
