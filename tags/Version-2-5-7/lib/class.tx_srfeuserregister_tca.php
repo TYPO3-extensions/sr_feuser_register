@@ -237,7 +237,7 @@ class tx_srfeuserregister_tca {
 									$colContent .= ' maxlength="'.$colConfig['max'].'"';
 							}
 							if ($colConfig['default']) {
-								$label = $this->getLLFromString($colConfig['default']);
+								$label = $this->lang->getLLFromString($colConfig['default']);
 								$label = htmlspecialchars($label,ENT_QUOTES,$charset);
 								$colContent .= ' value="'.$label.'"';
 							}
@@ -245,7 +245,7 @@ class tx_srfeuserregister_tca {
 							break;
 	
 						case 'text':
-							$label = $this->getLLFromString($colConfig['default']);
+							$label = $this->lang->getLLFromString($colConfig['default']);
 							$label = htmlspecialchars($label,ENT_QUOTES,$charset);
 							$colContent = '<textarea id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']"'.
 								' title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###"'.
@@ -256,7 +256,7 @@ class tx_srfeuserregister_tca {
 						case 'check':
 							if (is_array($colConfig['items'])) {
 								// <Ries van Twisk added support for multiple checkboxes>
-								$uidText = $this->pibase->pi_getClassName($colName)'-'.$row['uid'];
+								$uidText = $this->pibase->pi_getClassName($colName).'-'.$row['uid'];
 								$colContent  = '<ul id="'. $uidText . ' " class="tx-srfeuserregister-multiple-checkboxes">';
 								foreach ($colConfig['items'] as $key => $value) {
 									if ($cmd == 'create' || $cmd == 'invite') {
