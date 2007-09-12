@@ -261,7 +261,7 @@ class tx_srfeuserregister_tca {
 								$colContent  = '<ul id="'. $uidText . ' " class="tx-srfeuserregister-multiple-checkboxes">';
 								// +++$submitData = $this->controlData->getFeUserData('submit');
 								foreach ($colConfig['items'] as $key => $value) {
-									if ($this->controlData->getSubmit())	{
+									if ($this->controlData->getSubmit() || $cmd=='edit')	{
 										$startVal = $row[$colName];
 									} else {
 										$startVal = $colConfig['default'];
