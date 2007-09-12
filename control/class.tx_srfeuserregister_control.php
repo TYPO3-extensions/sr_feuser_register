@@ -233,15 +233,21 @@ class tx_srfeuserregister_control {
 			$this->data->setName();
 			$this->data->parseValues();
 			$this->data->overrideValues();
-			if ($this->data->getFeUserData('submit') || $this->data->getFeUserData('doNotSave') || $this->data->getFeUserData('linkToPID')) {
+
+			$submitData = $this->data->getFeUserData('submit');
+			if ($submitData != '')	{
+				$bSubmit = true;
+				$this->controlData->setSubmit(true);
+			}
+
+			if ($bSubmit || $this->data->getFeUserData('doNotSave') || $this->data->getFeUserData('linkToPID')) {
 				$markerArray = $this->marker->getArray();
 				// a button was clicked on
 				$this->data->evalValues($markerArray);
 				$this->marker->setArray($markerArray);
 				if ($this->conf['evalFunc'] ) {
-					$this->data->setDataArray(
-						$this->pibase->userProcess('evalFunc', $this->data->getDataArray())
-					);
+					$newDataArray = $this->pibase->userProcess('evalFunc', $this->data->getDataArray());
+					$this->data->setDataArray($newDataArray);
 				}
 			} else {
 				//this is either a country change submitted through the onchange event or a file deletion already processed by the parsing function

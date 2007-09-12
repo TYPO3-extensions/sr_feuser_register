@@ -57,6 +57,7 @@ class tx_srfeuserregister_controldata {
 	var $pid = array();
 	var $useMd5Password = FALSE;
 	var $setfixedEnabled = 1;
+	var $bSubmit = FALSE;
 
 	function init (&$conf, $prefixId, $extKey, $piVars, $theTable)	{
 		global $TSFE;
@@ -131,6 +132,14 @@ class tx_srfeuserregister_controldata {
 
 	function setCmdKey($cmdKey)	{
 		$this->cmdKey = $cmdKey;
+	}
+
+	function setSubmit($bSubmit)	{
+		$this->bSubmit = $bSubmit;
+	}
+
+	function getSubmit()	{
+		return $this->bSubmit;
 	}
 
 	function getPid($type='')	{

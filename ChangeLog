@@ -1,3 +1,7 @@
+2007-09-12 Franz Holzinger  <kontakt@fholzinger.com>
+	* fix bug with checkboxes set to zero when errors in the entered data
+	* fix wrong lower case markers of checkboxes to upper case
+
 2007-09-04 Franz Holzinger  <kontakt@fholzinger.com>
 	* fix bug with having same html ids many times when more records are shown
 
