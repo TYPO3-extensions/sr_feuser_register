@@ -47,24 +47,23 @@ class tx_srfeuserregister_tca {
 	var $pibase;
 	var $conf = array();
 	var $config = array();
-	var $data;
 	var $control;
 	var $controlData;
-	var $lang;
+	var $langObj;
 
 	var $TCA = array();
 	var $sys_language_content;
 	var $cObj;
 
 
-	function init(&$pibase, &$conf, &$config, &$controlData, &$lang, $extKey)	{
+	function init(&$pibase, &$conf, &$config, &$controlData, &$langObj, $extKey)	{
 		global $TSFE, $TCA, $TYPO3_CONF_VARS;
 
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
 		$this->config = &$config;
 		$this->controlData = &$controlData;
-		$this->lang = &$lang;
+		$this->langObj = &$langObj;
 
 		$this->sys_language_content = $pibase->sys_language_content;
 		$this->cObj = &$pibase->cObj;
@@ -150,26 +149,26 @@ class tx_srfeuserregister_tca {
 							if (is_array($colConfig['items'])) {
 								$colContent = '<ul class="tx-srfeuserregister-multiple-checked-values">';
 								foreach ($colConfig['items'] as $key => $value) {
-									$label = htmlspecialchars($this->lang->getLLFromString($colConfig['items'][$key][0]),ENT_QUOTES,$charset);
+									$label = htmlspecialchars($this->langObj->getLLFromString($colConfig['items'][$key][0]),ENT_QUOTES,$charset);
 									$checked = ($row[$colName] & (1 << $key)) ? 'checked' : '';
 									$colContent .= $checked ? '<li>' . $label . '</li>' : '';
 								}
 								$colContent .= '</ul>';
 								// </Ries van Twisk added support for multiple checkboxes>
 							} else {
-								$colContent = $row[$colName]?htmlspecialchars($this->lang->pi_getLL('yes'),ENT_QUOTES,$charset):htmlspecialchars($this->lang->pi_getLL('no'),ENT_QUOTES,$charset);
+								$colContent = $row[$colName]?htmlspecialchars($this->langObj->pi_getLL('yes'),ENT_QUOTES,$charset):htmlspecialchars($this->langObj->pi_getLL('no'),ENT_QUOTES,$charset);
 							}
 							break;
 						case 'radio':
 							if ($row[$colName] != '') {
-								$colContent = htmlspecialchars($this->lang->getLLFromString($colConfig['items'][$row[$colName]][0],ENT_QUOTES,$charset));
+								$colContent = htmlspecialchars($this->langObj->getLLFromString($colConfig['items'][$row[$colName]][0],ENT_QUOTES,$charset));
 							}
 							break;
 						case 'select':
 							if ($row[$colName] != '') {
 								$valuesArray = is_array($row[$colName]) ? $row[$colName] : explode(',',$row[$colName]);
 								$textSchema = 'fe_users.'.$colName.'.I.';
-								$itemArray = $this->lang->getItemsLL($textSchema, true);
+								$itemArray = $this->langObj->getItemsLL($textSchema, true);
 								$bUseTCA = false;
 								if (!count ($itemArray))	{
 									$itemArray = $colConfig['items'];
@@ -187,7 +186,7 @@ class tx_srfeuserregister_tca {
 									}
 
 									for ($i = 0; $i < count ($valuesArray); $i++) {
-										$text = $this->lang->getLLFromString($itemKeyArray[$valuesArray[$i]][0]);
+										$text = $this->langObj->getLLFromString($itemKeyArray[$valuesArray[$i]][0]);
 										$text = htmlspecialchars($text,ENT_QUOTES,$charset);
 										$colContent .= $this->cObj->stdWrap($text,$stdWrap);
 									}
@@ -224,7 +223,7 @@ class tx_srfeuserregister_tca {
 							break;
 						default:
 							// unsupported input type
-							$colContent .= $colConfig['type'].':'.htmlspecialchars($this->lang->pi_getLL('unsupported'),ENT_QUOTES,$charset);
+							$colContent .= $colConfig['type'].':'.htmlspecialchars($this->langObj->pi_getLL('unsupported'),ENT_QUOTES,$charset);
 					}
 				} else {
 
@@ -237,7 +236,7 @@ class tx_srfeuserregister_tca {
 									$colContent .= ' maxlength="'.$colConfig['max'].'"';
 							}
 							if ($colConfig['default']) {
-								$label = $this->getLLFromString($colConfig['default']);
+								$label = $this->langObj->getLLFromString($colConfig['default']);
 								$label = htmlspecialchars($label,ENT_QUOTES,$charset);
 								$colContent .= ' value="'.$label.'"';
 							}
@@ -245,7 +244,7 @@ class tx_srfeuserregister_tca {
 							break;
 	
 						case 'text':
-							$label = $this->getLLFromString($colConfig['default']);
+							$label = $this->langObj->getLLFromString($colConfig['default']);
 							$label = htmlspecialchars($label,ENT_QUOTES,$charset);
 							$colContent = '<textarea id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']"'.
 								' title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###"'.
@@ -254,29 +253,33 @@ class tx_srfeuserregister_tca {
 								'>'.($colConfig['default']?$label:'').'</textarea>';
 							break;
 						case 'check':
+							$label = $this->langObj->pi_getLL('tooltip_' . $colName);
+							$label = htmlspecialchars($label,ENT_QUOTES,$charset);
+
 							if (is_array($colConfig['items'])) {
-								// <Ries van Twisk added support for multiple checkboxes>
-								$uidText = $this->pibase->pi_getClassName($colName)'-'.$row['uid'];
+								$uidText = $this->pibase->pi_getClassName($colName).'-'.$row['uid'];
 								$colContent  = '<ul id="'. $uidText . ' " class="tx-srfeuserregister-multiple-checkboxes">';
+								// +++$submitData = $this->controlData->getFeUserData('submit');
 								foreach ($colConfig['items'] as $key => $value) {
-									if ($cmd == 'create' || $cmd == 'invite') {
-										$checked = ($colConfig['default'] & (1 << $key))?'checked="checked"':'';
+									if ($this->controlData->getSubmit())	{
+										$startVal = $row[$colName];
 									} else {
-										$checked = ($row[$colName] & (1 << $key))?'checked="checked"':'';
+										$startVal = $colConfig['default'];
 									}
-									$label = $this->lang->getLLFromString($colConfig['items'][$key][0]);
+									$checked = ($startVal & (1 << $key))?'checked="checked"':'';
+									$label = $this->langObj->getLLFromString($colConfig['items'][$key][0]);
 									$label = htmlspecialchars($label,ENT_QUOTES,$charset);
 									$colContent .= '<li><input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . ' id="' . $uidText . '-' . $key .  ' " name="FE['.$theTable.']['.$colName.'][]" value="'.$key.'" '.$checked.' /><label for="' . $uidText . '-' . $key .  '">' . $label . '</label></li>';
 								}
 								$colContent .= '</ul>';
 							} else {
-								$colContent = '<input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . ' id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']"' . ($row[$colName]?'checked="checked"':'') . ' />';
+								$colContent = '<input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . ' id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']" title="'.$label.'"' . ($row[$colName]?'checked="checked"':'') . ' />';
 							}
 							break;
 
 						case 'radio':
 							for ($i = 0; $i < count ($colConfig['items']); ++$i) {
-								$label = $this->lang->getLLFromString($colConfig['items'][$i][0]);
+								$label = $this->langObj->getLLFromString($colConfig['items'][$i][0]);
 								$label = htmlspecialchars($label,ENT_QUOTES,$charset);
 								$colContent .= '<input type="radio"' . $this->pibase->pi_classParam('radio') . ' id="'. $this->pibase->pi_getClassName($colName) . '-' . $i . '" name="FE['.$theTable.']['.$colName.']"'.
 										' value="'.$i.'" '.($i==0?'checked="checked"':'').' />' .
@@ -307,7 +310,7 @@ class tx_srfeuserregister_tca {
 								$colContent .= '<select id="'. $this->pibase->pi_getClassName($colName) . ' " name="FE['.$theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
 							}
 							$textSchema = 'fe_users.'.$colName.'.I.';
-							$itemArray = $this->lang->getItemsLL($textSchema, true);
+							$itemArray = $this->langObj->getItemsLL($textSchema, true);
 							$bUseTCA = false;
 							if (!count ($itemArray))	{
 								$itemArray = $colConfig['items'];
@@ -324,7 +327,7 @@ class tx_srfeuserregister_tca {
 
 								$i = 0;
 								foreach ($itemArray as $k => $item)	{
-									$label = $this->lang->getLLFromString($item[0],true);
+									$label = $this->langObj->getLLFromString($item[0],true);
 									$label = htmlspecialchars($label,ENT_QUOTES,$charset);
 									if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
 										$colContent .= '<dt><input class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $i .'" name="FE['.$theTable.']['.$colName.']['.$k.']" value="'.$k.'" type="checkbox"  ' . (in_array($k, $valuesArray) ? 'checked="checked"' : '') . ' /></dt>
@@ -396,7 +399,7 @@ class tx_srfeuserregister_tca {
 							}
 							break;
 						default:
-							$colContent .= $colConfig['type'].':'.$this->lang->pi_getLL('unsupported');
+							$colContent .= $colConfig['type'].':'.$this->langObj->pi_getLL('unsupported');
 							break;
 					}
 				}
@@ -407,7 +410,6 @@ class tx_srfeuserregister_tca {
 			}
 		}
 	}
-	// <Ries van Twisk added support for multiple checkboxes>
 
 
 	/**

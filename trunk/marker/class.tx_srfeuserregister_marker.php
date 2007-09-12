@@ -222,24 +222,22 @@ class tx_srfeuserregister_marker {
 			$label = $this->langObj->pi_getLL('tooltip_invitation_' . $theField);
 			$label = htmlspecialchars($label,ENT_QUOTES,$charset);
 			$markerArray['###TOOLTIP_INVITATION_'.$markerkey.'###'] = $label;
-			// <Ries van Twisk added support for multiple checkboxes>
 			$colConfig = $TcaColumns[$theField]['config'];
 
 			if ($colConfig['type'] == 'select' && $colConfig['items'])	{
 				$colContent = '';
-				$markerArray['###FIELD_'.$theField.'_CHECKED###'] = '';
-				$markerArray['###LABEL_'.$theField.'_CHECKED###'] = '';
-				$markerArray['###POSTVARS_'.$theField.'###'] = '';
+				$markerArray['###FIELD_'.$markerkey.'_CHECKED###'] = '';
+				$markerArray['###LABEL_'.$markerkey.'_CHECKED###'] = '';
+				$markerArray['###POSTVARS_'.$markerkey.'###'] = '';
 				$fieldArray = t3lib_div::trimExplode(',', $row[$theField]);
 				foreach ($fieldArray AS $key => $value) {
-					$markerArray['###FIELD_'.$theField.'_CHECKED###'] .= '- '.$this->langObj->getLLFromString($colConfig['items'][$value][0]).'<br />';
-					$markerArray['###LABEL_'.$theField.'_CHECKED###'] .= '- '.$this->langObj->getLLFromString($colConfig['items'][$value][0]).'<br />';
-					$markerArray['###POSTVARS_'.$theField.'###'] .= chr(10).'	<input type="hidden" name="FE[fe_users]['.$theField.']['.$key.']" value ="'.$value.'" />';
+					$markerArray['###FIELD_'.$markerkey.'_CHECKED###'] .= '- '.$this->langObj->getLLFromString($colConfig['items'][$value][0]).'<br />';
+					$markerArray['###LABEL_'.$markerkey.'_CHECKED###'] .= '- '.$this->langObj->getLLFromString($colConfig['items'][$value][0]).'<br />';
+					$markerArray['###POSTVARS_'.$markerkey.'###'] .= chr(10).'	<input type="hidden" name="FE[fe_users]['.$theField.']['.$key.']" value ="'.$value.'" />';
 				}
-			// </Ries van Twisk added support for multiple checkboxes>
 			} else if ($colConfig['type'] == 'check') {
-				$markerArray['###FIELD_'.$theField.'_CHECKED###'] = ($row[$theField]) ? 'checked' : '';
-				$markerArray['###LABEL_'.$theField.'_CHECKED###'] = ($row[$theField])?$this->langObj->pi_getLL('yes'):$this->langObj->pi_getLL('no');
+				$markerArray['###FIELD_'.$markerkey.'_CHECKED###'] = ($row[$theField]) ? 'checked' : '';
+				$markerArray['###LABEL_'.$markerkey.'_CHECKED###'] = ($row[$theField])?$this->langObj->pi_getLL('yes'):$this->langObj->pi_getLL('no');
 			}
 
 			if (in_array(trim($theField), $requiredArray) ) {
@@ -357,7 +355,7 @@ class tx_srfeuserregister_marker {
 			} else {
 				if ($this->conf['templateStyle'] == 'css-styled') {
 					$idCountry = $this->pibase->pi_getClassName('static_info_country');
-					$titleCountry = $this->pibase->langObj->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'static_info_country');
+					$titleCountry = $this->langObj->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'static_info_country');
 					$idZone = $this->pibase->pi_getClassName('zone');
 					$titleZone = $this->langObj->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'zone');
 					$idLanguage = $this->pibase->pi_getClassName('language');
