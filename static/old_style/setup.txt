@@ -1,4 +1,8 @@
-## $Id$
+##
+## @package TYPO3
+## @subpackage sr_feuser_register
+## @version $Id$
+##
 
 
 plugin.tx_srfeuserregister_pi1 {
@@ -12,11 +16,11 @@ plugin.tx_srfeuserregister_pi1 {
 	color2.wrap = {$plugin.tx_srfeuserregister_pi1.color2}
 	color3.wrap = {$plugin.tx_srfeuserregister_pi1.color3}
 	icon_delete = {$plugin.tx_srfeuserregister_pi1.file.icon_delete}
-	
+
 	fe_userOwnSelf = 1
 	fe_userEditSelf = 1
 	delete = 1
-	
+
 	pid = {$plugin.tx_srfeuserregister_pi1.pid}
 	pidTitleOverride = {$plugin.tx_srfeuserregister_pi1.pidTitleOverride}
 	registerPID = {$plugin.tx_srfeuserregister_pi1.registerPID}
@@ -29,7 +33,7 @@ plugin.tx_srfeuserregister_pi1 {
 	linkToPIDAddButton = {$plugin.tx_srfeuserregister_pi1.linkToPIDAddButton}
 	module_sys_dmail_category_PIDLIST = {$plugin.tx_srfeuserregister_pi1.module_sys_dmail_category_PIDLIST}
 	defaultCODE = {$plugin.tx_srfeuserregister_pi1.defaultCODE}
-	
+
 	useShortUrls = {$plugin.tx_srfeuserregister_pi1.useShortUrls}
 	shortUrlLife = {$plugin.tx_srfeuserregister_pi1.shortUrlLife}
 
@@ -120,7 +124,7 @@ plugin.tx_srfeuserregister_pi1 {
 	enableAdminReview = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
 	setfixed.ACCEPT < .setfixed.APPROVE
 	setfixed.REFUSE < .setfixed.DELETE
-	
+
 	invite < .create
 
 	edit < .create

@@ -56,7 +56,7 @@ class tx_srfeuserregister_data {
 
 	var $dataArray = array();
 	var $currentArr = array();
-	var $feUserData = array();
+	var $origArr = array();
 	var $cmdKey;
 	var $cmd;
 	var $cObj;
@@ -70,6 +70,7 @@ class tx_srfeuserregister_data {
 	var $error;
 	var $sys_language_content;
 	var $adminFieldList;
+	var $additionalUpdateFields;
 	var $fieldList; // List of fields from fe_admin_fieldList
 	var $recUid;
 	var $missing = array(); // array of required missing fields
@@ -92,9 +93,7 @@ class tx_srfeuserregister_data {
 		$this->cObj = &$pibase->cObj;
 		$this->sys_language_content = $pibase->sys_language_content;
 		$this->fileFunc = $pibase->fileFunc;
-
 		$feUserData = t3lib_div::_GP($this->controlData->getPrefixId());
-
 		// <Steve Webster added short url feature>
 			// Get hash variable if provided and if short url feature is enabled
 		if ($this->conf['useShortUrls']) {
@@ -115,8 +114,7 @@ class tx_srfeuserregister_data {
 			}
 		}
 		// </Steve Webster added short url feature>
-
-		$this->setFeUserData ($feUserData);
+		$this->controlData->setFeUserData ($feUserData);
 
 			// Get parameters
 		$fe = t3lib_div::_GP('FE');
@@ -129,11 +127,20 @@ class tx_srfeuserregister_data {
 		foreach ($piVarArray as $k => $pivar)	{
 			if (t3lib_div::_GP($pivar))	{
 				$value = t3lib_div::_GP($pivar);
-				$this->setFeUserData($value, $pivar);
+				$this->controlData->setFeUserData($value, $pivar);
 			}
 		}
 
-		$this->setDataArray($fe[$theTable]);
+		if (isset($fe) && is_array($fe))	{
+			$dataArray = $fe[$theTable];
+			$this->tca->modifyRow($dataArray);
+			$this->setDataArray($dataArray);
+		}
+
+		$theUid = $dataArray['uid'];
+		$origArr = $TSFE->sys_page->getRawRecord($theTable, $theUid);
+		$this->setOrigArray($origArr);
+
 		$module_sys_dmail_category = $this->getDataArray('module_sys_dmail_category');
 		if (is_array($module_sys_dmail_category))	{	// no array elements are allowed for $this->cObj->fillInMarkerArray
 			$this->setDataArray(implode(',',$module_sys_dmail_category), 'module_sys_dmail_category');
@@ -182,26 +189,20 @@ class tx_srfeuserregister_data {
 		$this->adminFieldList = $adminFieldList;
 	}
 
+	function getAdditionalUpdateFields()	{
+		return $this->additionalUpdateFields;
+	}
+
+	function setAdditionalUpdateFields($additionalUpdateFields)	{
+		$this->additionalUpdateFields = $additionalUpdateFields;
+	}
+
 	function getFailure()	{
 		return $this->failure;
 	}
 
 	function setFailure($failure)	{
 		$this->failure = $failure;
-	}
-
-	function getFeUserData ($k)	{
-		$rc = $this->feUserData[$k];
-		return $rc;
-	}
-
-	function setFeUserData ($dataArray, $k='')	{
-
-		if ($k != '')	{
-			$this->feUserData[$k] = $dataArray;
-		} else {
-			$this->feUserData = $dataArray;
-		}
 	}
 
 	function setRecUid($uid)	{
@@ -223,7 +224,6 @@ class tx_srfeuserregister_data {
 	}
 
 	function setDataArray ($dataArray, $k='')	{
-
 		if ($k != '')	{
 			$this->dataArray[$k] = $dataArray;
 		} else {
@@ -257,9 +257,16 @@ class tx_srfeuserregister_data {
 		return $rc;
 	}
 
-
 	function resetDataArray()	{
 		$this->dataArray = array();
+	}
+
+	function setOrigArray($origArr)	{
+		$this->origArr = $origArr;
+	}
+
+	function getOrigArray()	{
+		return $this->origArr;
 	}
 
 	/**
@@ -286,6 +293,7 @@ class tx_srfeuserregister_data {
 		}
 		if ($cmdKey == 'edit') {
 		}
+
 	}	// overrideValues
 
 
@@ -296,7 +304,6 @@ class tx_srfeuserregister_data {
 	* @return void  all initialization done directly on array $this->dataArray
 	*/
 	function defaultValues(&$markContentArray) {
-
 		$cmdKey = $this->controlData->getCmdKey();
 
 		// Addition of default values
@@ -311,7 +318,6 @@ class tx_srfeuserregister_data {
 				$markContentArray['###EVAL_ERROR_FIELD_'.$theField.'###'] = '<!--no error-->';
 			}
 		}
-
 	}	// defaultValues
 
 
@@ -539,23 +545,7 @@ class tx_srfeuserregister_data {
 	* @return void  all parsing done directly on input array $this->dataArray
 	*/
 	function parseValues() {
-		// <Ries van Twisk added support for multiple checkboxes>
-		foreach ($this->dataArray AS $key => $value) {
-			// If it's an array and the type is check, then we combine the selected items to a binary value
-			if ($this->tca->TCA['columns'][$key]['config']['type'] == 'check') {
-				if (is_array($this->tca->TCA['columns'][$key]['config']['items'])) {
-					if(is_array($value)) {
-						$this->dataArray[$key] = 0;
-						foreach ($value AS $dec) {  // Combine values to one hexidecimal number
-							$this->dataArray[$key] |= (1 << $dec);
-						}
-					}
-				} else {
-					$this->dataArray[$key] = $value ? 1 : 0;
-				}
-			}
-		}
-		// </Ries van Twisk added support for multiple checkboxes>
+
 		if (is_array($this->conf['parseValues.'])) {
 			reset($this->conf['parseValues.']);
 			while (list($theField, $theValue) = each($this->conf['parseValues.'])) {
@@ -659,6 +649,7 @@ class tx_srfeuserregister_data {
 				}
 			}
 		}
+
 	}	// parseValues
 
 
@@ -704,6 +695,7 @@ class tx_srfeuserregister_data {
 			}
 		}
 		$this->dataArray[$theField] = (count($fileNameList))?implode(',', $fileNameList):'';
+
 	}	// processFiles
 
 
@@ -721,10 +713,13 @@ class tx_srfeuserregister_data {
 		$dataArray = $this->getDataArray();
 		$prefixId = $this->controlData->getPrefixId();
 		$extKey = $this->controlData->getExtKey();
+
 		switch($cmd) {
 			case 'edit':
 			$theUid = $this->getDataArray('uid');
-			$origArr = $TSFE->sys_page->getRawRecord($theTable, $theUid);
+/*			$origArr = $TSFE->sys_page->getRawRecord($theTable, $theUid);
+			$this->setOrigArray($origArr);*/
+			$origArr = $this->getOrigArray();
 				// Fetch the original record to check permissions
 			if ($this->conf['edit'] && ($TSFE->loginUser || $this->auth->aCAuth($origArr))) {
 					// Must be logged in in order to edit  (OR be validated by email)
@@ -743,14 +738,12 @@ class tx_srfeuserregister_data {
 					$res = $this->cObj->DBgetUpdate($theTable, $theUid, $outGoingData, $newFieldList, true);
 					$this->updateMMRelations($dataArray);
 					$this->saved = true;
+					$newRow = array_merge($origArr, $this->parseIncomingData($outGoingData));
+					$this->setCurrentArr ($newRow);
+					$this->control->userProcess_alt($this->conf['edit.']['userFunc_afterSave'], $this->conf['edit.']['userFunc_afterSave.'], array('rec' => $this->getCurrentArr(), 'origRec' => $origArr));
 
-						// Post-edit processing: call user functions and hooks
-					$rawRecord = $TSFE->sys_page->getRawRecord($theTable, $theUid);
-					$this->setCurrentArr ($this->parseIncomingData($rawRecord));
-					$this->pibase->userProcess_alt($this->conf['edit.']['userFunc_afterSave'], $this->conf['edit.']['userFunc_afterSave.'], array('rec' => $this->getCurrentArr(), 'origRec' => $origArr));
-
-						// <Ries van Twisk added registrationProcess hooks>
-						// Call all afterSaveEdit hooks after the record has been edited and saved
+					// Post-edit processing: call user functions and hooks
+					// Call all afterSaveEdit hooks after the record has been edited and saved
 					if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$extKey][$prefixId]['registrationProcess'])) {
 						foreach  ($TYPO3_CONF_VARS['EXTCONF'][$extKey][$prefixId]['registrationProcess'] as $classRef) {
 							$hookObj= &t3lib_div::getUserObj($classRef);
@@ -759,7 +752,6 @@ class tx_srfeuserregister_data {
 							}
 						}
 					}
-						// </Ries van Twisk added registrationProcess hooks>
 				} else { 
 					$this->error = '###TEMPLATE_NO_PERMISSIONS###';
 				}
@@ -803,10 +795,9 @@ class tx_srfeuserregister_data {
 
 					// Post-create processing: call user functions and hooks
 				$this->setCurrentArr ($this->parseIncomingData($TSFE->sys_page->getRawRecord($theTable, $newId)));
-				$this->pibase->userProcess_alt($this->conf['create.']['userFunc_afterSave'], $this->conf['create.']['userFunc_afterSave.'], array('rec' => $this->getCurrentArr()));
+				$this->control->userProcess_alt($this->conf['create.']['userFunc_afterSave'], $this->conf['create.']['userFunc_afterSave.'], array('rec' => $this->getCurrentArr()));
 
-					// <Ries van Twisk added registrationProcess hooks>
-					// Call all afterSaveCreate hooks after the record has been created and saved
+				// Call all afterSaveCreate hooks after the record has been created and saved
 				if (is_array ($TYPO3_CONF_VARS['EXTCONF'][$extKey][$prefixId]['registrationProcess'])) {
 					foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'] as $classRef) {
 						$hookObj= &t3lib_div::getUserObj($classRef);
@@ -815,8 +806,7 @@ class tx_srfeuserregister_data {
 						}
 					}
 				}
-					// </Ries van Twisk added registrationProcess hooks>
-				if ($cmdKey === 'invite' && $this->controlData->getUseMd5Password()) {
+				if ($cmdKey == 'invite' && $this->controlData->getUseMd5Password()) {
 					$this->setCurrentArr($this->getDataArray('password'),'password');
 				}
 			}
@@ -995,7 +985,7 @@ class tx_srfeuserregister_data {
 							if (!isset($inputArr[$theField.'_again'])) {
 								$inputArr[$theField.'_again'] = $inputArr[$theField];
 							}
-							$this->additionalUpdateFields .= ','.$theField.'_again';
+							$this->setAdditionalUpdateFields($this->getAdditionalUpdateFields() . ','.$theField.'_again');
 						}
 						break;
 					}
@@ -1020,7 +1010,7 @@ class tx_srfeuserregister_data {
 								if ($inputArr[$theField] & pow(2, $a)) {
 									$alt_theField = $theField.']['.$a;
 									$inputArr[$alt_theField] = 1;
-									$this->additionalUpdateFields .= ','.$alt_theField;
+									$this->setAdditionalUpdateFields($this->getAdditionalUpdateFields() . ','.$alt_theField);
 								}
 							}
 						}
@@ -1029,7 +1019,7 @@ class tx_srfeuserregister_data {
 				}
 			}
 		}
-		$inputArr = $this->pibase->userProcess_alt($this->conf['userFunc_updateArray'], $this->conf['userFunc_updateArray.'], $inputArr );
+		$inputArr = $this->control->userProcess_alt($this->conf['userFunc_updateArray'], $this->conf['userFunc_updateArray.'], $inputArr );
 		return $inputArr;
 	}	// modifyDataArrForFormUpdate
 
@@ -1046,6 +1036,7 @@ class tx_srfeuserregister_data {
 			&& in_array('first_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)) && in_array('last_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1))  ) {
 			$this->dataArray['name'] = trim(trim($this->dataArray['first_name']).' '.trim($this->dataArray['last_name']));
 		}
+
 	}	// setName
 
 
@@ -1060,6 +1051,7 @@ class tx_srfeuserregister_data {
 		if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $this->controlData->getTable() == "fe_users" && t3lib_div::inList($this->getFieldList(), 'username') && !$this->failureMsg['email']) {
 			$this->dataArray['username'] = trim($this->dataArray['email']);
 		}
+
 	}	// setUsername
 
 
@@ -1122,12 +1114,11 @@ class tx_srfeuserregister_data {
 	*/
 	function parseIncomingData($origArr = array()) {
 		global $TYPO3_DB;
-		
+
 		$parsedArr = array();
 		$parsedArr = $origArr;
 		if (is_array($this->conf['parseFromDBValues.'])) {
-			reset($this->conf['parseFromDBValues.']);
-			while (list($theField, $theValue) = each($this->conf['parseFromDBValues.'])) {
+			foreach($this->conf['parseFromDBValues.'] as $theField => $theValue)	{
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
 				foreach($listOfCommands as $k2 => $cmd) {
 					$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
@@ -1161,27 +1152,6 @@ class tx_srfeuserregister_data {
 			}
 		}
 
-		$fieldsList = array_keys($parsedArr);
-		foreach ($this->tca->TCA['columns'] as $colName => $colSettings) {
-			if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
-				if (!$parsedArr[$colName]) {
-					$parsedArr[$colName] = '';
-				} else {
-					$valuesArray = array();
-					$res = $TYPO3_DB->exec_SELECTquery(
-						'uid_local,uid_foreign,sorting',
-						$colSettings['config']['MM'],
-						'uid_local='.intval($parsedArr['uid']),
-						'',
-						'sorting');
-					while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
-						$valuesArray[] = $row['uid_foreign'];
-					}
-					$parsedArr[$colName] = implode(',', $valuesArray);
-				}
-			}
-		}
-
 		return $parsedArr;
 	}	// parseIncomingData
 
@@ -1194,7 +1164,7 @@ class tx_srfeuserregister_data {
 		* @return parsedArray
 		*/
 	function parseOutgoingData($origArr = array()) {
-		
+
 		$parsedArr = array();
 		$parsedArr = $origArr;
 		if (is_array($this->conf['parseToDBValues.'])) {
@@ -1254,7 +1224,7 @@ class tx_srfeuserregister_data {
 				}
 			}
 		}
-		
+
 		return $parsedArr;
 	}	// parseOutgoingData
 
@@ -1287,7 +1257,7 @@ class tx_srfeuserregister_data {
 		*/
 	function getStoredURL($regHash) {
 		global $TYPO3_DB;
-		
+
 			// get the serialised array from the DB based on the passed hash value
 		$varArray = array();
 		$res = $TYPO3_DB->exec_SELECTquery('params','cache_md5params','md5hash='.$TYPO3_DB->fullQuoteStr($regHash,'cache_md5params'));
@@ -1314,7 +1284,6 @@ class tx_srfeuserregister_data {
 		global $TYPO3_DB;
 
 		$shortUrlLife = intval($this->conf['shortUrlLife']) ? strval(intval($this->conf['shortUrlLife'])) : '30';
-
 		$max_life = time() - (86400 * intval($shortUrlLife));
 		$res = $TYPO3_DB->exec_DELETEquery('cache_md5params', 'tstamp<' . $max_life . ' AND type=99');	
 	}	// cleanShortUrlCache

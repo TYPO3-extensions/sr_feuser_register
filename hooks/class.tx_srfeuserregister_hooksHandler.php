@@ -35,12 +35,12 @@
 	 // $invokingObj is a reference to the invoking object
 
 class tx_srfeuserregister_hooksHandler {
-	function registrationProcess_beforeConfirmCreate(&$recordArray, &$dataObj) {
+	function registrationProcess_beforeConfirmCreate(&$recordArray, &$controlDataObj) {
 			// in the case of this hook, the record array is passed by reference
 			// in this example hook, we generate a username based on the first and last names of the user
-		$cmdKey = $dataObj->controlData->getCmdKey();
-		$theTable = $dataObj->controlData->getTable();
-		if ($dataObj->getFeUserData('preview') && $dataObj->conf[$cmdKey.'.']['generateUsername']) {
+		$cmdKey = $controlDataObj->getCmdKey();
+		$theTable = $controlDataObj->getTable();
+		if ($controlDataObj->getFeUserData('preview') && $controlDataObj->conf[$cmdKey.'.']['generateUsername']) {
 			$firstName = trim($recordArray['first_name']);
 			$lastName = trim($recordArray['last_name']);
 			$name = trim($recordArray['name']);
@@ -63,27 +63,21 @@ class tx_srfeuserregister_hooksHandler {
 	}
 
 	function registrationProcess_afterSaveEdit($recordArray, &$invokingObj) {
-		echo 'afterSaveEdit';
 	}
 
 	function registrationProcess_beforeSaveDelete($recordArray, &$invokingObj) {
-		echo 'beforeSaveDelete';
 	}
 
 	function registrationProcess_afterSaveCreate($recordArray, &$invokingObj) {
-		echo 'afterSaveCreate';
 	}
 
 	function confirmRegistrationClass_preProcess(&$recordArray, &$invokingObj) {
-			// in the case of this hook, the record array is passed by reference
-			// you may not see this echo if the page is redirected to auto-login
-		echo 'confirmRegistrationClass_preProcess';
+		// in the case of this hook, the record array is passed by reference
+		// you may not see this echo if the page is redirected to auto-login
 	}
 
 	function confirmRegistrationClass_postProcess($recordArray, &$invokingObj) {
-
-			// you may not see this echo if the page is redirected to auto-login
-		echo 'confirmRegistrationClass_postProcess';
+		// you may not see this echo if the page is redirected to auto-login
 	}
 }
 

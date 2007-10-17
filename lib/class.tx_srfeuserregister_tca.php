@@ -64,7 +64,6 @@ class tx_srfeuserregister_tca {
 		$this->config = &$config;
 		$this->controlData = &$controlData;
 		$this->langObj = &$langObj;
-
 		$this->sys_language_content = $pibase->sys_language_content;
 		$this->cObj = &$pibase->cObj;
 
@@ -93,7 +92,7 @@ class tx_srfeuserregister_tca {
 
 		foreach ($this->TCA['columns'] as $colName => $colSettings) {
 			$colConfig = $colSettings['config'];
-			
+
 			// Configure preview based on input type
 			switch ($colConfig['type']) {
 				case 'select':
@@ -114,8 +113,66 @@ class tx_srfeuserregister_tca {
 					break;
 			}
 		}
-		
+
 		return $rcArray;
+	}
+
+
+	/**
+	* Modifies the incoming data row
+	* Adds checkboxes which have been unset. This means that no field will be present for them.
+	* Fetches the former values of select boxes
+	*
+	* @param array  $dataArray: the input data array will be changed
+	* @return void
+	*/
+	function modifyRow(&$dataArray)	{
+		global $TYPO3_DB;
+
+		$fieldsList = array_keys($dataArray);
+		foreach ($this->TCA['columns'] as $colName => $colSettings) {
+			$colConfig = $colSettings['config'];
+
+			switch ($colConfig['type'])	{
+				case 'select':
+					if (in_array($colName, $fieldsList) && $colConfig['MM']) {
+						if (!$dataArray[$colName]) {
+							$dataArray[$colName] = '';
+						} else {
+							$valuesArray = array();
+							$res = $TYPO3_DB->exec_SELECTquery(
+								'uid_local,uid_foreign,sorting',
+								$colConfig['MM'],
+								'uid_local='.intval($dataArray['uid']),
+								'',
+								'sorting');
+							while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
+								$valuesArray[] = $row['uid_foreign'];
+							}
+							$dataArray[$colName] = implode(',', $valuesArray);
+						}
+					}
+					break;
+				case 'check':
+					if (is_array($colConfig['type']['items'])) {
+						$value = $dataArray[$colName];
+						if(is_array($value)) {
+							$dataArray[$colName] = 0;
+							foreach ($value AS $dec) {  // Combine values to one hexidecimal number
+								$dataArray[$colName] |= (1 << $dec);
+							}
+						}
+					} else if (isset($dataArray[$colName]) && $dataArray[$colName]!='0') {
+						$dataArray[$colName] = '1';
+					} else {
+						$dataArray[$colName] = '0';
+					}
+					break;
+				default:
+					// nothing
+					break;
+			}
+		}
 	}
 
 
@@ -126,47 +183,198 @@ class tx_srfeuserregister_tca {
 	* @param array  $row: the record
 	* @return void
 	*/
-	function addTcaMarkers(&$markerArray, $row = '', $viewOnly = false, $activity='') {
+	function addTcaMarkers(&$markerArray, $row, $origRow, $cmd, $cmdKey, $theTable, $viewOnly=false, $activity='', $bChangesOnly=false) {
 		global $TYPO3_DB, $TCA, $TSFE;
-		$cmd = $this->controlData->getCmd();
-		$cmdKey = $this->controlData->getCmdKey();
-		$theTable = $this->controlData->getTable();
-		$charset = $TSFE->renderCharset;
 
+		$charset = $TSFE->renderCharset;
+		$mode = $this->controlData->getMode();
+		if ($bChangesOnly && is_array($origRow))	{
+			foreach ($origRow as $k => $v)	{
+				if ($v != $row[$k])	{
+					$mrow[$k] = $row[$k];
+				}
+			}
+			$mrow['uid'] = $row['uid'];
+			$mrow['pid'] = $row['pid'];
+			$mrow['tstamp'] = $row['tstamp'];
+			$mrow['username'] = $row['username'];
+		} else {
+			$mrow = $row;
+		}
+
+// EDIT_SAVED
 		foreach ($this->TCA['columns'] as $colName => $colSettings) {
 			if (t3lib_div::inList($this->conf[$cmdKey.'.']['fields'], $colName)) {
 				$colConfig = $colSettings['config'];
 				$colContent = '';
-				if ($this->controlData->getMode() == MODE_PREVIEW || $viewOnly) {
-					// Configure preview based on input type
-					switch ($colConfig['type']) {
-						//case 'input':
-						case 'text':
-							$colContent = nl2br(htmlspecialchars($row[$colName],ENT_QUOTES,$charset));
-							break;
-						case 'check':
-							// <Ries van Twisk added support for multiple checkboxes>
-							if (is_array($colConfig['items'])) {
-								$colContent = '<ul class="tx-srfeuserregister-multiple-checked-values">';
-								foreach ($colConfig['items'] as $key => $value) {
-									$label = htmlspecialchars($this->langObj->getLLFromString($colConfig['items'][$key][0]),ENT_QUOTES,$charset);
-									$checked = ($row[$colName] & (1 << $key)) ? 'checked' : '';
-									$colContent .= $checked ? '<li>' . $label . '</li>' : '';
+				if (!$bChangesOnly || isset($mrow[$colName]))	{
+					if ($mode == MODE_PREVIEW || $viewOnly) {
+						// Configure preview based on input type
+						switch ($colConfig['type']) {
+							//case 'input':
+							case 'text':
+								$colContent = nl2br(htmlspecialchars($mrow[$colName],ENT_QUOTES,$charset));
+								break;
+							case 'check':
+								if (is_array($colConfig['items'])) {
+									$colContent = '<ul class="tx-srfeuserregister-multiple-checked-values">';
+									foreach ($colConfig['items'] as $key => $value) {
+										$label = htmlspecialchars($this->langObj->getLLFromString($colConfig['items'][$key][0]),ENT_QUOTES,$charset);
+										$checked = ($mrow[$colName] & (1 << $key));
+										$colContent .= ($checked ? '<li>' . $label . '</li>' : '');
+									}
+									$colContent .= '</ul>';
+								} else {
+									$colContent = $mrow[$colName]?htmlspecialchars($this->langObj->pi_getLL('yes'),ENT_QUOTES,$charset):htmlspecialchars($this->langObj->pi_getLL('no'),ENT_QUOTES,$charset);
 								}
-								$colContent .= '</ul>';
-								// </Ries van Twisk added support for multiple checkboxes>
-							} else {
-								$colContent = $row[$colName]?htmlspecialchars($this->langObj->pi_getLL('yes'),ENT_QUOTES,$charset):htmlspecialchars($this->langObj->pi_getLL('no'),ENT_QUOTES,$charset);
-							}
-							break;
-						case 'radio':
-							if ($row[$colName] != '') {
-								$colContent = htmlspecialchars($this->langObj->getLLFromString($colConfig['items'][$row[$colName]][0],ENT_QUOTES,$charset));
-							}
-							break;
-						case 'select':
-							if ($row[$colName] != '') {
-								$valuesArray = is_array($row[$colName]) ? $row[$colName] : explode(',',$row[$colName]);
+								break;
+							case 'radio':
+								if ($mrow[$colName] != '') {
+									$colContent = htmlspecialchars($this->langObj->getLLFromString($colConfig['items'][$mrow[$colName]][0],ENT_QUOTES,$charset));
+								}
+								break;
+							case 'select':
+								if ($mrow[$colName] != '') {
+									$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',',$mrow[$colName]);
+									$textSchema = 'fe_users.'.$colName.'.I.';
+									$itemArray = $this->langObj->getItemsLL($textSchema, true);
+									$bUseTCA = false;
+									if (!count ($itemArray))	{
+										$itemArray = $colConfig['items'];
+										$bUseTCA = true;
+									}
+
+									if (is_array($itemArray)) {
+										$itemKeyArray = $this->getItemKeyArray($itemArray);
+
+										$stdWrap = array();
+										if (is_array($this->conf['select.']) && is_array($this->conf['select.'][$activity.'.']) && is_array($this->conf['select.'][$activity.'.'][$colName.'.']))	{
+											$stdWrap = $this->conf['select.'][$activity.'.'][$colName.'.'];
+										} else {
+											$stdWrap['wrap'] = '|<br />';
+										}
+
+										for ($i = 0; $i < count ($valuesArray); $i++) {
+											$text = $this->langObj->getLLFromString($itemKeyArray[$valuesArray[$i]][0]);
+											$text = htmlspecialchars($text,ENT_QUOTES,$charset);
+											$colContent .= $this->cObj->stdWrap($text,$stdWrap);
+										}
+									}
+									if ($colConfig['foreign_table']) {
+										t3lib_div::loadTCA($colConfig['foreign_table']);
+										$reservedValues = array();
+										if ($theTable == 'fe_users' && $colName == 'usergroup') {
+											$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
+										}
+										$valuesArray = array_diff($valuesArray, $reservedValues);
+										reset($valuesArray);
+										$firstValue = current($valuesArray);
+										if (!empty($firstValue) || count ($valuesArray) > 1) {
+											$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
+											$where = 'uid IN ('.implode(',', $valuesArray).')';
+											$res = $TYPO3_DB->exec_SELECTquery(
+												'*',
+												$colConfig['foreign_table'],
+												$where
+												);
+											$i = 0;
+											while ($row2 = $TYPO3_DB->sql_fetch_assoc($res)) {
+												if ($theTable == 'fe_users' && $colName == 'usergroup') {
+													$row2 = $this->getUsergroupOverlay($row2);
+												} elseif ($localizedRow = $TSFE->sys_page->getRecordOverlay($colConfig['foreign_table'], $row2, $this->sys_language_content)) {
+													$row2 = $localizedRow;
+												}
+												$colContent .= ($i++ ? '<br />': '') . htmlspecialchars($row2[$titleField],ENT_QUOTES,$charset);
+											}
+										}
+									}
+								}
+								break;
+							default:
+								// unsupported input type
+								$colContent .= $colConfig['type'].':'.htmlspecialchars($this->langObj->pi_getLL('unsupported'),ENT_QUOTES,$charset);
+						}
+					} else {
+						// Configure inputs based on TCA type
+						switch ($colConfig['type']) {
+							case 'input':
+								$colContent = '<input type="input" name="FE['.$this->theTable.']['.$colName.']"'.
+									' size="'.($colConfig['size']?$colConfig['size']:30).'"';
+								if ($colConfig['max']) {
+									$colContent .= ' maxlength="'.$colConfig['max'].'"';
+								}
+								if ($colConfig['default']) {
+									$label = $this->langObj->getLLFromString($colConfig['default']);
+									$label = htmlspecialchars($label,ENT_QUOTES,$charset);
+									$colContent .= ' value="'.$label.'"';
+								}
+								$colContent .= ' />';
+								break;
+							case 'text':
+								$label = $this->langObj->getLLFromString($colConfig['default']);
+								$label = htmlspecialchars($label,ENT_QUOTES,$charset);
+								$colContent = '<textarea id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']"'.
+									' title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###"'.
+									' cols="'.($colConfig['cols']?$colConfig['cols']:30).'"'.
+									' rows="'.($colConfig['rows']?$colConfig['rows']:5).'"'.
+									'>'.($colConfig['default']?$label:'').'</textarea>';
+								break;
+							case 'check':
+								$label = $this->langObj->pi_getLL('tooltip_' . $colName);
+								$label = htmlspecialchars($label,ENT_QUOTES,$charset);
+								if (is_array($colConfig['items'])) {
+									$uidText = $this->pibase->pi_getClassName($colName).'-'.$mrow['uid'];
+									$colContent  = '<ul id="'. $uidText . ' " class="tx-srfeuserregister-multiple-checkboxes">';
+
+									foreach ($colConfig['items'] as $key => $value) {
+										if ($this->controlData->getSubmit() || $cmd=='edit')	{
+											$startVal = $mrow[$colName];
+										} else {
+											$startVal = $colConfig['default'];
+										}
+										$checked = ($startVal & (1 << $key))?' checked="checked"':'';
+										$label = $this->langObj->getLLFromString($colConfig['items'][$key][0]);
+										$label = htmlspecialchars($label,ENT_QUOTES,$charset);
+										$colContent .= '<li><input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . ' id="' . $uidText . '-' . $key .  ' " name="FE['.$theTable.']['.$colName.'][]" value="'.$key.'"'.$checked.' /><label for="' . $uidText . '-' . $key .  '">' . $label . '</label></li>';
+									}
+									$colContent .= '</ul>';
+								} else {
+									$colContent = '<input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . ' id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']" title="'.$label.'"' . ($mrow[$colName]?' checked="checked"':'') . ' />';
+								}
+								break;
+
+							case 'radio':
+								for ($i = 0; $i < count ($colConfig['items']); ++$i) {
+									$label = $this->langObj->getLLFromString($colConfig['items'][$i][0]);
+									$label = htmlspecialchars($label,ENT_QUOTES,$charset);
+									$colContent .= '<input type="radio"' . $this->pibase->pi_classParam('radio') . ' id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']"'.
+											' value="'.$i.'" '.($i==0 ? ' checked="checked"' : '').' />' .
+											'<label for="' . $this->pibase->pi_getClassName($colName) . '-' . $i . '">' . $label . '</label>';
+								}
+								break;
+
+							case 'select':
+								$colContent ='';
+								$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',',$mrow[$colName]);
+								if (!$valuesArray[0] && $colConfig['default']) {
+									$valuesArray[] = $colConfig['default'];
+								}
+								if ($colConfig['maxitems'] > 1) {
+									$multiple = '[]" multiple="multiple';
+								} else {
+									$multiple = '';
+								}
+								if ($theTable == 'fe_users' && $colName == 'usergroup' && !$this->conf['allowMultipleUserGroupSelection']) {
+									$multiple = '';
+								}
+								if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
+									$colContent .='
+											<input id="'. $this->pibase->pi_getClassName($colName) . ' " name="FE['.$theTable.']['.$colName.']" value="" type="hidden" />';
+									$colContent .='
+											<dl class="' . $this->pibase->pi_getClassName('multiple-checkboxes') . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
+								} else {
+									$colContent .= '<select id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
+								}
 								$textSchema = 'fe_users.'.$colName.'.I.';
 								$itemArray = $this->langObj->getItemsLL($textSchema, true);
 								$bUseTCA = false;
@@ -176,233 +384,95 @@ class tx_srfeuserregister_tca {
 								}
 
 								if (is_array($itemArray)) {
-									$itemKeyArray = $this->getItemKeyArray($itemArray);
-
-									$stdWrap = array();
-									if (is_array($this->conf['select.']) && is_array($this->conf['select.'][$activity.'.']) && is_array($this->conf['select.'][$activity.'.'][$colName.'.']))	{
-										$stdWrap = $this->conf['select.'][$activity.'.'][$colName.'.'];
-									} else {
-										$stdWrap['wrap'] = '|<br />';
+									$itemArray = $this->getItemKeyArray($itemArray);
+									$i = 0;
+									if ($bUseTCA)	{
+										$deftext = $itemArray[$i][0];
+										$deftext = substr($deftext, 0, strlen($deftext) - 2);
 									}
 
-									for ($i = 0; $i < count ($valuesArray); $i++) {
-										$text = $this->langObj->getLLFromString($itemKeyArray[$valuesArray[$i]][0]);
-										$text = htmlspecialchars($text,ENT_QUOTES,$charset);
-										$colContent .= $this->cObj->stdWrap($text,$stdWrap);
+									$i = 0;
+									foreach ($itemArray as $k => $item)	{
+										$label = $this->langObj->getLLFromString($item[0],true);
+										$label = htmlspecialchars($label,ENT_QUOTES,$charset);
+										if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
+											$colContent .= '<dt><input class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $i .'" name="FE['.$theTable.']['.$colName.']['.$k.']" value="'.$k.'" type="checkbox"  ' . (in_array($k, $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
+													<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $i .'">'.$label.'</label></dd>';
+										} else {
+											$colContent .= '<option value="'.$k. '" ' . (in_array($k, $valuesArray) ? 'selected="selected"' : '') . '>' . $label.'</option>';
+										}
+										$i++;
 									}
 								}
 								if ($colConfig['foreign_table']) {
 									t3lib_div::loadTCA($colConfig['foreign_table']);
-									$reservedValues = array();
+									$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
 									if ($theTable == 'fe_users' && $colName == 'usergroup') {
 										$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
+										$selectedValue = false;
 									}
-									$valuesArray = array_diff($valuesArray, $reservedValues);
-									reset($valuesArray);
-									$firstValue = current($valuesArray);
-									if (!empty($firstValue) || count ($valuesArray) > 1) {
-										$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
-										$where = 'uid IN ('.implode(',', $valuesArray).')';
-										$res = $TYPO3_DB->exec_SELECTquery(
-											'*',
-											$colConfig['foreign_table'],
-											$where
-											);
-										$i = 0;
-										while ($row2 = $TYPO3_DB->sql_fetch_assoc($res)) {
-											if ($theTable == 'fe_users' && $colName == 'usergroup') {
+									$whereClause = ($theTable == 'fe_users' && $colName == 'usergroup') ? ' pid='.intval($this->controlData->getPid()).' ' : ' 1=1';
+									if ($TCA[$colConfig['foreign_table']] && $TCA[$colConfig['foreign_table']]['ctrl']['languageField'] && $TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField']) {
+										$whereClause .= ' AND '.$TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField'].'=0';
+									}
+									if ($colName == 'module_sys_dmail_category' && $colConfig['foreign_table'] == 'sys_dmail_category' && $this->conf['module_sys_dmail_category_PIDLIST']) {
+										$whereClause .= ' AND sys_dmail_category.pid IN (' . $TYPO3_DB->fullQuoteStr($this->conf['module_sys_dmail_category_PIDLIST'], 'sys_dmail_category') . ')';
+									}
+									$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
+									$res = $TYPO3_DB->exec_SELECTquery('*', $colConfig['foreign_table'], $whereClause, '', $TCA[$colConfig['foreign_table']]['ctrl']['sortby']);
+									if (!in_array($colName, $this->controlData->getRequiredArray())) {
+										if ($colConfig['renderMode'] == 'checkbox' || $colContent)	{
+											// nothing
+										} else {
+											$colContent .= '<option value="" ' . ($valuesArray[0] ? '' : 'selected="selected"') . '></option>';
+										}
+									}
+									while ($row2 = $TYPO3_DB->sql_fetch_assoc($res)) {
+										if ($theTable == 'fe_users' && $colName == 'usergroup') {
+											if (!in_array($row2['uid'], $reservedValues)) {
 												$row2 = $this->getUsergroupOverlay($row2);
-											} elseif ($localizedRow = $TSFE->sys_page->getRecordOverlay($colConfig['foreign_table'], $row2, $this->sys_language_content)) {
+												$titleText = htmlspecialchars($row2[$titleField],ENT_QUOTES,$charset);
+												$selected = (in_array($row2['uid'], $valuesArray) ? 'selected="selected"' : '');
+												if(!$this->conf['allowMultipleUserGroupSelection'] && $selectedValue) {
+													$selected = '';
+												}
+												$selectedValue = $selected ? true: $selectedValue;
+												if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
+													$colContent .= '<dt><input  class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row2['uid'].'"]" value="'.$row2['uid'].'" type="checkbox"' . $selected ? ' checked="checked"':'' . ' /></dt>
+													<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'">'.$titleText.'</label></dd>';
+												} else {
+													$colContent .= '<option value="'.$row2['uid'].'"' . $selected . '>'.$titleText.'</option>';
+												}
+											}
+										} else {
+											if ($localizedRow = $TSFE->sys_page->getRecordOverlay($colConfig['foreign_table'], $row2, $this->sys_language_content)) {
 												$row2 = $localizedRow;
 											}
-											$colContent .= ($i++ ? '<br />': '') . htmlspecialchars($row2[$titleField],ENT_QUOTES,$charset);
-										}
-									}
-								}
-							}
-							break;
-						default:
-							// unsupported input type
-							$colContent .= $colConfig['type'].':'.htmlspecialchars($this->langObj->pi_getLL('unsupported'),ENT_QUOTES,$charset);
-					}
-				} else {
-
-					// Configure inputs based on TCA type
-					switch ($colConfig['type']) {
-						case 'input':
-							$colContent = '<input type="input" name="FE['.$this->theTable.']['.$colName.']"'.
-								' size="'.($colConfig['size']?$colConfig['size']:30).'"';
-							if ($colConfig['max']) {
-									$colContent .= ' maxlength="'.$colConfig['max'].'"';
-							}
-							if ($colConfig['default']) {
-								$label = $this->langObj->getLLFromString($colConfig['default']);
-								$label = htmlspecialchars($label,ENT_QUOTES,$charset);
-								$colContent .= ' value="'.$label.'"';
-							}
-							$colContent .= ' />';
-							break;
-	
-						case 'text':
-							$label = $this->langObj->getLLFromString($colConfig['default']);
-							$label = htmlspecialchars($label,ENT_QUOTES,$charset);
-							$colContent = '<textarea id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']"'.
-								' title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###"'.
-								' cols="'.($colConfig['cols']?$colConfig['cols']:30).'"'.
-								' rows="'.($colConfig['rows']?$colConfig['rows']:5).'"'.
-								'>'.($colConfig['default']?$label:'').'</textarea>';
-							break;
-						case 'check':
-							$label = $this->langObj->pi_getLL('tooltip_' . $colName);
-							$label = htmlspecialchars($label,ENT_QUOTES,$charset);
-
-							if (is_array($colConfig['items'])) {
-								$uidText = $this->pibase->pi_getClassName($colName).'-'.$row['uid'];
-								$colContent  = '<ul id="'. $uidText . ' " class="tx-srfeuserregister-multiple-checkboxes">';
-								// +++$submitData = $this->controlData->getFeUserData('submit');
-								foreach ($colConfig['items'] as $key => $value) {
-									if ($this->controlData->getSubmit() || $cmd=='edit')	{
-										$startVal = $row[$colName];
-									} else {
-										$startVal = $colConfig['default'];
-									}
-									$checked = ($startVal & (1 << $key))?'checked="checked"':'';
-									$label = $this->langObj->getLLFromString($colConfig['items'][$key][0]);
-									$label = htmlspecialchars($label,ENT_QUOTES,$charset);
-									$colContent .= '<li><input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . ' id="' . $uidText . '-' . $key .  ' " name="FE['.$theTable.']['.$colName.'][]" value="'.$key.'" '.$checked.' /><label for="' . $uidText . '-' . $key .  '">' . $label . '</label></li>';
-								}
-								$colContent .= '</ul>';
-							} else {
-								$colContent = '<input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . ' id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']" title="'.$label.'"' . ($row[$colName]?'checked="checked"':'') . ' />';
-							}
-							break;
-
-						case 'radio':
-							for ($i = 0; $i < count ($colConfig['items']); ++$i) {
-								$label = $this->langObj->getLLFromString($colConfig['items'][$i][0]);
-								$label = htmlspecialchars($label,ENT_QUOTES,$charset);
-								$colContent .= '<input type="radio"' . $this->pibase->pi_classParam('radio') . ' id="'. $this->pibase->pi_getClassName($colName) . '-' . $i . '" name="FE['.$theTable.']['.$colName.']"'.
-										' value="'.$i.'" '.($i==0?'checked="checked"':'').' />' .
-										'<label for="' . $this->pibase->pi_getClassName($colName) . '-' . $i . '">' . $label . '</label>';
-							}
-							break;
-
-						case 'select':
-							$colContent ='';
-							$valuesArray = is_array($row[$colName]) ? $row[$colName] : explode(',',$row[$colName]);
-							if (!$valuesArray[0] && $colConfig['default']) {
-								$valuesArray[] = $colConfig['default'];
-							}
-							if ($colConfig['maxitems'] > 1) {
-								$multiple = '[]" multiple="multiple';
-							} else {
-								$multiple = '';
-							}
-							if ($theTable == 'fe_users' && $colName == 'usergroup' && !$this->conf['allowMultipleUserGroupSelection']) {
-								$multiple = '';
-							}
-							if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-								$colContent .='
-										<input id="'. $this->pibase->pi_getClassName($colName) . ' " name="FE['.$theTable.']['.$colName.']" value="" type="hidden" />';
-								$colContent .='
-										<dl class="' . $this->pibase->pi_getClassName('multiple-checkboxes') . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
-							} else {
-								$colContent .= '<select id="'. $this->pibase->pi_getClassName($colName) . ' " name="FE['.$theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
-							}
-							$textSchema = 'fe_users.'.$colName.'.I.';
-							$itemArray = $this->langObj->getItemsLL($textSchema, true);
-							$bUseTCA = false;
-							if (!count ($itemArray))	{
-								$itemArray = $colConfig['items'];
-								$bUseTCA = true;
-							}
-
-							if (is_array($itemArray)) {
-								$itemArray = $this->getItemKeyArray($itemArray);
-								$i = 0;
-								if ($bUseTCA)	{
-									$deftext = $itemArray[$i][0];
-									$deftext = substr($deftext, 0, strlen($deftext) - 2);
-								}
-
-								$i = 0;
-								foreach ($itemArray as $k => $item)	{
-									$label = $this->langObj->getLLFromString($item[0],true);
-									$label = htmlspecialchars($label,ENT_QUOTES,$charset);
-									if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-										$colContent .= '<dt><input class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $i .'" name="FE['.$theTable.']['.$colName.']['.$k.']" value="'.$k.'" type="checkbox"  ' . (in_array($k, $valuesArray) ? 'checked="checked"' : '') . ' /></dt>
-												<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $i .'">'.$label.'</label></dd>';
-									} else {
-										$colContent .= '<option value="'.$k. '" ' . (in_array($k, $valuesArray) ? 'selected="selected"' : '') . '>' . $label.'</option>';
-									}
-									$i++;
-								}
-							}
-							if ($colConfig['foreign_table']) {
-								t3lib_div::loadTCA($colConfig['foreign_table']);
-								$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
-								if ($theTable == 'fe_users' && $colName == 'usergroup') {
-									$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
-									$selectedValue = false;
-								}
-								$whereClause = ($theTable == 'fe_users' && $colName == 'usergroup') ? ' pid='.intval($this->controlData->getPid()).' ' : ' 1=1';
-								if ($TCA[$colConfig['foreign_table']] && $TCA[$colConfig['foreign_table']]['ctrl']['languageField'] && $TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField']) {
-									$whereClause .= ' AND '.$TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField'].'=0';
-								}
-								if ($colName == 'module_sys_dmail_category' && $colConfig['foreign_table'] == 'sys_dmail_category' && $this->conf['module_sys_dmail_category_PIDLIST']) {
-									$whereClause .= ' AND sys_dmail_category.pid IN (' . $TYPO3_DB->fullQuoteStr($this->conf['module_sys_dmail_category_PIDLIST'], 'sys_dmail_category') . ')';
-								}
-								$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
-								$res = $TYPO3_DB->exec_SELECTquery('*', $colConfig['foreign_table'], $whereClause, '', $TCA[$colConfig['foreign_table']]['ctrl']['sortby']);
-								if (!in_array($colName, $this->controlData->getRequiredArray())) {
-									if ($colConfig['renderMode'] == 'checkbox' || $colContent)	{
-										// nothing
-									} else {
-										$colContent .= '<option value="" ' . ($valuesArray[0] ? '' : 'selected="selected"') . '></option>';
-									}
-								}
-								while ($row2 = $TYPO3_DB->sql_fetch_assoc($res)) {
-									if ($theTable == 'fe_users' && $colName == 'usergroup') {
-										if (!in_array($row2['uid'], $reservedValues)) {
-											$row2 = $this->getUsergroupOverlay($row2);
 											$titleText = htmlspecialchars($row2[$titleField],ENT_QUOTES,$charset);
-											$selected = (in_array($row2['uid'], $valuesArray) ? 'selected="selected"' : '');
-											if(!$this->conf['allowMultipleUserGroupSelection'] && $selectedValue) {
-												$selected = '';
-											}
-											$selectedValue = $selected ? true: $selectedValue;
-											if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-												$colContent .= '<dt><input  class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row2['uid'].'"]" value="'.$row['uid'].'" type="checkbox" ' . $selected ?'checked="checked"':'' . ' /></dt>
+											if ($colConfig['renderMode']=='checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
+												$colContent .= '<dt><input class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row2['uid']. ']" value="'.$row2['uid'].'" type="checkbox"' . (in_array($row2['uid'], $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
 												<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'">'.$titleText.'</label></dd>';
 											} else {
-												$colContent .= '<option value="'.$row2['uid'].'"' . $selected . '>'.$titleText.'</option>';
+												$colContent .= '<option value="'.$row2['uid'].'"' . (in_array($row2['uid'], $valuesArray) ? 'selected="selected"' : '') . '>'.$titleText.'</option>';
 											}
-										}
-									} else {
-										if ($localizedRow = $TSFE->sys_page->getRecordOverlay($colConfig['foreign_table'], $row2, $this->sys_language_content)) {
-											$row2 = $localizedRow;
-										}
-										$titleText = htmlspecialchars($row2[$titleField],ENT_QUOTES,$charset);
-										if ($colConfig['renderMode']=='checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-											$colContent .= '<dt><input  class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row2['uid']. ']" value="'.$row2['uid'].'" type="checkbox" ' . (in_array($row2['uid'], $valuesArray) ? 'checked="checked"' : '') . ' /></dt>
-											<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'">'.$titleText.'</label></dd>';
-										} else {
-											$colContent .= '<option value="'.$row2['uid'].'"' . (in_array($row2['uid'], $valuesArray) ? 'selected="selected"' : '') . '>'.$titleText.'</option>';
 										}
 									}
 								}
-							}
-							if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-								$colContent .= '</dl>';
-							} else {
-								$colContent .= '</select>';
-							}
-							break;
-						default:
-							$colContent .= $colConfig['type'].':'.$this->langObj->pi_getLL('unsupported');
-							break;
+								if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
+									$colContent .= '</dl>';
+								} else {
+									$colContent .= '</select>';
+								}
+								break;
+							default:
+								$colContent .= $colConfig['type'].':'.$this->langObj->pi_getLL('unsupported');
+								break;
+						}
 					}
+				} else {
+					$colContent = '';
 				}
+
 				if ($this->controlData->getMode() == MODE_PREVIEW || $viewOnly) {
 					$markerArray['###TCA_INPUT_VALUE_'.$colName.'###'] = $colContent;
 				}

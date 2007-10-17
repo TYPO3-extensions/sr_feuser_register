@@ -42,6 +42,9 @@
  */
 
 
+define('SAVED_SUFFIX', '_SAVED');
+define('SETFIXED_PREFIX', 'SETFIXED_');
+
 
 class tx_srfeuserregister_marker {
 	var $pibase;
@@ -115,7 +118,7 @@ class tx_srfeuserregister_marker {
 		}
 		$this->setArray($markerArray);
 
-				// Button labels
+			// Button labels
 		$buttonLabelsList = 'register,confirm_register,back_to_form,update,confirm_update,enter,confirm_delete,cancel_delete,update_and_more';
 
 		$this->setButtonLabelsList ($buttonLabelsList);
@@ -201,7 +204,7 @@ class tx_srfeuserregister_marker {
 	* @param array  $TCA[tablename]['columns']
 	* @return void
 	*/
-	function addLabelMarkers(&$markerArray, &$row, &$requiredArray, &$infoFields, &$TcaColumns) {
+	function addLabelMarkers(&$markerArray, &$row, &$origRow, $keepFields, &$requiredArray, &$infoFields, &$TcaColumns, $bChangesOnly=false) {
 		global $TYPO3_CONF_VARS, $TSFE;
 
 		if (!$markerArray)	{
@@ -214,9 +217,14 @@ class tx_srfeuserregister_marker {
 
 		foreach($infoFieldArray as $k => $theField) {
 			$markerkey = $this->cObj->caseshift($theField,'upper');
-			$label = $this->langObj->pi_getLL($theField);
-			$label = ($label ? $label : $this->langObj->getLLFromString($TcaColumns[$theField]['label']));
-			$label = htmlspecialchars($label,ENT_QUOTES,$charset);
+
+			if (!$bChangesOnly || $row[$theField] != $origRow[$theField] || in_array($theField, $keepFields))	{
+				$label = $this->langObj->pi_getLL($theField);
+				$label = ($label ? $label : $this->langObj->getLLFromString($TcaColumns[$theField]['label']));
+				$label = htmlspecialchars($label,ENT_QUOTES,$charset);
+			} else {
+				$label = '';
+			}
 			$markerArray['###LABEL_'.$markerkey.'###'] = $label;
 			$markerArray['###TOOLTIP_'.$markerkey.'###'] = $this->langObj->pi_getLL('tooltip_' . $theField);
 			$label = $this->langObj->pi_getLL('tooltip_invitation_' . $theField);
@@ -230,9 +238,11 @@ class tx_srfeuserregister_marker {
 				$markerArray['###LABEL_'.$markerkey.'_CHECKED###'] = '';
 				$markerArray['###POSTVARS_'.$markerkey.'###'] = '';
 				$fieldArray = t3lib_div::trimExplode(',', $row[$theField]);
-				foreach ($fieldArray AS $key => $value) {
-					$markerArray['###FIELD_'.$markerkey.'_CHECKED###'] .= '- '.$this->langObj->getLLFromString($colConfig['items'][$value][0]).'<br />';
-					$markerArray['###LABEL_'.$markerkey.'_CHECKED###'] .= '- '.$this->langObj->getLLFromString($colConfig['items'][$value][0]).'<br />';
+				foreach ($fieldArray as $key => $value) {
+					$label = $this->langObj->getLLFromString($colConfig['items'][$value][0]);
+					$markerArray['###FIELD_'.$markerkey.'_CHECKED###'] .= '- '.$label.'<br />';
+					$label = $this->langObj->getLLFromString($colConfig['items'][$value][0]);
+					$markerArray['###LABEL_'.$markerkey.'_CHECKED###'] .= '- '.$label.'<br />';
 					$markerArray['###POSTVARS_'.$markerkey.'###'] .= chr(10).'	<input type="hidden" name="FE[fe_users]['.$theField.']['.$key.']" value ="'.$value.'" />';
 				}
 			} else if ($colConfig['type'] == 'check') {
@@ -258,7 +268,6 @@ class tx_srfeuserregister_marker {
 			}
 		}
 		$otherLabelsList = $this->getOtherLabelsList();
-
 		if (isset($this->conf['extraLabels']) && $this->conf['extraLabels'] != '') {
 			$otherLabelsList .= ',' . $this->conf['extraLabels'];
 		}
@@ -266,6 +275,7 @@ class tx_srfeuserregister_marker {
 		foreach($otherLabels as $k => $labelName) {
 			$markerArray['###LABEL_'.$this->cObj->caseshift($labelName,'upper').'###'] = sprintf($this->langObj->pi_getLL($labelName), $this->controlData->getPidTitle(), $row['username'], $row['name'], $row['email'], $row['password']);
 		}
+
 	}	// addLabelMarkers
 
 
@@ -326,10 +336,9 @@ class tx_srfeuserregister_marker {
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($authCode?'<input type="hidden" name="'.$prefixId.'[aC]" value="'.$authCode.'" />':'');
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($backUrl?'<input type="hidden" name="'.$prefixId.'[backURL]" value="'.htmlspecialchars($backUrl).'" />':'');
 		}
-
 	}	// addURLMarkers
 
-	
+
 	/**
 		* Adds Static Info markers to a marker array
 		*
@@ -362,6 +371,9 @@ class tx_srfeuserregister_marker {
 					$titleLanguage = $this->langObj->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'language');
 				}
 				$selected = (is_array($row)?$row['static_info_country']:'');
+				if (isset($this->conf['where.']) && is_array($this->conf['where.']))	{
+					$where = $this->conf['where.']['static_countries'];
+				}
 				$markerArray['###SELECTOR_STATIC_INFO_COUNTRY###'] = $this->staticInfo->buildStaticInfoSelector(
 					'COUNTRIES',
 					'FE['.$theTable.']'.'[static_info_country]',
@@ -370,9 +382,9 @@ class tx_srfeuserregister_marker {
 					'',
 					$this->conf['onChangeCountryAttribute'],
 					$idCountry,
-					$titleCountry
+					$titleCountry,
+					$where
 				);
-
 				$markerArray['###SELECTOR_ZONE###'] = 
 					$this->staticInfo->buildStaticInfoSelector(
 						'SUBDIVISIONS',
@@ -387,7 +399,7 @@ class tx_srfeuserregister_marker {
 				if (!$markerArray['###SELECTOR_ZONE###'] ) {
 					$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE['.$theTable.'][zone]" value="" />';
 				}
-	
+
 				$markerArray['###SELECTOR_LANGUAGE###'] = 
 					$this->staticInfo->buildStaticInfoSelector(
 					'LANGUAGES',
@@ -401,7 +413,6 @@ class tx_srfeuserregister_marker {
 				);
 			}
 		}
-
 	}	// addStaticInfoMarkers
 
 
@@ -466,7 +477,7 @@ class tx_srfeuserregister_marker {
 		$markerArray['###FORM_ONSUBMIT###'] = $onSubmit;
 		$markerArray['###HIDDENFIELDS###'] = $extraHidden;
 	}	// addMd5LoginMarkers
-	
+
 
 	/**
 		* From the 'KB MD5 FE Password (kb_md5fepw)' extension.

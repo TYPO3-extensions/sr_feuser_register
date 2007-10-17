@@ -1,5 +1,8 @@
-
-# $Id$
+##
+## @package TYPO3
+## @subpackage sr_feuser_register
+## @version $Id$
+##
 
 plugin.tx_srfeuserregister_pi1 {
 
@@ -8,11 +11,11 @@ plugin.tx_srfeuserregister_pi1 {
 // Remember that the icon is in a fixed dimension and will not grow if the text is getting
 // larger.
 	icon_delete = {$plugin.tx_srfeuserregister_pi1.file.icon_delete}
-	
+
 	fe_userOwnSelf = 1
 	fe_userEditSelf = 1
 	delete = 1
-	
+
 	pid = {$plugin.tx_srfeuserregister_pi1.pid}
 	pidTitleOverride = {$plugin.tx_srfeuserregister_pi1.pidTitleOverride}
 	registerPID = {$plugin.tx_srfeuserregister_pi1.registerPID}
@@ -57,13 +60,13 @@ plugin.tx_srfeuserregister_pi1 {
 			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
 			by_invitation =
 		}
-		
+
 		overrideValues {
 			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
 			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
 			by_invitation =
 		}
-		
+
 		evalValues {
 			password = twice, atLeast[{$plugin.tx_srfeuserregister_pi1.passwordAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.passwordAtMost}]
 			username = uniqueLocal, atLeast[{$plugin.tx_srfeuserregister_pi1.usernameAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.usernameAtMost}]
@@ -124,7 +127,7 @@ plugin.tx_srfeuserregister_pi1 {
 	}
 	setfixed.REFUSE < .setfixed.DELETE
 	setfixed.ENTER < .setfixed.ACCEPT
-	
+
 	invite < .create
 	invite {
 		defaultValues {
@@ -134,7 +137,7 @@ plugin.tx_srfeuserregister_pi1 {
 			by_invitation = 1
 		}
 	}
-	
+
 	edit < .create
 	edit {
 		preview = {$plugin.tx_srfeuserregister_pi1.enablePreviewEdit}
@@ -161,11 +164,11 @@ plugin.tx_srfeuserregister_pi1 {
 		}
 		
 	}
-	
+
 	infomail = 0
-	
+
 	forceFileDelete = {$plugin.tx_srfeuserregister_pi1.forceFileDelete}
-	
+
 	parseValues {
 		username = nospace,trim
 		email = lower,nospace,trim
@@ -191,7 +194,7 @@ plugin.tx_srfeuserregister_pi1 {
 	parseToDBValues {
 		date_of_birth = adodb_date
 	}
-	
+
 	email.from = {$plugin.tx_srfeuserregister_pi1.email}
 	email.fromName = {$plugin.tx_srfeuserregister_pi1.siteName}
 	email.admin = {$plugin.tx_srfeuserregister_pi1.email}
@@ -206,7 +209,7 @@ plugin.tx_srfeuserregister_pi1 {
 	email.SETFIXED_DELETE = {$plugin.tx_srfeuserregister_pi1.enableEmailOnRefuse}
 	email.SETFIXED_ACCEPT = 1
 	email.SETFIXED_REFUSE = 1
-	
+
 	notify.CREATE_SAVED = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnRegister}
 	notify.EDIT_SAVED = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnUpdate}
 	notify.DELETE_SAVED = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnDelete}
@@ -218,7 +221,7 @@ plugin.tx_srfeuserregister_pi1 {
 	notify.SETFIXED_DELETE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnRefuse}
 	notify.SETFIXED_ACCEPT = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnAdminAccept}
 	notify.SETFIXED_REFUSE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnAdminRefuse}
-	
+
 	_CSS_DEFAULT_STYLE (
 		.tx-srfeuserregister-pi1 p { margin-top: .5em; margin-bottom: 0; padding: 0 .3em; text-indent: 0; }
 		.tx-srfeuserregister-pi1 h4 { margin-top: 0; padding-left: .3em; }
