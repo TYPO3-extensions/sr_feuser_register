@@ -43,7 +43,6 @@
 
 require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 
-require_once(PATH_BE_srfeuserregister.'control/class.tx_srfeuserregister_setfixed.php');
 
 class tx_srfeuserregister_email {
 	var $pibase;
@@ -63,7 +62,7 @@ class tx_srfeuserregister_email {
 	var $HTMLMailEnabled = true;
 	var $cObj;
 
-	function init(&$pibase, &$conf, &$config, &$display, &$data, &$marker, &$tca, &$controlData, &$auth)	{
+	function init(&$pibase, &$conf, &$config, &$display, &$data, &$marker, &$tca, &$controlData, &$auth, &$setfixedObj)	{
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
 		$this->config = &$config;
@@ -73,35 +72,29 @@ class tx_srfeuserregister_email {
 		$this->tca = &$tca;
 		$this->controlData = &$controlData;
 		$this->auth = &$auth;
+		$this->setfixedObj = &$setfixedObj;
 		$this->cObj = &$pibase->cObj;
-
-		$this->setfixedObj = t3lib_div::makeInstance('tx_srfeuserregister_setfixed');
-		$this->setfixedObj->init($this->cObj, $this->conf, $this->config, $this->controlData, $this->auth);
 
 		if (isset($this->conf['email.']['HTMLMail'])) {
 			$this->HTMLMailEnabled = $this->conf['email.']['HTMLMail'];
 		}
-
-			// Setting CSS style markers if required
-		if ($this->HTMLMailEnabled) {
-			$markerArray = $this->marker->getArray();
-			$this->addCSSStyleMarkers($markerArray);
-			$this->marker->setArray($markerArray);
-		}
 	}
 
+
 	/**
-		* Sends info mail to subscriber or displays a screen to update or delete the membership
-		*
-		* @param array  Array with key/values being marker-strings/substitution values.
-		* @return	string		HTML content message
-		* @see init(),compile(), send()
-		*/
+	 * Sends info mail to subscriber or displays a screen to update or delete the membership
+	 *
+	 * @param array  Array with key/values being marker-strings/substitution values.
+	 * @return	string		HTML content message
+	 * @see init(),compile(), send()
+	 */
 	function sendInfo(&$markContentArray,$cmd, $cmdKey, &$templateCode)	{
 
 		if ($this->conf['infomail'] && $this->conf['email.']['field'])	{
-			$fetch = $this->data->getFeUserData('fetch');
+			$fetch = $this->controlData->getFeUserData('fetch');
 			$theTable = $this->controlData->getTable();
+			$origArr = $this->data->getOrigArray();
+
 			if (isset($fetch) && !empty($fetch))	{
 				$pidLock = 'AND pid IN ('.$this->controlData->getPid().')';
 					// Getting records
@@ -115,24 +108,24 @@ class tx_srfeuserregister_email {
 				if (is_array($DBrows))	{
 					$recipient = $DBrows[0][$this->conf['email.']['field']];
 					$this->data->setDataArray($DBrows[0]);
-					$this->compile('INFOMAIL', $DBrows, trim($recipient), $markContentArray, $cmd, $cmdKey, $templateCode, $this->conf['setfixed.']);
+					$this->compile('INFOMAIL', $DBrows, $DBrows, trim($recipient), $markContentArray, $cmd, $cmdKey, $templateCode, $this->conf['setfixed.']);
 				} elseif ($this->cObj->checkEmail($fetch)) {
 					$fetchArray = array( '0' => array( 'email' => $fetch));
-					$this->compile('INFOMAIL_NORECORD', $fetchArray, $fetch, $markContentArray, $cmd, $cmdKey, $templateCode, array());
+					$this->compile('INFOMAIL_NORECORD', $fetchArray, $fetchArray, $fetch, $markContentArray, $cmd, $cmdKey, $templateCode, array());
 				}
 				$subpartkey = $this->emailMarkPrefix.$this->infomailPrefix.'SENT###';
 				$content = 
-					$this->display->getPlainTemplate($subpartkey,  (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:''))
+					$this->display->getPlainTemplate($templateCode,$subpartkey, $origArr, (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:''))
 					);
 				if (!$content)	{ // compatibility until 1.1.2010
 					$subpartkey = '###TEMPLATE_'.$this->infomailPrefix.'SENT###';
-					$content = 
-						$this->display->getPlainTemplate($subpartkey, (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:''))
+					$content =
+						$this->display->getPlainTemplate($templateCode, $subpartkey, $origArr, (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:''))
 						);
 				}
 			} else {
 				$subpartkey = '###TEMPLATE_INFOMAIL###';
-				$content = $this->display->getPlainTemplate($subpartkey);
+				$content = $this->display->getPlainTemplate($templateCode,$subpartkey,$origArr);
 			}
 		} else {
 			$content='Configuration error: infomail option is not available or emailField is not setup in TypoScript';
@@ -151,7 +144,13 @@ class tx_srfeuserregister_email {
 		* @param array  $setFixedConfig: a setfixed TS config array
 		* @return void
 		*/
-	function compile($key, $DBrows, $recipient, &$markContentArray, $cmd, $cmdKey, &$templateCode, $setFixedConfig = array()) {
+	function compile($key, $DBrows, $origRows, $recipient, &$markContentArray, $cmd, $cmdKey, &$templateCode, $setFixedConfig = array()) {
+
+			// Setting CSS style markers if required
+		if ($this->HTMLMailEnabled) {
+			$this->addCSSStyleMarkers($markContentArray);
+		}
+		$theTable = $this->controlData->getTable();
 
 		$viewOnly = true;
 		$content = array('user' => array(), 'HTML' => array(), 'admin' => array(), 'mail' => array());
@@ -175,16 +174,34 @@ class tx_srfeuserregister_email {
 		$content['user']['rec'] = $this->cObj->getSubpart($content['user']['all'], '###SUB_RECORD###');
 		$content['HTML']['rec'] = $this->cObj->getSubpart($content['HTML']['all'], '###SUB_RECORD###');
 		$content['admin']['rec'] = $this->cObj->getSubpart($content['admin']['all'], '###SUB_RECORD###');
-		reset($DBrows);
+		$bChangesOnly = ($this->conf['email.']['EDIT_SAVED'] === '2' && $cmd == 'edit');
 		foreach ($DBrows as $k => $row)	{
-			$markerArray = $this->marker->getArray();
-			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $row, '', 0);
+			$origRow = $origRows[$k];
+			$markerArray = $markContentArray;
+			if ($bChangesOnly)	{
+				$keepFields = array('uid', 'pid', 'tstamp', 'name', 'username');
+				$mrow = array();
+				foreach ($row as $field => $v)	{
+					if (in_array($field, $keepFields))	{
+						$mrow[$field] = $row[$field];
+					} else {
+						if ($row[$field] != $origRow[$field])	{
+							$mrow[$field] = $row[$field];
+						} else {
+							$mrow[$field] = ''; // needed to empty the ###FIELD_...### markers
+						}
+					}
+				}
+			} else {
+				$mrow = $row;
+			}
+			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $mrow, '', 0);
 			$markerArray['###SYS_AUTHCODE###'] = $this->auth->authCode($row);
 			$this->setfixedObj->setfixed($markerArray, $setFixedConfig, $row, $this->controlData->getTable());
 			$this->marker->addStaticInfoMarkers($markerArray, $row, $viewOnly);
-			$this->tca->addTcaMarkers($markerArray, $row, $viewOnly, 'email');
+			$this->tca->addTcaMarkers($markerArray, $row, $origRow, $cmd, $cmdKey, $theTable, $viewOnly, 'email', $bChangesOnly);
 			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $row, $viewOnly);
-			$this->marker->addLabelMarkers($markerArray, $row, $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns']);
+			$this->marker->addLabelMarkers($markerArray, $row, $origRow, $keepFields, $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns'], ($bChangesOnly && $cmd == 'edit'));
 			if ($content['user']['rec']) {
 				$content['user']['rec'] = $this->marker->removeStaticInfoSubparts($content['user']['rec'], $markerArray, $viewOnly);
 				$content['user']['accum'] .= $this->cObj->substituteMarkerArray($content['user']['rec'], $markerArray);
@@ -202,7 +219,6 @@ class tx_srfeuserregister_email {
 			// Substitute the markers and eliminate HTML markup from plain text versions, but preserve <http://...> constructs
 		if ($content['user']['all']) {
 			$content['user']['final'] .= $this->cObj->substituteSubpart($content['user']['all'], '###SUB_RECORD###', $content['user']['accum']);
-
 			$content['user']['final'] = str_replace('###http', '<http', strip_tags(str_replace('<http', '###http', $content['user']['final'])));
 			$content['user']['final'] = $this->display->removeHTMLComments($content['user']['final']);
 			$content['user']['final'] = $this->display->replaceHTMLBr($content['user']['final']);
@@ -222,7 +238,7 @@ class tx_srfeuserregister_email {
 			$recipient = $fe_userRec['email'];
 		}
 			// Check if we need to add an attachment
-		if ($this->conf['addAttachment'] && $this->conf['addAttachment.']['cmd'] == $cmd && $this->conf['addAttachment.']['sFK'] == $this->data->getFeUserData('sFK')) {
+		if ($this->conf['addAttachment'] && $this->conf['addAttachment.']['cmd'] == $cmd && $this->conf['addAttachment.']['sFK'] == $this->controlData->getFeUserData('sFK')) {
 			$file = ($this->conf['addAttachment.']['file']) ? $GLOBALS['TSFE']->tmpl->getFileName($this->conf['addAttachment.']['file']):
 			'';
 		}
@@ -256,16 +272,14 @@ class tx_srfeuserregister_email {
 		$this->sendHTML($HTMLcontent, $content, $recipient, '', $this->conf['email.']['from'], $this->conf['email.']['fromName'], '', $fileAttachment);
 	}
 
+
 	/**
-		* Adds CSS styles marker to a marker array for substitution in an HTML email message
-		*
-		* @param array  $markerArray: the input marker array
-		* @return void
-		*/
+	* Adds CSS styles marker to a marker array for substitution in an HTML email message
+	*
+	* @param array  $markerArray: the input marker array
+	* @return void
+	*/
 	function addCSSStyleMarkers(&$markerArray) {
-		if (!$markerArray)	{
-			$markerArray = $this->getArray();
-		}
 		$HTMLMailEnabled = $this->conf['email.']['HTMLMail'];
 		if ($HTMLMailEnabled ) {
 			if ($this->conf['templateStyle'] == 'css-styled') {
@@ -282,7 +296,6 @@ class tx_srfeuserregister_email {
 	}	// addCSSStyleMarkers
 
 
-
 	/**
 	* Invokes the HTML mailing class
 	*
@@ -297,6 +310,7 @@ class tx_srfeuserregister_email {
 	* @return void
 	*/
 	function sendHTML($HTMLContent, $PLAINContent, $recipient, $dummy, $fromEmail, $fromName, $replyTo = '', $fileAttachment = '') {
+
 		// HTML
 		if (trim($recipient)) {
 			$defaultSubject = 'Front end user registration message';
@@ -337,9 +351,9 @@ class tx_srfeuserregister_email {
 				$Typo3_htmlmail->fetchHTMLMedia();
 				$Typo3_htmlmail->substMediaNamesInHTML(0); // 0 = relative
 				$Typo3_htmlmail->substHREFsInHTML();
-
 				$Typo3_htmlmail->setHTML($Typo3_htmlmail->encodeMsg($Typo3_htmlmail->theParts['html']['content']));
 			}
+
 			// PLAIN
 			$Typo3_htmlmail->addPlain($PLAINContent);
 			// SET Headers and Content

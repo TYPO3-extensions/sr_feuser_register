@@ -38,7 +38,7 @@ $EM_CONF[$_EXTKEY] = array(
 		'depends' => array(
 			'cms' => '',
 			'fh_library' => '0.0.4-',
-			'static_info_tables' => '2.0.0-',
+			'static_info_tables' => '2.0.5-',
 			'php' => '4.1.0-0.0.0',
 			'typo3' => '4.0-0.0.0',
 		),

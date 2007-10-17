@@ -59,6 +59,8 @@ class tx_srfeuserregister_controldata {
 	var $setfixedEnabled = 1;
 	var $bSubmit = FALSE;
 
+	var $feUserData = array();
+
 	function init (&$conf, $prefixId, $extKey, $piVars, $theTable)	{
 		global $TSFE;
 
@@ -132,6 +134,19 @@ class tx_srfeuserregister_controldata {
 
 	function setCmdKey($cmdKey)	{
 		$this->cmdKey = $cmdKey;
+	}
+
+	function getFeUserData ($k)	{
+		$rc = $this->feUserData[$k];
+		return $rc;
+	}
+
+	function setFeUserData ($dataArray, $k='')	{
+		if ($k != '')	{
+			$this->feUserData[$k] = $dataArray;
+		} else {
+			$this->feUserData = $dataArray;
+		}
 	}
 
 	function setSubmit($bSubmit)	{

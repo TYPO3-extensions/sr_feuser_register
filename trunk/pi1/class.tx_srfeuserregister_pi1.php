@@ -48,6 +48,7 @@ require_once(PATH_t3lib.'class.t3lib_page.php');
 
 require_once(PATH_BE_srfeuserregister.'pi1/class.tx_srfeuserregister_pi1_urlvalidator.php');
 require_once(PATH_BE_srfeuserregister.'control/class.tx_srfeuserregister_control.php');
+require_once(PATH_BE_srfeuserregister.'control/class.tx_srfeuserregister_setfixed.php');
 require_once(PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_controldata.php');
 require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_auth.php');
 require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_email.php');
@@ -60,12 +61,11 @@ require_once(PATH_BE_srfeuserregister.'view/class.tx_srfeuserregister_display.ph
 
 
 
-
 class tx_srfeuserregister_pi1 extends tslib_pibase {
 	var $cObj;
 	var $conf = array();
 	var $config = array();
-	
+
 		// Plugin initialization variables
 	var $prefixId = 'tx_srfeuserregister_pi1';  // Same as class name
 	var $scriptRelPath = 'pi1/class.tx_srfeuserregister_pi1.php'; // Path to this script relative to the extension dir.
@@ -82,9 +82,10 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 	var $urlObj;
 	var $display; // object of type tx_srfeuserregister_display
 	var $email; // object of type tx_srfeuserregister_email
-	var $lang; // object of type tx_srfeuserregister_lang
+	var $langObj; // object of type tx_srfeuserregister_lang
 	var $tca;  // object of type tx_srfeuserregister_tca
 	var $marker; // object of type tx_srfeuserregister_marker
+
 
 	function main($content, &$conf) {
 		global $TSFE;
@@ -116,102 +117,41 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			$this->freeCap = t3lib_div::makeInstance('tx_srfreecap_pi2');
 		}
 
-		$this->lang = t3lib_div::makeInstance('tx_srfeuserregister_lang');
+		$this->langObj = t3lib_div::makeInstance('tx_srfeuserregister_lang');
 		$this->urlObj = t3lib_div::makeInstance('tx_srfeuserregister_url');
 		$this->data = t3lib_div::makeInstance('tx_srfeuserregister_data');
 		$this->auth = t3lib_div::makeInstance('tx_srfeuserregister_auth');
 		$this->marker = t3lib_div::makeInstance('tx_srfeuserregister_marker');
 		$this->tca = t3lib_div::makeInstance('tx_srfeuserregister_tca');
 		$this->display = t3lib_div::makeInstance('tx_srfeuserregister_display');
+		$this->setfixedObj = t3lib_div::makeInstance('tx_srfeuserregister_setfixed');
 		$this->email = t3lib_div::makeInstance('tx_srfeuserregister_email');
 		$this->control = t3lib_div::makeInstance('tx_srfeuserregister_control');
 		$this->controlData = t3lib_div::makeInstance('tx_srfeuserregister_controldata');
-
-		$this->controlData->init($conf, $this->prefixId, $this->piVars, $theTable);
+		$this->controlData->init($conf, $this->prefixId, $this->extKey, $this->piVars, $theTable);
 		$this->urlObj->init ($this->controlData, $this->cObj);
+		$this->langObj->init($this, $this->conf, $this->LLkey);
+		$this->langObj->pi_loadLL();
 
-		$this->lang->init($this, $this->conf, $this->config);
-		$this->lang->pi_loadLL();
-		$this->data->init($this, $this->conf, $this->config,$this->lang, $this->tca, $this->auth, $this->control, $this->freeCap, $theTable, $adminFieldList, $this->controlData);
-
-		$this->control->init($this, $this->conf, $this->config, $this->controlData, $this->display, $this->data, $this->marker, $this->auth, $this->email, $this->tca);
+		$this->tca->init($this, $this->conf, $this->config, $this->controlData, $this->langObj, $this->extKey);
+		$this->data->init($this, $this->conf, $this->config,$this->langObj, $this->tca, $this->auth, $this->control, $this->freeCap, $theTable, $adminFieldList, $this->controlData);
+		$this->control->init($this, $this->conf, $this->config, $this->controlData, $this->display, $this->data, $this->marker, $this->auth, $this->email, $this->tca, $this->setfixedObj);
 
 		$this->pi_USER_INT_obj = 1;
 		$this->pi_setPiVarDefaults();
 		$this->sys_language_content = t3lib_div::testInt($TSFE->config['config']['sys_language_uid']) ? intval($TSFE->config['config']['sys_language_uid']) : 0;
 
-		$this->auth->init($this, $this->conf, $this->config, $this->data->getFeUserData('aC'));
+		$this->auth->init($this, $this->conf, $this->config, $this->controlData->getFeUserData('aC'));
 		$uid=$this->data->getRecUid();
-		$backUrl = rawurldecode($this->data->getFeUserData('backURL'));
+		$backUrl = rawurldecode($this->controlData->getFeUserData('backURL'));
 		$authCode = $this->auth->getAuthCode();
-		$this->marker->init($this, $this->conf, $this->config, $this->tca, $this->lang, $authCode, $this->freeCap, $this->controlData, $this->urlObj, $backUrl, $uid);
-		$this->tca->init($this, $this->conf, $this->config, $this->controlData, $this->lang, $this->extKey);
+		$this->marker->init($this, $this->conf, $this->config, $this->tca, $this->langObj, $authCode, $this->freeCap, $this->controlData, $this->urlObj, $backUrl, $uid);
 		$this->display->init($this, $this->conf, $this->config, $this->data, $this->marker, $this->tca, $this->control, $this->auth);
-		$this->email->init($this, $this->conf, $this->config, $this->display, $this->data, $this->marker, $this->tca, $this->controlData, $this->auth);
+		$this->email->init($this, $this->conf, $this->config, $this->display, $this->data, $this->marker, $this->tca, $this->controlData, $this->auth, $this->setfixedObj);
+		$this->setfixedObj->init($this->cObj, $this->conf, $this->config, $this->controlData, $this->auth, $this->tca, $this->display, $this->email, $this->marker);
+
 	}	// init
 
-
-	/**
-	* Invokes a user process
-	*
-	* @param array  $mConfKey: the configuration array of the user process
-	* @param array  $passVar: the array of variables to be passed to the user process
-	* @return array  the updated array of passed variables
-	*/
-	function userProcess($mConfKey, $passVar) {
-		if ($this->conf[$mConfKey]) {
-			$funcConf = $this->conf[$mConfKey.'.'];
-			$funcConf['parentObj'] = &$this;
-			$passVar = $GLOBALS['TSFE']->cObj->callUserFunction($this->conf[$mConfKey], $funcConf, $passVar);
-		}
-		return $passVar;
-	}	// userProcess
-
-
-	/**
-	* Invokes a user process
-	*
-	* @param string  $confVal: the name of the process to be invoked
-	* @param array  $mConfKey: the configuration array of the user process
-	* @param array  $passVar: the array of variables to be passed to the user process
-	* @return array  the updated array of passed variables
-	*/
-	function userProcess_alt($confVal, $confArr, $passVar) {
-		if ($confVal) {
-			$funcConf = $confArr;
-			$funcConf['parentObj'] = &$this;
-			$passVar = $GLOBALS['TSFE']->cObj->callUserFunction($confVal, $funcConf, $passVar);
-		}
-		return $passVar;
-	}	// userProcess_alt
-
-
-	/**
-	* Instantiate the file creation function
-	*
-	* @return void
-	*/
-/*	function createFileFuncObj() {
-		if (!$this->fileFunc) {
-			$this->fileFunc = t3lib_div::makeInstance('t3lib_basicFileFunctions');
-		}
-	}
-*/
-
-	/**
-	* Check what bit is set and returns the bitnumber
-	* @param	int	Number to check, ex: 16 returns 4, 32 returns 5, 0 returns -1, 1 returns 0
-	* @ return	bool	Bitnumber, -1 for not found
-	*/
-/*	function _whatBit($num) {
-		$num = intval($num);
-		if ($num == 0) return -1;
-		for ($i=0; $i<32; $i++) {
-			if ($num & (1 << $i)) return $i;
-		}
-		return -1;
-	}
-*/
 
 
 }
