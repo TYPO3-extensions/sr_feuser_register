@@ -7,6 +7,8 @@
 
 plugin.tx_srfeuserregister_pi1 {
 
+	table.name = {$plugin.tx_srfeuserregister_pi1.tableName}
+
 	templateStyle = old-style
 	templateFile = {$plugin.tx_srfeuserregister_pi1.file.templateFile}
 	wrap1.wrap = {$plugin.tx_srfeuserregister_pi1.wrap1}
@@ -36,6 +38,8 @@ plugin.tx_srfeuserregister_pi1 {
 
 	useShortUrls = {$plugin.tx_srfeuserregister_pi1.useShortUrls}
 	shortUrlLife = {$plugin.tx_srfeuserregister_pi1.shortUrlLife}
+	dateFormat = {$plugin.tx_srfeuserregister_pi1.dateFormat}
+	dateSplit = {$plugin.tx_srfeuserregister_pi1.dateSplit}
 
 	onChangeCountryAttribute = {$plugin.tx_srfeuserregister_pi1.onChangeCountryAttribute}
 
@@ -60,7 +64,7 @@ plugin.tx_srfeuserregister_pi1 {
 		allowUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowUserGroupSelection}
 
 		defaultValues {
-			module_sys_dmail_html = 1
+			module_sys_dmail_html = {$plugin.tx_srfeuserregister_pi1.dmailCheckedUponRegistration}
 			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
 			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
 		}
@@ -103,27 +107,26 @@ plugin.tx_srfeuserregister_pi1 {
 		}
 	}
 
-	setfixed = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
+	setfixed = 0
 	setfixed.APPROVE {
 		_FIELDLIST = uid,pid,usergroup
 		usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupAfterConfirmation}
 		disable = 0
 	}
-
-	enableAutoLoginOnConfirmation = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnConfirmation}
-	enableAutoLoginOnCreate = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnCreate}
-	autoLoginRedirect_url = {$plugin.tx_srfeuserregister_pi1.autoLoginRedirect_url}
-
 	setfixed.DELETE {
 		_FIELDLIST = uid,pid
 	}
+	setfixed.ACCEPT < .setfixed.APPROVE
+	setfixed.REFUSE < .setfixed.DELETE
+
+	enableEmailConfirmation = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
+	enableAutoLoginOnConfirmation = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnConfirmation}
+	enableAutoLoginOnCreate = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnCreate}
+	enableAdminReview = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
+	autoLoginRedirect_url = {$plugin.tx_srfeuserregister_pi1.autoLoginRedirect_url}
 
 	authcodeFields = {$plugin.tx_srfeuserregister_pi1.authcodeFields}
 	authcodeFields.codeLength = {$plugin.tx_srfeuserregister_pi1.codeLength}
-
-	enableAdminReview = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
-	setfixed.ACCEPT < .setfixed.APPROVE
-	setfixed.REFUSE < .setfixed.DELETE
 
 	invite < .create
 

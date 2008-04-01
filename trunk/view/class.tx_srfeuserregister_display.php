@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2007 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca)>
+*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca)>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -33,15 +33,13 @@
  *
  * @author Kasper Skaarhoj <kasper2007@typo3.com>
  * @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
- * @author Franz Holzinger <kontakt@fholzinger.com>
+ * @author Franz Holzinger <contact@fholzinger.com>
  *
  * @package TYPO3
  * @subpackage sr_feuser_register
  *
  *
  */
-
-
 
 
 class tx_srfeuserregister_display {
@@ -79,58 +77,56 @@ class tx_srfeuserregister_display {
 	* @param array  $origArr: the array coming from the database
 	* @return string  the template with substituted markers
 	*/
-	function editForm($origArr,$cmd,$cmdKey,$mode) {
+	function editForm($theTable, $dataArray, $origArr,$cmd,$cmdKey,$mode) {
 		global $TSFE;
 
 		$prefixId = $this->controlData->getPrefixId();
-		$dataArray = $this->data->getDataArray();
-		$theTable = $this->controlData->getTable();
-		$currentArr = array_merge($origArr, $dataArray);
-		foreach ($currentArr AS $key => $value) {
-			// If the type is check, ...
-			if (($this->tca->TCA['columns'][$key]['config']['type'] == 'check') && is_array($this->tca->TCA['columns'][$key]['config']['items'])) {
-				if(isset($dataArray[$key]) && !$dataArray[$key]) {
-					$currentArr[$key] = 0;
-				}
-			}
-		}
+		$currentArray = array_merge($origArr, $dataArray);
+
+// 		foreach ($currentArray AS $key => $value) {
+// 			// If the type is check, ...
+// 			if (($this->tca->TCA['columns'][$key]['config']['type'] == 'check') && is_array($this->tca->TCA['columns'][$key]['config']['items'])) {
+// 				if(isset($dataArray[$key]) && !$dataArray[$key]) {
+// 					$currentArray[$key] = 0;
+// 				}
+// 			}
+// 		}
 		$templateCode = $this->cObj->getSubpart($this->data->getTemplateCode(), '###TEMPLATE_EDIT'.$this->marker->getPreviewLabel().'###');
+
 		if (!$this->conf['linkToPID'] || !$this->conf['linkToPIDAddButton'] || !($mode == MODE_PREVIEW || !$this->conf['edit.']['preview'])) {
 			$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_LINKTOPID_ADD_BUTTON###', '');
 		}
 
-		$failure = t3lib_div::_GP('noWarnings') ? '': $this->data->getFailure();
+		$failure = t3lib_div::_GP('noWarnings') ? '': $this->controlData->getFailure();
 		if (!$failure) {
 			$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
 		}
 		$markerArray = $this->marker->getArray();
 		$templateCode = $this->removeRequired($templateCode, $failure);
-		$markerArray = $this->cObj->fillInMarkerArray($markerArray, $currentArr, '', TRUE, 'FIELD_', TRUE);
-		$this->marker->addStaticInfoMarkers($markerArray, $currentArr);
-		$this->tca->addTcaMarkers($markerArray, $currentArr, $origArr, $cmd, $cmdKey, $theTable, true);
-		$this->tca->addTcaMarkers($markerArray, $currentArr, $origArr, $cmd, $cmdKey, $theTable);
-		$this->marker->addLabelMarkers($markerArray, $currentArr, $origArr, array(), $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns'], false);
-		$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $currentArr, $this->controlData->getMode() == MODE_PREVIEW);
+		$markerArray = $this->marker->fillInMarkerArray($markerArray, $currentArray, '', TRUE, 'FIELD_', TRUE);
+		$this->marker->addStaticInfoMarkers($markerArray, $currentArray);
+		$this->tca->addTcaMarkers($markerArray, $currentArray, $origArr, $cmd, $cmdKey, $theTable, true);
+		$this->tca->addTcaMarkers($markerArray, $currentArray, $origArr, $cmd, $cmdKey, $theTable);
+		$this->marker->addLabelMarkers($markerArray, $currentArray, $origArr, array(), $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns'], false);
+		$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $currentArray, $this->controlData->getMode() == MODE_PREVIEW);
 		$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
-		$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][uid]" value="'.$currentArr['uid'].'" />';
+		$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][uid]" value="'.$currentArray['uid'].'" />';
 		if ($theTable != 'fe_users') {
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$prefixId.'[aC]" value="'.$this->auth->authCode($origArr).'" />';
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$prefixId . '[cmd]" value="edit" />';
 		} elseif ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $this->conf['templateStyle'] != 'css-styled') {
-			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][username]" value="'.$currentArr['username'].'" />';
-			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][email]" value="'.$currentArr['email'].'" />';
+			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][username]" value="'.$currentArray['username'].'" />';
+			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][email]" value="'.$currentArray['email'].'" />';
 		}
-		$this->marker->addHiddenFieldsMarkers($markerArray, $cmdKey, $mode, $currentArr);
+		$this->marker->addHiddenFieldsMarkers($markerArray, $cmdKey, $mode, $currentArray);
 		$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 		if ($this->conf['templateStyle'] != 'css-styled' || $mode != MODE_PREVIEW) {
 			$form = $this->pibase->pi_getClassName($theTable.'_form');
-			$modData = $this->data->modifyDataArrForFormUpdate($currentArr);
+			$modData = $this->data->modifyDataArrForFormUpdate($currentArray);
 			$fields = $this->data->getFieldList().$this->data->getAdditionalUpdateFields();
 			$updateJS = $this->cObj->getUpdateJS($modData, $form, 'FE['.$theTable.']', $fields);
 			$content .= $updateJS;
-			if ($this->conf['templateStyle'] == 'css-styled') {
-				$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
-			}
+			$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
 		}
 		return $content;
 	}	// editForm
@@ -141,25 +137,22 @@ class tx_srfeuserregister_display {
 	*
 	* @return string  the template with substituted markers
 	*/
-	function createScreen($cmd='create', $cmdKey, $mode) {
-		global $TSFE, $TYPO3_CONF_VARS;
+	function createScreen($cmd='create', $cmdKey, $mode, $theTable, $dataArray) {
+		global $TSFE;
 
 		$templateCode = &$this->data->getTemplateCode();
 		$prefixId = $this->controlData->getPrefixId();
 		$origArr = $this->data->getOrigArray();
 		if ($this->conf['create']) {
-			$theTable = $this->controlData->getTable();
-			$dataArray = $this->data->getDataArray();
 
 				// Call all beforeConfirmCreate hooks before the record has been shown and confirmed
-			if (is_array($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'])) {
-				foreach ($TYPO3_CONF_VARS['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'] as $classRef) {
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$prefixId]['registrationProcess'] as $classRef) {
 					$hookObj= &t3lib_div::getUserObj($classRef);
 					if (method_exists($hookObj,'registrationProcess_beforeConfirmCreate')) {
 						$hookObj->registrationProcess_beforeConfirmCreate($dataArray, $this->controlData);
 					}
 				}
-				$this->data->setDataArray($dataArray);
 			}
 
 			$key = ($cmd == 'invite') ? 'INVITE': 'CREATE';
@@ -170,32 +163,32 @@ class tx_srfeuserregister_display {
 			$subpartKey = ((!($theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $cmd == 'invite') ? '###TEMPLATE_'.$key.$this->marker->getPreviewLabel().'###':'###TEMPLATE_CREATE_LOGIN###');
 			$templateCode = $this->cObj->getSubpart($templateCode, $subpartKey);
 
-			$failure = t3lib_div::_GP('noWarnings') ? FALSE: $this->data->getFailure();
-			if (!$failure)	{
+			$failure = t3lib_div::_GP('noWarnings') ? FALSE: $this->controlData->getFailure();
+			if ($failure==FALSE)	{
 				$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
 			}
 			$templateCode = $this->removeRequired($templateCode, $failure);
-			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $dataArray, '',TRUE, 'FIELD_', TRUE);
+			$markerArray = $this->marker->fillInMarkerArray($markerArray, $dataArray, '',TRUE, 'FIELD_', TRUE);
 			$this->marker->addStaticInfoMarkers($markerArray, $dataArray);
 			$this->tca->addTcaMarkers($markerArray, $dataArray, $origArr, $cmd, $cmdKey, $theTable);
 			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $dataArray, $this->controlData->getMode() == MODE_PREVIEW);
 			$this->marker->addLabelMarkers($markerArray, $dataArray, $origArr, array(), $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns'], false);
+
 			$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
 			$this->marker->addHiddenFieldsMarkers($markerArray, $cmdKey, $mode, $dataArray);
+
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 			if ($this->conf['templateStyle'] != 'css-styled' || $mode != MODE_PREVIEW) {
-				if ($this->conf['templateStyle'] == 'css-styled') {
-					$form = $this->pibase->pi_getClassName($theTable.'_form');
-				} else {
+				$form = $this->pibase->pi_getClassName($theTable.'_form');
+/*				} else {
 					$form = $theTable.'_form';
-				}
+				}*/
 				$updateJScontent = $this->cObj->getUpdateJS($this->data->modifyDataArrForFormUpdate($dataArray), $form, 'FE['.$theTable.']', $this->data->fieldList.$this->data->additionalUpdateFields);
 				$content .= $updateJScontent;
-				if ($this->conf['templateStyle'] == 'css-styled') {
-					$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
-				}
+				$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
 			}
 		}
+
 		return $content;
 	} // createScreen
 
@@ -205,20 +198,18 @@ class tx_srfeuserregister_display {
 	*
 	* @return string  the template with substituted markers
 	*/
-	function editScreen($cmd, $cmdKey, $mode) {
+	function editScreen($theTable, $dataArray, $origArr, $cmd, $cmdKey, $mode) {
 		global $TSFE;
 
-		if ($this->conf['edit']) {
-			$theTable = $this->controlData->getTable();
-			$dataArray = $this->data->getDataArray();
 			// If editing is enabled
-			$origArr = $TSFE->sys_page->getRawRecord($theTable, $dataArray['uid']?$dataArray['uid']:$this->data->getRecUid());
-			if( $theTable != 'fe_users' && $this->conf['setfixed.']['edit.']['_FIELDLIST']) {
+		if ($this->conf['edit']) {
+
+			if($theTable != 'fe_users' && $this->conf['setfixed.']['EDIT.']['_FIELDLIST']) {
 				$fD = t3lib_div::_GP('fD', 1);
 				$fieldArr = array();
 				if (is_array($fD)) {
 					reset($fD);
-					while (list($field, $value) = each($fD)) {
+					foreach($fD as $field => $value) {
 						$origArr[$field] = rawurldecode($value);
 						$fieldArr[] = $field;
 					}
@@ -229,7 +220,10 @@ class tx_srfeuserregister_display {
 				$origArr = $this->data->parseIncomingData($origArr);
 			}
 
-			if (is_array($origArr) && ( ($theTable == 'fe_users' && $TSFE->loginUser) || $this->auth->aCAuth($origArr) || !strcmp($this->auth->authCode, $theCode) ) ) {
+			if (
+				is_array($origArr) && 
+				( ($theTable == 'fe_users' && $TSFE->loginUser) || $this->auth->aCAuth($origArr) || $theCode && !strcmp($this->auth->authCode, $theCode) ) 
+			) {
 				// Must be logged in OR be authenticated by the aC code in order to edit
 				// If the recUid selects a record.... (no check here)
 				$markerArray = '';
@@ -237,17 +231,18 @@ class tx_srfeuserregister_display {
 				$this->marker->setArray($markerArray);
 				if ( !strcmp($this->auth->authCode, $theCode) || $this->auth->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($theTable, $origArr, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 					// Display the form, if access granted.
-					$content = $this->editForm($origArr, $cmd, $cmdKey, $mode);
+					$content = $this->editForm($theTable, $dataArray, $origArr, $cmd, $cmdKey, $mode);
 				} else {
 					// Else display error, that you could not edit that particular record...
-					$content = $this->getPlainTemplate($this->data->getTemplateCode(), '###TEMPLATE_NO_PERMISSIONS###', $this->data->getOrigArray());
+					$content = $this->getPlainTemplate($this->data->getTemplateCode(), '###TEMPLATE_NO_PERMISSIONS###', $dataArray, $origArr);
 				}
 			} else {
 				// This is if there is no login user. This must tell that you must login. Perhaps link to a page with create-user or login information.
-				$content = $this->getPlainTemplate($this->data->getTemplateCode(), '###TEMPLATE_AUTH###', $this->data->getOrigArray());
+				$content = $this->getPlainTemplate($this->data->getTemplateCode(), '###TEMPLATE_AUTH###', $dataArray, $this->data->getOrigArray());
 			}
 		} else {
-			$content .= 'Edit-option is not set in TypoScript';
+			$langObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lang');
+			$content .= $langObj->pi_getLL('internal_edit_option');
 		}
 		return $content;
 	}	// editScreen
@@ -259,9 +254,8 @@ class tx_srfeuserregister_display {
 		*
 		* @return string  the template with substituted markers
 		*/
-	function deleteScreen() {
+	function deleteScreen($theTable, $dataArray, $origArr) {
 		if ($this->conf['delete']) {
-			$theTable = $this->controlData->getTable();
 			$prefixId = $this->controlData->getPrefixId();
 			$templateCode = $this->data->getTemplateCode();
 
@@ -281,10 +275,10 @@ class tx_srfeuserregister_display {
 							$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$prefixId .'[cmd]" value="delete" />';
 						}
 						$this->marker->setArray($markerArray);
-						$content = $this->getPlainTemplate($templateCode, '###TEMPLATE_DELETE_PREVIEW###', $origArr);
+						$content = $this->getPlainTemplate($templateCode, '###TEMPLATE_DELETE_PREVIEW###', $dataArray, $origArr);
 					} else {
 						// Else display error, that you could not edit that particular record...
-						$content = $this->getPlainTemplate($templateCode, '###TEMPLATE_NO_PERMISSIONS###', $origArr);
+						$content = $this->getPlainTemplate($templateCode, '###TEMPLATE_NO_PERMISSIONS###', $dataArray, $origArr);
 
 					}
 				}
@@ -315,9 +309,8 @@ class tx_srfeuserregister_display {
 	function getPlainTemplate($templateCode, $key, $origArr, $row = '') {
 		$templateCode = $this->cObj->getSubpart($templateCode, $key);
 		$markerArray = $this->marker->getArray();
-
 		if (is_array($row))	{
-			$markerArray = $this->cObj->fillInMarkerArray($markerArray, $row, '',TRUE, 'FIELD_', TRUE);
+			$markerArray = $this->marker->fillInMarkerArray($markerArray, $row, '',TRUE, 'FIELD_', TRUE);
 		}
 		$this->marker->addStaticInfoMarkers($markerArray, $row);
 		$cmd = $this->controlData->getCmd();
@@ -357,6 +350,13 @@ class tx_srfeuserregister_display {
 			$infoFields[] = 'module_sys_dmail_html';
 		}
 
+		if (!t3lib_extMgm::isLoaded('sr_freecap') &&
+			is_array($this->conf['create.']) &&
+			is_array($this->conf['create.']['evalValues.']) &&
+			$this->conf['create.']['evalValues.']['captcha_response'] == 'freecap' ) {
+			$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_captcha###', '');
+		}
+
 		foreach($infoFields as $k => $theField) {
 			if (in_array(trim($theField), $requiredArray) ) {
 				if (!t3lib_div::inList($failure, $theField)) {
@@ -375,7 +375,7 @@ class tx_srfeuserregister_display {
 					}
 					if (is_array($this->conf['parseValues.']) && strstr($this->conf['parseValues.'][$theField],'checkArray')) {
 						$listOfCommands = t3lib_div::trimExplode(',', $this->conf['parseValues.'][$theField], 1);
-						while (list(, $cmd) = each($listOfCommands)) {
+						foreach($listOfCommands as $cmd) {
 							$cmdParts = split('\[|\]', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 							$theCmd = trim($cmdParts[0]);
 							switch($theCmd) {
@@ -404,11 +404,10 @@ class tx_srfeuserregister_display {
 		$rc = preg_replace('/<br\s?\/>/',chr(10),$content);
 		return $rc;
 	}
-
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/view/class.tx_srfeuserregister_display.php'])  {
-  include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/view/class.tx_srfeuserregister_display.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/view/class.tx_srfeuserregister_display.php'])  {
+  include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/view/class.tx_srfeuserregister_display.php']);
 }
 ?>

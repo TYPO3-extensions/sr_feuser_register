@@ -7,6 +7,7 @@
 
 <h1>FRONTEND USER REGISTRATION</h1>
 <h2>EXAMPLE</h2>
+<h3>Attention: Please don't forget to add '&nbsp;' after the data values in the preview mode. If you don't, you will get problems with your IE-browser users</h3>
 
 <h2>'CREATE' TEMPLATES:</h2>
 
@@ -44,7 +45,7 @@
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="40" title="###TOOLTIP_PASSWORD###" name="FE[fe_users][password]" class="tx-srfeuserregister-pi1-password" />
+		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="40" title="###TOOLTIP_PASSWORD###" name="FE[fe_users][password]" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
 		<label for="tx-srfeuserregister-pi1-password_again" class="tx-srfeuserregister-pi1-password-again">###LABEL_PASSWORD_REPEAT###</label>
 		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="40" title="###LABEL_TOOLTIP_PASSWORD_AGAIN###" name="FE[fe_users][password_again]" class="tx-srfeuserregister-pi1-password" />
 	</dd>
@@ -397,6 +398,16 @@
 		###TCA_INPUT_comments###
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_comments### -->
+
+	<!--###CAPTCHA_INSERT### this subpart is removed if CAPTCHA is not enabled! -->
+	<div class="tx-srfeuserregister-pi1-captcha-response">
+		<label for="tx-srfeuserregister-pi1-captcha-response">###SR_FREECAP_NOTICE###</label>
+		###SR_FREECAP_CANT_READ###
+		<br />
+		<input type="text" size="15" id="tx-srfeuserregister-pi1-captcha.response" name="FE[fe_users][captcha_response]" title="###SR_FREECAP_NOTICE###" value="">
+		###SR_FREECAP_IMAGE###
+	</div>
+	<!--###CAPTCHA_INSERT###-->
 	
 	<dt>&nbsp;</dt>
 	<dd>
@@ -418,127 +429,127 @@
 <dl>
 <!-- ###SUB_INCLUDED_FIELD_username### -->
 <dt>###LABEL_USERNAME###</dt>
-<dd>###FIELD_username###</dd>
+<dd>###FIELD_username###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_username### -->
 
 <!-- ###SUB_INCLUDED_FIELD_gender### -->
 <dt>###LABEL_GENDER###</dt>
-<dd>###TCA_INPUT_gender###</dd>
+<dd>###TCA_INPUT_gender###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_gender### -->
 
 <!-- ###SUB_INCLUDED_FIELD_name### -->
 <dt>###LABEL_NAME###</dt>
-<dd>###FIELD_name###</dd>
+<dd>###FIELD_name###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_name### -->
 
 <!-- ###SUB_INCLUDED_FIELD_first_name### -->
 <dt>###LABEL_FIRST_NAME###</dt>
-<dd>###FIELD_first_name###</dd>
+<dd>###FIELD_first_name###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_first_name### -->
 
 <!-- ###SUB_INCLUDED_FIELD_last_name### -->
 <dt>###LABEL_LAST_NAME###</dt>
-<dd>###FIELD_last_name###</dd>
+<dd>###FIELD_last_name###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_last_name### -->
 
 <!-- ###SUB_INCLUDED_FIELD_status### -->
 <dt>###LABEL_STATUS###</dt>
-<dd>###TCA_INPUT_status###</dd>
+<dd>###TCA_INPUT_status###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_status### -->
 
 <!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
 <dt>###LABEL_DATE_OF_BIRTH###</dt>
-<dd>###FIELD_date_of_birth###</dd>
+<dd>###FIELD_date_of_birth###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
 
 <!-- ###SUB_INCLUDED_FIELD_title### -->
 <dt>###LABEL_TITLE###</dt>
-<dd>###FIELD_title###</dd>
+<dd>###FIELD_title###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_title### -->
 
 <!-- ###SUB_INCLUDED_FIELD_company### -->
 <dt>###LABEL_COMPANY###</dt>
-<dd>###FIELD_company###</dd>
+<dd>###FIELD_company###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_company### -->
 
 <!-- ###SUB_INCLUDED_FIELD_address### -->
 <dt>###LABEL_ADDRESS###</dt>
-<dd>###FIELD_address###</dd>
+<dd>###FIELD_address###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_address### -->
 
 <!-- ###SUB_INCLUDED_FIELD_city### -->
 <dt>###LABEL_CITY###</dt>
-<dd>###FIELD_city###</dd>
+<dd>###FIELD_city###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_city### -->
 
 <!-- ###SUB_INCLUDED_FIELD_zone### -->
 <dt>###LABEL_ZONE###</dt>
-<dd>###FIELD_zone###</dd>
+<dd>###FIELD_zone###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_zone### -->
 
 <!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
 <dt>###LABEL_STATIC_INFO_COUNTRY###</dt>
-<dd>###FIELD_static_info_country###</dd>
+<dd>###FIELD_static_info_country###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
 
 <!-- ###SUB_INCLUDED_FIELD_country### -->
 <dt>###LABEL_COUNTRY###</dt>
-<dd>###FIELD_country###</dd>
+<dd>###FIELD_country###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_country### -->
 
 <!-- ###SUB_INCLUDED_FIELD_zip### -->
 <dt>###LABEL_ZIP###</dt>
-<dd>###FIELD_zip###</dd>
+<dd>###FIELD_zip###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_zip### -->
 
 <!-- ###SUB_INCLUDED_FIELD_telephone### -->
 <dt>###LABEL_TELEPHONE###</dt>
-<dd>###FIELD_telephone###</dd>
+<dd>###FIELD_telephone###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_telephone### -->
 
 <!-- ###SUB_INCLUDED_FIELD_fax### -->
 <dt>###LABEL_FAX###</dt>
-<dd>###FIELD_fax###</dd>
+<dd>###FIELD_fax###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_fax### -->
 
 <!-- ###SUB_INCLUDED_FIELD_email### -->
 <dt>###LABEL_EMAIL###</dt>
-<dd>###FIELD_email###</dd>
+<dd>###FIELD_email###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_email### -->
 
 <!-- ###SUB_INCLUDED_FIELD_usergroup### -->
 <dt>###LABEL_USERGROUP###</dt>
-<dd>###TCA_INPUT_usergroup###</dd>
+<dd>###TCA_INPUT_usergroup###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_usergroup### -->
 
 <!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
 <dt>###LABEL_MODULE_SYS_DMAIL_CATEGORY###</dt>
-<dd>###TCA_INPUT_module_sys_dmail_category###</dd>
+<dd>###TCA_INPUT_module_sys_dmail_category###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
 
 <!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
 <dt>###LABEL_MODULE_SYS_DMAIL_HTML###</dt>
-<dd>###TCA_INPUT_module_sys_dmail_html###</dd>
+<dd>###TCA_INPUT_module_sys_dmail_html###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
 
 <!-- ###SUB_INCLUDED_FIELD_language### -->
 <dt>###LABEL_LANGUAGE###</dt>
-<dd>###FIELD_language###</dd>
+<dd>###FIELD_language###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_language### -->
 
 <!-- ###SUB_INCLUDED_FIELD_www### -->
 <dt>###LABEL_WWW###</dt>
-<dd>###FIELD_www###</dd>
+<dd>###FIELD_www###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_www### -->
 
 <!-- ###SUB_INCLUDED_FIELD_image### -->
 <dt>###LABEL_IMAGE###</dt>
-<dd>###UPLOAD_PREVIEW_image###</dd>
+<dd>###UPLOAD_PREVIEW_image###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_image### -->
 
 <!-- ###SUB_INCLUDED_FIELD_comments### -->
 <dt>###LABEL_COMMENTS###</dt>
-<dd>###TCA_INPUT_comments###</dd>
+<dd>###TCA_INPUT_comments###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_comments### -->
 
 <dt>&nbsp;</dt>
@@ -569,13 +580,13 @@
 <p>###LABEL_V_REGISTRATION_CREATED_MESSAGE2###</p>
 <p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
 
-<form id="###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###LOGIN_FORM###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 <dl>
 	<dt>###LABEL_USERNAME###</dt>
 	<dd><input type="text" class="tx-srfeuserregister-pi1-text" name="user" value="###FIELD_username###"  size="40" maxlength="50" /></dd>
 	
 	<dt>###LABEL_PASSWORD###</dt>
-	<dd><input type="password" name="pass" value="###FIELD_password###" size="10" maxlength="40" /></dd>
+	<dd><input type="password" name="pass" value="###FIELD_password###" size="10" maxlength="40" ###PASSWORD_ONCHANGE### /></dd>
 	
 	<dt>&nbsp;</dt>
 	<dd>
@@ -656,7 +667,7 @@ The user is informed that a message has been sent to his email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="40" title="###TOOLTIP_INVITATION_PASSWORD###" name="FE[fe_users][password]" class="tx-srfeuserregister-pi1-password" />
+		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="40" title="###TOOLTIP_INVITATION_PASSWORD###" name="FE[fe_users][password]" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
 		<label for="tx-srfeuserregister-pi1-password_again" class="tx-srfeuserregister-pi1-password-again">###LABEL_PASSWORD_REPEAT###</label>
 		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="40" title="###LABEL_TOOLTIP_INVITATION_PASSWORD_AGAIN###" name="FE[fe_users][password_again]" class="tx-srfeuserregister-pi1-password" />
 	</dd>
@@ -1015,122 +1026,122 @@ The user is informed that a message has been sent to his email address and that 
 <dl>
 <!-- ###SUB_INCLUDED_FIELD_username### -->
 <dt>###LABEL_USERNAME###</dt>
-<dd>###FIELD_username###</dd>
+<dd>###FIELD_username###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_username### -->
 
 <!-- ###SUB_INCLUDED_FIELD_gender### -->
 <dt>###LABEL_GENDER###</dt>
-<dd>###TCA_INPUT_gender###</dd>
+<dd>###TCA_INPUT_gender###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_gender### -->
 
 <!-- ###SUB_INCLUDED_FIELD_name### -->
 <dt>###LABEL_NAME###</dt>
-<dd>###FIELD_name###</dd>
+<dd>###FIELD_name###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_name### -->
 
 <!-- ###SUB_INCLUDED_FIELD_first_name### -->
 <dt>###LABEL_FIRST_NAME###</dt>
-<dd>###FIELD_first_name###</dd>
+<dd>###FIELD_first_name###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_first_name### -->
 
 <!-- ###SUB_INCLUDED_FIELD_last_name### -->
 <dt>###LABEL_LAST_NAME###</dt>
-<dd>###FIELD_last_name###</dd>
+<dd>###FIELD_last_name###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_last_name### -->
 
 <!-- ###SUB_INCLUDED_FIELD_status### -->
 <dt>###LABEL_STATUS###</dt>
-<dd>###TCA_INPUT_status###</dd>
+<dd>###TCA_INPUT_status###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_status### -->
 
 <!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
 <dt>###LABEL_DATE_OF_BIRTH###</dt>
-<dd>###FIELD_date_of_birth###</dd>
+<dd>###FIELD_date_of_birth###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
 
 <!-- ###SUB_INCLUDED_FIELD_title### -->
 <dt>###LABEL_TITLE###</dt>
-<dd>###FIELD_title###</dd>
+<dd>###FIELD_title###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_title### -->
 
 <!-- ###SUB_INCLUDED_FIELD_company### -->
 <dt>###LABEL_COMPANY###</dt>
-<dd>###FIELD_company###</dd>
+<dd>###FIELD_company###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_company### -->
 
 <!-- ###SUB_INCLUDED_FIELD_address### -->
 <dt>###LABEL_ADDRESS###</dt>
-<dd>###FIELD_address###</dd>
+<dd>###FIELD_address###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_address### -->
 
 <!-- ###SUB_INCLUDED_FIELD_city### -->
 <dt>###LABEL_CITY###</dt>
-<dd>###FIELD_city###</dd>
+<dd>###FIELD_city###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_city### -->
 
 <!-- ###SUB_INCLUDED_FIELD_zone### -->
 <dt>###LABEL_ZONE###</dt>
-<dd>###FIELD_zone###</dd>
+<dd>###FIELD_zone###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_zone### -->
 
 <!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
 <dt>###LABEL_STATIC_INFO_COUNTRY###</dt>
-<dd>###FIELD_static_info_country###</dd>
+<dd>###FIELD_static_info_country###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
 
 <!-- ###SUB_INCLUDED_FIELD_country### -->
 <dt>###LABEL_COUNTRY###</dt>
-<dd>###FIELD_country###</dd>
+<dd>###FIELD_country###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_country### -->
 
 <!-- ###SUB_INCLUDED_FIELD_zip### -->
 <dt>###LABEL_ZIP###</dt>
-<dd>###FIELD_zip###</dd>
+<dd>###FIELD_zip###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_zip### -->
 
 <!-- ###SUB_INCLUDED_FIELD_telephone### -->
 <dt>###LABEL_TELEPHONE###</dt>
-<dd>###FIELD_telephone###</dd>
+<dd>###FIELD_telephone###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_telephone### -->
 
 <!-- ###SUB_INCLUDED_FIELD_fax### -->
 <dt>###LABEL_FAX###</dt>
-<dd>###FIELD_fax###</dd>
+<dd>###FIELD_fax###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_fax### -->
 
 <!-- ###SUB_INCLUDED_FIELD_email### -->
 <dt>###LABEL_EMAIL###</dt>
-<dd>###FIELD_email###</dd>
+<dd>###FIELD_email###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_email### -->
 
 <!-- ###SUB_INCLUDED_FIELD_usergroup### -->
 <dt>###LABEL_USERGROUP###</dt>
-<dd>###TCA_INPUT_usergroup###</dd>
+<dd>###TCA_INPUT_usergroup###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_usergroup### -->
 
 <!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
 <dt>###LABEL_MODULE_SYS_DMAIL_CATEGORY###</dt>
-<dd>###TCA_INPUT_module_sys_dmail_category###</dd>
+<dd>###TCA_INPUT_module_sys_dmail_category###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
 
 <!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
 <dt>###LABEL_MODULE_SYS_DMAIL_HTML###</dt>
-<dd>###TCA_INPUT_module_sys_dmail_html###</dd>
+<dd>###TCA_INPUT_module_sys_dmail_html###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
 
 <!-- ###SUB_INCLUDED_FIELD_language### -->
 <dt>###LABEL_LANGUAGE###</dt>
-<dd>###FIELD_language###</dd>
+<dd>###FIELD_language###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_language### -->
 
 <!-- ###SUB_INCLUDED_FIELD_www### -->
 <dt>###LABEL_WWW###</dt>
-<dd>###FIELD_www###</dd>
+<dd>###FIELD_www###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_www### -->
 
 <!-- ###SUB_INCLUDED_FIELD_image### -->
 <dt>###LABEL_IMAGE###</dt>
-<dd>###UPLOAD_PREVIEW_image###</dd>
+<dd>###UPLOAD_PREVIEW_image###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_image### -->
 
 <dt>&nbsp;</dt>
@@ -1558,128 +1569,128 @@ The user is informed that a message has been sent to the email address and that 
 <legend>###LABEL_V_DEAR###<br />###LABEL_V_VERIFY_BEFORE_UPDATE###</legend>
 <dl>
 <!-- ###SUB_INCLUDED_FIELD_username### -->
-<dt> ###LABEL_USERNAME### </dt>
-<dd> ###FIELD_username### </dd>
+<dt> ###LABEL_USERNAME###</dt>
+<dd> ###FIELD_username###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_username### -->
 
 <!-- ###SUB_INCLUDED_FIELD_gender### -->
-<dt> ###LABEL_GENDER### </dt>
-<dd> ###TCA_INPUT_gender### </dd>
+<dt> ###LABEL_GENDER###</dt>
+<dd> ###TCA_INPUT_gender###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_gender### -->
 
 <!-- ###SUB_INCLUDED_FIELD_name### -->
-<dt> ###LABEL_NAME### </dt>
-<dd> ###FIELD_name### </dd>
+<dt> ###LABEL_NAME###</dt>
+<dd> ###FIELD_name###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_name### -->
 
 <!-- ###SUB_INCLUDED_FIELD_first_name### -->
-<dt> ###LABEL_FIRST_NAME### </dt>
-<dd> ###FIELD_first_name### </dd>
+<dt> ###LABEL_FIRST_NAME###</dt>
+<dd> ###FIELD_first_name###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_first_name### -->
 
 <!-- ###SUB_INCLUDED_FIELD_last_name### -->
-<dt> ###LABEL_LAST_NAME### </dt>
-<dd> ###FIELD_last_name### </dd>
+<dt> ###LABEL_LAST_NAME###</dt>
+<dd> ###FIELD_last_name###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_last_name### -->
 
 <!-- ###SUB_INCLUDED_FIELD_status### -->
-<dt> ###LABEL_STATUS### </dt>
-<dd> ###TCA_INPUT_status### </dd>
+<dt> ###LABEL_STATUS###</dt>
+<dd> ###TCA_INPUT_status###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_status### -->
 
 <!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
-<dt> ###LABEL_DATE_OF_BIRTH### </dt>
-<dd> ###FIELD_date_of_birth### </dd>
+<dt> ###LABEL_DATE_OF_BIRTH###</dt>
+<dd> ###FIELD_date_of_birth###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
 
 <!-- ###SUB_INCLUDED_FIELD_title### -->
 <dt> ###LABEL_TITLE### </dt>
-<dd> ###FIELD_title### </dd>
+<dd> ###FIELD_title###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_title### -->
 
 <!-- ###SUB_INCLUDED_FIELD_company### -->
-<dt> ###LABEL_COMPANY### </dt>
-<dd> ###FIELD_company### </dd>
+<dt> ###LABEL_COMPANY###</dt>
+<dd> ###FIELD_company###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_company### -->
 
 <!-- ###SUB_INCLUDED_FIELD_address### -->
-<dt> ###LABEL_ADDRESS### </dt>
-<dd> ###FIELD_address### </dd>
+<dt> ###LABEL_ADDRESS###</dt>
+<dd> ###FIELD_address###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_address### -->
 
 <!-- ###SUB_INCLUDED_FIELD_city### -->
-<dt> ###LABEL_CITY### </dt>
-<dd> ###FIELD_city### </dd>
+<dt> ###LABEL_CITY###</dt>
+<dd> ###FIELD_city###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_city### -->
 
 <!-- ###SUB_INCLUDED_FIELD_zone### -->
-<dt> ###LABEL_ZONE### </dt>
-<dd> ###FIELD_zone### </dd>
+<dt> ###LABEL_ZONE###</dt>
+<dd> ###FIELD_zone###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_zone### -->
 
 <!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
-<dt> ###LABEL_STATIC_INFO_COUNTRY### </dt>
-<dd> ###FIELD_static_info_country### </dd>
+<dt> ###LABEL_STATIC_INFO_COUNTRY###</dt>
+<dd> ###FIELD_static_info_country###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
 
 <!-- ###SUB_INCLUDED_FIELD_country### -->
-<dt> ###LABEL_COUNTRY### </dt>
-<dd> ###FIELD_country### </dd>
+<dt> ###LABEL_COUNTRY###</dt>
+<dd> ###FIELD_country###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_country### -->
 
 <!-- ###SUB_INCLUDED_FIELD_zip### -->
-<dt> ###LABEL_ZIP### </dt>
-<dd> ###FIELD_zip### </dd>
+<dt> ###LABEL_ZIP###</dt>
+<dd> ###FIELD_zip###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_zip### -->
 
 <!-- ###SUB_INCLUDED_FIELD_telephone### -->
-<dt> ###LABEL_TELEPHONE### </dt>
-<dd> ###FIELD_telephone### </dd>
+<dt> ###LABEL_TELEPHONE###</dt>
+<dd> ###FIELD_telephone###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_telephone### -->
 
 <!-- ###SUB_INCLUDED_FIELD_fax### -->
-<dt> ###LABEL_FAX### </dt>
-<dd> ###FIELD_fax### </dd>
+<dt> ###LABEL_FAX###</dt>
+<dd> ###FIELD_fax###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_fax### -->
 
 <!-- ###SUB_INCLUDED_FIELD_email### -->
-<dt> ###LABEL_EMAIL### </dt>
-<dd> ###FIELD_email### </dd>
+<dt> ###LABEL_EMAIL###</dt>
+<dd> ###FIELD_email###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_email### -->
 
 <!-- ###SUB_INCLUDED_FIELD_usergroup### -->
 <dt>###LABEL_USERGROUP###</dt>
-<dd>###TCA_INPUT_usergroup###</dd>
+<dd>###TCA_INPUT_usergroup###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_usergroup### -->
 
 <!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
 <dt>###LABEL_MODULE_SYS_DMAIL_CATEGORY###</dt>
-<dd>###TCA_INPUT_module_sys_dmail_category###</dd>
+<dd>###TCA_INPUT_module_sys_dmail_category###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
 
 <!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
 <dt>###LABEL_MODULE_SYS_DMAIL_HTML###</dt>
-<dd>###TCA_INPUT_module_sys_dmail_html###</dd>
+<dd>###TCA_INPUT_module_sys_dmail_html###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
 
 <!-- ###SUB_INCLUDED_FIELD_language### -->
 <dt>###LABEL_LANGUAGE###</dt>
-<dd>###FIELD_language###</dd>
+<dd>###FIELD_language###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_language### -->
 
 <!-- ###SUB_INCLUDED_FIELD_www### -->
 <dt>###LABEL_WWW###</dt>
-<dd>###FIELD_www###</dd>
+<dd>###FIELD_www###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_www### -->
 
 <!-- ###SUB_INCLUDED_FIELD_image### -->
 <dt>###LABEL_IMAGE###</dt>
-<dd>###UPLOAD_PREVIEW_image###</dd>
+<dd>###UPLOAD_PREVIEW_image###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_image### -->
 
 <!-- ###SUB_INCLUDED_FIELD_comments### -->
 <dt>###LABEL_COMMENTS###</dt>
-<dd>###TCA_INPUT_comments###</dd>
+<dd>###TCA_INPUT_comments###&nbsp;</dd>
 <!-- ###SUB_INCLUDED_FIELD_comments### -->
 
 <dt>&nbsp;</dt>
@@ -1752,13 +1763,13 @@ The user is informed that a message has been sent to the email address and that 
 <p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE1###</p>
 <p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE2###</p>
 <p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
-<form id="###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###LOGIN_FORM###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 <dl>
 	<dt><label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME###</label></dt>
 	<dd> <input type="text" class="tx-srfeuserregister-pi1-text" id="tx-srfeuserregister-pi1-username" size="40" maxlength="50" title="###LABEL_TOOLTIP_LOGIN_USERNAME###" name="user" value="###FIELD_username###" /> </dd>
 
 	<dt><label for="tx-srfeuserregister-pi1-pass">###LABEL_PASSWORD###</label></dt>
-	<dd> <input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="pass" value="###FIELD_password###" size="10" maxlength="40" /> </dd>
+	<dd> <input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="pass" value="###FIELD_password###" size="10" maxlength="40" ###PASSWORD_ONCHANGE### /> </dd>
 
 	<dt>&nbsp;</dt>
 	<dd>
@@ -1805,13 +1816,13 @@ The user is informed that a message has been sent to the email address and that 
 <p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE1###</p>
 <p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE2###</p>
 <p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
-<form id="###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###LOGIN_FORM###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 <dl>
 	<dt><label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME###</label></dt>
 	<dd><input type="text" class="tx-srfeuserregister-pi1-text" id="tx-srfeuserregister-pi1-username" size="40" maxlength="50" title="###LABEL_TOOLTIP_LOGIN_USERNAME###" name="user" value="###FIELD_username###" /></dd>
 
 	<dt><label for="tx-srfeuserregister-pi1-pass">###LABEL_PASSWORD###</label></dt>
-	<dd><input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="pass" value="###FIELD_password###" size="10" maxlength="40" /></dd>
+	<dd><input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="pass" value="###FIELD_password###" size="10" maxlength="40" ###PASSWORD_ONCHANGE### /></dd>
 
 	<dt>&nbsp;</dt>
 	<dd>

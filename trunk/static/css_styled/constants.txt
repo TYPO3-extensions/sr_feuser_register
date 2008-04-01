@@ -46,6 +46,9 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Authentication code length: Length of the authentication codes. Direct Mail uses 8.
   codeLength = 8
 
+    # cat=plugin.tx_sremailsubscribe//; type=string; label= Name of the table: The name is used for the records in the frontend.
+  tableName = fe_users
+
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Country onchange attribute: Javascript to execute when the selected country is changed in the country selector box.
   onChangeCountryAttribute = javascript:window.document.getElementById('tx-srfeuserregister-pi1-fe_users_form').submit();
 
@@ -148,6 +151,9 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Redirect_url on login: Url to which the user may be redirected to upon login, when auto login is enabled.
   autoLoginRedirect_url = 
 
+    # cat=plugin.tx_srfeuserregister_pi1//; type=boolean; label= Direct Mail checked upon registration: The checkboxes for Direct Mail categories will be checked by default if you set this.
+   dmailCheckedUponRegistration = 0
+
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= User group(s) upon registration: The value of the user group field. Must be a list of integers WITHOUT spaces between the comma separated values! Furthermore these integer MUST point to actual fe_groups records!
   userGroupUponRegistration = 
 
@@ -198,5 +204,11 @@ plugin.tx_srfeuserregister_pi1 {
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label=Short URL cache lifespan: Number of days that short URL's will be kept in the DB. After this delay, the short URL's will be removed. Confirmation URL's included in email messages older than this number of days will not work.
   shortUrlLife = 30
+
+    # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Date Format (y-m-d)
+  dateFormat = Y-m-d
+
+    # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Split char for Date Format (-)
+  dateSplit = -
 
 }

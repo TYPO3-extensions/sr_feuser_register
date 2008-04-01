@@ -6,6 +6,8 @@
 
 plugin.tx_srfeuserregister_pi1 {
 
+	table.name = {$plugin.tx_srfeuserregister_pi1.tableName}
+
 	templateStyle = css-styled
 	templateFile = {$plugin.tx_srfeuserregister_pi1.file.templateFile}
 // Remember that the icon is in a fixed dimension and will not grow if the text is getting
@@ -31,6 +33,8 @@ plugin.tx_srfeuserregister_pi1 {
 
 	useShortUrls = {$plugin.tx_srfeuserregister_pi1.useShortUrls}
 	shortUrlLife = {$plugin.tx_srfeuserregister_pi1.shortUrlLife}
+	dateFormat = {$plugin.tx_srfeuserregister_pi1.dateFormat}
+	dateSplit = {$plugin.tx_srfeuserregister_pi1.dateSplit}
 
 	onChangeCountryAttribute = {$plugin.tx_srfeuserregister_pi1.onChangeCountryAttribute}
 
@@ -55,7 +59,7 @@ plugin.tx_srfeuserregister_pi1 {
 		allowUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowUserGroupSelection}
 		
 		defaultValues {
-			module_sys_dmail_html = 1
+			module_sys_dmail_html = {$plugin.tx_srfeuserregister_pi1.dmailCheckedUponRegistration}
 			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
 			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
 			by_invitation =
@@ -101,25 +105,15 @@ plugin.tx_srfeuserregister_pi1 {
 		}
 	}
 
-	setfixed = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
+	setfixed = 0
 	setfixed.APPROVE {
 		_FIELDLIST = uid,pid,usergroup
 		usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupAfterConfirmation}
 		disable = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
 	}
-
-	enableAutoLoginOnConfirmation = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnConfirmation}
-	enableAutoLoginOnCreate = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnCreate}
-	autoLoginRedirect_url = {$plugin.tx_srfeuserregister_pi1.autoLoginRedirect_url}
-
 	setfixed.DELETE {
 		_FIELDLIST = uid,pid
 	}
-
-	authcodeFields = {$plugin.tx_srfeuserregister_pi1.authcodeFields}
-	authcodeFields.codeLength = {$plugin.tx_srfeuserregister_pi1.codeLength}
-
-	enableAdminReview = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
 	setfixed.ACCEPT {
 		_FIELDLIST = uid,pid,usergroup
 		usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupAfterAcceptation}
@@ -127,6 +121,15 @@ plugin.tx_srfeuserregister_pi1 {
 	}
 	setfixed.REFUSE < .setfixed.DELETE
 	setfixed.ENTER < .setfixed.ACCEPT
+
+	enableEmailConfirmation = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
+	enableAutoLoginOnConfirmation = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnConfirmation}
+	enableAutoLoginOnCreate = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnCreate}
+	enableAdminReview = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
+	autoLoginRedirect_url = {$plugin.tx_srfeuserregister_pi1.autoLoginRedirect_url}
+
+	authcodeFields = {$plugin.tx_srfeuserregister_pi1.authcodeFields}
+	authcodeFields.codeLength = {$plugin.tx_srfeuserregister_pi1.codeLength}
 
 	invite < .create
 	invite {
@@ -150,19 +153,18 @@ plugin.tx_srfeuserregister_pi1 {
 			module_sys_dmail_category >
 			by_invitation >
 		}
-		
+
 		overrideValues {
 			username = 
 			usergroup >
 			disable = 0
 			by_invitation >
 		}
-		
+
 		evalValues {
 			username = unsetEmpty
 			usergroup = unsetEmpty
 		}
-		
 	}
 
 	infomail = 0

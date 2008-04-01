@@ -12,10 +12,10 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Frontend User Registration',
-	'description' => 'A front end user self-registration variant of Kasper SkÃ¥rhÃ¸j\'s Front End User Admin extension.',
+	'description' => 'A self-registration variant of Kasper Skårhøj\'s Front End User Admin extension.',
 	'category' => 'plugin',
 	'shy' => 0,
-	'dependencies' => 'cms,fh_library,static_info_tables',
+	'dependencies' => 'div2007,static_info_tables',
 	'conflicts' => '',
 	'priority' => '',
 	'loadOrder' => '',
@@ -28,8 +28,8 @@ $EM_CONF[$_EXTKEY] = array(
 	'clearCacheOnLoad' => 1,
 	'lockType' => '',
 	'author' => 'Stanislas Rolland / Franz Holzinger',
-	'author_email' => 'kontakt@fholzinger.com',
-	'author_company' => 'Freelancer',
+	'author_email' => 'contact@fholzinger.com',
+	'author_company' => 'jambage.com',
 	'CGLcompliance' => '',
 	'CGLcompliance_note' => '',
 	'version' => '2.5.8',
@@ -37,17 +37,15 @@ $EM_CONF[$_EXTKEY] = array(
 	'constraints' => array(
 		'depends' => array(
 			'cms' => '',
-			'fh_library' => '0.0.4-',
 			'static_info_tables' => '2.0.5-',
-			'php' => '4.1.0-0.0.0',
-			'typo3' => '4.0-0.0.0',
+			'php' => '4.2.0-',
+			'typo3' => '4.0-',
 		),
 		'conflicts' => array(
 		),
 		'suggests' => array(
+			'div2007' => '0.1.2-',
 		),
-	),
-	'suggests' => array(
 	),
 );
 

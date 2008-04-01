@@ -1,3 +1,17 @@
+2008-04-01 Franz Holzinger  <franz@fholzinger.com>
+	* new hook addGlobalMarkers for additional global markers
+	* new constant dmailCheckedUponRegistration if the Direct Mail categories shall be checked by default
+	* fix bug 3650: Password is not md5 hashed if changed after making an error on registration
+	* new feature dateFormat
+	* fix bug with not sent HTML emails in sr_email_subscribe due to wrong initializations
+	* fix bug 7376: evalFunc does not work in 2.5.8 but crashes TYPO3
+	* add &nbsp; after the preview markers in the CSS HTML template as a workaround for a bug in MS Internet Explorer 7
+	* many additions to the old style template file
+	* small modification to captcha for sr_freecap
+	* labels for eval errors translations
+	* new feature: make all objects globally available over t3lib_div::getUserObj
+	* fix bug 7822: DMAIL- Category Subscription did not work
+
 2007-10-17 Franz Holzinger  <franz@fholzinger.com>
 	* new feature: enableEmailOnUpdate = 2 to send only the changed fields in an email if a user alters his data
 	* fix bug with not saved change of unchecked check box input
