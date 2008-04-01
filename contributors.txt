@@ -3,6 +3,11 @@ Gideon So <gideonso@mcnet.com.hk>: Hongkong Chinese translations
 Thomas Dubach <tom@etown.ch>: German translations
 Dennis S. Hennen <dennis@28studios.com>: generatePassword.
 Ralph Brugger <Ralph.Brugger@linkpool.de>: captcha feature
+Dirk Heitzmann <dirk.heitzmann@c-wd.de>: date formats
+Martin Kutschker <martin.kutschker@activesolution.at>: changes to label markers
+
+
+
 
 
 

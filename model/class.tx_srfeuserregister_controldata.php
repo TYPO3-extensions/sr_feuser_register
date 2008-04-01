@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2007 Franz Holzinger <kontakt@fholzinger.com>
+*  (c) 2007-2008 Franz Holzinger <contact@fholzinger.com>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -31,14 +31,13 @@
  *
  * $Id$
  *
- * @author Franz Holzinger <kontakt@fholzinger.com>
+ * @author Franz Holzinger <contact@fholzinger.com>
  *
  * @package TYPO3
  * @subpackage sr_feuser_register
  *
  *
  */
-
 
 define ('MODE_NORMAL', '0');
 define ('MODE_PREVIEW', '1');
@@ -56,8 +55,9 @@ class tx_srfeuserregister_controldata {
 	var $cmdKey;
 	var $pid = array();
 	var $useMd5Password = FALSE;
-	var $setfixedEnabled = 1;
+	var $setfixedEnabled = 0;
 	var $bSubmit = FALSE;
+	var $failure = FALSE; // is set if data did not have the required fields set.
 
 	var $feUserData = array();
 
@@ -94,10 +94,9 @@ class tx_srfeuserregister_controldata {
 			$this->conf['enableAutoLoginOnCreate'] = FALSE;
 		}
 
-		if (isset($this->conf['setfixed'])) {
-			$this->setfixedEnabled = $this->conf['setfixed'];
+		if ($this->conf['enableEmailConfirmation'] || $this->conf['enableAdminReview'] || $this->conf['setfixed']) {
+			$this->setSetfixedEnabled(1);
 		}
-
 	}
 
 	function getPidTitle ()	{
@@ -136,8 +135,12 @@ class tx_srfeuserregister_controldata {
 		$this->cmdKey = $cmdKey;
 	}
 
-	function getFeUserData ($k)	{
-		$rc = $this->feUserData[$k];
+	function getFeUserData ($k='')	{
+		if ($k)	{
+			$rc = $this->feUserData[$k];
+		} else {
+			$rc = $this->feUserData;
+		}
 		return $rc;
 	}
 
@@ -147,6 +150,14 @@ class tx_srfeuserregister_controldata {
 		} else {
 			$this->feUserData = $dataArray;
 		}
+	}
+
+	function getFailure()	{
+		return $this->failure;
+	}
+
+	function setFailure($failure)	{
+		$this->failure = $failure;
 	}
 
 	function setSubmit($bSubmit)	{
@@ -230,10 +241,16 @@ class tx_srfeuserregister_controldata {
 	function setSetfixedEnabled ($setfixedEnabled)	{
 		$this->setfixedEnabled = $setfixedEnabled;
 	}
+
+	function getBackURL()	{
+		$rc = rawurldecode($this->getFeUserData('backURL'));
+		return $rc;
+	}
+
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_controldata.php'])  {
-  include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_controldata.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_controldata.php'])  {
+  include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_controldata.php']);
 }
 ?>

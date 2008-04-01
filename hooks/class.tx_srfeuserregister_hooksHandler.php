@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005, 2007 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
+*  (c) 2005-2008 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -32,7 +32,7 @@
  * @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
  *
  */
-	 // $invokingObj is a reference to the invoking object
+
 
 class tx_srfeuserregister_hooksHandler {
 	function registrationProcess_beforeConfirmCreate(&$recordArray, &$controlDataObj) {
@@ -79,10 +79,13 @@ class tx_srfeuserregister_hooksHandler {
 	function confirmRegistrationClass_postProcess($recordArray, &$invokingObj) {
 		// you may not see this echo if the page is redirected to auto-login
 	}
+
+	function addGlobalMarkers(&$markerArray, &$invokingObj)	{
+	}
 }
 
-if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/hooks/class.tx_srfeuserregister_hooksHandler.php"]) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/hooks/class.tx_srfeuserregister_hooksHandler.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/hooks/class.tx_srfeuserregister_hooksHandler.php']) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/hooks/class.tx_srfeuserregister_hooksHandler.php']);
 }
 
 ?>

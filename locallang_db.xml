@@ -18,7 +18,7 @@
             <label index="tt_content.pi1_flexform.display_mode.7">Edit</label>
 	    <label index="tt_content.pi1_flexform.display_mode.8">Setfixed</label>
 	    <label index="tt_content.pi1_flexform.display_mode.9">Infomail</label>
-            <label index="fe_users.static_info_country">Country:</label>
+            <label index="fe_users.static_info_country">Country Code:</label>
             <label index="fe_users.zone">State/province:</label>
             <label index="fe_users.language">Language:</label>
             <label index="fe_users.first_name">First Name:</label>
@@ -49,7 +49,7 @@
 		<label index="tt_content.pi1_flexform.display_mode.7">Ret</label>
 		<label index="tt_content.pi1_flexform.display_mode.8">Setfixed</label>
 		<label index="tt_content.pi1_flexform.display_mode.9">Infomail</label>
-		<label index="fe_users.static_info_country">Land:</label>
+		<label index="fe_users.static_info_country">Ländercode:</label>
 		<label index="fe_users.zone">Stat/Provins/Amt:</label>
 		<label index="fe_users.language">Sprog:</label>
 		<label index="fe_users.first_name">Fornavn:</label>
@@ -94,7 +94,7 @@
             <label index="fe_users.status.I.1">Student</label>
             <label index="fe_users.status.I.2">Schüler</label>
             <label index="fe_users.status.I.3">Angestellt</label>
-            <label index="fe_users.status.I.4">Selbstständig</label>
+            <label index="fe_users.status.I.4">Selbständig</label>
             <label index="fe_users.status.I.5">halbtags beschäftigt</label>
             <label index="fe_users.status.I.6">Rentner</label>
             <label index="fe_users.comments">Kommentare:</label>

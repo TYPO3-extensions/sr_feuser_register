@@ -84,6 +84,7 @@
 			<label index="tooltip_invitation_address">Enter the address (number, street, apt.).</label>
 			<label index="missing_address">Please enter your address!</label>
 			<label index="missing_address_informal">Please enter your address!</label>
+			<label index="missing_captcha_response">Please enter the captcha phrase!</label>
 			<label index="missing_invitation_address">Please enter an address!</label>
 			<label index="city">City:</label>
 			<label index="tooltip_city">Enter the name of the city or village.</label>
@@ -138,8 +139,10 @@
 			<label index="tooltip_email_informal">Enter your email address.</label>
 			<label index="tooltip_invitation_email">Enter the email address of the invited person.</label>
 			<label index="missing_email">A valid e-mail is required.</label>
-			<label index="evalErrors_email_email">According to our verifications, the e-mail you entered is not valid. Perhaps it was not entered correctly?</label>
-			<label index="evalErrors_email_email_informal">According to our verifications, the e-mail you entered is not valid. Perhaps it was not entered correctly?</label>
+			<label index="evalErrors_email">Please enter a valid e-mail address.</label>
+			<label index="evalErrors_email_informal">Please enter a valid e-mail address.</label>
+			<label index="evalErrors_email_email">According to our verifications, the e-mail you have entered is not valid. Perhaps it was not entered correctly?</label>
+			<label index="evalErrors_email_email_informal">According to our verifications, the e-mail you entered is not valid. Perhaps you did not enter it correctly?</label>
 			<label index="evalErrors_uniqueLocal_email">This e-mail address already exist.</label>
 			<label index="module_sys_dmail_html">Receive HTML e-mails?</label>
 			<label index="yes">Yes</label>
@@ -260,8 +263,8 @@
 			<label index="v_registration_created">%3$s created a new membership with %1$s.</label>
 			<label index="v_registration_updated_subject">Your membership details with &lt;b&gt;%1$s&lt;/b&gt; have been updated.</label>
 			<label index="v_registration_updated_subject_informal">Your membership details with &lt;b&gt;%1$s&lt;/b&gt; have been updated.</label>
-			<label index="v_registration_updated_message1">Thank your for keeping your profile up-to-date.</label>
-			<label index="v_registration_updated_message1_informal">Thank your for keeping your profile up-to-date.</label>
+			<label index="v_registration_updated_message1">Thank you for keeping your profile up-to-date.</label>
+			<label index="v_registration_updated_message1_informal">Thanks for keeping your profile up-to-date.</label>
 			<label index="v_registration_updated">%3$s updated his(her) profile with %1$s.</label>
 			<label index="v_invitation_confirm">The invitation has been sent.</label>
 			<label index="v_invitation_account_was_created">The membership &lt;b&gt;%2$s&lt;/b&gt; has been created. An invitation to confirm your registration with &lt;b&gt;%1$s&lt;/b&gt; was sent to &lt;b&gt;%3$s&lt;/b&gt; at the e-mail address &lt;b&gt;%4$s&lt;/b&gt;.</label>
@@ -371,8 +374,6 @@ username &lt;b&gt;%2$s&lt;/b&gt; and password &lt;b&gt;%5$s&lt;/b&gt;.&lt;br /&g
 			<label index="evalErrors_uniqueLocal_informal">This value already exist. Please enter a new value.</label>
 			<label index="evalErrors_twice">Please enter the same value twice.</label>
 			<label index="evalErrors_twice_informal">Please enter the same value twice.</label>
-			<label index="evalErrors_email">Please enter a valid e-mail address.</label>
-			<label index="evalErrors_email_informal">Please enter a valid e-mail address.</label>
 			<label index="evalErrors_required">Please enter a value!</label>
 			<label index="evalErrors_required_informal">Please enter a value!</label>
 			<label index="evalErrors_atLeast">You must enter at least %s characters!</label>
@@ -381,6 +382,20 @@ username &lt;b&gt;%2$s&lt;/b&gt; and password &lt;b&gt;%5$s&lt;/b&gt;.&lt;br /&g
 			<label index="evalErrors_atMost_informal">You must enter at most %s characters!</label>
 			<label index="evalErrors_date">Please enter a valid date in format yyyy-mm-dd!</label>
 			<label index="evalErrors_date_informal">Please enter a valid date in format yyyy-mm-dd!</label>
+			<label index="evalErrors_existed_already">The value existed already. Enter a new value.</label>
+			<label index="evalErrors_same_twice">You must enter the same value twice.</label>
+			<label index="evalErrors_valid_email">You must enter a valid email address.</label>
+			<label index="evalErrors_required">You must enter a value!</label>
+			<label index="evalErrors_atleast_characters">You must enter at least %s characters!</label>
+			<label index="evalErrors_atmost_characters">You must enter at most %s characters!</label>
+			<label index="evalErrors_unvalid_list">The value was not a valid value from this list: %s</label>
+			<label index="evalErrors_size_too_large">The file is larger than %s KB.</label>
+			<label index="evalErrors_file_extension">The file extension %s is not allowed.</label>
+			<label index="evalErrors_unvalid_url">Please enter a valid Internet site address.</label>
+			<label index="evalErrors_unvalid_date">Please enter a valid date.</label>
+			<label index="evalErrors_captcha">invalid!</label>
+			<label index="internal_no_subtemplate">The subpart %s has not been found inside of the template file.</label>
+			<label index="internal_edit_option">Edit-option is not set in TypoScript.</label>
 		</languageKey>
 	</data>
 </T3locallang>

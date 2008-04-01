@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2007 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca)>
+*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca)>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -42,7 +42,6 @@
  */
 
 
-
 class tx_srfeuserregister_auth {
 	var $pibase;
 	var $conf = array();
@@ -57,16 +56,19 @@ class tx_srfeuserregister_auth {
 
 			// Setting the authCode length
 		$this->config['codeLength'] = intval($this->conf['authcodeFields.']['codeLength']) ? intval($this->conf['authcodeFields.']['codeLength']) : 8;
-
+		$this->config['addKey'] = ($this->conf['authcodeFields.']['addKey'] ? $this->conf['authcodeFields.']['addKey'] : 'A');
 	}
+
 
 	function setAuthCode($code)	{
 		$this->authCode = $code;
 	}
 
+
 	function getAuthCode()	{
 		return $this->authCode;
 	}
+
 
 	/**
 	* Computes the authentication code
@@ -76,21 +78,19 @@ class tx_srfeuserregister_auth {
 	* @return string  the code
 	*/
 	function authCode($r, $extra = '') {
-		global $TYPO3_CONF_VARS;
-
 		$rc = '';
 		$l = $this->config['codeLength'];
 		if ($this->conf['authcodeFields']) {
 			$fieldArr = t3lib_div::trimExplode(',', $this->conf['authcodeFields'], 1);
 			$value = '';
-			while (list(, $field) = each($fieldArr)) {
+			foreach($fieldArr as $field) {
 				$value .= $r[$field].'|';
 			}
 			$value .= $extra.'|'.$this->conf['authcodeFields.']['addKey'];
 			if ($this->conf['authcodeFields.']['addDate']) {
 				$value .= '|'.date($this->conf['authcodeFields.']['addDate']);
 			}
-			$value .= $TYPO3_CONF_VARS['SYS']['encryptionKey'];
+			$value .= $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
 			$rc = substr(md5($value), 0, $l);
 		}
 		return $rc;
@@ -120,30 +120,26 @@ class tx_srfeuserregister_auth {
 	* @return string  the hash value
 	*/
 	function setfixedHash($recCopy, $fields = '') {
-		global $TYPO3_CONF_VARS;
-
 		$recCopy_temp=array();
 		if ($fields) {
 			$fieldArr = t3lib_div::trimExplode(',', $fields, 1);
-			reset($fieldArr);
-			while (list($k, $v) = each($fieldArr)) {
+			foreach($fieldArr as $k => $v) {
 				$recCopy_temp[$k] = $recCopy[$v];
 			}
 		} else {
 			$recCopy_temp = $recCopy;
 		}
 		$preKey = implode('|',$recCopy_temp);
-		$authCode = $preKey.'|'.$this->conf['authcodeFields.']['addKey'].'|'.$TYPO3_CONF_VARS['SYS']['encryptionKey'];
+		$authCode = $preKey.'|'.$this->config['addKey'].'|'.$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
 		$authCode = substr(md5($authCode), 0, $this->config['codeLength']);
 		//$authcode = t3lib_div::stdAuthCode($recCopy,$fields,$this->codeLength);
 
 		return $authCode;
 	}	// setfixedHash
-
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_auth.php'])  {
-  include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_auth.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_auth.php'])  {
+  include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_auth.php']);
 }
 ?>

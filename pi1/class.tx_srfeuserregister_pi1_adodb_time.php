@@ -23,7 +23,8 @@
  ***************************************************************/
 	 
 /**
- * This class contains a libraby functions to manipulate date before 1970:
+ * This class contains a library functions to manipulate date before 1970:
+ * The code comes from http://adodb.sourceforge.net/
  *
  * $Id$
  *
@@ -719,16 +720,6 @@ function _adodb_getdate($origd=false,$fast=false,$is_gmt=false)
 	return array(
 		'seconds' => $secs,
 		'minutes' => $min,
-
-
-
-
-
-
-
-
-
-
 		'hours' => $hour,
 		'mday' => $day,
 		'wday' => $dow,
@@ -1011,8 +1002,8 @@ function adodb_mktime($hr,$min,$sec,$mon=false,$day=false,$year=false,$is_dst=fa
 		 
 	} //end of class
 	 
-	if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_adodb_time.php"]) {
-		include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_adodb_time.php"]);
+	if (defined("TYPO3_MODE") && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_adodb_time.php"]) {
+		include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_adodb_time.php"]);
 	}
 	 
 ?>

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2007 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca)>
+*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca)>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -33,7 +33,7 @@
  *
  * @author Kasper Skaarhoj <kasper2007@typo3.com>
  * @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
- * @author Franz Holzinger <kontakt@fholzinger.com>
+ * @author Franz Holzinger <contact@fholzinger.com>
  *
  * @package TYPO3
  * @subpackage sr_feuser_register
@@ -69,12 +69,13 @@ class tx_srfeuserregister_url {
 		$unsetVars = (array) $unsetVars;
 		if ($usePiVars) {
 			$vars = array_merge($this->controlData->getPiVars(), $vars); //vars override pivars
-			while (list(, $key) = each($unsetVars)) {
+			foreach($unsetVars as $key) {
 				// unsetvars override anything
 				unset($vars[$key]);
 			}
 		}
-		while (list($key, $val) = each($vars)) {
+
+		foreach($vars as $key => $val) {
 			$piVars[$this->controlData->getPrefixId() . '['. $key . ']'] = $val;
 		}
 		if ($tag) {
@@ -87,12 +88,10 @@ class tx_srfeuserregister_url {
 
 		return $rc;
 	}	// get_url
-
-
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_url.php'])  {
-  include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_url.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_url.php'])  {
+  include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_url.php']);
 }
 ?>
