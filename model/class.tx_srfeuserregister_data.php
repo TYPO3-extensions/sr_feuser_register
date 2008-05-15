@@ -125,7 +125,7 @@ class tx_srfeuserregister_data {
 		}
 		// </Steve Webster added short url feature>
 		$this->controlData->setFeUserData ($feUserData);
-		$feUserCmd = $feUserData['cmd'];
+		$feUserCmd = htmlspecialchars($feUserData['cmd']);
 		if (isset($feUserCmd))	{
 			$cmd = $feUserCmd;
 			$this->controlData->setCmd($cmd);
@@ -145,9 +145,12 @@ class tx_srfeuserregister_data {
 			}
 		}
 		$feUserdata = $this->controlData->getFeUserData();
+		$this->secureInput($feUserData);
+		$this->controlData->setFeUserData ($feUserData);
 
 		if (isset($fe) && is_array($fe))	{
 			$feDataArray = $fe[$theTable];
+			$this->secureInput($feDataArray);
 			$dataArray = $feDataArray;
 			$this->tca->modifyRow($dataArray, FALSE);
 			$this->setDataArray($dataArray);
@@ -184,6 +187,31 @@ class tx_srfeuserregister_data {
 
 			// Fetching the template file
 		$this->setTemplateCode($this->cObj->fileResource($this->conf['templateFile']));
+	}
+
+	/**
+	* Changes potential malicious script code of the input to harmless HTML
+	*
+	* @return void
+	*/
+	function secureInput(&$dataArray)	{
+		if (isset($dataArray) && is_array($dataArray))	{
+			foreach ($dataArray as $k => $value)	{
+				if (is_array($value))	{
+					foreach ($value as $k2 => $value2)	{
+						if (is_array($value2))	{
+							foreach ($value2 as $k3 => $value3)	{
+								$dataArray[$k][$k2][$k3] = htmlspecialchars($value3);
+							}
+						} else {
+							$dataArray[$k][$k2] = htmlspecialchars($value2);
+						}
+					}
+				} else {
+					$dataArray[$k] = htmlspecialchars($value);
+				}
+			}
+		}
 	}
 
 	function setError ($error)	{
@@ -491,7 +519,12 @@ class tx_srfeuserregister_data {
 									if ($fileNameArray[0]!='')	{
 										foreach($fileNameArray as $filename) {
 											$fI = pathinfo($filename);
-											if (!count($allowedExtArray) || in_array(strtolower($fI['extension']), $allowedExtArray)) {
+											$fileExtension = strtolower($fI['extension']);
+											$bAllowedFilename = $this->checkFilename($filename);
+											if (
+												$bAllowedFilename &&
+												(!count($allowedExtArray) || in_array($fileExtension, $allowedExtArray))
+											) {
 												if (@is_file(PATH_site.$uploadPath.'/'.$filename)) {
 													if (!$maxSize || (filesize(PATH_site.$uploadPath.'/'.$filename) < ($maxSize * 1024))) {
 														$newFileNameArray[] = $filename;
@@ -704,6 +737,27 @@ class tx_srfeuserregister_data {
 
 
 	/**
+	* Checks for valid filenames
+	*
+	* @param string  $filename: the name of the file
+	* @return void
+	*/
+	function checkFilename($filename)	{
+		$rc = TRUE;
+
+		$fI = pathinfo($filename);
+		$fileExtension = strtolower($fI['extension']);
+		if (strpos($fileExtension,'php') !== FALSE)	{
+			$rc = FALSE; // no php files are allowed here
+		}
+		if (strpos($filename,'..') !== FALSE)	{
+			$rc = FALSE; // no '..' path is allowed
+		}
+		return $rc;
+	}
+
+
+	/**
 	* Processes uploaded files
 	*
 	* @param string  $theField: the name of the field
@@ -718,13 +772,18 @@ class tx_srfeuserregister_data {
 		if (is_array($fieldDataArray) && count($fieldDataArray)) {
 			foreach($fieldDataArray as $i => $file) {
 				if (is_array($file)) {
+					if ($this->checkFilename($file['name']) == FALSE)	{
+						continue; // no php files are allowed here
+					}
 					if ($uploadPath && $file['submit_delete']) {
 						if(@is_file(PATH_site.$uploadPath.'/'.$file['name'])) @unlink(PATH_site.$uploadPath.'/'.$file['name']);
 					} else {
 						$fileNameArray[] = $file['name'];
 					}
 				} else {
-					$fileNameArray[] = $file;
+					if ($this->checkFilename($file))	{
+						$fileNameArray[] = $file;
+					}
 				}
 			}
 		}
@@ -732,7 +791,7 @@ class tx_srfeuserregister_data {
 		if ($uploadPath && is_array($_FILES['FE']['name'][$theTable][$theField]) && $this->evalFileError($_FILES['FE']['error'])) {
 			reset($_FILES['FE']['name'][$theTable][$theField]);
 			foreach($_FILES['FE']['name'][$theTable][$theField] as $i => $filename) {
-				if ($filename) {
+				if ($filename && $this->checkFilename($filename)) {
 					$fI = pathinfo($filename);
 					if (t3lib_div::verifyFilenameAgainstDenyPattern($fI['name'])) {
 						$tmpFilename = (($GLOBALS['TSFE']->loginUser)?($GLOBALS['TSFE']->fe_user->user['username'].'_'):'').basename($filename, '.'.$fI['extension']).'_'.t3lib_div::shortmd5(uniqid($filename)).'.'.$fI['extension'];

@@ -1,3 +1,7 @@
+2008-05-15 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.10:
+	* fix security issues
+
 2008-04-01 Franz Holzinger  <franz@fholzinger.com>
 	* new hook addGlobalMarkers for additional global markers
 	* new constant dmailCheckedUponRegistration if the Direct Mail categories shall be checked by default
