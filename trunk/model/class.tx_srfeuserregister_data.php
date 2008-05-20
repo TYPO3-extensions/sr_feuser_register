@@ -125,9 +125,9 @@ class tx_srfeuserregister_data {
 		}
 		// </Steve Webster added short url feature>
 		$this->controlData->setFeUserData ($feUserData);
-		$feUserCmd = htmlspecialchars($feUserData['cmd']);
-		if (isset($feUserCmd))	{
-			$cmd = $feUserCmd;
+
+		if (isset($feUserData) && is_array($feUserData) && isset($feUserData['cmd']))	{
+			$cmd = htmlspecialchars($feUserData['cmd']);
 			$this->controlData->setCmd($cmd);
 		}
 
