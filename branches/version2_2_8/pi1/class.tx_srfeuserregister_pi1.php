@@ -31,8 +31,9 @@
 *
 * @author Kasper Skaarhoj <kasper@typo3.com>
 * @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
+* @author Franz Holzinger <contact@fholzinger.com>
 *
-* TYPO3 CVS ID: $Id: class.tx_srfeuserregister_pi1.php,v 1.32 2006/01/15 03:37:14 stanrolland Exp $
+* $Id$
 *
 */
 
