@@ -217,7 +217,6 @@ class tx_srfeuserregister_tca {
 		} else {
 			$mrow = $row;
 		}
-
 		$fields = $this->conf[$cmdKey.'.']['fields'];
 		foreach ($this->TCA['columns'] as $colName => $colSettings) {
 
@@ -489,6 +488,7 @@ class tx_srfeuserregister_tca {
 										$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
 										$selectedValue = false;
 									}
+
 									$whereClause = ($theTable == 'fe_users' && $colName == 'usergroup') ? ' pid='.intval($this->controlData->getPid()).' ' : ' 1=1';
 									if ($TCA[$colConfig['foreign_table']] && $TCA[$colConfig['foreign_table']]['ctrl']['languageField'] && $TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField']) {
 										$whereClause .= ' AND '.$TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField'].'=0';

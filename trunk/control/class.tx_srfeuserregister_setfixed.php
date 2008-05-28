@@ -86,7 +86,6 @@ class tx_srfeuserregister_setfixed {
 	*/ 
 	function processSetFixed($theTable, $uid, &$markContentArray, &$templateCode, &$origArr, &$pObj, &$dataObj) {
 		global $TSFE;
-
 		if ($this->controlData->getSetfixedEnabled()) {
 			// $origArr = $TSFE->sys_page->getRawRecord($theTable, $uid);
 			$row = $origArr;
@@ -241,7 +240,6 @@ class tx_srfeuserregister_setfixed {
 				unset($setfixedpiVars);
 				$recCopy = $r;
 				$setfixedpiVars[$prefixId .'[rU]'] = $r['uid'];
-
 				if ($theTable != 'fe_users' && $theKey == 'EDIT' ) {
 					if (is_array($data) ) {
 						reset($data);
@@ -259,7 +257,10 @@ class tx_srfeuserregister_setfixed {
 				} else {
 					$setfixedpiVars[$prefixId.'[cmd]'] = 'setfixed';
 					$setfixedpiVars[$prefixId.'[sFK]'] = $theKey;
-					$setfixedpiVars[$prefixId.'[cv]'] = $r['chalvalue'];
+					if (isset($r['chalvalue']))	{
+						$setfixedpiVars[$prefixId.'[cv]'] = $r['chalvalue'];
+					}
+
 					if (is_array($data) ) {
 						foreach($data as $fieldName => $fieldValue) {
 							$setfixedpiVars['fD['.$fieldName.']'] = rawurlencode($fieldValue);
@@ -270,7 +271,6 @@ class tx_srfeuserregister_setfixed {
 					$linkPID = $this->controlData->getPID('confirm');
 					if ($this->controlData->getCmd() == 'invite') {
 						$linkPID = $this->controlData->getPID('confirmInvitation');
-
 					}
 				}
 				if (t3lib_div::_GP('L') && !t3lib_div::inList($GLOBALS['TSFE']->config['config']['linkVars'], 'L')) {
@@ -286,7 +286,8 @@ class tx_srfeuserregister_setfixed {
 				$confirmType = (t3lib_div::testInt($this->conf['confirmType']) ? intval($this->conf['confirmType']) : $TSFE->type);
 				$url = $this->cObj->getTypoLink_URL($linkPID.','.$confirmType, $setfixedpiVars, '', $conf);
 				$bIsAbsoluteURL = ($TSFE->absRefPrefix || (strncmp($url,'http',4) == 0) || (strncmp($url,'https',5) == 0));
-				$markerArray['###SETFIXED_'.$this->cObj->caseshift($theKey,'upper').'_URL###'] = ($bIsAbsoluteURL ? '' : $this->controlData->getSiteUrl()) . $url;
+				$markerKey = '###SETFIXED_'.$this->cObj->caseshift($theKey,'upper').'_URL###';
+				$markerArray[$markerKey] = ($bIsAbsoluteURL ? '' : $this->controlData->getSiteUrl()) . $url;
 			}
 		}
 	}	// computeUrl
