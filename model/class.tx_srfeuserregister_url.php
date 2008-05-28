@@ -64,10 +64,10 @@ class tx_srfeuserregister_url {
 	* @return string  generated link or url
 	*/
 	function get($tag = '', $id, $vars = array(), $unsetVars = array(), $usePiVars = true) {
-
 		$vars = (array) $vars;
 		$unsetVars = (array) $unsetVars;
 		if ($usePiVars) {
+
 			$vars = array_merge($this->controlData->getPiVars(), $vars); //vars override pivars
 			foreach($unsetVars as $key) {
 				// unsetvars override anything
@@ -78,14 +78,13 @@ class tx_srfeuserregister_url {
 		foreach($vars as $key => $val) {
 			$piVars[$this->controlData->getPrefixId() . '['. $key . ']'] = $val;
 		}
+
 		if ($tag) {
 			$rc = $this->cObj->getTypoLink($tag, $id, $piVars);
 		} else {
 			$rc = $this->cObj->getTypoLink_URL($id, $piVars);
 		}
-
 		$rc = htmlspecialchars($rc);
-
 		return $rc;
 	}	// get_url
 }

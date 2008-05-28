@@ -373,6 +373,7 @@ class tx_srfeuserregister_marker {
 		$unsetVars = t3lib_div::trimExplode(',', $unsetVarsList);
 		$unsetVars['cmd'] = 'cmd';
 		$formUrl = $this->urlObj->get('', $GLOBALS['TSFE']->id.','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
+
 		$markerArray['###FORM_URL###'] = $formUrl;
 		$theTable = $this->controlData->getTable();
 

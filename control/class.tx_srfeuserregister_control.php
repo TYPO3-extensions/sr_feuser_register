@@ -74,37 +74,38 @@ class tx_srfeuserregister_control {
 		$this->controlData = &$controlData;
 		$this->setfixedObj = &$setfixedObj;
 
-		$theTable = $this->controlData->getTable();
 		$extKey = $this->controlData->getExtKey();
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['useFlexforms']) {
-				// Static Methods for Extensions for flexform functions
-			require_once(PATH_BE_div2007.'class.tx_div2007_alpha.php');
-				// check the flexform
-			$this->langObj->pi_initPIflexForm();
-			$cmd = tx_div2007_alpha::getSetupOrFFvalue_fh001(
-				$this->langObj,
-				'',
-				'',
-				$this->conf['defaultCode'],
-				$this->cObj->data['pi_flexform'],
-				'display_mode',
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['useFlexforms']
-			);
-		} else {
-			if (!$cmd)	{
-				$cmd = $this->cObj->data['select_key'];
+		$cmd = $this->controlData->getCmd();
+		if ($cmd=='')	{
+			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['useFlexforms']) {
+					// Static Methods for Extensions for flexform functions
+				require_once(PATH_BE_div2007.'class.tx_div2007_alpha.php');
+					// check the flexform
+				$this->langObj->pi_initPIflexForm();
+				$cmd = tx_div2007_alpha::getSetupOrFFvalue_fh001(
+					$this->langObj,
+					'',
+					'',
+					$this->conf['defaultCode'],
+					$this->cObj->data['pi_flexform'],
+					'display_mode',
+					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['useFlexforms']
+				);
+			} else {
+				if (!$cmd)	{
+					$cmd = $this->cObj->data['select_key'];
+				}
+				$cmd = ($cmd ? $cmd : $this->conf['defaultCODE']);
 			}
-			$cmd = ($cmd ? $cmd : $this->conf['defaultCODE']);
 		}
-
 		$cmd = $this->cObj->caseshift($cmd,'lower');
+
 		if ($cmd == 'edit' || $cmd == 'invite') {
 			$cmdKey = $cmd;
 		} else {
 			$cmdKey = 'create';
 		}
 		$this->controlData->setCmdKey($cmdKey);
-
 		if (!t3lib_extMgm::isLoaded('direct_mail')) {
 			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('module_sys_dmail_category')));
 			$this->conf[$cmdKey.'.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'], 1), array('module_sys_dmail_category')));
@@ -116,6 +117,7 @@ class tx_srfeuserregister_control {
 			$this->conf[$cmdKey.'.'][$v] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.'][$v])));
 		}
 
+		$theTable = $this->controlData->getTable();
 		if ($theTable == 'fe_users') {
 			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'] . ',username', 1)));
 			$this->conf[$cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'] . ',username', 1)));
@@ -223,9 +225,8 @@ class tx_srfeuserregister_control {
 			// Evaluate incoming data
 		if (count($dataArray)) {
 			$this->data->setName($dataArray, $cmdKey);
-			$this->data->parseValues($dataArray);
+			$this->data->parseValues($dataArray,$origArray);
 			$this->data->overrideValues($dataArray, $cmdKey);
-
 			$submitData = $this->controlData->getFeUserData('submit');
 			if ($submitData != '')	{
 				$bSubmit = TRUE;
@@ -237,6 +238,7 @@ class tx_srfeuserregister_control {
 				$this->data->evalValues(
 					$theTable,
 					$dataArray,
+					$origArray,
 					$markerArray,
 					$cmdKey,
 					$this->controlData->getRequiredArray()
@@ -252,6 +254,7 @@ class tx_srfeuserregister_control {
 				$this->data->evalValues(
 					$theTable,
 					$dataArray,
+					$origArray,
 					$markerArray,
 					$cmdKey,
 					$this->controlData->getRequiredArray()
@@ -404,6 +407,7 @@ class tx_srfeuserregister_control {
 			$this->marker->setArray($markerArray);
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 		} else {
+			$this->marker->setArray($markerArray);
 
 				// Finally, if there has been no attempt to save. That is either preview or just displaying and empty or not correctly filled form:
 			switch($cmd) {

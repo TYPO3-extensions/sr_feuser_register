@@ -129,7 +129,9 @@ class tx_srfeuserregister_auth {
 		} else {
 			$recCopy_temp = $recCopy;
 		}
-		$preKey = implode('|',$recCopy_temp);
+		if (isset($recCopy_temp) && is_array($recCopy_temp))	{
+			$preKey = implode('|',$recCopy_temp);
+		}
 		$authCode = $preKey.'|'.$this->config['addKey'].'|'.$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
 		$authCode = substr(md5($authCode), 0, $this->config['codeLength']);
 		//$authcode = t3lib_div::stdAuthCode($recCopy,$fields,$this->codeLength);

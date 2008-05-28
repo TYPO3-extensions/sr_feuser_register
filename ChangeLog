@@ -1,3 +1,8 @@
+2008-05-28 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.12:
+	* fix bug 8382: when some records have already been stored and there is evaluation to edit fields which are not shown then the error message is not displayed. ###EVAL_ERROR_saved### is a new marker in order to display an error message for all fields which have been wrongly stored.
+	* restructure code: The cmd piVar must be evaluated already in the controldata because cmdKey must be set after it.
+
 2008-05-20 Franz Holzinger  <franz@fholzinger.com>
 	* Version 2.5.11:
 	* fix bug 8416: the CODE and flexforms have been emptied
