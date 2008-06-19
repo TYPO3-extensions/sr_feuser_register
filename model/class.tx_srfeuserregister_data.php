@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca)>
+*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -31,8 +31,8 @@
  *
  * $Id$
  *
- * @author Kasper Skaarhoj <kasper2007@typo3.com>
- * @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
+ * @author Kasper Skaarhoj <kasper2008@typo3.com>
+ * @author Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
  * @author Franz Holzinger <contact@fholzinger.com>
  *
  * @package TYPO3
@@ -51,10 +51,8 @@ class tx_srfeuserregister_data {
 	var $config = array();
 	var $lang;
 	var $tca;
-	var $auth;
 	var $freeCap; // object of type tx_srfreecap_pi2
 	var $controlData;
-
 	var $dataArray = array();
 	var $currentArray = array();
 	var $origArr = array();
@@ -68,7 +66,6 @@ class tx_srfeuserregister_data {
 	var $fileFunc = ''; // Set to a basic_filefunc object for file uploads
 
 	var $error;
-	var $sys_language_content;
 	var $adminFieldList;
 	var $additionalUpdateFields;
 	var $fieldList; // List of fields from fe_admin_fieldList
@@ -79,7 +76,7 @@ class tx_srfeuserregister_data {
 	var $templateCode;
 
 
-	function init(&$pibase, &$conf, &$config, &$lang, &$tca, &$auth, &$control, $theTable, &$adminFieldList, &$controlData)	{
+	function init(&$pibase, &$conf, &$config, &$lang, &$tca, &$control, $theTable, &$adminFieldList, &$controlData)	{
 		global $TSFE, $TCA;
 
 		$this->pibase = &$pibase;
@@ -87,12 +84,9 @@ class tx_srfeuserregister_data {
 		$this->config = &$config;
 		$this->lang = &$lang;
 		$this->tca = &$tca;
-		$this->auth = &$auth;
 		$this->control = &$control;
 		$this->controlData = &$controlData;
 		$this->cObj = &$pibase->cObj;
-		$this->sys_language_content = $pibase->sys_language_content;
-			// Initialise fileFunc object
 		$this->fileFunc = t3lib_div::makeInstance('t3lib_basicFileFunctions');
 
 		if (t3lib_extMgm::isLoaded('sr_freecap') ) {
@@ -101,8 +95,9 @@ class tx_srfeuserregister_data {
 			$this->setSpecialFieldList('captcha_response');
 		}
 
-
+			// Get parameters
 		$fe = t3lib_div::_GP('FE');
+
 		if (isset($fe) && is_array($fe))	{
 			$feDataArray = $fe[$theTable];
 			$this->controlData->secureInput($feDataArray);
@@ -110,11 +105,11 @@ class tx_srfeuserregister_data {
 			$this->tca->modifyRow($dataArray, FALSE);
 			$this->setDataArray($dataArray);
 		}
-
 		$cmdKey = $this->controlData->getCmdKey();
 		$cmd = $this->controlData->getCmd();
 		$feUserdata = $this->controlData->getFeUserData();
 		$theUid = ($dataArray['uid'] ? $dataArray['uid'] : ($feUserdata['rU'] ? $feUserdata['rU'] : ($cmd != 'invite' && $cmd != 'setfixed' ? $TSFE->fe_user->user['uid'] : 0 )));
+
 		if ($theUid)	{
 			$this->setRecUid($theUid);
 			$origArr = $TSFE->sys_page->getRawRecord($theTable, $theUid);
@@ -214,6 +209,7 @@ class tx_srfeuserregister_data {
 	}
 
 	function setDataArray ($dataArray, $k='', $bOverrride=TRUE)	{
+
 		if ($k != '')	{
 			if ($bOverrride || !isset($this->dataArray[$k]))	{
 				$this->dataArray[$k] = $dataArray;
@@ -272,7 +268,8 @@ class tx_srfeuserregister_data {
 		if (is_array($this->conf[$cmdKey.'.']['overrideValues.'])) {
 			foreach ($this->conf[$cmdKey.'.']['overrideValues.'] as $theField => $theValue) {
 				if ($theField == 'usergroup' && $this->controlData->getTable() == 'fe_users' && $this->conf[$cmdKey.'.']['allowUserGroupSelection']) {
-					 $dataValue = implode(',', array_merge(array_diff(t3lib_div::trimExplode(',', $dataArray[$theField], 1), t3lib_div::trimExplode(',', $theValue, 1)), t3lib_div::trimExplode(',', $theValue, 1)));
+					$dataDiff = array_diff($dataArray[$theField], t3lib_div::trimExplode(',', $theValue, 1));
+					$dataValue = implode(',', array_merge($dataDiff, t3lib_div::trimExplode(',', $theValue, 1)));
 				} else {
 					$stdWrap = $this->conf[$cmdKey.'.']['overrideValues.'][$theField.'.'];
 					if ($stdWrap)	{
@@ -298,7 +295,6 @@ class tx_srfeuserregister_data {
 	function defaultValues ($cmdKey) {
 		$cmdKey = $this->controlData->getCmdKey();
 		$dataArray = array();
-
 		// Addition of default values
 		if (is_array($this->conf[$cmdKey.'.']['defaultValues.'])) {
 			foreach($this->conf[$cmdKey.'.']['defaultValues.'] as $theField => $theValue) {
@@ -317,9 +313,12 @@ class tx_srfeuserregister_data {
 	*/
 	function evalValues ($theTable, &$dataArray, &$origArray, &$markContentArray, $cmdKey, $requiredArray) {
 		$displayFieldArray = t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1);
-
+		if($this->controlData->useCaptcha())	{
+			$displayFieldArray[] = 'captcha_response';
+		}
 		// Check required, set failure if not ok.
 		$failureArr = array();
+
 		foreach ($requiredArray as $k => $theField)	{
 			if (!trim($dataArray[$theField]) && trim($dataArray[$theField]) != '0') {
 				if (isset($dataArray[$theField]))	{
@@ -328,6 +327,7 @@ class tx_srfeuserregister_data {
 				}
 			}
 		}
+
 		$pid = intval($dataArray['pid']);
 
 		// Evaluate: This evaluates for more advanced things than "required" does. But it returns the same error code, so you must let the required-message tell, if further evaluation has failed!
@@ -467,14 +467,18 @@ class tx_srfeuserregister_data {
 															$this->failureMsg[$theField][] = sprintf($this->getFailureText($theField, 'max_size', 'evalErrors_size_too_large'), $maxSize);
 															$failureArr[] = $theField;
 															$this->inError[$theField] = TRUE;
-															if (@is_file(PATH_site.$uploadPath.'/'.$filename)) @unlink(PATH_site.$uploadPath.'/'.$filename);
+															if (@is_file(PATH_site.$uploadPath.'/'.$filename))	{
+																@unlink(PATH_site.$uploadPath.'/'.$filename);
+															}
 														}
 													}
 												} else {
-													$this->failureMsg[$theField][] = sprintf($this->getFailureText($theField, 'allowed', 'evalErrors_file_extension'), $fI['extension']);
+													$this->failureMsg[$theField][] = sprintf($this->getFailureText($theField, 'allowed', 'evalErrors_file_extension'), $fileExtension);
 													$failureArr[] = $theField;
 													$this->inError[$theField] = TRUE;
-													if (@is_file(PATH_site.$uploadPath.'/'.$filename)) { @unlink(PATH_site.$uploadPath.'/'.$filename); }
+													if ($bAllowedFilename && @is_file(PATH_site.$uploadPath.'/'.$filename)) {
+														@unlink(PATH_site.$uploadPath.'/'.$filename);
+													}
 												}
 											}
 											$dataValue = $newFileNameArray;
@@ -509,7 +513,7 @@ class tx_srfeuserregister_data {
 							break;
 							// RALPH BRUGGER added captcha  feature>
 							case 'freecap':
-								if (is_object($this->freeCap) && isset($dataArray['captcha_response']))	{
+								if ($this->controlData->useCaptcha() && is_object($this->freeCap) && isset($dataArray['captcha_response']))	{
 									// Store the sr_freecap word_hash
 									// sr_freecap will invalidate the word_hash after calling checkWord
 									$er = session_start();
@@ -527,7 +531,6 @@ class tx_srfeuserregister_data {
 						}
 					}
 				}
-
 				if (in_array($theField, $displayFieldArray))	{
 					$markContentArray['###EVAL_ERROR_FIELD_'.$theField.'###'] = is_array($this->failureMsg[$theField]) ? implode($this->failureMsg[$theField], '<br />'): '<!--no error-->';
 				} else {
@@ -539,10 +542,24 @@ class tx_srfeuserregister_data {
 						$markContentArray['###EVAL_ERROR_saved###'] .= $errorMsg;
 					}
 				}
+			} // foreach
+		}
+
+		if ($this->missing['zone'] && t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey))	{
+			$staticInfoObj = &t3lib_div::getUserObj('&tx_staticinfotables_pi1');
+				// empty zone if there is not zone for the provided country
+			$zoneArray = $staticInfoObj->initCountrySubdivisions($dataArray['static_info_country']); 
+
+			if (!isset($zoneArray) || is_array($zoneArray) && !count($zoneArray))	{
+				unset($this->missing['zone']);
+				$k = array_search('zone', $failureArr);
+				unset($failureArr[$k]);
 			}
 		}
+
 		$failure = implode($failureArr, ',');
 		$this->controlData->setFailure($failure);
+
 	}	// evalValues
 
 
@@ -552,7 +569,7 @@ class tx_srfeuserregister_data {
 	*
 	* @return void  all parsing done directly on input array $dataArray
 	*/
-	function parseValues(&$dataArray, &$origArray) {
+	function parseValues($theTable, &$dataArray, &$origArray) {
 
 		if (is_array($this->conf['parseValues.'])) {
 			foreach($this->conf['parseValues.'] as $theField => $theValue) {
@@ -560,13 +577,12 @@ class tx_srfeuserregister_data {
 				if (in_array('setEmptyIfAbsent', $listOfCommands) && !isset($dataArray[$theField]))	{
 					$dataArray[$theField]='';
 				}
-				if (isset($dataArray[$theField]) && !isset($origArray[$theField]))	{
+				if (isset($dataArray[$theField]) || isset($origArray[$theField]))	{
 					foreach($listOfCommands as $cmd) {
 						$cmdParts = split('\[|\]', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 						$theCmd = trim($cmdParts[0]);
 						$bValueAssigned = TRUE;
-						$dataValue = $dataArray[$theField];
-	
+						$dataValue = (isset($dataArray[$theField]) ? $dataArray[$theField] : $origArray[$theField]);
 						switch($theCmd) {
 							case 'int':
 								$dataValue = intval($dataValue);
@@ -602,8 +618,7 @@ class tx_srfeuserregister_data {
 								} else if(is_string($dataValue) && $dataValue) {
 									$fieldDataArray = explode(',', $dataValue);
 								}
-								$dataValue = $this->processFiles($theField, $fieldDataArray);
-	
+								$dataValue = $this->processFiles($theTable, $theField, $fieldDataArray);
 							break;
 							case 'multiple':
 								if (!is_array($dataValue)) {
@@ -673,7 +688,6 @@ class tx_srfeuserregister_data {
 								$bValueAssigned = FALSE;
 							break;
 						}
-	
 						if ($bValueAssigned)	{
 							$dataArray[$theField] = $dataValue;
 						}
@@ -695,11 +709,11 @@ class tx_srfeuserregister_data {
 
 		$fI = pathinfo($filename);
 		$fileExtension = strtolower($fI['extension']);
-		if (strpos($fileExtension,'php') !== FALSE)	{
+		if (strpos($fileExtension,'php') !== FALSE || strpos($fileExtension,'htaccess') !== FALSE)	{
 			$rc = FALSE; // no php files are allowed here
 		}
 		if (strpos($filename,'..') !== FALSE)	{
-			$rc = FALSE; // no '..' path is allowed
+			$rc = FALSE; //  no '..' path is allowed
 		}
 		return $rc;
 	}
@@ -711,8 +725,8 @@ class tx_srfeuserregister_data {
 	* @param string  $theField: the name of the field
 	* @return void
 	*/
-	function processFiles($theField, &$fieldDataArray) {
-		$theTable = $this->controlData->getTable();
+	function processFiles($theTable, $theField, &$fieldDataArray) {
+
 		if (is_array($this->tca->TCA['columns'][$theField])) {
 			$uploadPath = $this->tca->TCA['columns'][$theField]['config']['uploadfolder'];
 		}
@@ -723,8 +737,11 @@ class tx_srfeuserregister_data {
 					if ($this->checkFilename($file['name']) == FALSE)	{
 						continue; // no php files are allowed here
 					}
+
 					if ($uploadPath && $file['submit_delete']) {
-						if(@is_file(PATH_site.$uploadPath.'/'.$file['name'])) @unlink(PATH_site.$uploadPath.'/'.$file['name']);
+						if(@is_file(PATH_site.$uploadPath.'/'.$file['name']))	{
+							@unlink(PATH_site.$uploadPath.'/'.$file['name']);
+						}
 					} else {
 						$fileNameArray[] = $file['name'];
 					}
@@ -752,6 +769,7 @@ class tx_srfeuserregister_data {
 			}
 		}
 		$dataValue = $fileNameArray;
+
 		return $dataValue;
 	}	// processFiles
 
@@ -763,13 +781,15 @@ class tx_srfeuserregister_data {
 	*/
 	function save($theTable, $dataArray, $origArr, $cmd, $cmdKey, &$hookClassArray) {
 		global $TYPO3_DB, $TSFE;
-
+		$rc = 0;
 		switch($cmd) {
 			case 'edit':
 				$theUid = $dataArray['uid'];
+				$rc = $theUid;
+				$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 
 					// Fetch the original record to check permissions
-				if ($this->conf['edit'] && ($TSFE->loginUser || $this->auth->aCAuth($origArr))) {
+				if ($this->conf['edit'] && ($TSFE->loginUser || $authObj->aCAuth($origArr))) {
 						// Must be logged in in order to edit  (OR be validated by email)
 					$newFieldList = implode(',', array_intersect(explode(',', $this->getFieldList()), t3lib_div::trimExplode(',', $this->conf['edit.']['fields'], 1)));
 					$newFieldArray = array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->getAdminFieldList())));
@@ -784,7 +804,8 @@ class tx_srfeuserregister_data {
 						$newFieldArray = array_diff($newFieldArray, array('username'));
 					}
 
-					if ($this->auth->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($theTable, $origArr, $TSFE->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
+					$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
+					if ($authObj->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($theTable, $origArr, $TSFE->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 						$outGoingData = $this->parseOutgoingData($dataArray);
 						$newFieldList = implode (',', $newFieldArray);
 						$res = $this->cObj->DBgetUpdate($theTable, $theUid, $outGoingData, $newFieldList, TRUE);
@@ -792,7 +813,7 @@ class tx_srfeuserregister_data {
 						$this->saved = TRUE;
 						$newRow = array_merge($origArr, $this->parseIncomingData($outGoingData));
 						$this->setCurrentArray ($newRow);
-						$this->control->userProcess_alt($this->conf['edit.']['userFunc_afterSave'], $this->conf['edit.']['userFunc_afterSave.'], array('rec' => $this->getCurrentArray(), 'origRec' => $origArr));
+						$this->control->userProcess_alt($this->conf['edit.']['userFunc_afterSave'], $this->conf['edit.']['userFunc_afterSave.'], array('rec' => $newRow, 'origRec' => $origArr));
 	
 						// Post-edit processing: call user functions and hooks
 						// Call all afterSaveEdit hooks after the record has been edited and saved
@@ -816,13 +837,13 @@ class tx_srfeuserregister_data {
 					$parsedArray = array();
 					$parsedArray = $this->parseOutgoingData($dataArray);
 					if ($cmdKey == 'invite' && $this->controlData->getUseMd5Password()) {
-						$parsedArray['password'] = md5($this->getDataArray('password'));
+						$parsedArray['password'] = md5($dataArray['password']);
 					}
-
 					$res = $this->cObj->DBgetInsert($theTable, $this->controlData->getPid(), $parsedArray, $newFieldList, TRUE);
 					$newId = $TYPO3_DB->sql_insert_id();
+					$rc = $newId;
 
-						// Enable users to own them self.
+						// Enable users to own themselves.
 					if ($theTable == 'fe_users' && $this->conf['fe_userOwnSelf']) {
 						$extraList = '';
 						$tmpDataArray = array();
@@ -833,7 +854,12 @@ class tx_srfeuserregister_data {
 						}
 						if ($GLOBALS['TCA'][$theTable]['ctrl']['fe_crgroup_id']) {
 							$field = $GLOBALS['TCA'][$theTable]['ctrl']['fe_crgroup_id'];
-							list($tmpDataArray[$field]) = explode(',', $dataArray['usergroup']);
+							if (is_array($dataArray['usergroup']))	{
+								list($tmpDataArray[$field]) = $dataArray['usergroup'];
+							} else {
+								$tmpArray = explode(',', $dataArray['usergroup']);
+								list($tmpDataArray[$field]) = $tmpArray;
+							}
 							$tmpDataArray[$field] = intval($tmpDataArray[$field]);
 							$extraList .= ','.$field;
 						}
@@ -858,12 +884,14 @@ class tx_srfeuserregister_data {
 							}
 						}
 					}
+
 					if ($cmdKey == 'invite' && $this->controlData->getUseMd5Password()) {
 						$this->setCurrentArray($dataArray['password'],'password');
 					}
 				}
 			break;
 		}
+		return $rc;
 	}	// save
 
 
@@ -878,12 +906,13 @@ class tx_srfeuserregister_data {
 		if ($this->conf['delete']) {
 			// If deleting is enabled
 			$origArr = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $this->getRecUid());
-			if ($GLOBALS['TSFE']->loginUser || $this->auth->aCAuth($origArr)) {
+			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
+			if ($GLOBALS['TSFE']->loginUser || $authObj->aCAuth($origArr)) {
 				// Must be logged in OR be authenticated by the aC code in order to delete
 				// If the recUid selects a record.... (no check here)
 
 				if (is_array($origArr)) {
-					if ($this->auth->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($theTable, $origArr, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
+					if ($authObj->aCAuth($origArr) || $this->cObj->DBmayFEUserEdit($theTable, $origArr, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 							// Delete the record and display form, if access granted.
 
 						$extKey = $this->controlData->getExtKey();
@@ -963,29 +992,29 @@ class tx_srfeuserregister_data {
 		for ($i=0; $i < $max; $i++) {
 			switch($dateFormatArray[$i]) {
 				// day
-				// d - day of the month, 2 digits with leading zeros; i.e. "01" to "31" 
-				// j - day of the month without leading zeros; i.e. "1" to "31" 
+				// d - day of the month, 2 digits with leading zeros; i.e. "01" to "31"
+				// j - day of the month without leading zeros; i.e. "1" to "31"
 				case 'd':
 				case 'j': 
 					$rcArray['d'] = intval($dateValueArray[$i]);
 				break;
 				// month
-				// m - month; i.e. "01" to "12" 
-				// n - month without leading zeros; i.e. "1" to "12" 
+				// m - month; i.e. "01" to "12"
+				// n - month without leading zeros; i.e. "1" to "12"
 				case 'm':
 				case 'n': 
 					$rcArray['m'] = intval($dateValueArray[$i]);
 				break;
-				// M - month, textual, 3 letters; e.g. "Jan" 
-				// F - month, textual, long; e.g. "January" 
+				// M - month, textual, 3 letters; e.g. "Jan"
+				// F - month, textual, long; e.g. "January"
 				// case 'M','F': ...to be written ;break;
 				// year
-				
-				// Y - year, 4 digits; e.g. "1999" 
+
+				// Y - year, 4 digits; e.g. "1999"
 				case 'Y':
 					$rcArray['y'] = intval($dateValueArray[$i]);
 				break;
-				// y - year, 2 digits; e.g. "99" 
+				// y - year, 2 digits; e.g. "99"
 				case 'y':
 					$yearVal = intval($dateValueArray[$i]);
 					if($yearVal <= 11) {
@@ -1005,8 +1034,8 @@ class tx_srfeuserregister_data {
 		*  Check if the value is a correct date in format yyyy-mm-dd
 	*/
 	function evalDate($value, $dateFormat) {
-		if( !$value) {  
-			return FALSE; 
+		if( !$value) {
+			return FALSE;
 		}
 		$dateArray = $this->fetchDate($value, $dateFormat);
 		if(is_numeric($dateArray['y']) && is_numeric($dateArray['m']) && is_numeric($dateArray['d'])) {
@@ -1074,7 +1103,6 @@ class tx_srfeuserregister_data {
 	*/
 	function modifyDataArrForFormUpdate($inputArr) {
 		$cmdKey = $this->controlData->getCmdKey();
-
 		if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
 			foreach($this->conf[$cmdKey.'.']['evalValues.'] as $theField => $theValue) {
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
@@ -1102,12 +1130,12 @@ class tx_srfeuserregister_data {
 					$theCmd = trim($cmdParts[0]);
 					switch($theCmd) {
 						case 'multiple':
-						if (isset($inputArr[$theField]) && !$this->control->isPreview()) {
+						if (isset($inputArr[$theField]) && !is_array($inputArr[$theField]) && !$this->controlData->isPreview()) {
 							$inputArr[$theField] = explode(',', $inputArr[$theField]);
 						}
 						break;
 						case 'checkArray':
-						if ($inputArr[$theField] && !$this->control->isPreview()) {
+						if ($inputArr[$theField] && !$this->controlData->isPreview()) {
 							for($a = 0; $a <= 30; $a++) {
 								if ($inputArr[$theField] & pow(2, $a)) {
 									$alt_theField = $theField.']['.$a;
@@ -1316,7 +1344,6 @@ class tx_srfeuserregister_data {
 				}
 			}
 		}
-
 			// update the MM relation count field
 		$fieldsList = array_keys($parsedArr);
 		foreach ($this->tca->TCA['columns'] as $colName => $colSettings) {
@@ -1326,7 +1353,7 @@ class tx_srfeuserregister_data {
 					if ($parsedArr[$colName])	{
 						$parsedArr[$colName] = count(explode(',', $parsedArr[$colName]));
 					} else {
-						// $parsedArr[$colName] = 0; +++
+						$parsedArr[$colName] = '';
 					}
 				} else {
 					$parsedArr[$colName] = implode (',', $parsedArr[$colName]);
@@ -1345,14 +1372,14 @@ class tx_srfeuserregister_data {
 	* @return boolean  TRUE if ok
 	*/
 	function evalFileError($error_code) {
-		$rc = false;
+		$rc = FALSE;
 		if ($error_code == "0") {
 			$rc = TRUE;
 			// File upload okay
 		} elseif ($error_code == '1') {
-			$rc = false; // filesize exceeds upload_max_filesize in php.ini
+			$rc = FALSE; // filesize exceeds upload_max_filesize in php.ini
 		} elseif ($error_code == '3') {
-			return false; // The file was uploaded partially
+			return FALSE; // The file was uploaded partially
 		} elseif ($error_code == '4') {
 			$rc = TRUE;
 			// No file was uploaded
@@ -1361,7 +1388,6 @@ class tx_srfeuserregister_data {
 		}
 		return $rc;
 	}	// evalFileError
-
 }
 
 

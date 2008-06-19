@@ -21,6 +21,7 @@ t3lib_extMgm::addPlugin(Array('LLL:EXT:'.SR_FEUSER_REGISTER_EXTkey.'/locallang_d
  * Adjusting some maximum lengths to conform to specifications of payment gateways (ref.: Authorize.net)
  */
 t3lib_div::loadTCA('fe_users');
+
 $TCA['fe_users']['columns']['username']['config']['eval'] = 'nospace,uniqueInPid,required';
 
 if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['useMd5Password'] && strstr($TCA['fe_users']['columns']['password']['config']['eval'], 'md5')) {
@@ -171,7 +172,15 @@ $TCA['fe_users']['types']['0']['showitem'] = str_replace(', address', ', status,
 
 $TCA['fe_users']['types']['0']['showitem'] = str_replace(', www', ', www, comments, by_invitation', $TCA['fe_users']['types']['0']['showitem']);
 
-$TCA['fe_users']['palettes']['2']['showitem'] = str_replace('title,', 'gender,first_name,last_name,title,', $TCA['fe_users']['palettes']['2']['showitem']);
+$lastPalette = 0;
+for ($i=0; $i<10; $i++)	{
+	if (isset($TCA['fe_users']['palettes'][$i]) && is_array($TCA['fe_users']['palettes'][$i]))	{
+		$lastPalette = $i;
+	}
+}
+
+$TCA['fe_users']['palettes'][$lastPalette+1]['showitem'] = 'gender,first_name';
+$TCA['fe_users']['types']['0']['showitem'] = str_replace(', name', ',last_name;;'.($lastPalette+1).';;1-1-1, name', $TCA['fe_users']['types']['0']['showitem']);
 
 	// fe_users modified
 if (!t3lib_extMgm::isLoaded('direct_mail')) {

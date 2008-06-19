@@ -58,8 +58,9 @@ class tx_srfeuserregister_controldata {
 	var $setfixedEnabled = 0;
 	var $bSubmit = FALSE;
 	var $failure = FALSE; // is set if data did not have the required fields set.
-
+	var $sys_language_content;
 	var $feUserData = array();
+	var $jsMd5Added; // If the JavaScript for MD5 encoding has already been added
 
 	function init (&$conf, $prefixId, $extKey, $piVars, $theTable)	{
 		global $TSFE;
@@ -71,6 +72,7 @@ class tx_srfeuserregister_controldata {
 		$this->extKey = $extKey;
 		$this->piVars = $piVars;
 		$this->setTable($theTable);
+		$this->sys_language_content = intval(t3lib_div::testInt($TSFE->config['config']['sys_language_uid']) ? intval($TSFE->config['config']['sys_language_uid']) : 0);
 
 			// set the title language overlay
 		$pidRecord = t3lib_div::makeInstance('t3lib_pageSelect');
@@ -98,34 +100,48 @@ class tx_srfeuserregister_controldata {
 			$this->setSetfixedEnabled(1);
 		}
 
-		$feUserData = t3lib_div::_GP($this->getPrefixId());
-
 		// <Steve Webster added short url feature>
 			// Get hash variable if provided and if short url feature is enabled
+		$feUserData = t3lib_div::_GP($this->getPrefixId());
 		if ($this->conf['useShortUrls']) {
 			$this->cleanShortUrlCache();
+			$regHash = $feUserData['regHash'];
+			if (!$regHash)	{
+				$getData = t3lib_div::_GET($this->getPrefixId());
+				$regHash = $getData['regHash'];
+			}
 				// Check and process for short URL if the regHash GET parameter exists
-			if ($feUserData['regHash']) {
-				$getVars = $this->getStoredURL($feUserData['regHash']);
-				foreach ($getVars as $k => $v ) {
-					// restore former GET values
-					t3lib_div::_GETset($v,$k);
+			if ($regHash) {
+				$sFK = $feUserData['sFK'];
+				$cmd = $feUserData['cmd'];
+				$getVars = $this->getShortUrl($regHash);
+
+				if ($getVars)	{
+					$restoredFeUserData = $getVars[$this->getPrefixId()];
+	
+					foreach ($getVars as $k => $v ) {
+						// restore former GET values for the url
+						t3lib_div::_GETset($v,$k);
+					}
+					if ($restoredFeUserData['rU'] > 0 && $restoredFeUserData['rU'] == $feUserData['rU'])	{
+						$feUserData = array_merge ($feUserData, $restoredFeUserData);
+					} else {
+						$feUserData = $restoredFeUserData;
+					}
 				}
-				$restoredFeUserData = t3lib_div::_GP($this->getPrefixId());
-				if ($restoredFeUserData['rU'] === $feUserData['rU'])	{
-					$feUserData = array_merge ($feUserData, $restoredFeUserData);
-				} else {
-					$feUserData = $restoredFeUserData;
+				if ($sFK)	{
+					$feUserData['sFK'] = $sFK;
+				}
+				if ($cmd)	{
+					$feUserData['cmd'] = $cmd;
 				}
 			}
 		}
-		// </Steve Webster added short url feature>
 
 		if (isset($feUserData) && is_array($feUserData))	{
 			$this->setFeUserData ($feUserData);
 		}
 
-			// Get parameters
 			// Establishing compatibility with Direct Mail extension
 		$piVarArray = array('rU', 'aC', 'cmd', 'sFK');
 		foreach ($piVarArray as $pivar)	{
@@ -138,6 +154,7 @@ class tx_srfeuserregister_controldata {
 			$cmd = htmlspecialchars($feUserData['cmd']);
 			$this->setCmd($cmd);
 		}
+
 		$feUserdata = $this->getFeUserData();
 		$this->secureInput($feUserData);
 		$this->setFeUserData ($feUserData);
@@ -155,17 +172,34 @@ class tx_srfeuserregister_controldata {
 					foreach ($value as $k2 => $value2)	{
 						if (is_array($value2))	{
 							foreach ($value2 as $k3 => $value3)	{
-								$dataArray[$k][$k2][$k3] = htmlspecialchars($value3);
+								if ($k3 != 'password')	{
+									$dataArray[$k][$k2][$k3] = htmlspecialchars($value3);
+								}
 							}
 						} else {
-							$dataArray[$k][$k2] = htmlspecialchars($value2);
+							if ($k2 != 'password')	{
+								$dataArray[$k][$k2] = htmlspecialchars($value2);
+							}
 						}
 					}
 				} else {
-					$dataArray[$k] = htmlspecialchars($value);
+					if ($k != 'password')	{
+						$dataArray[$k] = htmlspecialchars($value);
+					}
 				}
 			}
 		}
+	}
+
+	function useCaptcha ()	{
+		$rc = FALSE;
+		if ((t3lib_extMgm::isLoaded('sr_freecap') &&
+			is_array($this->conf['create.']) &&
+			is_array($this->conf['create.']['evalValues.']) &&
+			$this->conf['create.']['evalValues.']['captcha_response'] == 'freecap')) {
+			$rc = TRUE;
+		}
+		return $rc;
 	}
 
 	function getPidTitle ()	{
@@ -287,6 +321,14 @@ class tx_srfeuserregister_controldata {
 		return $this->useMd5Password;
 	}
 
+	function getJSmd5Added ()	{
+		return ($this->jsMd5Added);
+	}
+
+	function setJSmd5Added ($var)	{
+		$this->jsMd5Added = TRUE;
+	}
+
 	function getTable ()	{
 		return $this->theTable;
 	}
@@ -317,9 +359,23 @@ class tx_srfeuserregister_controldata {
 	}
 
 	/**
-		*  Get the stored variables using the hash value to access the database
-		*/
-	function getStoredURL($regHash) {
+	* Checks if preview display is on.
+	*
+	* @return boolean  true if preview display is on
+	*/
+	function isPreview() {
+		$rc = '';
+		$cmdKey = $this->getCmdKey();
+
+		$rc = ($this->conf[$cmdKey.'.']['preview'] && $this->getFeUserData('preview'));
+		return $rc;
+	}	// isPreview
+
+
+	/**
+	*  Get the stored variables using the hash value to access the database
+	*/
+	function getShortUrl($regHash) {
 		global $TYPO3_DB;
 
 			// get the serialised array from the DB based on the passed hash value
@@ -332,19 +388,34 @@ class tx_srfeuserregister_controldata {
 
 			// convert the array to one that will be properly incorporated into the GET global array.
 		$retArray = array();
+
 		foreach($varArray as $key => $val)	{
 			$search = array('[\]]', '[\[]');
 			$replace = array ( '\']', '\'][\'');
 			$newkey = "['" . preg_replace($search, $replace, $key);
 			eval("\$retArray".$newkey."='$val';");
 		}
+
 		return $retArray;
-	}	// getStoredURL
+	}	// getShortUrl
 
 
 	/**
-		*  Clears obsolete hashes used for short url's
-		*/
+	*  Get the stored variables using the hash value to access the database
+	*/
+	function deleteShortUrl($regHash) {
+		global $TYPO3_DB;
+
+		if ($regHash != '')	{
+			// get the serialised array from the DB based on the passed hash value
+			$TYPO3_DB->exec_DELETEquery('cache_md5params','md5hash='.$TYPO3_DB->fullQuoteStr($regHash,'cache_md5params'));
+		}
+	}
+
+
+	/**
+	*  Clears obsolete hashes used for short url's
+	*/
 	function cleanShortUrlCache() {
 		global $TYPO3_DB;
 
@@ -352,6 +423,8 @@ class tx_srfeuserregister_controldata {
 		$max_life = time() - (86400 * intval($shortUrlLife));
 		$res = $TYPO3_DB->exec_DELETEquery('cache_md5params', 'tstamp<' . $max_life . ' AND type=99');	
 	}	// cleanShortUrlCache
+	// </Steve Webster added short url feature>
+
 }
 
 
