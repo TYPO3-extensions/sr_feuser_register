@@ -1,3 +1,11 @@
+2008-06-19 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.13:
+	* Do not require email confirmation if enableEmailConfirmation is 0. v_your_account_was_created_nomail will be used in this case.
+	* new feature 0007933: Confirmation link cannot be clicked more than once if regHash is used.
+	* fix bug with translation for Direct Mail categories
+	* fix bug with admin email confirmation which did not contain all new fields after creation if default values have been added during the saving before
+	* fix bug with md5 password encryption
+
 2008-05-28 Franz Holzinger  <franz@fholzinger.com>
 	* Version 2.5.12:
 	* fix bug 8382: when some records have already been stored and there is evaluation to edit fields which are not shown then the error message is not displayed. ###EVAL_ERROR_saved### is a new marker in order to display an error message for all fields which have been wrongly stored.
@@ -8,7 +16,6 @@
 	* fix bug 8416: the CODE and flexforms have been emptied
 
 2008-05-15 Franz Holzinger  <franz@fholzinger.com>
-	* Version 2.5.10:
 	* fix security issues
 
 2008-04-01 Franz Holzinger  <franz@fholzinger.com>

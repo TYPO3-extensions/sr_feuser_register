@@ -2,7 +2,7 @@
 	/***************************************************************
 	*  Copyright notice
 	*
-	*  (c) 2004 Esben Maaløe esm-at-baseclassmodulweb.dk
+	*  (c) 2004 Esben Maaløe acebone@gmail.com
 	*  All rights reserved
 	*
 	*  This script is part of the Typo3 project. The Typo3 project is

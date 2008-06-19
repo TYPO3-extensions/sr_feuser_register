@@ -96,6 +96,7 @@ plugin.tx_srfeuserregister_pi1 {
 			module_sys_dmail_html =
 			usergroup =
 			by_invitation =
+			captcha_response =
 		}
 	}
 
@@ -145,7 +146,7 @@ plugin.tx_srfeuserregister_pi1 {
 	edit {
 		preview = {$plugin.tx_srfeuserregister_pi1.enablePreviewEdit}
 		allowUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowUserGroupUpdate}
-		
+
 		defaultValues {
 			disable = 0
 			usergroup >

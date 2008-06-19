@@ -399,16 +399,19 @@
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_comments### -->
 
-	<!--###CAPTCHA_INSERT### this subpart is removed if CAPTCHA is not enabled! -->
+	<!--###SUB_INCLUDED_FIELD_captcha_response###-->
 	<div class="tx-srfeuserregister-pi1-captcha-response">
 		<label for="tx-srfeuserregister-pi1-captcha-response">###SR_FREECAP_NOTICE###</label>
 		###SR_FREECAP_CANT_READ###
 		<br />
+		<!-- ###SUB_ERROR_FIELD_captcha_response### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_captcha_response###</p>
+		<!-- ###SUB_ERROR_FIELD_captcha_response### -->
 		<input type="text" size="15" id="tx-srfeuserregister-pi1-captcha.response" name="FE[fe_users][captcha_response]" title="###SR_FREECAP_NOTICE###" value="">
 		###SR_FREECAP_IMAGE###
 	</div>
-	<!--###CAPTCHA_INSERT###-->
-	
+	<!--###SUB_INCLUDED_FIELD_captcha_response###-->
+
 	<dt>&nbsp;</dt>
 	<dd>
 		###HIDDENFIELDS###
@@ -603,13 +606,10 @@
 
 
 <p style="margin-top: 20px"><em>This is shown when the user is created and the option setfixed is configured.
-The user is informed that a message has been sent to his email address and that he needs to confirm his registration.</em></p>
+The user is informed that a message has been sent to his email address.</em></p>
 <!-- ###TEMPLATE_SETFIXED_CREATE### begin -->
 <h4>###LABEL_V_DEAR###</h4>
-<p>###LABEL_V_PLEASE_CONFIRM###</p>
-<p>###LABEL_V_YOUR_ACCOUNT_WAS_CREATED###</p>
-<p>###LABEL_V_FOLLOW_INSTRUCTIONS1###</p>
-<p>###LABEL_V_FOLLOW_INSTRUCTIONS2###</p>
+<p>###LABEL_V_YOUR_ACCOUNT_WAS_CREATED_NOMAIL###</p>
 <p>###LABEL_KIND_REGARDS###</p>
 <h4>###SITE_NAME###</h4>
 <!-- ###TEMPLATE_SETFIXED_CREATE### end-->
@@ -1952,7 +1952,9 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon creation of a user account and no confirmation is required.</em></p>
 <!-- ###EMAIL_TEMPLATE_CREATE_SAVED_ADMIN### begin -->
-<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CREATED###
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CREATED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_CREATED###
 ###LABEL_USERNAME### ###FIELD_username###
 
@@ -2029,7 +2031,8 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon update of a user profile.></em></p>
 <!-- ###EMAIL_TEMPLATE_EDIT_SAVED_ADMIN### begin -->
-<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_UPDATED###
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_UPDATED###
+###LABEL_V_NOTIFICATION###:
 
 ###LABEL_V_REGISTRATION_UPDATED###
 ###LABEL_USERNAME### ###FIELD_username###
@@ -2135,7 +2138,9 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon a new user registration, but confirmation is required.</em></p>
 <!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_ADMIN### begin -->
-<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_INITIATED###
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_INITIATED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_INITIATED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2215,7 +2220,9 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon a new user registration.</em></p>
 <!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW_ADMIN### begin -->
-<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_INITIATED###
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_INITIATED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_INITIATED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2489,7 +2496,9 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon a new user registration.</em></p>
 <!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE_ADMIN### begin -->
-<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_INVITED###
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_INVITED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_INVITED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2555,7 +2564,9 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon user confirmation of his registration.</em></p>
 <!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_ADMIN### begin -->
-<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CONFIRMED###
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CONFIRMED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_CONFIRMED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2621,7 +2632,9 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon user confirmation of his registration.</em></p>
 <!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_REVIEW_ADMIN### begin -->
-<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CONFIRMED###
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CONFIRMED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_CONFIRMED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2687,7 +2700,9 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon acceptation of the user registration.</em></p>
 <!-- ###EMAIL_TEMPLATE_SETFIXED_ACCEPT_ADMIN### begin -->
-<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_ACCEPTED###
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_ACCEPTED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_ACCEPTED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2753,7 +2768,9 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon refusal of the user registration.</em></p>
 <!-- ###EMAIL_TEMPLATE_SETFIXED_REFUSE_ADMIN### begin -->
-<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_REFUSED###
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_REFUSED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_REFUSED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2819,7 +2836,9 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon user refusal to confirm his registration.</em></p>
 <!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_ADMIN### begin -->
-<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CANCELLED###
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CANCELLED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_CANCELLED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2885,7 +2904,9 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon deletion of a user account.</em></p>
 <!-- ###EMAIL_TEMPLATE_DELETE_SAVED_ADMIN### begin -->
-<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_DELETED###
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_DELETED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_DELETED###
 
 ###LABEL_NAME### ###FIELD_name###

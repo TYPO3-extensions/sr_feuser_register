@@ -399,7 +399,7 @@
 		</td>
 	</tr>
 
-	<!--###CAPTCHA_INSERT### this subpart is removed if CAPTCHA is not enabled! -->
+	<!--###SUB_INCLUDED_FIELD_captcha_response###-->
 	<tr>
 		<td>
 			<p>###SR_FREECAP_NOTICE###</p>
@@ -414,7 +414,7 @@
 			<p>###SR_FREECAP_IMAGE###</p>
 		</td>
 	</tr>
-	<!--###CAPTCHA_INSERT###-->
+	<!--###SUB_INCLUDED_FIELD_captcha_response###-->
 
 	<tr>
 		<td>###HIDDENFIELDS###</td>
@@ -703,10 +703,7 @@ The user is informed that a message has been sent to his email address and that 
 <table border="0" cellspacing="0" cellpadding="1" width="100%">
 	<tr><td>
 		<p>###GW1B######LABEL_V_DEAR######GW1E###</p>
-		<p>###LABEL_V_PLEASE_CONFIRM###</p>
-		<p>###LABEL_V_YOUR_ACCOUNT_WAS_CREATED###</p>
-		<p>###LABEL_V_FOLLOW_INSTRUCTIONS1###</p>
-		<p>###LABEL_V_FOLLOW_INSTRUCTIONS2###</p>
+		<p>###LABEL_V_YOUR_ACCOUNT_WAS_CREATED_NOMAIL###</p>
 		<p>###LABEL_KIND_REGARDS###<br />
 		###GW1B######SITE_NAME######GW1E###</p>
 	</td></tr>
@@ -2080,6 +2077,21 @@ The user is informed that a message has been sent to the email address and that 
 <!-- ###TEMPLATE_SETFIXED_OK### end-->
 
 
+<em>This template is the response page when the administrator accepts the account registration.</em>
+<!-- ###TEMPLATE_SETFIXED_OK_ACCEPT### begin -->
+<table border="0" cellspacing="0" cellpadding="1" width="100%">
+	<tr><td>
+		<p>###GW1B######LABEL_V_TO_THE_ADMINISTRATOR######GW1E###</p>
+		<p>###LABEL_V_REGISTRATION_ACCEPTED_SUBJECT###</p>
+		<p>###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE1###</p>
+		<p>###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE2###</p>
+		<p>###LABEL_KIND_REGARDS###<br />
+		###GW1B######SITE_NAME######GW1E###</p>
+	</td></tr>
+</table>
+<!-- ###TEMPLATE_SETFIXED_OK_ACCEPT### end-->
+
+
 
 <em>This template is the response page when a user deleted his subscription.</em>
 <!-- ###TEMPLATE_SETFIXED_OK_DELETE### begin -->
@@ -2221,7 +2233,9 @@ In these plain text email templates the first line with content is used as subje
 <br />
 <br />
 <!-- ###EMAIL_TEMPLATE_CREATE_SAVED_ADMIN### begin -->
-<!--###SUB_RECORD###-->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CREATED###
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_CREATED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_CREATED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2297,7 +2311,9 @@ In these plain text email templates the first line with content is used as subje
 <br />
 <br />
 <!-- ###EMAIL_TEMPLATE_EDIT_SAVED_ADMIN### begin -->
-<!--###SUB_RECORD###-->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_UPDATED###
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_UPDATED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_UPDATED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2386,7 +2402,9 @@ In these plain text email templates the first line with content is used as subje
 <br />
 <br />
 <!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_ADMIN### begin -->
-<!--###SUB_RECORD###-->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_INITIATED###
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_INITIATED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_INITIATED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2476,7 +2494,9 @@ In these plain text email templates the first line with content is used as subje
 <br />
 <br />
 <!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW_ADMIN### begin -->
-<!--###SUB_RECORD###-->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_INITIATED###
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_INITIATED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_INITIATED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2625,7 +2645,9 @@ In these plain text email templates the first line with content is used as subje
 <br />
 <br />
 <!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE_ADMIN### begin -->
-<!--###SUB_RECORD###-->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_INVITED###
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_INVITED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_INVITED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2703,7 +2725,9 @@ In these plain text email templates the first line with content is used as subje
 <br />
 <br />
 <!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_ADMIN### begin -->
-<!--###SUB_RECORD###-->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CONFIRMED###
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_CONFIRMED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_CONFIRMED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2781,7 +2805,9 @@ In these plain text email templates the first line with content is used as subje
 <br />
 <br />
 <!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_ADMIN### begin -->
-<!--###SUB_RECORD###-->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CANCELLED###
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_CANCELLED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_CANCELLED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2853,7 +2879,9 @@ In these plain text email templates the first line with content is used as subje
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon deletion of a user account.</em></p>
 
 <!-- ###EMAIL_TEMPLATE_DELETE_SAVED_ADMIN### begin -->
-<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_DELETED###
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_DELETED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_DELETED###
 
 ###LABEL_NAME### ###FIELD_name###

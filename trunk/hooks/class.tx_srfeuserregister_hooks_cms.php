@@ -29,7 +29,7 @@
  *
  * hook functions for the TYPO3 cms
  *
- * $Id:$
+ * $Id$
  *
  * @author	Franz Holzinger <contact@fholzinger.com>
  * @maintainer	Franz Holzinger <contact@fholzinger.com> 
@@ -39,34 +39,15 @@
  *
  */
 
+require_once(PATH_BE_div2007.'hooks/class.tx_div2007_hooks_cms.php');
 
-class tx_srfeuserregister_hooks_cms {
-	/**
-	 * Draw the item in the page module
-	 *
-	 * @param	array		parameters
-	 * @param	object		the parent object
-	 * @return	  string
-	 */
+class tx_srfeuserregister_hooks_cms extends tx_div2007_hooks_cms {
+	public $extKey=SR_FEUSER_REGISTER_EXTkey;
 
-	function pmDrawItem(&$params, &$pObj)	{
-		$bPhp5 = version_compare(phpversion(), '5.0.0', '>=');
-
-		if ($bPhp5 && defined('PATH_BE_div2007') &&
-			in_array(intval($pObj->pageRecord['doktype']), array(1,2)) &&
-			$params['row']['pi_flexform'] != ''
-		)	{
-			include_once (PATH_BE_div2007.'class.tx_div2007_ff.php');
-
-			tx_div2007_ff::load($params['row']['pi_flexform'],SR_FEUSER_REGISTER_EXTkey);
-			$codes = 'CODE: '.tx_div2007_ff::get(SR_FEUSER_REGISTER_EXTkey, 'display_mode');
-		}
-		return $codes;
-	}
 }
 
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/hooks/class.tx_srfeuserregister_hooks_cms.phpp'])	{
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/hooks/class.tx_srfeuserregister_hooks_cms.php'])	{
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/hooks/class.tx_srfeuserregister_hooks_cms.php']);
 }
 

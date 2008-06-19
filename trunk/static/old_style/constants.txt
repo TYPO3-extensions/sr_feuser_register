@@ -18,10 +18,10 @@ plugin.tx_srfeuserregister_pi1 {
   HTMLMailCSS = EXT:sr_feuser_register/pi1/tx_srfeuserregister_htmlmail.css
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Administration email: Enter the administration email address here. This email address will be the sender email and also receive administration notifications.
-  email = MyTypo3Site@mydomain.org
+  email = MyTYPO3Site@mydomain.org
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Site name: Enter the name of the registering site here. If set, this will be used as the email address name in the mails sent as well as signature on the mails.
-  siteName = My Typo3 Site
+  siteName = My TYPO3 Site
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Registration form fields: List of fields to be included on the front end user registration form.
   formFields = username, password, gender, first_name, last_name, status, date_of_birth, email, address, city, zone, static_info_country, zip, telephone, fax, language, title, company, www, module_sys_dmail_html, module_sys_dmail_category, image, comments, disable

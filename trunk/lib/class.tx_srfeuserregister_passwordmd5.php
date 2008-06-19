@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca)>
+*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -31,7 +31,7 @@
  *
  * $Id$
  *
- * @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
+ * @author Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
  * @author Franz Holzinger <contact@fholzinger.com>
  *
  * @package TYPO3
@@ -45,6 +45,7 @@ class tx_srfeuserregister_passwordmd5 {
 	var $data;
 	var $marker;
 	var $controlData;
+	var $chal_val;
 
 	function init (&$marker, &$data, &$controlData)	{
 		$this->marker = &$marker;
@@ -52,14 +53,24 @@ class tx_srfeuserregister_passwordmd5 {
 		$this->controlData = &$controlData;
 	}
 
+	function getChallenge ()	{
+		return $this->chal_val;
+	}
+
 	function generateChallenge (&$row)	{
 		$time = time();
-		$chal_val = md5($time.getmypid());
+		$this->chal_val = md5($time.getmypid());
 		$row['password'] = '';
-		$row['chalvalue'] = $chal_val;
+		$row['chalvalue'] = $this->chal_val;
 
 		if (t3lib_extMgm::isLoaded('kb_md5fepw'))	{
-			$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_kbmd5fepw_challenge', array('challenge' => $chal_val, 'tstamp' => $time));
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('count(*) as count', 'tx_kbmd5fepw_challenge', 'challenge='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->chal_val, 'tx_kbmd5fepw_challenge'));
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+			$cnt = $row['count'];
+			$GLOBALS['TYPO3_DB']->sql_free_result($res);
+			if (!$cnt)	{
+				$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_kbmd5fepw_challenge', array('challenge' => $this->chal_val, 'tstamp' => $time));
+			}
 		}
 	}
 }
