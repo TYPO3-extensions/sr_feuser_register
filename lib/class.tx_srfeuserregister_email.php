@@ -86,7 +86,7 @@ class tx_srfeuserregister_email {
 	 * @return	string		HTML content message
 	 * @see init(),compile(), send()
 	 */
-	function sendInfo($theTable, $origArr, &$markContentArray,$cmd, $cmdKey, &$templateCode)	{
+	function sendInfo($theTable, $origArr, &$markerArray, $cmd, $cmdKey, &$templateCode)	{
 
 		if ($this->conf['infomail'] && $this->conf['email.']['field'])	{
 			$fetch = $this->controlData->getFeUserData('fetch');
@@ -104,25 +104,25 @@ class tx_srfeuserregister_email {
 				if (is_array($DBrows))	{
 					$recipient = $DBrows[0][$this->conf['email.']['field']];
 					$this->data->setDataArray($DBrows[0]);
-					$this->compile('INFOMAIL', $theTable, $DBrows, $DBrows, trim($recipient), $markContentArray, $cmd, $cmdKey, $templateCode, $this->conf['setfixed.']);
+					$this->compile('INFOMAIL', $theTable, $DBrows, $DBrows, trim($recipient), $markerArray, $cmd, $cmdKey, $templateCode, $this->conf['setfixed.']);
 				} elseif ($this->cObj->checkEmail($fetch)) {
 					$fetchArray = array( '0' => array( 'email' => $fetch));
-					$this->compile('INFOMAIL_NORECORD', $theTable, $fetchArray, $fetchArray, $fetch, $markContentArray, $cmd, $cmdKey, $templateCode, array());
+					$this->compile('INFOMAIL_NORECORD', $theTable, $fetchArray, $fetchArray, $fetch, $markerArray, $cmd, $cmdKey, $templateCode, array());
 				}
 				$subpartkey = $this->emailMarkPrefix.$this->infomailPrefix.'SENT###';
 				$content =
-					$this->display->getPlainTemplate($templateCode,$subpartkey, $origArr, (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:''))
+					$this->display->getPlainTemplate($templateCode,$subpartkey, $markerArray, $origArr, (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:''))
 					);
 
 				if (!$content)	{ // compatibility until 1.1.2010
 					$subpartkey = '###TEMPLATE_'.$this->infomailPrefix.'SENT###';
 					$content =
-						$this->display->getPlainTemplate($templateCode, $subpartkey, $origArr, (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:''))
+						$this->display->getPlainTemplate($templateCode, $subpartkey, $markerArray, $origArr, (is_array($DBrows)?$DBrows[0]:(is_array($fetchArray)?$fetchArray[0]:''))
 						);
 				}
 			} else {
 				$subpartkey = '###TEMPLATE_INFOMAIL###';
-				$content = $this->display->getPlainTemplate($templateCode,$subpartkey,$origArr);
+				$content = $this->display->getPlainTemplate($templateCode,$subpartkey,$markerArray,$origArr);
 			}
 		} else {
 			$content=$this->langObj->pi_getLL('internal_infomail_configuration');
@@ -141,13 +141,13 @@ class tx_srfeuserregister_email {
 		* @param array  $setFixedConfig: a setfixed TS config array
 		* @return void
 		*/
-	function compile($key, $theTable, $DBrows, $origRows, $recipient, &$markContentArray, $cmd, $cmdKey, &$templateCode, $setFixedConfig = array()) {
+	function compile($key, $theTable, $DBrows, $origRows, $recipient, &$markerArray, $cmd, $cmdKey, &$templateCode, $setFixedConfig = array()) {
 
 		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 
 			// Setting CSS style markers if required
 		if ($this->HTMLMailEnabled) {
-			$this->addCSSStyleMarkers($markContentArray);
+			$this->addCSSStyleMarkers($markerArray);
 		}
 
 		$viewOnly = true;
@@ -204,7 +204,6 @@ class tx_srfeuserregister_email {
 			} else {
 				$currentRow = $row;
 			}
-			$markerArray = $markContentArray;
 			if ($bChangesOnly)	{
 				$keepFields = array('uid', 'pid', 'tstamp', 'name', 'username');
 				$mrow = array();
