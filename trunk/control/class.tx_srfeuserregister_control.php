@@ -224,7 +224,7 @@ class tx_srfeuserregister_control {
 		$markerArray = $this->marker->getArray();
 
 			// Evaluate incoming data
-		if (count($dataArray)) {
+		if (count($dataArray) && !in_array($cmd, array('infomail'))) {
 			$this->data->setName($dataArray, $cmdKey);
 			$this->data->parseValues($theTable, $dataArray,$origArray);
 			$this->data->overrideValues($dataArray, $cmdKey);
@@ -304,6 +304,7 @@ class tx_srfeuserregister_control {
 
 			$bCustomerConfirmsMode = FALSE;
 			$bDefaultMode = FALSE;
+
 			switch($cmd) {
 				case 'delete':
 					$key = 'DELETE'.SAVED_SUFFIX;
@@ -433,6 +434,7 @@ class tx_srfeuserregister_control {
 			$this->marker->setArray($markerArray);
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 		} else {
+
 				// Finally, if there has been no attempt to save. That is either preview or just displaying and empty or not correctly filled form:
 			$this->marker->setArray($markerArray);
 			switch($cmd) {
@@ -446,23 +448,26 @@ class tx_srfeuserregister_control {
 					$content = $this->setfixedObj->processSetFixed($theTable, $uid, $markerArray, $templateCode, $dataArray, $origArray, $this, $this->data);
 					break;
 				case 'infomail':
+					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
 					if ($this->conf['infomail']) {
 						$this->controlData->setSetfixedEnabled(1);
 					}
+
 					$content = $this->email->sendInfo(
 						$theTable,
 						$origArray,
 						$markerArray,
 						$cmd,
 						$this->controlData->getCmdKey(), $this->data->getTemplateCode());
+
 					break;
 				case 'delete':
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
-					$content = $this->display->deleteScreen($theTable, $dataArray, $origArray);
+					$content = $this->display->deleteScreen($markerArray, $theTable, $dataArray, $origArray);
 					break;
 				case 'edit':
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
-					$content = $this->display->editScreen($theTable, $dataArray, $origArray, $cmd, $this->controlData->getCmdKey(), $this->controlData->getMode());
+					$content = $this->display->editScreen($markerArray, $theTable, $dataArray, $origArray, $cmd, $this->controlData->getCmdKey(), $this->controlData->getMode());
 					break;
 				case 'invite':
 				case 'create':
@@ -489,7 +494,7 @@ class tx_srfeuserregister_control {
 							$dataArray
 						);
 					} else {
-						$content = $this->display->editScreen($theTable, $dataArray, $origArray, $cmd, $this->controlData->getCmdKey(), $this->controlData->getMode());
+						$content = $this->display->editScreen($markerArray, $theTable, $dataArray, $origArray, $cmd, $this->controlData->getCmdKey(), $this->controlData->getMode());
 					}
 					break;
 			}

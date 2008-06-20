@@ -166,10 +166,10 @@ class tx_srfeuserregister_setfixed {
 					$setfixedSuffix .= '_REVIEW';
 				}
 				$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX . 'OK_' . $setfixedSuffix . '###';
-				$content = $this->display->getPlainTemplate($templateCode, $subpartMarker, $origArray, $row);
+				$content = $this->display->getPlainTemplate($templateCode, $subpartMarker, $markerArray, $origArray, $row);
 				if (!$content) {
 					$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX .'OK###';
-					$content = $this->display->getPlainTemplate($templateCode, $subpartMarker, $origArray, $row);
+					$content = $this->display->getPlainTemplate($templateCode, $subpartMarker, $markerArray, $origArray, $row);
 				}
 
 				if ($this->conf['enableEmailConfirmation'] || $this->conf['infomail'])	{
@@ -213,7 +213,7 @@ class tx_srfeuserregister_setfixed {
 					}
 				}
 			} else {
-				$content = $this->display->getPlainTemplate($templateCode, '###TEMPLATE_SETFIXED_FAILED###', $origArray);
+				$content = $this->display->getPlainTemplate($templateCode, '###TEMPLATE_SETFIXED_FAILED###', $markerArray, $origArray);
 			}
 		}
 		return $content;

@@ -187,7 +187,7 @@ class tx_srfeuserregister_display {
 	*
 	* @return string  the template with substituted markers
 	*/
-	function editScreen($theTable, $dataArray, $origArr, $cmd, $cmdKey, $mode) {
+	function editScreen($markerArray, $theTable, $dataArray, $origArr, $cmd, $cmdKey, $mode) {
 		global $TSFE;
 
 			// If editing is enabled
@@ -224,11 +224,11 @@ class tx_srfeuserregister_display {
 					$content = $this->editForm($theTable, $dataArray, $origArr, $cmd, $cmdKey, $mode);
 				} else {
 					// Else display error, that you could not edit that particular record...
-					$content = $this->getPlainTemplate($this->data->getTemplateCode(), '###TEMPLATE_NO_PERMISSIONS###', $dataArray, $origArr);
+					$content = $this->getPlainTemplate($this->data->getTemplateCode(), '###TEMPLATE_NO_PERMISSIONS###', $markerArray, $dataArray, $origArr);
 				}
 			} else {
 				// This is if there is no login user. This must tell that you must login. Perhaps link to a page with create-user or login information.
-				$content = $this->getPlainTemplate($this->data->getTemplateCode(), '###TEMPLATE_AUTH###', $dataArray, $this->data->getOrigArray());
+				$content = $this->getPlainTemplate($this->data->getTemplateCode(), '###TEMPLATE_AUTH###', $markerArray, $dataArray, $this->data->getOrigArray());
 			}
 		} else {
 			$langObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lang');
@@ -243,7 +243,7 @@ class tx_srfeuserregister_display {
 		*
 		* @return string  the template with substituted markers
 		*/
-	function deleteScreen($theTable, $dataArray, $origArr) {
+	function deleteScreen($markerArray, $theTable, $dataArray, $origArr) {
 		if ($this->conf['delete']) {
 			$prefixId = $this->controlData->getPrefixId();
 			$templateCode = $this->data->getTemplateCode();
@@ -265,20 +265,20 @@ class tx_srfeuserregister_display {
 							$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$prefixId .'[cmd]" value="delete" />';
 						}
 						$this->marker->setArray($markerArray);
-						$content = $this->getPlainTemplate($templateCode, '###TEMPLATE_DELETE_PREVIEW###', $dataArray, $origArr);
+						$content = $this->getPlainTemplate($templateCode, '###TEMPLATE_DELETE_PREVIEW###', $markerArray, $dataArray, $origArr);
 					} else {
 						// Else display error, that you could not edit that particular record...
-						$content = $this->getPlainTemplate($templateCode, '###TEMPLATE_NO_PERMISSIONS###', $dataArray, $origArr);
+						$content = $this->getPlainTemplate($templateCode, '###TEMPLATE_NO_PERMISSIONS###', $markerArray, $dataArray, $origArr);
 
 					}
 				}
 			} else {
 				// Finally this is if there is no login user. This must tell that you must login. Perhaps link to a page with create-user or login information.
 				if ( $theTable == 'fe_users' ) {
-					$content = $this->getPlainTemplate($templateCode, '###TEMPLATE_AUTH###', $origArr);
+					$content = $this->getPlainTemplate($templateCode, '###TEMPLATE_AUTH###', $markerArray, $origArr);
 
 				} else {
-					$content = $this->getPlainTemplate($templateCode, '###TEMPLATE_NO_PERMISSIONS###', $origArr);
+					$content = $this->getPlainTemplate($templateCode, '###TEMPLATE_NO_PERMISSIONS###', $markerArray, $origArr);
 
 				}
 			}
@@ -296,11 +296,9 @@ class tx_srfeuserregister_display {
 	* @param array  $row: the data array, if any
 	* @return string  the template with substituted parts and markers
 	*/
-	function getPlainTemplate($templateCode, $key, $origArr, $row = '') {
+	function getPlainTemplate($templateCode, $key, $markerArray, $origArr, $row = '') {
 
 		$templateCode = $this->cObj->getSubpart($templateCode, $key);
-		$markerArray = $this->marker->getArray();
-
 		if (is_array($row))	{
 			$markerArray = $this->marker->fillInMarkerArray($markerArray, $row, '',TRUE, 'FIELD_', TRUE);
 		}
