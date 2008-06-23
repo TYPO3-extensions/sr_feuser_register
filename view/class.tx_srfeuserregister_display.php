@@ -129,7 +129,7 @@ class tx_srfeuserregister_display {
 	*
 	* @return string  the template with substituted markers
 	*/
-	function createScreen($cmd='create', $cmdKey, $mode, $theTable, $dataArray) {
+	function createScreen(&$markerArray, $cmd='create', $cmdKey, $mode, $theTable, $dataArray) {
 		global $TSFE;
 
 		$templateCode = &$this->data->getTemplateCode();
@@ -150,7 +150,6 @@ class tx_srfeuserregister_display {
 			}
 
 			$key = ($cmd == 'invite') ? 'INVITE': 'CREATE';
-			$markerArray = $this->marker->getArray();
 			$this->marker->addMd5EventsMarkers($markerArray, 'create', $this->controlData->getUseMd5Password());
 
 			$subpartKey = ((!($theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $cmd == 'invite') ? '###TEMPLATE_'.$key.$this->marker->getPreviewLabel().'###':'###TEMPLATE_CREATE_LOGIN###');
@@ -169,7 +168,6 @@ class tx_srfeuserregister_display {
 
 			$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
 			$this->marker->addHiddenFieldsMarkers($markerArray, $cmdKey, $mode, $dataArray);
-
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 			if ($this->conf['templateStyle'] != 'css-styled' || $mode != MODE_PREVIEW) {
 				$form = $this->pibase->pi_getClassName($theTable.'_form');

@@ -467,7 +467,7 @@ class tx_srfeuserregister_marker {
 					$idLanguage = $this->pibase->pi_getClassName('language');
 					$titleLanguage = $this->langObj->pi_getLL('tooltip_' . (($cmd == 'invite')?'invitation_':'')  . 'language');
 				}
-				$selected = (is_array($row)?$row['static_info_country']:'');
+				$selected = (is_array($row) && isset($row['static_info_country']) ? $row['static_info_country'] : array());
 				if (isset($this->conf['where.']) && is_array($this->conf['where.']))	{
 					$where = $this->conf['where.']['static_countries'];
 				}

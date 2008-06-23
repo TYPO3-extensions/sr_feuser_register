@@ -278,7 +278,9 @@ class tx_srfeuserregister_controldata {
 			if (isset($this->pid[$type]))	{
 				$rc = $this->pid[$type];
 			}
-		} else {
+		}
+
+		if (!$rc) {
 			$rc = (t3lib_div::testInt($this->conf['pid']) ? intval($this->conf['pid']) : $TSFE->id);
 		}
 

@@ -61,6 +61,10 @@ require_once(PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_url.php')
 require_once(PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_data.php');
 require_once(PATH_BE_srfeuserregister.'view/class.tx_srfeuserregister_display.php');
 
+require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_lib_tables.php');
+require_once(PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_model_conf.php');
+
+
 
 class tx_srfeuserregister_pi1 extends tslib_pibase {
 	var $cObj;
@@ -71,7 +75,6 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 	var $prefixId = 'tx_srfeuserregister_pi1';  // Same as class name
 	var $scriptRelPath = 'pi1/class.tx_srfeuserregister_pi1.php'; // Path to this script relative to the extension dir.
 	var $extKey = SR_FEUSER_REGISTER_EXTkey;  // The extension key.
-
 	var $incomingData = FALSE;
 	var $nc = ''; // "&no_cache=1" if you want that parameter sent.
 	var $additionalUpdateFields = '';
@@ -140,6 +143,8 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 			}
 		}
 
+		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_conf');
+		$confObj->init($conf);
 		$this->langObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lang');
 		$this->urlObj = &t3lib_div::getUserObj('&tx_srfeuserregister_url');
 		$this->data = &t3lib_div::getUserObj('&tx_srfeuserregister_data');
@@ -151,21 +156,25 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		$this->email = &t3lib_div::getUserObj('&tx_srfeuserregister_email');
 		$this->control = &t3lib_div::getUserObj('&tx_srfeuserregister_control');
 		$this->controlData = &t3lib_div::getUserObj('&tx_srfeuserregister_controldata');
+
+		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
+		$tablesObj->init($theTable);
+
 		$this->controlData->init($conf, $this->prefixId, $this->extKey, $this->piVars, $theTable);
 		$this->urlObj->init ($this->controlData, $this->cObj);
 		$this->langObj->init($this, $this->conf, $this->LLkey);
 		$rc = $this->langObj->pi_loadLL();
 		if ($rc !== FALSE)	{
-			$this->tca->init($this, $this->conf, $this->config, $this->controlData, $this->langObj, $this->extKey);
-			$this->control->init($this, $this->conf, $this->config, $this->controlData, $this->display, $this->data, $this->marker, $this->email, $this->tca, $this->setfixedObj);
+			$this->tca->init($this, $this->conf, $this->controlData, $this->langObj, $this->extKey);
+			$this->control->init($this, $this->controlData, $this->display, $this->data, $this->marker, $this->email, $this->tca, $this->setfixedObj);
 			$this->data->init($this, $this->conf, $this->config,$this->langObj, $this->tca, $this->control, $theTable, $adminFieldList, $this->controlData);
-	
+
 			$md5Obj = &t3lib_div::getUserObj('&tx_srfeuserregister_passwordmd5');
 			$md5Obj->init ($this->marker, $this->data, $this->controlData);
-	
+
 			$this->pi_USER_INT_obj = 1;
 			$this->pi_setPiVarDefaults();
-	
+
 			$authObj->init($this, $this->conf, $this->config, $this->controlData->getFeUserData('aC'));
 			$uid=$this->data->getRecUid();
 
@@ -178,6 +187,7 @@ class tx_srfeuserregister_pi1 extends tslib_pibase {
 		return $rc;
 	}	// init
 }
+
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php']) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php']);

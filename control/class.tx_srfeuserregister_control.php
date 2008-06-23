@@ -45,7 +45,6 @@
 class tx_srfeuserregister_control {
 	var $langObj;
 	var $conf = array();
-	var $config = array();
 	var $display;
 	var $data;
 	var $marker;
@@ -58,12 +57,15 @@ class tx_srfeuserregister_control {
 	var $setfixedObj;
 
 
-	function init(&$langObj, &$conf, &$config, &$controlData, &$display, &$data, &$marker, &$email, &$tca, &$setfixedObj)	{
+	function init(&$langObj, &$controlData, &$display, &$data, &$marker, &$email, &$tca, &$setfixedObj)	{
 		global $TSFE;
 
 		$this->langObj = &$langObj;
-		$this->conf = &$conf;
-		$this->config = &$config;
+		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_conf');
+		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
+		$addressObj = $tablesObj->get('address');
+
+		$this->conf = &$confObj->getConf();
 		$this->display = &$display;
 		$this->data = &$data;
 		$this->marker = &$marker;
@@ -102,6 +104,9 @@ class tx_srfeuserregister_control {
 		if ($cmd == 'edit' || $cmd == 'invite') {
 			$cmdKey = $cmd;
 		} else {
+/*			if (!$cmd && $this->controlData->getTable() == 'fe_users' && $TSFE->loginUser)	{
+				$cmdKey = 'edit';
+			} else {*/
 			$cmdKey = 'create';
 		}
 		$this->controlData->setCmdKey($cmdKey);
@@ -139,19 +144,11 @@ class tx_srfeuserregister_control {
 					$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('email')));
 				}
 			}
-			if ($this->conf[$cmdKey.'.']['allowUserGroupSelection']) {
-				$this->conf[$cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'] . ',usergroup', 1)));
-				$this->conf[$cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'] . ',usergroup', 1)));
-				if ($cmdKey == 'edit' && is_array($this->conf['setfixed.'])) {
-					if ($this->conf['enableAdminReview'] && is_array($this->conf['setfixed.']['ACCEPT.'])) {
-						$this->conf[$cmdKey.'.']['overrideValues.']['usergroup'] = $this->conf['setfixed.']['ACCEPT.']['usergroup'];
-					} elseif ($this->conf['setfixed'] && is_array($this->conf['setfixed.']['APPROVE.'])) {
-						$this->conf[$cmdKey.'.']['overrideValues.']['usergroup'] = $this->conf['setfixed.']['APPROVE.']['usergroup'];
-					}
-				}
-			} else {
-				$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('usergroup')));
+			$userGroupObj = &$addressObj->getFieldObj ('usergroup');
+			if (is_object($userGroupObj))	{
+				$userGroupObj->modifyConf($this->conf, $cmdKey);
 			}
+
 			if ($cmdKey == 'invite') {
 				if ($this->controlData->getUseMd5Password()) {
 					$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('password')));
@@ -178,6 +175,7 @@ class tx_srfeuserregister_control {
 // 				unset($this->conf[$cmdKey.'.']['evalValues.']['email']);
 // 			}
 		}
+		$confObj->setConf($this->conf);
 
 			// Setting requiredArr to the fields in "required" fields list intersected with the total field list in order to remove invalid fields.
 		$requiredArray = array_intersect(
@@ -228,6 +226,7 @@ class tx_srfeuserregister_control {
 			$this->data->setName($dataArray, $cmdKey);
 			$this->data->parseValues($theTable, $dataArray,$origArray);
 			$this->data->overrideValues($dataArray, $cmdKey);
+
 			$submitData = $this->controlData->getFeUserData('submit');
 			if ($submitData != '')	{
 				$bSubmit = TRUE;
@@ -318,7 +317,9 @@ class tx_srfeuserregister_control {
 				case 'create':
 				default:
 					$bDefaultMode = TRUE;
-					if ($this->controlData->getSetfixedEnabled()) {
+					if ($cmdKey == 'edit')	{
+						$key = 'EDIT'.SAVED_SUFFIX;
+					} else if ($this->controlData->getSetfixedEnabled()) {
 						$key = SETFIXED_PREFIX.'CREATE';
 						if ($this->conf['enableAdminReview'])	{
 
@@ -339,8 +340,6 @@ class tx_srfeuserregister_control {
 			if ($templateCode)	{
 				$markerArray = $this->marker->fillInMarkerArray($markerArray, $this->data->getCurrentArray(), '',TRUE, 'FIELD_', TRUE);
 				$this->marker->addStaticInfoMarkers($markerArray, $this->data->getCurrentArray());
-				// $currentArray = $this->data->getCurrentArray();
-
 				$this->tca->addTcaMarkers($markerArray, $dataArray, $origArray, $cmd, $cmdKey, $theTable, true);
 				$this->marker->addLabelMarkers(
 					$markerArray,
@@ -459,7 +458,6 @@ class tx_srfeuserregister_control {
 						$markerArray,
 						$cmd,
 						$this->controlData->getCmdKey(), $this->data->getTemplateCode());
-
 					break;
 				case 'delete':
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
@@ -467,14 +465,15 @@ class tx_srfeuserregister_control {
 					break;
 				case 'edit':
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
-					$content = $this->display->editScreen($markerArray, $theTable, $dataArray, $origArray, $cmd, $this->controlData->getCmdKey(), $this->controlData->getMode());
+					$content = $this->display->editScreen($markerArray, $theTable, $dataArray, $origArray, $cmd, $cmdKey, $this->controlData->getMode());
 					break;
 				case 'invite':
 				case 'create':
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
 					$content = $this->display->createScreen(
+						$markerArray,
 						$cmd,
-						$this->controlData->getCmdKey(),
+						$cmdKey,
 						$this->controlData->getMode(),
 						$theTable,
 						$dataArray
@@ -485,16 +484,18 @@ class tx_srfeuserregister_control {
 					break;
 				default:
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
-					if ($theTable == 'fe_users' && $TSFE->loginUser) {
+					if ($theTable == 'fe_users' && $TSFE->loginUser && $cmdKey=='edit') {
+
+						$content = $this->display->editScreen($markerArray, $theTable, $dataArray, $origArray, $cmd, $cmdKey, $this->controlData->getMode());
+					} else {
 						$content = $this->display->createScreen(
+							$markerArray,
 							$cmd,
-							$this->controlData->getCmdKey(),
+							$cmdKey,
 							$this->controlData->getMode(),
 							$theTable,
 							$dataArray
 						);
-					} else {
-						$content = $this->display->editScreen($markerArray, $theTable, $dataArray, $origArray, $cmd, $this->controlData->getCmdKey(), $this->controlData->getMode());
 					}
 					break;
 			}
@@ -504,7 +505,6 @@ class tx_srfeuserregister_control {
 				$this->controlData->deleteShortUrl($regHash);
 			}
 		}
-
 		return $content;
 	}
 
