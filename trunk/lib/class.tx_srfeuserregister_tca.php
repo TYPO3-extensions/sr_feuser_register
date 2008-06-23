@@ -46,7 +46,6 @@
 class tx_srfeuserregister_tca {
 	var $pibase;
 	var $conf = array();
-	var $config = array();
 	var $control;
 	var $controlData;
 	var $langObj;
@@ -56,12 +55,11 @@ class tx_srfeuserregister_tca {
 	var $cObj;
 
 
-	function init(&$pibase, &$conf, &$config, &$controlData, &$langObj, $extKey)	{
+	function init(&$pibase, &$conf, &$controlData, &$langObj, $extKey)	{
 		global $TSFE, $TCA;
 
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
-		$this->config = &$config;
 		$this->controlData = &$controlData;
 		$this->langObj = &$langObj;
 		$this->cObj = &$pibase->cObj;
@@ -223,6 +221,9 @@ class tx_srfeuserregister_tca {
 
 		$charset = $TSFE->renderCharset;
 		$mode = $this->controlData->getMode();
+		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
+		$addressObj = $tablesObj->get('address');
+
 		if ($bChangesOnly && is_array($origRow))	{
 			$mrow = array();
 			foreach ($origRow as $k => $v)	{
@@ -361,12 +362,11 @@ class tx_srfeuserregister_tca {
 										t3lib_div::loadTCA($colConfig['foreign_table']);
 										$reservedValues = array();
 										if ($theTable == 'fe_users' && $colName == 'usergroup') {
-											$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
-
+											$userGroupObj = &$addressObj->getFieldObj ('usergroup');
+											$reservedValues = $userGroupObj->getReservedValues();
 										}
 										$valuesArray = array_diff($valuesArray, $reservedValues);
 										reset($valuesArray);
-
 										$firstValue = current($valuesArray);
 										if (!empty($firstValue) || count ($valuesArray) > 1) {
 											$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
@@ -382,11 +382,8 @@ class tx_srfeuserregister_tca {
 
 												if ($theTable == 'fe_users' && $colName == 'usergroup') {
 													$row2 = $this->getUsergroupOverlay($row2);
-
 												} else if ($localizedRow = $TSFE->sys_page->getRecordOverlay($colConfig['foreign_table'], $row2, $this->controlData->sys_language_content)) {
-
 													$row2 = $localizedRow;
-
 												}
 												$text = htmlspecialchars($row2[$titleField],ENT_QUOTES,$charset);
 												$colContent .= $this->cObj->stdWrap($text,$stdWrap);
@@ -518,11 +515,11 @@ class tx_srfeuserregister_tca {
 									t3lib_div::loadTCA($colConfig['foreign_table']);
 									$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
 									if ($theTable == 'fe_users' && $colName == 'usergroup') {
-										$reservedValues = array_merge(t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $this->conf['setfixed.']['ACCEPT.']['usergroup'],1));
+										$userGroupObj = &$addressObj->getFieldObj ('usergroup');
+										$reservedValues = $userGroupObj->getReservedValues();
 										$selectedValue = false;
 									}
 									$whereClause = ($theTable == 'fe_users' && $colName == 'usergroup') ? ' pid='.intval($this->controlData->getPid()).' ' : ' 1=1';
-
 									if ($TCA[$colConfig['foreign_table']] && $TCA[$colConfig['foreign_table']]['ctrl']['languageField'] && $TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField']) {
 										$whereClause .= ' AND '.$TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField'].'=0';
 									}

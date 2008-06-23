@@ -1,3 +1,7 @@
+2008-06-23 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.15:
+	* Fix bug 8789: User group is emptied after editing and updating data
+
 2008-06-20 Franz Holzinger  <franz@fholzinger.com>
 	* Version 2.5.14:
 	* Fix bug with not substituted hidden field markers for infomail

@@ -112,13 +112,19 @@ plugin.tx_srfeuserregister_pi1 {
 	setfixed.APPROVE {
 		_FIELDLIST = uid,pid,usergroup
 		usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupAfterConfirmation}
-		disable = 0
+		disable = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
 	}
 	setfixed.DELETE {
 		_FIELDLIST = uid,pid
 	}
-	setfixed.ACCEPT < .setfixed.APPROVE
+	setfixed.ACCEPT {
+		_FIELDLIST = uid,pid,usergroup
+		usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupAfterAcceptation}
+		disable = 0
+	}
+
 	setfixed.REFUSE < .setfixed.DELETE
+	setfixed.ENTER < .setfixed.ACCEPT
 
 	enableEmailConfirmation = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
 	enableAutoLoginOnConfirmation = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnConfirmation}

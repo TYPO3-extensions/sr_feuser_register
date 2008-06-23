@@ -84,7 +84,6 @@ class tx_srfeuserregister_url {
 		} else {
 			$rc = $this->cObj->getTypoLink_URL($id, $piVars);
 		}
-
 		$rc = htmlspecialchars($rc);
 
 		return $rc;
