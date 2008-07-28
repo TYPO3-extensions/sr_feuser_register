@@ -1,0 +1,244 @@
+##
+## @package TYPO3
+## @subpackage sr_feuser_register
+## @version $Id$
+##
+
+
+plugin.tx_srfeuserregister_pi1 {
+
+	table.name = {$plugin.tx_srfeuserregister_pi1.tableName}
+
+	templateStyle = old-style
+	templateFile = {$plugin.tx_srfeuserregister_pi1.file.templateFile}
+	wrap1.wrap = {$plugin.tx_srfeuserregister_pi1.wrap1}
+	wrap2.wrap = {$plugin.tx_srfeuserregister_pi1.wrap2}
+	wrap3.wrap = {$plugin.tx_srfeuserregister_pi1.wrap3}
+	color1.wrap = {$plugin.tx_srfeuserregister_pi1.color1}
+	color2.wrap = {$plugin.tx_srfeuserregister_pi1.color2}
+	color3.wrap = {$plugin.tx_srfeuserregister_pi1.color3}
+	icon_delete = {$plugin.tx_srfeuserregister_pi1.file.icon_delete}
+
+	fe_userOwnSelf = 1
+	fe_userEditSelf = 1
+	delete = 1
+
+	pid = {$plugin.tx_srfeuserregister_pi1.pid}
+	pidTitleOverride = {$plugin.tx_srfeuserregister_pi1.pidTitleOverride}
+	registerPID = {$plugin.tx_srfeuserregister_pi1.registerPID}
+	editPID = {$plugin.tx_srfeuserregister_pi1.editPID}
+	confirmPID = {$plugin.tx_srfeuserregister_pi1.confirmPID}
+	confirmInvitationPID = {$plugin.tx_srfeuserregister_pi1.confirmInvitationPID}
+	confirmType = {$plugin.tx_srfeuserregister_pi1.confirmType}
+	loginPID = {$plugin.tx_srfeuserregister_pi1.loginPID}
+	linkToPID = {$plugin.tx_srfeuserregister_pi1.linkToPID}
+	linkToPIDAddButton = {$plugin.tx_srfeuserregister_pi1.linkToPIDAddButton}
+	module_sys_dmail_category_PIDLIST = {$plugin.tx_srfeuserregister_pi1.module_sys_dmail_category_PIDLIST}
+	defaultCODE = {$plugin.tx_srfeuserregister_pi1.defaultCODE}
+
+	useShortUrls = {$plugin.tx_srfeuserregister_pi1.useShortUrls}
+	shortUrlLife = {$plugin.tx_srfeuserregister_pi1.shortUrlLife}
+	dateFormat = {$plugin.tx_srfeuserregister_pi1.dateFormat}
+	dateSplit = {$plugin.tx_srfeuserregister_pi1.dateSplit}
+
+	onChangeCountryAttribute = {$plugin.tx_srfeuserregister_pi1.onChangeCountryAttribute}
+
+	allowMultipleUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowMultipleUserGroupSelection}
+	useMd5Password = {$plugin.tx_srfeuserregister_pi1.useMd5Password}
+	salutation = {$plugin.tx_srfeuserregister_pi1.salutation}
+
+	# you may modify here the conditions under which an attachment file will be added to the email
+	addAttachment =  {$plugin.tx_srfeuserregister_pi1.enableEmailAttachment}
+	addAttachment.cmd = setfixed
+	addAttachment.sFK = APPROVE
+	addAttachment.file = {$plugin.tx_srfeuserregister_pi1.file.attachmentFile}
+
+	create = 1
+	create {
+		preview = {$plugin.tx_srfeuserregister_pi1.enablePreviewRegister}
+		fields = {$plugin.tx_srfeuserregister_pi1.formFields}
+		required = {$plugin.tx_srfeuserregister_pi1.requiredFields}
+		useEmailAsUsername = {$plugin.tx_srfeuserregister_pi1.useEmailAsUsername}
+		generateUsername = {$plugin.tx_srfeuserregister_pi1.generateUsername}
+		generatePassword = {$plugin.tx_srfeuserregister_pi1.generatePassword}
+		allowUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowUserGroupSelection}
+
+		defaultValues {
+			module_sys_dmail_html = {$plugin.tx_srfeuserregister_pi1.dmailCheckedUponRegistration}
+			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
+			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
+		}
+
+		overrideValues {
+			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
+			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
+		}
+
+		evalValues {
+			password = twice, atLeast[{$plugin.tx_srfeuserregister_pi1.passwordAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.passwordAtMost}]
+			username = uniqueLocal, atLeast[{$plugin.tx_srfeuserregister_pi1.usernameAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.usernameAtMost}]
+			email = email,atMost[255],uniqueLocal
+			##email = email,atMost[255]
+			gender = 
+			name = atMost[{$plugin.tx_srfeuserregister_pi1.nameAtMost}]
+			first_name = atMost[50]
+			last_name = atMost[50]
+			date_of_birth = date
+			company = atMost[50]
+			city = atMost[40]
+			zip = atMost[20]
+			telephone = atMost[25]
+			fax = atMost[25]
+			image = upload[{$plugin.tx_srfeuserregister_pi1.maxImages}]
+			title = 
+			address = 
+			www = wwwURL
+			comments = 
+			status = 
+			module_sys_dmail_category =
+			module_sys_dmail_html =
+			usergroup =
+			captcha_response =
+		}
+	}
+
+	select {
+		email {
+			module_sys_dmail_category.wrap = | <br/>
+		}
+	}
+
+	setfixed = 0
+	setfixed.APPROVE {
+		_FIELDLIST = uid,pid,usergroup
+		usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupAfterConfirmation}
+		disable = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
+	}
+	setfixed.DELETE {
+		_FIELDLIST = uid,pid
+	}
+	setfixed.ACCEPT {
+		_FIELDLIST = uid,pid,usergroup
+		usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupAfterAcceptation}
+		disable = 0
+	}
+
+	setfixed.REFUSE < .setfixed.DELETE
+	setfixed.ENTER < .setfixed.ACCEPT
+
+	enableEmailConfirmation = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
+	enableAutoLoginOnConfirmation = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnConfirmation}
+	enableAutoLoginOnCreate = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnCreate}
+	enableAdminReview = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
+	autoLoginRedirect_url = {$plugin.tx_srfeuserregister_pi1.autoLoginRedirect_url}
+
+	authcodeFields = {$plugin.tx_srfeuserregister_pi1.authcodeFields}
+	authcodeFields.codeLength = {$plugin.tx_srfeuserregister_pi1.codeLength}
+
+	invite < .create
+
+	edit < .create
+	edit {
+		preview = {$plugin.tx_srfeuserregister_pi1.enablePreviewEdit}
+		allowUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowUserGroupUpdate}
+
+		defaultValues {
+			disable = 0
+			usergroup >
+			module_sys_dmail_html >
+			module_sys_dmail_category >
+		}
+
+		overrideValues {
+			username = 
+			usergroup >
+			disable = 0
+		}
+
+		evalValues {
+			username = unsetEmpty
+			usergroup = unsetEmpty
+		}
+
+	}
+
+	infomail = 0
+
+	forceFileDelete = {$plugin.tx_srfeuserregister_pi1.forceFileDelete}
+
+	parseValues {
+		username = nospace,trim
+		email = lower,nospace,trim
+		password = trim,nospace
+		name = trim
+		first_name = trim
+		last_name = trim
+		date_of_birth = date
+		title = trim
+		company = trim
+		city = trim
+		zip = trim
+		image = files
+		module_sys_dmail_html = setEmptyIfAbsent
+		www = wwwURL
+		usergroup = multiple
+	}
+
+	parseFromDBValues {
+		date_of_birth = adodb_date
+	}
+	parseToDBValues {
+		date_of_birth = adodb_date
+	}
+
+	email.from = {$plugin.tx_srfeuserregister_pi1.email}
+	email.fromName = {$plugin.tx_srfeuserregister_pi1.siteName}
+	email.admin = {$plugin.tx_srfeuserregister_pi1.email}
+	email.field = email
+	email.HTMLMail = {$plugin.tx_srfeuserregister_pi1.enableHTMLMail}
+	email.HTMLMailCSS = {$plugin.tx_srfeuserregister_pi1.HTMLMailCSS}
+	email.CREATE_SAVED = {$plugin.tx_srfeuserregister_pi1.enableEmailOnRegister}
+	email.EDIT_SAVED = {$plugin.tx_srfeuserregister_pi1.enableEmailOnUpdate}
+	email.DELETE_SAVED = {$plugin.tx_srfeuserregister_pi1.enableEmailOnDelete}
+	email.SETFIXED_APPROVE = {$plugin.tx_srfeuserregister_pi1.enableEmailOnApprove}
+	email.SETFIXED_DELETE = {$plugin.tx_srfeuserregister_pi1.enableEmailOnRefuse}
+	email.SETFIXED_ACCEPT = 1
+	email.SETFIXED_REFUSE = 1
+
+	notify.CREATE_SAVED = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnRegister}
+	notify.EDIT_SAVED = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnUpdate}
+	notify.DELETE_SAVED =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnDelete}
+	notify.SETFIXED_CREATE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyConfirmation}
+	notify.SETFIXED_INVITE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyConfirmation}
+	notify.SETFIXED_APPROVE =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnApprove}
+	notify.SETFIXED_DELETE =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnRefuse}
+	notify.SETFIXED_ACCEPT = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnAdminAccept}
+	notify.SETFIXED_REFUSE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnAdminRefuse}
+
+  _CSS_DEFAULT_STYLE (
+   .tx-srfeuserregister-pi1 p { font-family:Verdana, sans-serif; font-size:12px; line-height:125%; color:#35006d; margin-top:8px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; padding-right:3px; padding-left:3px; text-indent:0px; }
+   .tx-srfeuserregister-pi1 a:link { background-color:transparent; color:navy; text-decoration:none; font-weight:bold;}
+   .tx-srfeuserregister-pi1 a:visited { background-color:transparent; color:navy; font-weight:bold; text-decoration:none; }
+   .tx-srfeuserregister-pi1 a:hover { background-color:transparent; color:#333333; text-decoration:none; }
+   .tx-srfeuserregister-pi1 a:active { background-color:transparent; color:navy; font-weight:bold; text-decoration:none; }
+   .tx-srfeuserregister-pi1 td { vertical-align:top;  font-family:Verdana, sans-serif; font-size:12px; line-height:125%; color:#35006d; margin-top:8px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; padding-right:3px; padding-left:3px; text-indent:0px;}
+   .tx-srfeuserregister-pi1 input { font-size:10px; font-family:Verdana; background-color:#35006d; color:#ffffff; font-weight:bold; }
+   .tx-srfeuserregister-pi1 input[type=radio] { vertical-align: middle; margin-left: 10px; margin-right: 5px; }
+   .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-submit { font-size:10px; font-family:Verdana; background-color:#35006d; color:#ffffff; font-weight:bold; }
+   .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-uploader { font-size:10px; font-family:Verdana; background-color:#35006d; color:#ffffff; font-weight:bold; }
+   .tx-srfeuserregister-pi1 input.tx-srfeuserregister-pi1-icon { font-size:10px; font-family:Verdana; background-color:transparent;}
+   .tx-srfeuserregister-pi1 select { font-size:10px; font-family:Verdana; background-color:#35006d; color:#ffffff; font-weight:bold; }
+   .tx-srfeuserregister-pi1 textarea { font-size:10px; font-family:Verdana; background-color:#35006d; color:#ffffff; font-weight:bold; }
+   .tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-radio input  { font-size:10px; font-family:Verdana; background-color:transparent; color:#35006d; font-weight:bold; vertical-align:middle; }
+   .tx-srfeuserregister-pi1 .tx-srfeuserregister-pi1-checkbox input  { font-size:10px; font-family:Verdana; background-color:transparent; color:#35006d; font-weight:bold; vertical-align:middle; }
+   .tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checkboxes { list-style-type: none; list-style-image: none; list-style-position: inside; margin: 0 0 0 .5em; font-size: 1em; }
+   .tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checkboxes li { margin: 0 0 .4em 0; }
+   .tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checkboxes li label { margin: 0; padding: 0 0 0 .5em; font-size: 1em; }
+   .tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checked-values { list-style-type: square; list-style-image: none; list-style-position: inside; margin: 0; font-size: 1em; }
+   .tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checked-values li { float: left; margin: 0 2em 0 0;}
+  )
+
+ _DEFAULT_PI_VARS {
+ }
+
+}
