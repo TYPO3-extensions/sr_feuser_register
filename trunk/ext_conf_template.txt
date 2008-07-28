@@ -1,5 +1,5 @@
 
-  # cat=basic; type=string; label=Image upload folder: Specify the name of the image upload folder. Default is /uploads/tx_srfeuserregister.
+  # cat=basic; type=string; label=Image upload folder: Specify the name of the image upload folder. Default is uploads/tx_srfeuserregister.
 uploadFolder = uploads/tx_srfeuserregister
 
   # cat=basic; type=string; label=Allowed image types: Specify the list of acceptable file extensions for the front end user images. Default is png, jpg, jpeg, gif, tif, tiff.

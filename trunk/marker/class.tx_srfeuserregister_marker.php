@@ -577,7 +577,6 @@ class tx_srfeuserregister_marker {
 		}
 
 		$markerArray['###PASSWORD_ONCHANGE###'] = 'onchange="pw_change=1; return true;"';
-
 	}	// addMd5LoginMarkers
 
 

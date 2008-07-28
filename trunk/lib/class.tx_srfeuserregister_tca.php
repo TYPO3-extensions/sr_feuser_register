@@ -449,12 +449,22 @@ class tx_srfeuserregister_tca {
 								break;
 
 							case 'radio':
-								for ($i = 0; $i < count ($colConfig['items']); ++$i) {
-									$label = $this->langObj->getLLFromString($colConfig['items'][$i][0]);
-									$label = htmlspecialchars($label,ENT_QUOTES,$charset);
-									$colContent .= '<input type="radio"' . $this->pibase->pi_classParam('radio') . ' id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']"'.
-											' value="'.$i.'" '.($i==0 ? ' checked="checked"' : '').' />' .
-											'<label for="' . $this->pibase->pi_getClassName($colName) . '-' . $i . '">' . $label . '</label>';
+								$startVal = $colConfig['default'];
+								if (!isset($startVal))	{
+									reset($colConfig['items']);
+									list ($startKey, $startConf) = $colConfig['items'];
+									$startVal = $startConf[1];
+								}
+
+								if (isset($colConfig['items']) && is_array($colConfig['items']))	{
+									foreach ($colConfig['items'] as $key => $confArray) {
+										$value = $confArray[1];
+										$label = $this->langObj->getLLFromString($confArray[0]);
+										$label = htmlspecialchars($label,ENT_QUOTES,$charset);
+										$colContent .= '<input type="radio"' . $this->pibase->pi_classParam('radio') . ' id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']"'.
+												' value="'.$value.'" '.($value==$startVal ? ' checked="checked"' : '').' />' .
+												'<label for="' . $this->pibase->pi_getClassName($colName) . '-' . $key . '">' . $label . '</label>';
+									}
 								}
 								break;
 
