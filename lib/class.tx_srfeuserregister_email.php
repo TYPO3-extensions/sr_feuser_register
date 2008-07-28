@@ -92,7 +92,7 @@ class tx_srfeuserregister_email {
 			$fetch = $this->controlData->getFeUserData('fetch');
 
 			if (isset($fetch) && !empty($fetch))	{
-				$pidLock = 'AND pid IN ('.$this->controlData->getPid().')';
+				$pidLock = 'AND pid IN ('.($this->cObj->data['pages'] ? $this->cObj->data['pages'].',' : '').$this->controlData->getPid().')';
 					// Getting records
 				if ( $theTable == 'fe_users' && t3lib_div::testInt($fetch) )	{
 					$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($theTable,'uid',$fetch,$pidLock,'','','1');

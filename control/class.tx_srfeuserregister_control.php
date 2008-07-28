@@ -294,7 +294,6 @@ class tx_srfeuserregister_control {
 			// Delete record if delete command is sent + the preview flag is NOT set.
 			$this->data->deleteRecord();
 		}
-
 			// Display forms
 		if ($this->data->saved) {
 
@@ -303,7 +302,6 @@ class tx_srfeuserregister_control {
 
 			$bCustomerConfirmsMode = FALSE;
 			$bDefaultMode = FALSE;
-
 			switch($cmd) {
 				case 'delete':
 					$key = 'DELETE'.SAVED_SUFFIX;
@@ -352,9 +350,14 @@ class tx_srfeuserregister_control {
 					$this->tca->TCA['columns'],
 					false
 				);
+				if ($cmdKey == 'create')	{
+					$this->marker->addMd5LoginMarkers($markerArray, $dataArray, $this->controlData->getUseMd5Password());
+				}
+
 				$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 				$markerArray = $this->marker->getArray(); // compile uses its own markerArray
 				$newDataArray = $TSFE->sys_page->getRawRecord($theTable, $theUid); // the new data array is necessary after saving because default fields might have been added.
+
 				if (isset($changesArray) && is_array($changesArray))	{
 					$newDataArray = array_merge($newDataArray, $changesArray);
 				}
@@ -394,11 +397,12 @@ class tx_srfeuserregister_control {
 						$this->conf['setfixed.']
 					);
 				}
-
 				if ($rc == '')	{	// success case
-					$origGetFeUserData = t3lib_div::_GET($this->controlData->getPrefixId());;
+					$origGetFeUserData = t3lib_div::_GET($this->controlData->getPrefixId());
 					$regHash = $origGetFeUserData['regHash'];
-					$this->controlData->deleteShortUrl($regHash);
+					if ($regHash)	{
+						$this->controlData->deleteShortUrl($regHash);
+					}
 
 						// Link to on edit save
 						// backURL may link back to referring process
@@ -406,6 +410,7 @@ class tx_srfeuserregister_control {
 						$cmd == 'edit' && 
 						($this->controlData->getBackURL() || ($this->conf['linkToPID'] && ($this->controlData->getFeUserData('linkToPID') || !$this->conf['linkToPIDAddButton']))) ) {
 						$destUrl = ($this->controlData->getBackURL() ? $this->controlData->getBackURL() : ($TSFE->absRefPrefix ? '' : $this->controlData->getSiteUrl()).$this->cObj->getTypoLink_URL($this->conf['linkToPID'].','.$TSFE->type));
+
 						header('Location: '.t3lib_div::locationHeaderUrl($destUrl));
 						exit;
 					}
@@ -414,6 +419,7 @@ class tx_srfeuserregister_control {
 					if ($theTable == 'fe_users' && $cmd == 'create' && !$this->controlData->getSetfixedEnabled() && $this->conf['enableAutoLoginOnCreate']) {
 						$row = $this->data->getCurrentArray();
 						$this->login($row);
+
 						if ($this->conf['autoLoginRedirect_url'])	{
 							exit;
 						}
@@ -476,7 +482,8 @@ class tx_srfeuserregister_control {
 						$cmdKey,
 						$this->controlData->getMode(),
 						$theTable,
-						$dataArray
+						$dataArray,
+						$origArray
 					);
 					break;
 				case 'login':
@@ -494,13 +501,14 @@ class tx_srfeuserregister_control {
 							$cmdKey,
 							$this->controlData->getMode(),
 							$theTable,
-							$dataArray
+							$dataArray,
+							$origArray
 						);
 					}
 					break;
 			}
 			if (!$this->controlData->getFeUserData('preview'))	{
-				$origGetFeUserData = t3lib_div::_GET($this->controlData->getPrefixId());;
+				$origGetFeUserData = t3lib_div::_GET($this->controlData->getPrefixId());
 				$regHash = $origGetFeUserData['regHash'];
 				$this->controlData->deleteShortUrl($regHash);
 			}
@@ -512,7 +520,7 @@ class tx_srfeuserregister_control {
 	function login ($row)	{
 		global $TSFE;
 
- 		$loginVars = array();
+		$loginVars = array();
 		$loginVars['user'] = $row['username'];
 		$loginVars['pass'] = $row['password'];
 		if ($this->controlData->getUseMd5Password())	{

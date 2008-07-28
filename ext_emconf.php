@@ -42,6 +42,7 @@ $EM_CONF[$_EXTKEY] = array(
 			'typo3' => '4.0-0.0.0',
 		),
 		'conflicts' => array(
+			'germandates' => '0.0.0-1.0.1',
 		),
 		'suggests' => array(
 			'div2007' => '0.1.7-',

@@ -1,3 +1,7 @@
+2008-07-28 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.16:
+	* Fix bug with not working radio button ḟor tt_address gender because it has values different from 0 and 1
+
 2008-06-23 Franz Holzinger  <franz@fholzinger.com>
 	* Version 2.5.15:
 	* Fix bug 8789: User group is emptied after editing and updating data

@@ -112,7 +112,6 @@ class tx_srfeuserregister_data {
 		if ($theUid)	{
 			$this->setRecUid($theUid);
 			$origArray = $TSFE->sys_page->getRawRecord($theTable, $theUid);
-
 			if (isset($origArray) && is_array($origArray))	{
 				$this->tca->modifyRow($origArray, TRUE);
 			} else {
@@ -752,14 +751,14 @@ class tx_srfeuserregister_data {
 			}
 		}
 
-		if ($uploadPath && is_array($_FILES['FE']['name'][$theTable][$theField]) && $this->evalFileError($_FILES['FE']['error'])) {
-			reset($_FILES['FE']['name'][$theTable][$theField]);
+		if ($uploadPath && is_array($_FILES['FE']['name'][$theTable][$theField])) {
 			foreach($_FILES['FE']['name'][$theTable][$theField] as $i => $filename) {
-				if ($filename && $this->checkFilename($filename)) {
+				if ($filename && $this->checkFilename($filename) && $this->evalFileError($_FILES['FE']['error'][$theTable][$theField][$i])) {
 					$fI = pathinfo($filename);
 					if (t3lib_div::verifyFilenameAgainstDenyPattern($fI['name'])) {
 						$tmpFilename = (($GLOBALS['TSFE']->loginUser)?($GLOBALS['TSFE']->fe_user->user['username'].'_'):'').basename($filename, '.'.$fI['extension']).'_'.t3lib_div::shortmd5(uniqid($filename)).'.'.$fI['extension'];
-						$theDestFile = $this->fileFunc->getUniqueName($this->fileFunc->cleanFileName($tmpFilename), PATH_site.$uploadPath.'/');
+						$cleanFilename = $this->fileFunc->cleanFileName($tmpFilename);
+						$theDestFile = $this->fileFunc->getUniqueName($cleanFilename, PATH_site.$uploadPath.'/');
 						t3lib_div::upload_copy_move($_FILES['FE']['tmp_name'][$theTable][$theField][$i], $theDestFile);
 						$fI2 = pathinfo($theDestFile);
 						$fileNameArray[] = $fI2['basename'];
@@ -768,7 +767,6 @@ class tx_srfeuserregister_data {
 			}
 		}
 		$dataValue = $fileNameArray;
-
 		return $dataValue;
 	}	// processFiles
 
