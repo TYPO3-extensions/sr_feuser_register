@@ -72,7 +72,7 @@ class tx_srfeuserregister_controldata {
 		$this->extKey = $extKey;
 		$this->piVars = $piVars;
 		$this->setTable($theTable);
-		$this->sys_language_content = intval(t3lib_div::testInt($TSFE->config['config']['sys_language_uid']) ? intval($TSFE->config['config']['sys_language_uid']) : 0);
+		$this->sys_language_content = (t3lib_div::testInt($TSFE->config['config']['sys_language_uid']) ? $TSFE->config['config']['sys_language_uid'] : 0);
 
 			// set the title language overlay
 		$pidRecord = t3lib_div::makeInstance('t3lib_pageSelect');
@@ -115,10 +115,11 @@ class tx_srfeuserregister_controldata {
 				$sFK = $feUserData['sFK'];
 				$cmd = $feUserData['cmd'];
 				$getVars = $this->getShortUrl($regHash);
+				$submit = $feUserData['submit'];
 
 				if ($getVars)	{
 					$restoredFeUserData = $getVars[$this->getPrefixId()];
-	
+
 					foreach ($getVars as $k => $v ) {
 						// restore former GET values for the url
 						t3lib_div::_GETset($v,$k);
@@ -127,6 +128,9 @@ class tx_srfeuserregister_controldata {
 						$feUserData = array_merge ($feUserData, $restoredFeUserData);
 					} else {
 						$feUserData = $restoredFeUserData;
+						if ($submit)	{
+							$feUserData['submit'] = $submit;
+						}
 					}
 				}
 				if ($sFK)	{
@@ -155,9 +159,9 @@ class tx_srfeuserregister_controldata {
 			$this->setCmd($cmd);
 		}
 
-		$feUserdata = $this->getFeUserData();
+		$feUserData = $this->getFeUserData();
 		$this->secureInput($feUserData);
-		$this->setFeUserData ($feUserData);
+		$this->setFeUserData($feUserData);
 	}
 
 	/**
@@ -220,6 +224,10 @@ class tx_srfeuserregister_controldata {
 
 	function getPiVars ()	{
 		return $this->piVars;
+	}
+
+	function setPiVars ($piVars)	{
+		$this->piVars = $piVars;
 	}
 
 	function getCmd() {
@@ -426,7 +434,6 @@ class tx_srfeuserregister_controldata {
 		$res = $TYPO3_DB->exec_DELETEquery('cache_md5params', 'tstamp<' . $max_life . ' AND type=99');	
 	}	// cleanShortUrlCache
 	// </Steve Webster added short url feature>
-
 }
 
 

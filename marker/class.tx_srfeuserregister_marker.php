@@ -717,6 +717,8 @@ class tx_srfeuserregister_marker {
 			$markerArray['###UPLOAD_PREVIEW_' . $theField . '###'] = $this->buildFileUploader($theField, $this->tca->TCA['columns'][$theField]['config'], $cmd, $cmdKey, $filenameArray, 'FE['.$theTable.']', true);
 		} else {
 			$markerArray['###UPLOAD_' . $theField . '###'] = $this->buildFileUploader($theField, $this->tca->TCA['columns'][$theField]['config'], $cmd, $cmdKey, $filenameArray, 'FE['.$theTable.']');
+			$max_size = $this->tca->TCA['columns'][$theField]['config']['max_size']*1024;
+			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="MAX_FILE_SIZE" value="'.$max_size.'" />';
 		}
 	}	// addFileUploadMarkers
 

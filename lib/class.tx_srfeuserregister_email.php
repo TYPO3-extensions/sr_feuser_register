@@ -142,6 +142,7 @@ class tx_srfeuserregister_email {
 		* @return void
 		*/
 	function compile($key, $theTable, $DBrows, $origRows, $recipient, &$markerArray, $cmd, $cmdKey, &$templateCode, $setFixedConfig = array()) {
+		global $TSFE;
 
 		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 
@@ -199,8 +200,13 @@ class tx_srfeuserregister_email {
 
 		foreach ($DBrows as $k => $row)	{
 			$origRow = $origRows[$k];
+
 			if (isset($origRow) && is_array($origRow))	{
-				$currentRow = array_merge($origRow, $row);
+				if (isset($row) && is_array($row))	{
+					$currentRow = array_merge($origRow, $row);
+				} else {
+					$currentRow = $origRow;
+				}
 			} else {
 				$currentRow = $row;
 			}
@@ -267,8 +273,7 @@ class tx_srfeuserregister_email {
 		}
 			// Check if we need to add an attachment
 		if ($this->conf['addAttachment'] && $this->conf['addAttachment.']['cmd'] == $cmd && $this->conf['addAttachment.']['sFK'] == $this->controlData->getFeUserData('sFK')) {
-			$file = ($this->conf['addAttachment.']['file']) ? $GLOBALS['TSFE']->tmpl->getFileName($this->conf['addAttachment.']['file']):
-			'';
+			$file = ($this->conf['addAttachment.']['file']) ? $TSFE->tmpl->getFileName($this->conf['addAttachment.']['file']):'';
 		}
 		$this->send($recipient, $this->conf['email.']['admin'], $content['user']['final'], $content['admin']['final'], $content['HTML']['final'], $file);
 	}
@@ -289,7 +294,7 @@ class tx_srfeuserregister_email {
 
 		// Send mail to admin
 		if ($admin && $adminContent) {
-			$this->cObj->sendNotifyEmail($adminContent, $admin, '', $this->conf['email.']['from'], $this->conf['email.']['fromName'], $recipient);
+			$this->cObj->sendNotifyEmail($adminContent, $admin, '', $this->conf['email.']['from'], $this->conf['email.']['fromName']);
 		}
 
 		if (!$this->HTMLMailEnabled) {

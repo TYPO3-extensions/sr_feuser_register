@@ -39,23 +39,31 @@
  *
  */
 
+require_once(PATH_tslib.'class.tslib_pibase.php');
+require_once(PATH_BE_srfeuserregister.'control/class.tx_srfeuserregister_control_main.php');
 
-require_once(PATH_BE_srfeuserregister.'pi1/class.tx_srfeuserregister_pi1_base.php');
 
+class tx_srfeuserregister_pi1_base extends tslib_pibase {
 
-class tx_srfeuserregister_pi1 {
-	var $cObj;
+		// Plugin initialization variables
+	var $prefixId = 'tx_srfeuserregister_pi1';		// Should be same as classname of the plugin, used for CSS classes, variables
+	var $scriptRelPath = 'pi1/class.tx_srfeuserregister_pi1_base.php'; // Path to this script relative to the extension dir.
+	var $extKey = SR_FEUSER_REGISTER_EXTkey;		// Extension key.
 
 	function main($content, &$conf) {
-		$pibaseObj = &t3lib_div::getUserObj('&tx_srfeuserregister_pi1_base');
-		$pibaseObj->cObj = &$this->cObj;
-		$content = &$pibaseObj->main($content, $conf);
+		global $TSFE;
+
+		$this->pi_setPiVarDefaults();
+
+		$mainObj = &t3lib_div::getUserObj('&tx_srfeuserregister_control_main');
+		$mainObj->cObj = &$this->cObj;
+		$content = &$mainObj->main($content, $conf, $this, 'fe_users');
 		return $content;
 	}
 }
 
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php']) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_base.php']) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_base.php']);
 }
 ?>
