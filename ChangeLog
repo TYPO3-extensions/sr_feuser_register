@@ -1,6 +1,7 @@
 2008-09-17 Franz Holzinger  <franz@fholzinger.com>
-	* Version 2.5.17:
+	* Version 2.5.17-18:
 	* Fix bug 8844: delete link
+	* Always submit the cmd with infomail
 
 2008-07-28 Franz Holzinger  <franz@fholzinger.com>
 	* Version 2.5.16:

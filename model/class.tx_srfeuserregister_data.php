@@ -112,6 +112,7 @@ class tx_srfeuserregister_data {
 		if ($theUid)	{
 			$this->setRecUid($theUid);
 			$origArray = $TSFE->sys_page->getRawRecord($theTable, $theUid);
+
 			if (isset($origArray) && is_array($origArray))	{
 				$this->tca->modifyRow($origArray, TRUE);
 			} else {

@@ -246,7 +246,6 @@ class tx_srfeuserregister_setfixed {
 
 				if ($theTable != 'fe_users' && $theKey == 'EDIT' ) {
 					if (is_array($data) ) {
-						reset($data);
 						foreach($data as $fieldName => $fieldValue) {
 							$setfixedpiVars['fD['.$fieldName.']'] = rawurlencode($fieldValue);
 							$recCopy[$fieldName] = $fieldValue;
@@ -257,6 +256,7 @@ class tx_srfeuserregister_setfixed {
 					} else {
 						$setfixedpiVars[$prefixId.'[aC]'] = $authObj->authCode($r);
 					}
+					$setfixedpiVars[$prefixId.'[cmd]'] = 'edit';
 					$linkPID = $this->controlData->getPID('edit');
 				} else {
 					$setfixedpiVars[$prefixId.'[cmd]'] = 'setfixed';
