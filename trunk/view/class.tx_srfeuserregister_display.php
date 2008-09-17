@@ -126,6 +126,7 @@ class tx_srfeuserregister_display {
 
 	/**
 	* Generates the record creation form
+	* or the first link display to create or edit someone's data
 	*
 	* @return string  the template with substituted markers
 	*/
@@ -150,7 +151,7 @@ class tx_srfeuserregister_display {
 			$key = ($cmd == 'invite') ? 'INVITE': 'CREATE';
 			$this->marker->addMd5EventsMarkers($markerArray, 'create', $this->controlData->getUseMd5Password());
 
-			if (!($theTable == 'fe_users') || $cmd == 'create' || $cmd == 'invite')	{
+			if ($cmd == 'create' || $cmd == 'invite')	{
 				$subpartKey = '###TEMPLATE_'.$key.$this->marker->getPreviewLabel().'###';
 			} else {
 				if ($GLOBALS['TSFE']->loginUser)	{
@@ -247,6 +248,7 @@ class tx_srfeuserregister_display {
 		* @return string  the template with substituted markers
 		*/
 	function deleteScreen($markerArray, $theTable, $dataArray, $origArray) {
+
 		if ($this->conf['delete']) {
 			$prefixId = $this->controlData->getPrefixId();
 			$templateCode = $this->data->getTemplateCode();
@@ -259,20 +261,21 @@ class tx_srfeuserregister_display {
 
 				// If the recUid selects a record.... (no check here)
 				if (is_array($origArray)) {
-					if ($authObj->aCAuth($origArray) || $this->cObj->DBmayFEUserEdit($theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
+					$bMayEdit = $this->cObj->DBmayFEUserEdit($theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf']);
+
+					if ($authObj->aCAuth($origArray) || $bMayEdit) {
 						$markerArray = $this->marker->getArray();
 						// Display the form, if access granted.
 						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="rU" value="'.$this->data->getRecUid().'" />';
-						if ( $theTable != 'fe_users' ) {
+						if ($theTable != 'fe_users') {
 							$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$prefixId .'[aC]" value="'.$authObj->authCode($origArray).'" />';
-							$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$prefixId .'[cmd]" value="delete" />';
 						}
+						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$prefixId .'[cmd]" value="delete" />';
 						$this->marker->setArray($markerArray);
 						$content = $this->getPlainTemplate($templateCode, '###TEMPLATE_DELETE_PREVIEW###', $markerArray, $dataArray, $origArray);
 					} else {
 						// Else display error, that you could not edit that particular record...
 						$content = $this->getPlainTemplate($templateCode, '###TEMPLATE_NO_PERMISSIONS###', $markerArray, $dataArray, $origArray);
-
 					}
 				}
 			} else {

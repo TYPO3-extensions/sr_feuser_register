@@ -299,8 +299,36 @@ class tx_srfeuserregister_data {
 				$dataArray[$theField] = $theValue;
 			}
 		}
+
 		return $dataArray;
 	}
+
+
+	/**
+	* Gets the error message to be displayed
+	*
+	* @param string  $theField: the name of the field being validated
+	* @param string  $theRule: the name of the validation rule being evaluated
+	* @param string  $label: a default error message provided by the invoking function
+	* @return string  the error message to be displayed
+	*/
+	function getFailureText($theField, $theRule, $label) {
+		if ($theRule && isset($this->conf['evalErrors.'][$theField.'.'][$theRule]))	{
+			$failureLabel = $this->conf['evalErrors.'][$theField.'.'][$theRule];
+		} else {
+			$failureLabel='';
+			if ($theRule)	{
+				$labelname = 'evalErrors_'.$theRule.'_'.$theField;
+				$failureLabel = $this->lang->pi_getLL($labelname);
+				$failureLabel = $failureLabel ? $failureLabel : $this->lang->pi_getLL('evalErrors_'.$theRule);
+			}
+			if (!$failureLabel)	{ // this remains only for compatibility reasons
+				$labelname = $label;
+				$failureLabel = $this->lang->pi_getLL($labelname);
+			}
+		}
+		return $failureLabel;
+	}	// getFailureText
 
 
 	/**
@@ -326,11 +354,11 @@ class tx_srfeuserregister_data {
 				}
 			}
 		}
-
 		$pid = intval($dataArray['pid']);
 
 		// Evaluate: This evaluates for more advanced things than "required" does. But it returns the same error code, so you must let the required-message tell, if further evaluation has failed!
 		$bRecordExists = FALSE;
+
 		if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
 			$cmd = $this->controlData->getCmd();
 			switch($cmd) {
@@ -354,6 +382,7 @@ class tx_srfeuserregister_data {
 			foreach($this->conf[$cmdKey.'.']['evalValues.'] as $theField => $theValue) {
 				if (isset($dataArray[$theField]) || !isset($origArray[$theField]))	{
 					$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
+
 					foreach ($listOfCommands as $k => $cmd)	{
 						$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 						$theCmd = trim($cmdParts[0]);
@@ -543,6 +572,9 @@ class tx_srfeuserregister_data {
 				}
 			} // foreach
 		}
+		if (empty($markContentArray['###EVAL_ERROR_saved###']))	{
+			$markContentArray['###EVAL_ERROR_saved###'] = '';
+		}
 
 		if ($this->missing['zone'] && t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey))	{
 			$staticInfoObj = &t3lib_div::getUserObj('&tx_staticinfotables_pi1');
@@ -570,12 +602,15 @@ class tx_srfeuserregister_data {
 	function parseValues($theTable, &$dataArray, &$origArray) {
 
 		if (is_array($this->conf['parseValues.'])) {
+
 			foreach($this->conf['parseValues.'] as $theField => $theValue) {
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
 				if (in_array('setEmptyIfAbsent', $listOfCommands) && !isset($dataArray[$theField]))	{
 					$dataArray[$theField]='';
 				}
-				if (isset($dataArray[$theField]) || isset($origArray[$theField]))	{
+				$internalType = $this->tca->TCA['columns'][$theField]['config']['internal_type'];
+
+				if (isset($dataArray[$theField]) || isset($origArray[$theField]) || $internalType=='file')	{
 					foreach($listOfCommands as $cmd) {
 						$cmdParts = split('\[|\]', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 						$theCmd = trim($cmdParts[0]);
@@ -898,12 +933,12 @@ class tx_srfeuserregister_data {
 	*
 	* @return void  sets $this->saved
 	*/
-	function deleteRecord() {
-		$theTable = $this->controlData->getTable();
+	function deleteRecord($theTable, &$origArray, &$dataArray) {
 		$prefixId = $this->controlData->getPrefixId();
+
 		if ($this->conf['delete']) {
 			// If deleting is enabled
-			$origArray = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $this->getRecUid());
+
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 			if ($GLOBALS['TSFE']->loginUser || $authObj->aCAuth($origArray)) {
 				// Must be logged in OR be authenticated by the aC code in order to delete
@@ -914,6 +949,7 @@ class tx_srfeuserregister_data {
 							// Delete the record and display form, if access granted.
 
 						$extKey = $this->controlData->getExtKey();
+
 							// <Ries van Twisk added registrationProcess hooks>
 							// Call all beforeSaveDelete hooks BEFORE the record is deleted
 						if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'])) {
@@ -930,9 +966,9 @@ class tx_srfeuserregister_data {
 								// If the record is being fully deleted... then remove the images or files attached.
 							$this->deleteFilesFromRecord($this->getRecUid());
 						}
-						$res = $this->cObj->DBgetDelete($theTable, $this->recUid, TRUE);
+						$res = $this->cObj->DBgetDelete($theTable, $this->getRecUid(), TRUE);
 						$this->deleteMMRelations($theTable, $this->getRecUid(), $origArray);
-						$this->setCurrentArray($origArray);
+						$dataArray = $origArray;
 						$this->saved = TRUE;
 					} else {
 						$this->setError('###TEMPLATE_NO_PERMISSIONS###');
@@ -977,6 +1013,7 @@ class tx_srfeuserregister_data {
 		*  Check if the value is a correct date in format yyyy-mm-dd
 	*/
 	function fetchDate($value, $dateFormat) {
+
 		$rcArray = array('m' => '', 'd' => '', 'y' => '');
 		$dateValue = trim($value);
 		$split = $this->conf['dateSplit'];
@@ -988,6 +1025,7 @@ class tx_srfeuserregister_data {
 		$max = sizeof($dateFormatArray);
 		$yearOffset = 0;
 		for ($i=0; $i < $max; $i++) {
+
 			switch($dateFormatArray[$i]) {
 				// day
 				// d - day of the month, 2 digits with leading zeros; i.e. "01" to "31"
@@ -1023,19 +1061,21 @@ class tx_srfeuserregister_data {
 				break;
 			}
 		}
+
 		return $rcArray;
 	}
 
 
 	/** evalDate($value)
-		*
-		*  Check if the value is a correct date in format yyyy-mm-dd
-	*/
+	 *
+	 *  Check if the value is a correct date in format yyyy-mm-dd
+	 */
 	function evalDate($value, $dateFormat) {
 		if( !$value) {
 			return FALSE;
 		}
 		$dateArray = $this->fetchDate($value, $dateFormat);
+
 		if(is_numeric($dateArray['y']) && is_numeric($dateArray['m']) && is_numeric($dateArray['d'])) {
 			$rc = checkdate($dateArray['m'], $dateArray['d'], $dateArray['y']);
 		} else {
@@ -1169,7 +1209,6 @@ class tx_srfeuserregister_data {
 			&& in_array('first_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)) && in_array('last_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1))  ) {
 			$dataArray['name'] = trim(trim($dataArray['first_name']).' '.trim($dataArray['last_name']));
 		}
-
 	}	// setName
 
 
@@ -1220,30 +1259,6 @@ class tx_srfeuserregister_data {
 			}
 		}
 	}	// setPassword
-
-
-	/**
-	* Gets the error message to be displayed
-	*
-	* @param string  $theField: the name of the field being validated
-	* @param string  $theCmd: the name of the validation rule being evaluated
-	* @param string  $label: a default error message provided by the invoking function
-	* @return string  the error message to be displayed
-	*/
-	function getFailureText($theField, $theCmd, $label) {
-		$labelname = 'evalErrors_'.$theCmd.'_'.$theField;
-		$failureLabel = $this->lang->pi_getLL($labelname);
-		$failureLabel = $failureLabel ? $failureLabel : $this->lang->pi_getLL('evalErrors_'.$theCmd);
-		if (!$failureLabel)	{
-			if (isset($this->conf['evalErrors.'][$theField.'.'][$theCmd]))	{
-				 $failureLabel = $this->conf['evalErrors.'][$theField.'.'][$theCmd];
-			} else {
-				$labelname = $label;
-				$failureLabel = $this->lang->pi_getLL($labelname);
-			}
-		}
-		return $failureLabel;
-	}	// getFailureText
 
 
 	/**
@@ -1390,6 +1405,7 @@ class tx_srfeuserregister_data {
 		} else {
 			$rc = TRUE;
 		}
+
 		return $rc;
 	}	// evalFileError
 }

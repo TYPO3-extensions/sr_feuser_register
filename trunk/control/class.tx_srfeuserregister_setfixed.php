@@ -276,7 +276,6 @@ class tx_srfeuserregister_setfixed {
 					$linkPID = $this->controlData->getPID('confirm');
 					if ($this->controlData->getCmd() == 'invite') {
 						$linkPID = $this->controlData->getPID('confirmInvitation');
-
 					}
 				}
 				if (t3lib_div::_GP('L') && !t3lib_div::inList($GLOBALS['TSFE']->config['config']['linkVars'], 'L')) {
@@ -291,7 +290,9 @@ class tx_srfeuserregister_setfixed {
 				$conf = array();
 				$conf['disableGroupAccessCheck'] = TRUE;
 				$confirmType = (t3lib_div::testInt($this->conf['confirmType']) ? intval($this->conf['confirmType']) : $TSFE->type);
-				$url = $this->cObj->getTypoLink_URL($linkPID.','.$confirmType, $setfixedpiVars, '', $conf);
+
+				// $url = $this->cObj->getTypoLink_URL($linkPID.','.$confirmType, $setfixedpiVars, '', $conf);
+				$url = tx_div2007_alpha::getTypoLink_URL_fh002($this->cObj, $linkPID.','.$confirmType,$setfixedpiVars,'',$conf);
 				$bIsAbsoluteURL = ($TSFE->absRefPrefix || (strncmp($url,'http',4) == 0) || (strncmp($url,'https',5) == 0));
 				$markerKey = '###SETFIXED_'.$this->cObj->caseshift($theKey,'upper').'_URL###';
 				$markerArray[$markerKey] = ($bIsAbsoluteURL ? '' : $this->controlData->getSiteUrl()) . $url;

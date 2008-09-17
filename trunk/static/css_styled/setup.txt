@@ -4,6 +4,7 @@
 ## @version $Id$
 ##
 
+plugin.tx_srfeuserregister_pi1 = USER_INT
 plugin.tx_srfeuserregister_pi1 {
 
 	table.name = {$plugin.tx_srfeuserregister_pi1.tableName}

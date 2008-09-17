@@ -218,8 +218,8 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label=Short URL cache lifespan: Number of days that short URL's will be kept in the DB. After this delay, the short URL's will be removed. Confirmation URL's included in email messages older than this number of days will not work.
   shortUrlLife = 30
 
-    # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Date Format (y-m-d)
-  dateFormat = Y-m-d
+    # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Date Format (d-m-y)
+  dateFormat = d-m-Y
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Split char for Date Format (-)
   dateSplit = -
