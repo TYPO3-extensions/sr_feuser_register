@@ -103,6 +103,7 @@ class tx_srfeuserregister_controldata {
 		// <Steve Webster added short url feature>
 			// Get hash variable if provided and if short url feature is enabled
 		$feUserData = t3lib_div::_GP($this->getPrefixId());
+
 		if ($this->conf['useShortUrls']) {
 			$this->cleanShortUrlCache();
 			$regHash = $feUserData['regHash'];
@@ -112,12 +113,17 @@ class tx_srfeuserregister_controldata {
 			}
 				// Check and process for short URL if the regHash GET parameter exists
 			if ($regHash) {
-				$sFK = $feUserData['sFK'];
-				$cmd = $feUserData['cmd'];
 				$getVars = $this->getShortUrl($regHash);
-				$submit = $feUserData['submit'];
 
-				if ($getVars)	{
+				if (isset($getVars) && is_array($getVars))	{
+					$origDataFieldArray = array('sFK','cmd','submit','fetch','regHash');
+					$origFeuserData = array();
+					// copy the original values which must not be overridden by the regHash stored values
+					foreach ($origDataFieldArray as $origDataField)	{
+						if (isset($feUserData[$origDataField]))	{
+							$origFeuserData[$origDataField] = $feUserData[$origDataField];
+						}
+					}
 					$restoredFeUserData = $getVars[$this->getPrefixId()];
 
 					foreach ($getVars as $k => $v ) {
@@ -128,16 +134,8 @@ class tx_srfeuserregister_controldata {
 						$feUserData = array_merge ($feUserData, $restoredFeUserData);
 					} else {
 						$feUserData = $restoredFeUserData;
-						if ($submit)	{
-							$feUserData['submit'] = $submit;
-						}
 					}
-				}
-				if ($sFK)	{
-					$feUserData['sFK'] = $sFK;
-				}
-				if ($cmd)	{
-					$feUserData['cmd'] = $cmd;
+					$feUserData = array_merge($feUserData, $origFeuserData);
 				}
 			}
 		}
@@ -158,7 +156,6 @@ class tx_srfeuserregister_controldata {
 			$cmd = htmlspecialchars($feUserData['cmd']);
 			$this->setCmd($cmd);
 		}
-
 		$feUserData = $this->getFeUserData();
 		$this->secureInput($feUserData);
 		$this->setFeUserData($feUserData);
@@ -215,6 +212,7 @@ class tx_srfeuserregister_controldata {
 	}
 
 	function getPrefixId ()	{
+
 		return $this->prefixId;
 	}
 
@@ -398,10 +396,9 @@ class tx_srfeuserregister_controldata {
 
 			// convert the array to one that will be properly incorporated into the GET global array.
 		$retArray = array();
-
 		foreach($varArray as $key => $val)	{
 			$search = array('[\]]', '[\[]');
-			$replace = array ( '\']', '\'][\'');
+			$replace = array ('\']', '\'][\'');
 			$newkey = "['" . preg_replace($search, $replace, $key);
 			eval("\$retArray".$newkey."='$val';");
 		}

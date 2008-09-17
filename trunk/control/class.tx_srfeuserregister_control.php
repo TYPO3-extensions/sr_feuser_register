@@ -473,7 +473,6 @@ class tx_srfeuserregister_control {
 			$this->marker->setArray($markerArray);
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 		} else {
-
 				// Finally, if there has been no attempt to save. That is either preview or just displaying and empty or not correctly filled form:
 			$this->marker->setArray($markerArray);
 
@@ -492,13 +491,14 @@ class tx_srfeuserregister_control {
 					if ($this->conf['infomail']) {
 						$this->controlData->setSetfixedEnabled(1);
 					}
-
 					$content = $this->email->sendInfo(
 						$theTable,
 						$origArray,
 						$markerArray,
 						$cmd,
-						$this->controlData->getCmdKey(), $this->data->getTemplateCode());
+						$this->controlData->getCmdKey(),
+						$this->data->getTemplateCode()
+					);
 					break;
 				case 'delete':
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
@@ -540,8 +540,11 @@ class tx_srfeuserregister_control {
 			}
 			if (!$this->controlData->getFeUserData('preview'))	{
 				$origGetFeUserData = t3lib_div::_GET($this->controlData->getPrefixId());
-				$regHash = $origGetFeUserData['regHash'];
-				$this->controlData->deleteShortUrl($regHash);
+
+				if (isset($origGetFeUserData['regHash']))	{
+					$regHash = $origGetFeUserData['regHash'];
+					$this->controlData->deleteShortUrl($regHash);
+				}
 			}
 		}
 		return $content;
