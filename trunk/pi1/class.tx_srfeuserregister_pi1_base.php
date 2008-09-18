@@ -54,6 +54,7 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 		global $TSFE;
 
 		$this->pi_setPiVarDefaults();
+		$this->conf = &$conf;
 
 		$mainObj = &t3lib_div::getUserObj('&tx_srfeuserregister_control_main');
 		$mainObj->cObj = &$this->cObj;
