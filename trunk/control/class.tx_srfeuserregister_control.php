@@ -226,6 +226,9 @@ class tx_srfeuserregister_control {
 		$theTable = $this->controlData->getTable();
 		$this->controlData->setMode (MODE_NORMAL);
 
+		// Commands with which the Data will not be saved by $this->data->save
+		$noSaveCommands = array('infomail','login','delete');
+
 		// Ralf Hettinger: avoid data from edit forms being visible by back buttoning to client side cached pages
 		// This only solves data being visible by back buttoning for edit forms.
 		// It won't help against data being visible by back buttoning in create forms.
@@ -240,7 +243,7 @@ class tx_srfeuserregister_control {
 		$markerArray = $this->marker->getArray();
 
 			// Evaluate incoming data
-		if (count($dataArray) && !in_array($cmd, array('infomail','delete'))) {
+		if (count($dataArray) && !in_array($cmd, $noSaveCommands)) {
 			$this->data->setName($dataArray, $cmdKey);
 			$this->data->parseValues($theTable, $dataArray,$origArray);
 			$this->data->overrideValues($dataArray, $cmdKey);
