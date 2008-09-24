@@ -51,7 +51,6 @@ class tx_srfeuserregister_tca {
 	var $langObj;
 
 	var $TCA = array();
-	var $sys_language_content;
 	var $cObj;
 
 

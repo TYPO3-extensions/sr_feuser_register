@@ -203,6 +203,7 @@ plugin.tx_srfeuserregister_pi1 {
 	email.fromName = {$plugin.tx_srfeuserregister_pi1.siteName}
 	email.admin = {$plugin.tx_srfeuserregister_pi1.email}
 	email.field = email
+	email.replyTo = user
 	email.HTMLMail = {$plugin.tx_srfeuserregister_pi1.enableHTMLMail}
 	email.HTMLMailCSS = {$plugin.tx_srfeuserregister_pi1.HTMLMailCSS}
 	email.CREATE_SAVED = {$plugin.tx_srfeuserregister_pi1.enableEmailOnRegister}
