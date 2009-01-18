@@ -29,12 +29,12 @@
  * Front End creating/editing/deleting records authenticated by fe_user login.
  * A variant restricted to front end user self-registration and profile maintenance, with a number of enhancements (see the manual).
  *
- * $Id:$
- * 
+ * $Id$
+ *
  * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
  * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
- * @author	Franz Holzinger <contact@fholzinger.com>
- * @maintainer	Franz Holzinger <contact@fholzinger.com> 
+ * @author	Franz Holzinger <franz@ttproducts.de>
+ * @maintainer	Franz Holzinger <franz@ttproducts.de>
  *
  *
  */
@@ -82,7 +82,7 @@ class tx_srfeuserregister_control_main {
 	var $marker; // object of type tx_srfeuserregister_marker
 	var $pibaseObj;
 
-	function main(
+	function main (
 		$content,
 		&$conf,
 		&$pibaseObj,
@@ -111,11 +111,13 @@ class tx_srfeuserregister_control_main {
 	*
 	* @return void
 	*/
-	function init(&$conf, $theTable, $adminFieldList,$buttonLabelsList,$otherLabelsList) {
+	function init (&$conf, $theTable, $adminFieldList,$buttonLabelsList,$otherLabelsList) {
 		global $TSFE, $TCA;
 
 			// plugin initialization
 		$this->conf = &$conf;
+
+		$fe = t3lib_div::_GP('FE');
 
 		if (isset($conf['table.']) && is_array($conf['table.']) && $conf['table.']['name'])	{
 			$theTable  = $conf['table.']['name'];
@@ -165,10 +167,10 @@ class tx_srfeuserregister_control_main {
 		$this->langObj->init($this->pibaseObj, $this->conf, $this->LLkey);
 		$rc = $this->langObj->pi_loadLL();
 		if ($rc !== FALSE)	{
-			$this->tca->init($this->pibaseObj, $this->conf, $this->controlData, $this->langObj, $this->extKey);
+			$this->tca->init($this->pibaseObj, $this->conf, $this->controlData, $this->langObj, $this->extKey, $theTable);
 			$this->control->init($this->pibaseObj, $this->controlData, $this->display, $this->marker, $this->email, $this->tca, $this->setfixedObj);
-			$this->data->init($this->pibaseObj, $this->conf, $this->config,$this->langObj, $this->tca, $this->control, $theTable, $adminFieldList, $this->controlData);
-			$this->control->init2($this->controlData, $this->data);
+			$this->data->init($this->pibaseObj, $this->conf, $this->config,$this->langObj, $this->tca, $this->control, $theTable, $this->controlData);
+			$this->control->init2($theTable, $this->controlData, $this->data, $adminFieldList);
 
 			$md5Obj = &t3lib_div::getUserObj('&tx_srfeuserregister_passwordmd5');
 			$md5Obj->init ($this->marker, $this->data, $this->controlData);
@@ -185,7 +187,7 @@ class tx_srfeuserregister_control_main {
 				$this->marker->setOtherLabelsList($otherLabelsList);
 			}
 
-			$this->display->init($this->pibaseObj, $this->conf, $this->config, $this->data, $this->marker, $this->tca, $this->control);
+			$this->display->init($this->cObj, $this->conf, $this->config, $this->data, $this->marker, $this->tca, $this->control);
 			$this->email->init($this->pibaseObj, $this->conf, $this->config, $this->display, $this->data, $this->marker, $this->tca, $this->controlData, $this->setfixedObj);
 			$this->setfixedObj->init($this->cObj, $this->conf, $this->config, $this->controlData, $this->tca, $this->display, $this->email, $this->marker);
 		}

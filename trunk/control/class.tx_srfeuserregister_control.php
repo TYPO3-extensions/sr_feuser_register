@@ -31,9 +31,9 @@
  *
  * $Id$
  *
- * @author Kasper Skaarhoj <kasper2007@typo3.com>
- * @author Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
- * @author Franz Holzinger <contact@fholzinger.com>
+ * @author	Kasper Skaarhoj <kasper2007@typo3.com>
+ * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ * @author	Franz Holzinger <franz@ttproducts.de>
  *
  * @package TYPO3
  * @subpackage sr_feuser_register
@@ -56,7 +56,7 @@ class tx_srfeuserregister_control {
 	var $controlData;
 	var $setfixedObj;
 
-	function init(&$langObj, &$controlData, &$display, &$marker, &$email, &$tca, &$setfixedObj)	{
+	function init (&$langObj, &$controlData, &$display, &$marker, &$email, &$tca, &$setfixedObj)	{
 		global $TSFE;
 
 		$this->langObj = &$langObj;
@@ -101,17 +101,30 @@ class tx_srfeuserregister_control {
 		$this->controlData->setCmd($cmd);
 	}
 
-	function init2(&$controlData, &$data)	{
-		global $TSFE;
+	function init2 ($theTable, &$controlData, &$data, &$adminFieldList)	{
+		global $TSFE, $TCA;
 
 		$this->data = &$data;
 
 		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_conf');
 		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 		$addressObj = $tablesObj->get('address');
-		$origArray = $this->data->getOrigArray();
+		$origArray = array();
 		$extKey = $controlData->getExtKey();
 		$cmd = $controlData->getCmd();
+		$dataArray = $this->data->getDataArray();
+		$feUserdata = $this->controlData->getFeUserData();
+		$theUid = ($dataArray['uid'] ? $dataArray['uid'] : ($feUserdata['rU'] ? $feUserdata['rU'] : ($cmd != 'invite' && $cmd != 'setfixed' ? $TSFE->fe_user->user['uid'] : 0 )));
+
+		if ($theUid)	{
+			$this->data->setRecUid($theUid);
+			$newOrigArray = $TSFE->sys_page->getRawRecord($theTable, $theUid);
+
+			if (isset($newOrigArray) && is_array($newOrigArray))	{
+				$this->tca->modifyRow($newOrigArray, TRUE);
+				$origArray = $newOrigArray;
+			}
+		}
 
 		if ($cmd == 'edit' || $cmd == 'invite') {
 			$cmdKey = $cmd;
@@ -120,7 +133,7 @@ class tx_srfeuserregister_control {
 				!$cmd &&
 				(
 					($this->controlData->getTable() == 'fe_users' && $TSFE->loginUser) ||
-					($origArray != '')
+					(count($origArray))
 				)
 			)	{
 				$cmdKey = 'edit';
@@ -129,6 +142,30 @@ class tx_srfeuserregister_control {
 			}
 		}
 		$controlData->setCmdKey($cmdKey);
+		$dataArray = $this->data->getDataArray();
+		$feUserdata = $this->controlData->getFeUserData();
+		$theUid = ($dataArray['uid'] ? $dataArray['uid'] : ($feUserdata['rU'] ? $feUserdata['rU'] : ($cmd != 'invite' && $cmd != 'setfixed' ? $TSFE->fe_user->user['uid'] : 0 )));
+
+		if (!$theUid)	{
+			if (!count($dataArray))	{
+				$dataArray = $this->data->defaultValues($cmdKey);
+				$this->data->setDataArray($dataArray);
+			}
+		}
+		$this->data->setOrigArray($origArray);
+
+			// Setting the list of fields allowed for editing and creation.
+		$fieldlist = implode(',', t3lib_div::trimExplode(',', $TCA[$theTable]['feInterface']['fe_admin_fieldList'], 1));
+		$this->data->setFieldList($fieldlist);
+
+		if (trim($this->conf['addAdminFieldList'])) {
+			$adminFieldList .= ',' . trim($this->conf['addAdminFieldList']);
+		}
+		$adminFieldList = implode(',', array_intersect( explode(',', $fieldlist), t3lib_div::trimExplode(',', $adminFieldList, 1)));
+		$this->data->setAdminFieldList($adminFieldList);
+
+			// Fetching the template file
+		$this->data->setTemplateCode($this->cObj->fileResource($this->conf['templateFile']));
 
 		if (!t3lib_extMgm::isLoaded('direct_mail')) {
 			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('module_sys_dmail_category')));
@@ -205,11 +242,9 @@ class tx_srfeuserregister_control {
 		$controlData->setRequiredArray($requiredArray);
 	}
 
-
 	function getControlData ()	{
 		return $this->controlData;
 	}
-
 
 	/**
 	* All processing of the codes is done here
@@ -217,7 +252,7 @@ class tx_srfeuserregister_control {
 	* @param string  command to execute
 	* @param string message if an error has occurred
 	* @return string  text to display
-	*/ 
+	*/
 	function &doProcessing (&$error_message) {
 		global $TSFE;
 
@@ -274,7 +309,6 @@ class tx_srfeuserregister_control {
 			} else {
 				//this is either a country change submitted through the onchange event or a file deletion already processed by the parsing function
 				// we are going to redisplay
-
 				$this->data->evalValues(
 					$theTable,
 					$dataArray,
@@ -321,10 +355,8 @@ class tx_srfeuserregister_control {
 
 			// Display forms
 		if ($this->data->saved) {
-
 				// Displaying the page here that says, the record has been saved. You're able to include the saved values by markers.
 // 			$markerArray = $this->marker->getArray();
-
 			$bCustomerConfirmsMode = FALSE;
 			$bDefaultMode = FALSE;
 			switch($cmd) {
@@ -375,12 +407,12 @@ class tx_srfeuserregister_control {
 					$this->tca->TCA['columns'],
 					false
 				);
+
 				if ($cmdKey == 'create')	{
 					$this->marker->addMd5LoginMarkers($markerArray, $dataArray, $this->controlData->getUseMd5Password());
 				}
-
 				$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
-				$markerArray = $this->marker->getArray(); // compile uses its own markerArray
+				$markerArray = $this->marker->getArray(); // uses its own markerArray
 				$newDataArray = $TSFE->sys_page->getRawRecord($theTable, $theUid); // the new data array is necessary after saving because default fields might have been added.
 
 				if (isset($changesArray) && is_array($changesArray))	{
@@ -408,7 +440,6 @@ class tx_srfeuserregister_control {
 						$this->conf['setfixed.']
 					);
 				} else {
-
 						// Send email message(s)
 					$rc = $this->email->compile(
 						$key,
@@ -425,16 +456,11 @@ class tx_srfeuserregister_control {
 				}
 				if ($rc == '')	{	// success case
 					$origGetFeUserData = t3lib_div::_GET($this->controlData->getPrefixId());
-					$regHash = $origGetFeUserData['regHash'];
-
-					if ($regHash)	{
-						$this->controlData->deleteShortUrl($regHash);
-					}
 
 						// Link to on edit save
 						// backURL may link back to referring process
-					if ($theTable == 'fe_users' && 
-						$cmd == 'edit' && 
+					if ($theTable == 'fe_users' &&
+						$cmd == 'edit' &&
 						($this->controlData->getBackURL() || ($this->conf['linkToPID'] && ($this->controlData->getFeUserData('linkToPID') || !$this->conf['linkToPIDAddButton']))) ) {
 						$destUrl = ($this->controlData->getBackURL() ? $this->controlData->getBackURL() : ($TSFE->absRefPrefix ? '' : $this->controlData->getSiteUrl()).$this->cObj->getTypoLink_URL($this->conf['linkToPID'].','.$TSFE->type));
 
@@ -478,7 +504,6 @@ class tx_srfeuserregister_control {
 		} else {
 				// Finally, if there has been no attempt to save. That is either preview or just displaying and empty or not correctly filled form:
 			$this->marker->setArray($markerArray);
-
 			switch($cmd) {
 				case 'setfixed':
 					if ($this->conf['infomail']) {
@@ -487,7 +512,8 @@ class tx_srfeuserregister_control {
 					$uid = $this->data->getRecUid();
 					$templateCode = $this->data->getTemplateCode();
 					$origArray = $TSFE->sys_page->getRawRecord($theTable, $uid);
-					$content = $this->setfixedObj->processSetFixed($theTable, $uid, $markerArray, $templateCode, $dataArray, $origArray, $this, $this->data);
+					$feuData = $this->controlData->getFeUserData();
+					$content = $this->setfixedObj->processSetFixed($theTable, $uid, $markerArray, $templateCode, $dataArray, $origArray, $this, $this->data, $feuData);
 					break;
 				case 'infomail':
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
@@ -521,7 +547,8 @@ class tx_srfeuserregister_control {
 						$this->controlData->getMode(),
 						$theTable,
 						$dataArray,
-						$origArray
+						$origArray,
+						$this->data->getFieldList()
 					);
 					break;
 				case 'login':
@@ -529,7 +556,6 @@ class tx_srfeuserregister_control {
 					break;
 				default:
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
-
 					$content = $this->display->createScreen(
 						$markerArray,
 						$cmd,
@@ -537,7 +563,8 @@ class tx_srfeuserregister_control {
 						$this->controlData->getMode(),
 						$theTable,
 						$dataArray,
-						$origArray
+						$origArray,
+						$this->data->getFieldList()
 					);
 					break;
 			}
@@ -553,7 +580,6 @@ class tx_srfeuserregister_control {
 		return $content;
 	}
 
-
 	function login ($row)	{
 		global $TSFE;
 
@@ -566,7 +592,6 @@ class tx_srfeuserregister_control {
 				$loginVars['pass'] = (string)md5($row['username'].':'.$row['password'].':'.$loginVars['challenge']);
  			}
 		}
-
 		$loginVars['pid'] = $this->controlData->getPid();
 		$loginVars['logintype'] = 'login';
 		if ($this->conf['autoLoginRedirect_url'])	{
@@ -577,7 +602,6 @@ class tx_srfeuserregister_control {
 		header('Location: '.t3lib_div::locationHeaderUrl($absUrl));
 	}
 
-
 	/**
 	* Invokes a user process
 	*
@@ -585,15 +609,16 @@ class tx_srfeuserregister_control {
 	* @param array  $passVar: the array of variables to be passed to the user process
 	* @return array  the updated array of passed variables
 	*/
-	function userProcess($mConfKey, $passVar) {
+	function userProcess ($mConfKey, &$passVar) {
+		global $TSFE;
+
 		if ($this->conf[$mConfKey]) {
 			$funcConf = $this->conf[$mConfKey.'.'];
 			$funcConf['parentObj'] = &$this;
-			$passVar = $GLOBALS['TSFE']->cObj->callUserFunction($this->conf[$mConfKey], $funcConf, $passVar);
+			$passVar = $TSFE->cObj->callUserFunction($this->conf[$mConfKey], $funcConf, $passVar);
 		}
 		return $passVar;
 	}	// userProcess
-
 
 	/**
 	* Invokes a user process
@@ -603,13 +628,14 @@ class tx_srfeuserregister_control {
 	* @param array  $passVar: the array of variables to be passed to the user process
 	* @return array  the updated array of passed variables
 	*/
-	function userProcess_alt($confVal, $confArr, $passVar) {
+	function userProcess_alt ($confVal, $confArr, $passVar) {
+		global $TSFE;
+
 		if ($confVal) {
 			$funcConf = $confArr;
 			$funcConf['parentObj'] = &$this;
-			$passVar = $GLOBALS['TSFE']->cObj->callUserFunction($confVal, $funcConf, $passVar);
+			$passVar = $TSFE->cObj->callUserFunction($confVal, $funcConf, $passVar);
 		}
-
 		return $passVar;
 	}	// userProcess_alt
 }

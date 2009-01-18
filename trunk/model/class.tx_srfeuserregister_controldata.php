@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2008 Franz Holzinger <contact@fholzinger.com>
+*  (c) 2007-2008 Franz Holzinger <franz@ttproducts.de>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -31,7 +31,7 @@
  *
  * $Id$
  *
- * @author Franz Holzinger <contact@fholzinger.com>
+ * @author	Franz Holzinger <franz@ttproducts.de>
  *
  * @package TYPO3
  * @subpackage sr_feuser_register
@@ -67,11 +67,11 @@ class tx_srfeuserregister_controldata {
 
 		$this->conf = &$conf;
 		$this->site_url = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
-
 		$this->prefixId = $prefixId;
 		$this->extKey = $extKey;
 		$this->piVars = $piVars;
 		$this->setTable($theTable);
+
 		$this->sys_language_content = (t3lib_div::testInt($TSFE->config['config']['sys_language_uid']) ? $TSFE->config['config']['sys_language_uid'] : 0);
 
 			// set the title language overlay
@@ -79,9 +79,7 @@ class tx_srfeuserregister_controldata {
 		$pidRecord->init(0);
 		$pidRecord->sys_language_uid = $this->sys_language_content;
 		$row = $pidRecord->getPage($this->getPid());
-
 		$this->thePidTitle = trim($this->conf['pidTitleOverride']) ? trim($this->conf['pidTitleOverride']) : $row['title'];
-
 		$pidTypeArray = array('login', 'register', 'edit', 'infomail', 'confirm', 'confirmInvitation');
 		// set the pid's
 
@@ -100,32 +98,36 @@ class tx_srfeuserregister_controldata {
 			$this->setSetfixedEnabled(1);
 		}
 
-		// <Steve Webster added short url feature>
 			// Get hash variable if provided and if short url feature is enabled
 		$feUserData = t3lib_div::_GP($this->getPrefixId());
 
+		// <Steve Webster added short url feature>
 		if ($this->conf['useShortUrls']) {
 			$this->cleanShortUrlCache();
-			$regHash = $feUserData['regHash'];
+			if (isset($feUserData) && is_array($feUserData))	{
+				$regHash = $feUserData['regHash'];
+			}
 			if (!$regHash)	{
 				$getData = t3lib_div::_GET($this->getPrefixId());
-				$regHash = $getData['regHash'];
+				if (isset($getData) && is_array($getData))	{
+					$regHash = $getData['regHash'];
+				}
 			}
+
 				// Check and process for short URL if the regHash GET parameter exists
 			if ($regHash) {
 				$getVars = $this->getShortUrl($regHash);
 
-				if (isset($getVars) && is_array($getVars))	{
+				if (isset($getVars) && is_array($getVars) && count($getVars))	{
 					$origDataFieldArray = array('sFK','cmd','submit','fetch','regHash');
 					$origFeuserData = array();
-					// copy the original values which must not be overridden by the regHash stored values
+// 					// copy the original values which must not be overridden by the regHash stored values
 					foreach ($origDataFieldArray as $origDataField)	{
 						if (isset($feUserData[$origDataField]))	{
 							$origFeuserData[$origDataField] = $feUserData[$origDataField];
 						}
 					}
 					$restoredFeUserData = $getVars[$this->getPrefixId()];
-
 					foreach ($getVars as $k => $v ) {
 						// restore former GET values for the url
 						t3lib_div::_GETset($v,$k);
@@ -135,7 +137,11 @@ class tx_srfeuserregister_controldata {
 					} else {
 						$feUserData = $restoredFeUserData;
 					}
-					$feUserData = array_merge($feUserData, $origFeuserData);
+					if (is_array($feUserData))	{
+						$feUserData = array_merge($feUserData, $origFeuserData);
+					} else {
+						$feUserData = $origFeuserData;
+					}
 				}
 			}
 		}
@@ -166,7 +172,7 @@ class tx_srfeuserregister_controldata {
 	*
 	* @return void
 	*/
-	function secureInput(&$dataArray)	{
+	function secureInput (&$dataArray)	{
 		if (isset($dataArray) && is_array($dataArray))	{
 			foreach ($dataArray as $k => $value)	{
 				if (is_array($value))	{
@@ -192,13 +198,31 @@ class tx_srfeuserregister_controldata {
 		}
 	}
 
-	function useCaptcha ()	{
+	function useCaptcha ($theCode)	{
 		$rc = FALSE;
+
 		if ((t3lib_extMgm::isLoaded('sr_freecap') &&
-			is_array($this->conf['create.']) &&
-			is_array($this->conf['create.']['evalValues.']) &&
-			$this->conf['create.']['evalValues.']['captcha_response'] == 'freecap')) {
+			t3lib_div::inList($this->conf[$theCode.'.']['fields'], 'captcha_response') &&
+			is_array($this->conf[$theCode.'.']) &&
+			is_array($this->conf[$theCode.'.']['evalValues.']) &&
+			$this->conf[$theCode.'.']['evalValues.']['captcha_response'] == 'freecap')) {
 			$rc = TRUE;
+		}
+		return $rc;
+	}
+
+	// example: plugin.tx_srfeuserregister_pi1.conf.sys_dmail_category.ALL.sys_language_uid = 0
+	function getSysLanguageUid ($theCode,$theTable)	{
+
+		if (
+			isset($this->conf['conf.']) && is_array($this->conf['conf.']) &&
+			isset($this->conf['conf.'][$theTable.'.']) && is_array($this->conf['conf.'][$theTable.'.']) &&
+			isset($this->conf['conf.'][$theTable.'.'][$theCode.'.']) && is_array($this->conf['conf.'][$theTable.'.'][$theCode.'.']) &&
+			t3lib_div::testInt($this->conf['conf.'][$theTable.'.'][$theCode.'.']['sys_language_uid'])
+		)	{
+			$rc = $this->conf['conf.'][$theTable.'.'][$theCode.'.']['sys_language_uid'];
+		} else {
+			$rc = $this->sys_language_content;
 		}
 		return $rc;
 	}
@@ -212,7 +236,6 @@ class tx_srfeuserregister_controldata {
 	}
 
 	function getPrefixId ()	{
-
 		return $this->prefixId;
 	}
 
@@ -228,19 +251,19 @@ class tx_srfeuserregister_controldata {
 		$this->piVars = $piVars;
 	}
 
-	function getCmd() {
+	function getCmd () {
 		return $this->cmd;
 	}
 
-	function setCmd($cmd) {
+	function setCmd ($cmd) {
 		$this->cmd = $cmd;
 	}
 
-	function getCmdKey() {
+	function getCmdKey () {
 		return $this->cmdKey;
 	}
 
-	function setCmdKey($cmdKey)	{
+	function setCmdKey ($cmdKey)	{
 		$this->cmdKey = $cmdKey;
 	}
 
@@ -261,23 +284,23 @@ class tx_srfeuserregister_controldata {
 		}
 	}
 
-	function getFailure()	{
+	function getFailure ()	{
 		return $this->failure;
 	}
 
-	function setFailure($failure)	{
+	function setFailure ($failure)	{
 		$this->failure = $failure;
 	}
 
-	function setSubmit($bSubmit)	{
+	function setSubmit ($bSubmit)	{
 		$this->bSubmit = $bSubmit;
 	}
 
-	function getSubmit()	{
+	function getSubmit ()	{
 		return $this->bSubmit;
 	}
 
-	function getPid($type='')	{
+	function getPid ($type='')	{
 		global $TSFE;
 
 		if ($type)	{
@@ -293,7 +316,7 @@ class tx_srfeuserregister_controldata {
 		return $rc;
 	}
 
-	function setPid($type, $pid)	{
+	function setPid ($type, $pid)	{
 		global $TSFE;
 
 		if (!intval($pid))	{
@@ -313,11 +336,11 @@ class tx_srfeuserregister_controldata {
 		$this->pid[$type] = $pid;
 	}
 
-	function getMode()	{
+	function getMode ()	{
 		return $this->mode;
 	}
 
-	function setMode($mode)	{
+	function setMode ($mode)	{
 		$this->mode = $mode;
 	}
 
@@ -361,7 +384,7 @@ class tx_srfeuserregister_controldata {
 		$this->setfixedEnabled = $setfixedEnabled;
 	}
 
-	function getBackURL()	{
+	function getBackURL ()	{
 		$rc = rawurldecode($this->getFeUserData('backURL'));
 		return $rc;
 	}
@@ -371,7 +394,7 @@ class tx_srfeuserregister_controldata {
 	*
 	* @return boolean  true if preview display is on
 	*/
-	function isPreview() {
+	function isPreview () {
 		$rc = '';
 		$cmdKey = $this->getCmdKey();
 
@@ -379,11 +402,10 @@ class tx_srfeuserregister_controldata {
 		return $rc;
 	}	// isPreview
 
-
 	/**
 	*  Get the stored variables using the hash value to access the database
 	*/
-	function getShortUrl($regHash) {
+	function getShortUrl ($regHash) {
 		global $TYPO3_DB;
 
 			// get the serialised array from the DB based on the passed hash value
@@ -406,11 +428,10 @@ class tx_srfeuserregister_controldata {
 		return $retArray;
 	}	// getShortUrl
 
-
 	/**
 	*  Get the stored variables using the hash value to access the database
 	*/
-	function deleteShortUrl($regHash) {
+	function deleteShortUrl ($regHash) {
 		global $TYPO3_DB;
 
 		if ($regHash != '')	{
@@ -419,18 +440,16 @@ class tx_srfeuserregister_controldata {
 		}
 	}
 
-
 	/**
 	*  Clears obsolete hashes used for short url's
 	*/
-	function cleanShortUrlCache() {
+	function cleanShortUrlCache () {
 		global $TYPO3_DB;
 
 		$shortUrlLife = intval($this->conf['shortUrlLife']) ? strval(intval($this->conf['shortUrlLife'])) : '30';
 		$max_life = time() - (86400 * intval($shortUrlLife));
-		$res = $TYPO3_DB->exec_DELETEquery('cache_md5params', 'tstamp<' . $max_life . ' AND type=99');	
+		$res = $TYPO3_DB->exec_DELETEquery('cache_md5params', 'tstamp<' . $max_life . ' AND type=99');
 	}	// cleanShortUrlCache
-	// </Steve Webster added short url feature>
 }
 
 

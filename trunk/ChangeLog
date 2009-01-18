@@ -1,3 +1,10 @@
+2009-01-18 Franz Holzinger  <franz@ttproducts.de>
+	* new hook for data field evaluation
+	* fix bug 9556: email with forgotten password did not work properly. Add the missing template subparts to the CSS template.
+	* fix bug 10156 and support the felogin extension
+	* fix bugs with problems on editing
+	* support for patch 1822
+
 2008-09-24 Franz Holzinger  <franz@fholzinger.com>
 	* Version 2.5.19:
 	* Fix bug 9380: $conf has not been used for the translations
@@ -261,11 +268,11 @@
 2006-02-03 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Honor TCA default value for TCA-driven multiple checkboxes. Thanks to Simon Tuck.
 	* Remove support for TYPO3 3.5.0.
-	
+
 2006-01-30 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Verify enabled fields when selecting MM relations, in particular module_sys_dmail_category.
 	* Accept value '0' on required fields (see bugtracker issue #2027).
-	
+
 2006-01-30 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Correction to css-styled html template (see bugtracker issue #2403).
 	* Remove changes to the TCA for fields module_sys_dmail_category and module_sys_dmail_html
@@ -293,7 +300,7 @@
 
 2005-12-05  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Use backURL linkVar to link back from the edit page, after saving, to some referring extension such as tt_products. Thanks to Franz Holzinger.
-	
+
 2005-12-04  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Correction: setting usergroupAfterAcceptation did not work if the original usergroup assigned at creation was changed by usergroupAfterConfirmation.
 
@@ -308,10 +315,10 @@
 	* Version 2.2.1:
 	* Fix in ext_localconf.php
 	* Documentation update.
-	
+
 2005-11-25  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Added support for backend flexforms by Franz Holzinger.
-	
+
 2005-11-25  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Version 2.2.0:
 	* Further correction due to IE mishandling of button elements of type button. Eliminated all button elements from the html template.
