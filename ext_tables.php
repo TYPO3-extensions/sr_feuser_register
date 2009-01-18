@@ -120,7 +120,7 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 			'type' => 'radio',
 			'items' => Array (
 				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender.I.0', '0'),
-				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender.I.1', '1'),
+				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender.I.1', '1')
 			),
 		)
 	),
@@ -150,7 +150,7 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 		)
 	),
 	'by_invitation' => Array (
-		'exclude' => 0,	
+		'exclude' => 0,
 		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.by_invitation',
 		'config' => Array (
 			'type' => 'check',
@@ -181,6 +181,8 @@ for ($i=0; $i<10; $i++)	{
 
 $TCA['fe_users']['palettes'][$lastPalette+1]['showitem'] = 'gender,first_name';
 $TCA['fe_users']['types']['0']['showitem'] = str_replace(', name', ',last_name;;'.($lastPalette+1).';;1-1-1, name', $TCA['fe_users']['types']['0']['showitem']);
+
+$TCA['fe_users']['ctrl']['thumbnail'] = 'image';
 
 	// fe_users modified
 if (!t3lib_extMgm::isLoaded('direct_mail')) {

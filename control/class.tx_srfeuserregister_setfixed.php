@@ -31,9 +31,9 @@
  *
  * $Id$
  *
- * @author Kasper Skaarhoj <kasperXXXX@typo3.com>
- * @author Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
- * @author Franz Holzinger <contact@fholzinger.com>
+ * @author	Kasper Skaarhoj <kasperXXXX@typo3.com>
+ * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ * @author	Franz Holzinger <franz@ttproducts.de>
  *
  * @package TYPO3
  * @subpackage sr_feuser_register
@@ -72,19 +72,18 @@ class tx_srfeuserregister_setfixed {
 		$this->marker = &$marker;
 	}
 
-
 	/**
 	* Process the front end user reply to the confirmation request
 	*
 	* @param array  Array with key/values being marker-strings/substitution values.
 	* @return string  the template with substituted markers
-	*/ 
-	function processSetFixed($theTable, $uid, &$markerArray, &$templateCode, &$dataArray, &$origArray, &$pObj, &$dataObj) {
+	*/
+	function processSetFixed ($theTable, $uid, &$markerArray, &$templateCode, &$dataArray, &$origArray, &$pObj, &$dataObj, &$feuData) {
 		global $TSFE;
 
+		$row = $origArray;
+
 		if ($this->controlData->getSetfixedEnabled()) {
-			// $origArray = $TSFE->sys_page->getRawRecord($theTable, $uid);
-			$row = $origArray;
 			$origUsergroup = $row['usergroup'];
 			$setfixedUsergroup = '';
 			$fD = t3lib_div::_GP('fD', 1);
@@ -100,9 +99,8 @@ class tx_srfeuserregister_setfixed {
 			}
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 			$theCode = $authObj->setfixedHash($row, $row['_FIELDLIST']);
-			$feuData = $this->controlData->getFeUserData();
 
-			if (!strcmp($authObj->getAuthCode(), $theCode)) {
+			if (!strcmp($authObj->getAuthCode(), $theCode) && !($feuData['sFK'] == 'APPROVE' && count($origArray) && $origArray['disable']=='0')) {
 				if ($feuData['sFK'] == 'DELETE' || $feuData['sFK'] == 'REFUSE') {
 					if (!$this->tca->TCA['ctrl']['delete'] || $this->conf['forceFileDelete']) {
 						// If the record is fully deleted... then remove the image attached.
@@ -151,7 +149,7 @@ class tx_srfeuserregister_setfixed {
 
 				// Outputting template
 				if (
-					$theTable == 'fe_users' && 
+					$theTable == 'fe_users' &&
 					in_array($feuData['sFK'], array('APPROVE','ENTER','LOGIN'))	// LOGIN is here only for an error case
 				)	{
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, 'login');
@@ -166,7 +164,7 @@ class tx_srfeuserregister_setfixed {
 					$setfixedSuffix .= '_REVIEW';
 				}
 				$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX . 'OK_' . $setfixedSuffix . '###';
-				$content = $this->display->getPlainTemplate($templateCode, $subpartMarker, $markerArray, $origArray, $row);
+				$content = $this->display->getPlainTemplate($templateCode, $subpartMarker, $markerArray, $origArray, $row, FALSE);
 				if (!$content) {
 					$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX .'OK###';
 					$content = $this->display->getPlainTemplate($templateCode, $subpartMarker, $markerArray, $origArray, $row);
@@ -189,7 +187,7 @@ class tx_srfeuserregister_setfixed {
 					);
 				}
 
-				if ($theTable == 'fe_users') { 
+				if ($theTable == 'fe_users') {
 						// If applicable, send admin a request to review the registration request
 					if ($this->conf['enableAdminReview'] && $feuData['sFK'] == 'APPROVE' && !$row['by_invitation']) {
 						$this->email->compile(
@@ -219,7 +217,6 @@ class tx_srfeuserregister_setfixed {
 		return $content;
 	}	// processSetFixed
 
-
 	/**
 	* Computes the setfixed url's
 	*
@@ -228,7 +225,7 @@ class tx_srfeuserregister_setfixed {
 	* @param array  $r: the record
 	* @return void
 	*/
-	function computeUrl(&$markerArray, $setfixed, $r, $theTable) {
+	function computeUrl (&$markerArray, $setfixed, $r, $theTable) {
 		global $TSFE;
 
 		$prefixId = $this->controlData->getPrefixId();
@@ -300,11 +297,10 @@ class tx_srfeuserregister_setfixed {
 		}
 	}	// computeUrl
 
-
 	/**
 		*  Store the setfixed vars and return a replacement hash
 		*/
-	function storeFixedPiVars($vars) {
+	function storeFixedPiVars ($vars) {
 		global $TYPO3_DB;
 
 			// create a unique hash value

@@ -2,7 +2,7 @@
 
 plugin.tx_srfeuserregister_pi1 {
 
-    # cat=plugin.tx_srfeuserregister_pi1/file; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template file 
+    # cat=plugin.tx_srfeuserregister_pi1/file; type=file[html,htm,tmpl,txt]; label= Template File: HTML-template file
   file.templateFile = EXT:sr_feuser_register/pi1/tx_srfeuserregister_pi1_tmpl.tmpl
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Force file deletion: On record deletion, related images and files will be deleted even if the record is only marked 'deleted'
@@ -26,7 +26,7 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Registration form fields: List of fields to be included on the front end user registration form.
   formFields = username, password, gender, first_name, last_name, status, date_of_birth, email, address, city, zone, static_info_country, zip, telephone, fax, language, title, company, www, module_sys_dmail_html, module_sys_dmail_category, image, comments, disable
 
-    # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Required fields: List of fields that must be fillied in on the front end user registration form.
+    # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Required fields: List of fields that must be filled in on the front end user registration form.
   requiredFields = username,password,first_name,last_name,email
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Use email as username: If set, the user email will be used as the username.
@@ -42,13 +42,13 @@ plugin.tx_srfeuserregister_pi1 {
   authcodeFields = uid
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Authentication code length: Length of the authentication codes. Direct Mail uses 8.
-  codeLength = 8
+  codeLength = 12
 
     # cat=plugin.tx_sremailsubscribe//; type=string; label= Name of the table: The name is used for the records in the frontend.
   tableName = fe_users
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Country onchange attribute: Javascript to execute when the selected country is changed in the country selector box.
-  onChangeCountryAttribute = javascript:window.document.forms['fe_users_form'].submit();
+  onChangeCountryAttribute = javascript:window.document.forms['tx-srfeuserregister-pi1-fe_users_form'].submit();
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Front end user records PID: If the records edited/created are located in another page than the current, enter the PID of that page here.
   pid =
@@ -81,7 +81,7 @@ plugin.tx_srfeuserregister_pi1 {
   linkToPIDAddButton = 0
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Default CODE: Default CODE, when not specified on the inserted plugin record. May be CREATE or EDIT or empty.
-  defaultCODE = 
+  defaultCODE =
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable preview on registration: If set, the registration dialogue will include a preview of the front end user data before it is saved.
   enablePreviewRegister = 1
@@ -127,7 +127,7 @@ plugin.tx_srfeuserregister_pi1 {
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable admin notification on deletion: If set, an email will be sent to the site administration when a user deletes his(her) account.
   enableAdminNotifyOnDelete = 1
-  
+
      # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable admin notification on approval by admin: If set, an email will be sent to the site administration when a registration is accepted by the administration.
   enableAdminNotifyOnAdminAccept = 1
 
@@ -142,21 +142,24 @@ plugin.tx_srfeuserregister_pi1 {
 
       # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable auto-login on account creation: If set and if email confirmation is not set, the user will be automatically logged in upon creation of his(her) account.
   enableAutoLoginOnCreate = 0
-  
+
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable auto-login: If set, the user will be automatically logged in upon confirmation of his(her) registration.
   enableAutoLoginOnConfirmation = 0
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Redirect_url on login: Url to which the user may be redirected to upon login, when auto login is enabled.
-  autoLoginRedirect_url = 
+  autoLoginRedirect_url =
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=boolean; label= Direct Mail checked upon registration: The checkboxes for Direct Mail categories will be checked by default if you set this.
    dmailCheckedUponRegistration = 0
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= User group(s) upon registration: The value of the user group field. Must be a list of integers WITHOUT spaces between the comma separated values! Furthermore these integer MUST point to actual fe_groups records!
-  userGroupUponRegistration = 
+  userGroupUponRegistration = 0
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= User group(s) after confirmation: The value of the user group(s) assigned to the front end user after receipt of his(her) confirmation.
-  userGroupAfterConfirmation = 
+  userGroupAfterConfirmation = 1
+
+      # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= User group(s) after acceptation: The value of the user group(s) assigned to the front end user after acceptation of his(her) registration when the administrative review is enabled.
+  userGroupAfterAcceptation = 1
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Allow selection of usergroup on registration: If set, the user may select to adhere to user group(s) when registrating.
   allowUserGroupSelection = 0
@@ -193,7 +196,7 @@ plugin.tx_srfeuserregister_pi1 {
 
     # cat=plugin.tx_srfeuserregister_pi1/color; type=color; label= Color 1: This bgcolor is used in the template-file.
   color1 = #cccccc
-  
+
     # cat=plugin.tx_srfeuserregister_pi1/color; type=color; label= Color 2: This bgcolor is used in the template-file.
   color2 = #999999
 
@@ -213,7 +216,7 @@ plugin.tx_srfeuserregister_pi1 {
   module_sys_dmail_category_PIDLIST =
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label=Use short URL's: If set, the use of short URL's in email messages sent to users is enabled.
-  useShortUrls = 0
+  useShortUrls = 1
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label=Short URL cache lifespan: Number of days that short URL's will be kept in the DB. After this delay, the short URL's will be removed. Confirmation URL's included in email messages older than this number of days will not work.
   shortUrlLife = 30

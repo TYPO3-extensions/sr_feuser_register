@@ -31,7 +31,6 @@ plugin.tx_srfeuserregister_pi1 {
 	linkToPIDAddButton = {$plugin.tx_srfeuserregister_pi1.linkToPIDAddButton}
 	module_sys_dmail_category_PIDLIST = {$plugin.tx_srfeuserregister_pi1.module_sys_dmail_category_PIDLIST}
 	defaultCODE = {$plugin.tx_srfeuserregister_pi1.defaultCODE}
-
 	useShortUrls = {$plugin.tx_srfeuserregister_pi1.useShortUrls}
 	shortUrlLife = {$plugin.tx_srfeuserregister_pi1.shortUrlLife}
 	dateFormat = {$plugin.tx_srfeuserregister_pi1.dateFormat}
@@ -58,7 +57,7 @@ plugin.tx_srfeuserregister_pi1 {
 		generateUsername = {$plugin.tx_srfeuserregister_pi1.generateUsername}
 		generatePassword = {$plugin.tx_srfeuserregister_pi1.generatePassword}
 		allowUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowUserGroupSelection}
-		
+
 		defaultValues {
 			module_sys_dmail_html = {$plugin.tx_srfeuserregister_pi1.dmailCheckedUponRegistration}
 			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
@@ -76,7 +75,6 @@ plugin.tx_srfeuserregister_pi1 {
 			password = twice, atLeast[{$plugin.tx_srfeuserregister_pi1.passwordAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.passwordAtMost}]
 			username = uniqueLocal, atLeast[{$plugin.tx_srfeuserregister_pi1.usernameAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.usernameAtMost}]
 			email = email,atMost[255],uniqueLocal
-			##email = email,atMost[255]
 			gender = 
 			name = atMost[{$plugin.tx_srfeuserregister_pi1.nameAtMost}]
 			first_name = atMost[50]
@@ -157,7 +155,7 @@ plugin.tx_srfeuserregister_pi1 {
 		}
 
 		overrideValues {
-			username = 
+			username =
 			usergroup >
 			disable = 0
 			by_invitation >

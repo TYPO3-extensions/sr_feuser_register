@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca)>
+*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -31,9 +31,9 @@
  *
  * $Id$
  *
- * @author Kasper Skaarhoj <kasper2007@typo3.com>
- * @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
- * @author Franz Holzinger <kontakt@fholzinger.com>
+ * @author	Kasper Skaarhoj <kasper2007@typo3.com>
+ * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ * @author	Franz Holzinger <franz@ttproducts.de>
  *
  * @package TYPO3
  * @subpackage sr_feuser_register
@@ -48,24 +48,28 @@ class tx_srfeuserregister_auth {
 	var $config = array();
 	var $authCode;
 
-	function init(&$pibase, &$conf, &$config, $authCode)	{
+	function init (&$pibase, &$conf, &$config, $authCode)	{
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
 		$this->config = &$config;
 		$this->setAuthCode ($authCode);
 
 			// Setting the authCode length
-		$this->config['codeLength'] = intval($this->conf['authcodeFields.']['codeLength']) ? intval($this->conf['authcodeFields.']['codeLength']) : 8;
+		$this->config['codeLength'] = 8;
+		if (isset($this->conf['authcodeFields.']) && is_array($this->conf['authcodeFields.']) && intval($this->conf['authcodeFields.']['codeLength']))	{
+
+			$this->config['codeLength'] = intval($this->conf['authcodeFields.']['codeLength']);
+		}
 		$this->config['addKey'] = ($this->conf['authcodeFields.']['addKey'] ? $this->conf['authcodeFields.']['addKey'] : 'A');
 	}
 
 
-	function setAuthCode($code)	{
+	function setAuthCode ($code)	{
 		$this->authCode = $code;
 	}
 
 
-	function getAuthCode()	{
+	function getAuthCode ()	{
 		return $this->authCode;
 	}
 
@@ -77,7 +81,7 @@ class tx_srfeuserregister_auth {
 	* @param string  $extra: some extra mixture
 	* @return string  the code
 	*/
-	function authCode($r, $extra = '') {
+	function authCode ($r, $extra = '') {
 		$rc = '';
 		$l = $this->config['codeLength'];
 		if ($this->conf['authcodeFields']) {
@@ -103,23 +107,24 @@ class tx_srfeuserregister_auth {
 	* @param array  $r: the record
 	* @return boolean  true if the record is authenticated
 	*/
-	function aCAuth($r) {
+	function aCAuth ($r) {
 		$rc = false;
 		if ($this->authCode && !strcmp($this->authCode, $this->authCode($r))) {
 			$rc = true;
 		}
 		return $rc;
-	}	
+	}
 
 
 	/**
 	* Computes the setfixed hash
+	* a variant of t3lib_div::stdAuthCode
 	*
 	* @param array  $recCopy: copy of the record
 	* @param string  $fields: the list of fields to include in the hash computation
 	* @return string  the hash value
 	*/
-	function setfixedHash($recCopy, $fields = '') {
+	function setfixedHash ($recCopy, $fields = '') {
 		$recCopy_temp=array();
 		if ($fields) {
 			$fieldArr = t3lib_div::trimExplode(',', $fields, 1);
@@ -134,7 +139,6 @@ class tx_srfeuserregister_auth {
 		}
 		$authCode = $preKey.'|'.$this->config['addKey'].'|'.$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
 		$authCode = substr(md5($authCode), 0, $this->config['codeLength']);
-		//$authcode = t3lib_div::stdAuthCode($recCopy,$fields,$this->codeLength);
 
 		return $authCode;
 	}	// setfixedHash

@@ -17,6 +17,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'shy' => 0,
 	'dependencies' => 'cms,static_info_tables,div2007',
 	'conflicts' => 'germandates,rlmp_language_detection',
+	'suggests' => array('patch1822'),
 	'priority' => '',
 	'loadOrder' => '',
 	'module' => '',
@@ -28,7 +29,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'clearCacheOnLoad' => 1,
 	'lockType' => '',
 	'author' => 'Stanislas Rolland / Franz Holzinger',
-	'author_email' => 'contact@fholzinger.com',
+	'author_email' => 'franz@ttproducts.de',
 	'author_company' => 'jambage.com',
 	'CGLcompliance' => '',
 	'CGLcompliance_note' => '',
@@ -39,17 +40,16 @@ $EM_CONF[$_EXTKEY] = array(
 			'cms' => '',
 			'static_info_tables' => '2.0.5-',
 			'php' => '4.2.0-0.0.0',
-			'typo3' => '4.0.0-0.0.0',
-			'div2007' => '0.1.14-',
+			'typo3' => '4.0-0.0.0',
+			'div2007' => '0.1.19-',
 		),
 		'conflicts' => array(
 			'germandates' => '0.0.0-1.0.1',
 			'rlmp_language_detection' => '0.0.0-1.2.99',
 		),
 		'suggests' => array(
+			'patch1822' => '0.0.3-',
 		),
-	),
-	'suggests' => array(
 	),
 );
 

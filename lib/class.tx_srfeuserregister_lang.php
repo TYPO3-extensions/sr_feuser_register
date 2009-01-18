@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
+*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -31,8 +31,8 @@
  *
  * $Id$
  *
- * @author Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
- * @author Franz Holzinger <contact@fholzinger.com>
+ * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ * @author	Franz Holzinger <franz@ttproducts.de>
  *
  * @package TYPO3
  * @subpackage sr_feuser_register
@@ -48,14 +48,14 @@ class tx_srfeuserregister_lang {
 	var $LLkey;
 
 
-	function init(&$pibase, &$conf, $LLkey)	{
+	function init (&$pibase, &$conf, $LLkey)	{
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
 		$this->LLkey = $LLkey;
 	}
 
 
-	function getLLFromString($string, $bForce=TRUE) {
+	function getLLFromString ($string, $bForce=TRUE) {
 		global $LOCAL_LANG, $TSFE;
 
 		$rc = '';
@@ -80,10 +80,10 @@ class tx_srfeuserregister_lang {
 	* @param	string	name of the field
 	* @ return	array	array of selectable items
 	*/
-	function getItemsLL($textSchema, $bAll=TRUE, $valuesArray=array()) {
+	function getItemsLL ($textSchema, $bAll=TRUE, $valuesArray=array()) {
 		$rc = array();
 		if ($bAll)	{
-			for ($i = 0; $i < 50; ++$i)	{
+			for ($i = 0; $i < 999; ++$i)	{
 				$text = $this->pi_getLL($textSchema.$i);
 				if ($text != '')	{
 					$rc[] = array($text, $i);
@@ -117,21 +117,22 @@ class tx_srfeuserregister_lang {
 		* @param    boolean        If true, the output label is passed through htmlspecialchars()
 		* @return    string        The value from LOCAL_LANG.
 		*/
-	function pi_getLL($key, $alt = '', $hsc = FALSE) {
+	function pi_getLL ($key, $alt = '', $hsc = FALSE) {
 			// If the suffix is allowed and we have a localized string for the desired salutation, we'll take that.
 		$rc = '';
 		if (isset($this->conf['salutation']) && in_array($this->conf['salutation'], $this->allowedSuffixes, 1)) {
 			$expandedKey = $key.'_'.$this->conf['salutation'];
-			$rc =  $this->pibase->pi_getLL($expandedKey, $alt, $hsc);
+			$usedLang = '';
+			$rc = tx_div2007_alpha::getLL_fh001($this->pibase, $usedLang, $expandedKey, $alt, $hsc);
 		}
-		if ($rc == '' || $rc == $alt)	{
-			$rc =  $this->pibase->pi_getLL($key, $alt, $hsc);
+		if ($rc == '' || $rc == $alt || $usedLang != $this->pibase->LLkey)	{
+			$rc = tx_div2007_alpha::getLL_fh001($this->pibase, $usedLang, $key, $alt, $hsc);
 		}
 		return $rc;
 	}	// pi_getLL
 
 
-	function pi_loadLL() {
+	function pi_loadLL () {
 		$rc = TRUE;
 
 			// flatten the structure of labels overrides
