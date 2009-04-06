@@ -268,13 +268,13 @@ class tx_srfeuserregister_control {
 		// This only solves data being visible by back buttoning for edit forms.
 		// It won't help against data being visible by back buttoning in create forms.
 		$noLoginCommands = array('','create','invite','setfixed','infomail','login');
-		if ($theTable == 'fe_users' && !$GLOBALS['TSFE']->loginUser && !(in_array($cmd,$noLoginCommands))) {
+		$dataArray = $this->data->getDataArray();
+		$origArray = $this->data->getOrigArray();
+		if ($theTable == 'fe_users' && (!$TSFE->loginUser || (count($origArray) && $TSFE->fe_user->user['uid'] != $origArray['uid'])) && !(in_array($cmd,$noLoginCommands))) {
 			$cmd = '';
 			$this->controlData->setCmd($cmd);
 			$this->data->resetDataArray();
 		}
-		$origArray = $this->data->getOrigArray();
-		$dataArray = $this->data->getDataArray();
 		$markerArray = $this->marker->getArray();
 
 			// Evaluate incoming data

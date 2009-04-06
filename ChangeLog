@@ -1,3 +1,6 @@
+2009-04-06 Franz Holzinger  <franz@ttproducts.de>
+	* fix security issue TYPO3-SA-2009-004
+
 2009-01-18 Franz Holzinger  <franz@ttproducts.de>
 	* new hook for data field evaluation
 	* fix bug 9556: email with forgotten password did not work properly. Add the missing template subparts to the CSS template.
