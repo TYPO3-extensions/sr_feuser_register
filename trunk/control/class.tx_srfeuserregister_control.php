@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
+*  (c) 2007-2009 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -55,6 +55,8 @@ class tx_srfeuserregister_control {
 	var $requiredArray; // List of required fields
 	var $controlData;
 	var $setfixedObj;
+	var $noLoginCommands = array('','create','invite','setfixed','infomail','login');
+
 
 	function init (&$langObj, &$controlData, &$display, &$marker, &$email, &$tca, &$setfixedObj)	{
 		global $TSFE;
@@ -102,7 +104,7 @@ class tx_srfeuserregister_control {
 	}
 
 	function init2 ($theTable, &$controlData, &$data, &$adminFieldList)	{
-		global $TSFE, $TCA;
+		global $TSFE;
 
 		$this->data = &$data;
 
@@ -114,7 +116,8 @@ class tx_srfeuserregister_control {
 		$cmd = $controlData->getCmd();
 		$dataArray = $this->data->getDataArray();
 		$feUserdata = $this->controlData->getFeUserData();
-		$theUid = ($dataArray['uid'] ? $dataArray['uid'] : ($feUserdata['rU'] ? $feUserdata['rU'] : ($cmd != 'invite' && $cmd != 'setfixed' ? $TSFE->fe_user->user['uid'] : 0 )));
+
+		$theUid = ($dataArray['uid'] ? $dataArray['uid'] : ($feUserdata['rU'] ? $feUserdata['rU'] : (!in_array($cmd,$this->noLoginCommands) ? $TSFE->fe_user->user['uid'] : 0 )));
 
 		if ($theUid)	{
 			$this->data->setRecUid($theUid);
@@ -142,9 +145,6 @@ class tx_srfeuserregister_control {
 			}
 		}
 		$controlData->setCmdKey($cmdKey);
-		$dataArray = $this->data->getDataArray();
-		$feUserdata = $this->controlData->getFeUserData();
-		$theUid = ($dataArray['uid'] ? $dataArray['uid'] : ($feUserdata['rU'] ? $feUserdata['rU'] : ($cmd != 'invite' && $cmd != 'setfixed' ? $TSFE->fe_user->user['uid'] : 0 )));
 
 		if (!$theUid)	{
 			if (!count($dataArray))	{
@@ -155,7 +155,8 @@ class tx_srfeuserregister_control {
 		$this->data->setOrigArray($origArray);
 
 			// Setting the list of fields allowed for editing and creation.
-		$fieldlist = implode(',', t3lib_div::trimExplode(',', $TCA[$theTable]['feInterface']['fe_admin_fieldList'], 1));
+		$tableTCA = &$this->tca->getTCA();
+		$fieldlist = implode(',', t3lib_div::trimExplode(',', $tableTCA['feInterface']['fe_admin_fieldList'], 1));
 		$this->data->setFieldList($fieldlist);
 
 		if (trim($this->conf['addAdminFieldList'])) {
@@ -227,9 +228,6 @@ class tx_srfeuserregister_control {
 			if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] || ($this->conf[$cmdKey.'.']['generateUsername'] && $cmdKey != 'edit')) {
 				unset($this->conf[$cmdKey.'.']['evalValues.']['username']);
 			}
-// 			if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $cmdKey == 'edit' && $controlData->getSetfixedEnabled()) {
-// 				unset($this->conf[$cmdKey.'.']['evalValues.']['email']);
-// 			}
 		}
 		$confObj->setConf($this->conf);
 
@@ -267,12 +265,16 @@ class tx_srfeuserregister_control {
 		// Ralf Hettinger: avoid data from edit forms being visible by back buttoning to client side cached pages
 		// This only solves data being visible by back buttoning for edit forms.
 		// It won't help against data being visible by back buttoning in create forms.
-		$noLoginCommands = array('','create','invite','setfixed','infomail','login');
-		$dataArray = $this->data->getDataArray();
 		$origArray = $this->data->getOrigArray();
-		if ($theTable == 'fe_users' && (!$TSFE->loginUser || (count($origArray) && $TSFE->fe_user->user['uid'] != $origArray['uid'])) && !(in_array($cmd,$noLoginCommands))) {
+		$dataArray = $this->data->getDataArray();
+		$uid = $this->data->getRecUid();
+
+		if ($theTable == 'fe_users' && (!$TSFE->loginUser || ($uid > 0 && $TSFE->fe_user->user['uid'] != $uid)) && !in_array($cmd,$this->noLoginCommands)) {
+
 			$cmd = '';
 			$this->controlData->setCmd($cmd);
+			$origArray = array();
+			$this->data->setOrigArray($origArray);
 			$this->data->resetDataArray();
 		}
 		$markerArray = $this->marker->getArray();
@@ -481,7 +483,7 @@ class tx_srfeuserregister_control {
 					$content = $rc;
 				}
 			} else {
-				$errorText = $this->langObj->pi_getLL('internal_no_subtemplate');
+				$errorText = $this->langObj->getLL('internal_no_subtemplate');
 				$content = sprintf($errorText, $subpartMarker);
 			}
 		} else if ($this->data->getError()) {
@@ -509,23 +511,39 @@ class tx_srfeuserregister_control {
 					if ($this->conf['infomail']) {
 						$this->controlData->setSetfixedEnabled(1);
 					}
-					$uid = $this->data->getRecUid();
 					$templateCode = $this->data->getTemplateCode();
-					$origArray = $TSFE->sys_page->getRawRecord($theTable, $uid);
 					$feuData = $this->controlData->getFeUserData();
-					$content = $this->setfixedObj->processSetFixed($theTable, $uid, $markerArray, $templateCode, $dataArray, $origArray, $this, $this->data, $feuData);
+					if (is_array($origArray))	{
+						$origArray = $this->data->parseIncomingData($origArray, FALSE);
+					}
+
+					$content = $this->setfixedObj->processSetFixed(
+						$theTable,
+						$uid,
+						$cmdKey,
+						$markerArray,
+						$templateCode,
+						$dataArray,
+						$origArray,
+						$this,
+						$this->data,
+						$feuData
+					);
 					break;
 				case 'infomail':
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
 					if ($this->conf['infomail']) {
 						$this->controlData->setSetfixedEnabled(1);
 					}
+					if (is_array($origArray))	{
+						$origArray = $this->data->parseIncomingData($origArray, FALSE);
+					}
 					$content = $this->email->sendInfo(
 						$theTable,
 						$origArray,
 						$markerArray,
 						$cmd,
-						$this->controlData->getCmdKey(),
+						$cmdKey,
 						$this->data->getTemplateCode()
 					);
 					break;
@@ -644,4 +662,5 @@ class tx_srfeuserregister_control {
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/control/class.tx_srfeuserregister_control.php'])  {
   include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/control/class.tx_srfeuserregister_control.php']);
 }
+
 ?>

@@ -64,7 +64,13 @@ class tx_srfeuserregister_tca {
 		$this->cObj = &$pibase->cObj;
 
 			// get the table definition
-		$TSFE->includeTCA();
+	//	$TSFE->includeTCA();	takes too much memory
+		tx_div2007_alpha::loadTcaAdditions_fh001(array($extKey));
+		if (t3lib_extMgm::isLoaded('direct_mail'))	{
+			tx_div2007_alpha::loadTcaAdditions_fh001(array('direct_mail'));
+		}
+		tx_div2007_alpha::loadTcaAdditions_fh001($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['extendingTCA']);
+
 		$this->TCA = $TCA[$theTable];
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['uploadFolder'])	{
 			$this->TCA[$theTable]['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['uploadFolder'];
@@ -235,6 +241,7 @@ class tx_srfeuserregister_tca {
 			$mrow = $row;
 		}
 		$fields = $this->conf[$cmdKey.'.']['fields'];
+
 		foreach ($this->TCA['columns'] as $colName => $colSettings) {
 
 			if (t3lib_div::inList($fields, $colName)) {
@@ -284,7 +291,7 @@ class tx_srfeuserregister_tca {
 									$this->cObj->alternativeData = $colConfig['items'];
 									$colContent = $this->cObj->stdWrap($colContent,$listWrap);
 								} else {
-									$colContent = $mrow[$colName]?htmlspecialchars($this->langObj->pi_getLL('yes'),ENT_QUOTES,$charset):htmlspecialchars($this->langObj->pi_getLL('no'),ENT_QUOTES,$charset);
+									$colContent = $mrow[$colName]?htmlspecialchars($this->langObj->getLL('yes'),ENT_QUOTES,$charset):htmlspecialchars($this->langObj->getLL('no'),ENT_QUOTES,$charset);
 								}
 								break;
 							case 'radio':
@@ -389,7 +396,7 @@ class tx_srfeuserregister_tca {
 								break;
 							default:
 								// unsupported input type
-								$colContent .= $colConfig['type'].':'.htmlspecialchars($this->langObj->pi_getLL('unsupported'),ENT_QUOTES,$charset);
+								$colContent .= $colConfig['type'].':'.htmlspecialchars($this->langObj->getLL('unsupported'),ENT_QUOTES,$charset);
 								break;
 						}
 					} else {
@@ -433,7 +440,7 @@ class tx_srfeuserregister_tca {
 									'>'.($colConfig['default']?$label:'').'</textarea>';
 								break;
 							case 'check':
-								$label = $this->langObj->pi_getLL('tooltip_' . $colName);
+								$label = $this->langObj->getLL('tooltip_' . $colName);
 								$label = htmlspecialchars($label,ENT_QUOTES,$charset);
 								if (is_array($itemArray)) {
 									$uidText = $this->pibase->pi_getClassName($colName).'-'.$mrow['uid'];
@@ -585,7 +592,7 @@ class tx_srfeuserregister_tca {
 								}
 								break;
 							default:
-								$colContent .= $colConfig['type'].':'.$this->langObj->pi_getLL('unsupported');
+								$colContent .= $colConfig['type'].':'.$this->langObj->getLL('unsupported');
 								break;
 						}
 					}

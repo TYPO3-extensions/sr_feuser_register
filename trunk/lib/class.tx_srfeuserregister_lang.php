@@ -61,7 +61,7 @@ class tx_srfeuserregister_lang {
 		$rc = '';
 		$arr = explode(':',$string);
 		if($arr[0] == 'LLL' && $arr[1] == 'EXT') {
-			$temp = $this->pi_getLL($arr[3]);
+			$temp = $this->getLL($arr[3]);
 			if ($temp || !$bForce) {
 				$rc = $temp;
 			} else {
@@ -84,14 +84,14 @@ class tx_srfeuserregister_lang {
 		$rc = array();
 		if ($bAll)	{
 			for ($i = 0; $i < 999; ++$i)	{
-				$text = $this->pi_getLL($textSchema.$i);
+				$text = $this->getLL($textSchema.$i);
 				if ($text != '')	{
 					$rc[] = array($text, $i);
 				}
 			}
 		} else {
 			foreach ($valuesArray as $k => $i)	{
-				$text = $this->pi_getLL($textSchema.$i);
+				$text = $this->getLL($textSchema.$i);
 				if ($text != '')	{
 					$rc[] = array($text, $i);
 				}
@@ -117,7 +117,8 @@ class tx_srfeuserregister_lang {
 		* @param    boolean        If true, the output label is passed through htmlspecialchars()
 		* @return    string        The value from LOCAL_LANG.
 		*/
-	function pi_getLL ($key, $alt = '', $hsc = FALSE) {
+	function getLL ($key, $alt = '', $hsc = FALSE) {
+
 			// If the suffix is allowed and we have a localized string for the desired salutation, we'll take that.
 		$rc = '';
 		if (isset($this->conf['salutation']) && in_array($this->conf['salutation'], $this->allowedSuffixes, 1)) {
@@ -129,10 +130,10 @@ class tx_srfeuserregister_lang {
 			$rc = tx_div2007_alpha::getLL_fh001($this->pibase, $usedLang, $key, $alt, $hsc);
 		}
 		return $rc;
-	}	// pi_getLL
+	}	// getLL
 
 
-	function pi_loadLL () {
+	function loadLL () {
 		$rc = TRUE;
 
 			// flatten the structure of labels overrides
@@ -172,23 +173,24 @@ class tx_srfeuserregister_lang {
 
 		$locallang = $this->pibase->LOCAL_LANG;
 		$this->pibase->pi_loadLL();
+
 		if ($locallang != '')	{
 			foreach ($this->pibase->LOCAL_LANG as $key => $langArray)	{
 				if (isset($locallang[$key]) && is_array($locallang[$key]))	{
-					$this->pibase->LOCAL_LANG[$key] = array_merge($langArray, $locallang[$key]);
+					$this->pibase->LOCAL_LANG[$key] = array_merge($locallang[$key], $langArray);
 				}
 			}
 		}
 
 		// do a check if the language file works
-		$tmpText = $this->pi_getLL('unsupported');
+		$tmpText = $this->getLL('unsupported');
 		if ($tmpText == '')	{
 			$rc = FALSE;
 		}
 
 		return $rc;
-	}	// pi_loadLL
-}
+	}	// loadLL
+} // class tx_srfeuserregister_lang
 
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_lang.php'])  {

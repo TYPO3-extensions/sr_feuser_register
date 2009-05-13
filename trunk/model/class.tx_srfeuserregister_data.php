@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+*  (c) 2007-2009 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -67,7 +67,7 @@ class tx_srfeuserregister_data {
 	var $additionalUpdateFields;
 	var $fieldList; // List of fields from fe_admin_fieldList
 	var $specialfieldlist; // list of special fields like captcha
-	var $recUid;
+	var $recUid = 0;
 	var $missing = array(); // array of required missing fields
 	var $inError = array(); // array of fields with eval errors other than absence
 	var $templateCode;
@@ -227,6 +227,7 @@ class tx_srfeuserregister_data {
 		// Addition of overriding values
 		if (is_array($this->conf[$cmdKey.'.']['overrideValues.'])) {
 			foreach ($this->conf[$cmdKey.'.']['overrideValues.'] as $theField => $theValue) {
+
 				if ($theField == 'usergroup' && $this->controlData->getTable() == 'fe_users' && $this->conf[$cmdKey.'.']['allowUserGroupSelection']) {
 					$dataDiff = array_diff($dataArray[$theField], t3lib_div::trimExplode(',', $theValue, 1));
 					$dataValue = implode(',', array_merge($dataDiff, t3lib_div::trimExplode(',', $theValue, 1)));
@@ -253,6 +254,7 @@ class tx_srfeuserregister_data {
 	*/
 	function defaultValues ($cmdKey) {
 		$dataArray = array();
+
 		// Addition of default values
 		if (is_array($this->conf[$cmdKey.'.']['defaultValues.'])) {
 			foreach($this->conf[$cmdKey.'.']['defaultValues.'] as $theField => $theValue) {
@@ -277,12 +279,12 @@ class tx_srfeuserregister_data {
 			$failureLabel='';
 			if ($theRule)	{
 				$labelname = 'evalErrors_'.$theRule.'_'.$theField;
-				$failureLabel = $this->lang->pi_getLL($labelname);
-				$failureLabel = $failureLabel ? $failureLabel : $this->lang->pi_getLL('evalErrors_'.$theRule);
+				$failureLabel = $this->lang->getLL($labelname);
+				$failureLabel = $failureLabel ? $failureLabel : $this->lang->getLL('evalErrors_'.$theRule);
 			}
 			if (!$failureLabel)	{ // this remains only for compatibility reasons
 				$labelname = $label;
-				$failureLabel = $this->lang->pi_getLL($labelname);
+				$failureLabel = $this->lang->getLL($labelname);
 			}
 		}
 		return $failureLabel;
@@ -877,7 +879,7 @@ class tx_srfeuserregister_data {
 					$this->saved = TRUE;
 
 						// Post-create processing: call user functions and hooks
-					$this->setCurrentArray ($this->parseIncomingData($TSFE->sys_page->getRawRecord($theTable, $newId)));
+					$this->setCurrentArray($this->parseIncomingData($TSFE->sys_page->getRawRecord($theTable, $newId)));
 					$this->control->userProcess_alt($this->conf['create.']['userFunc_afterSave'], $this->conf['create.']['userFunc_afterSave.'], array('rec' => $this->getCurrentArray()));
 
 					// Call all afterSaveCreate hooks after the record has been created and saved
@@ -896,6 +898,7 @@ class tx_srfeuserregister_data {
 				}
 			break;
 		}
+
 		return $rc;
 	}	// save
 
@@ -1029,6 +1032,7 @@ class tx_srfeuserregister_data {
 				break;
 			}
 		}
+
 		return $rcArray;
 	}
 
@@ -1188,7 +1192,7 @@ class tx_srfeuserregister_data {
 	}	// setUsername
 
 	/**
-		* Assigns a value to the password if this is an invitation and password encryption with kb_md5fepw is enabled
+		* Assigns a value to the password if this is an invitation and md5 password encryption if kb_md5fepw is enabled
 		* or if we are creating and generatePassword is set.
 		*
 		* @return void  done directly on array $this->dataArray
@@ -1204,12 +1208,13 @@ class tx_srfeuserregister_data {
 			$genLength = intval($this->conf[$cmdKey.'.']['generatePassword']);
 			$genPassword = substr(md5(uniqid(microtime(), 1)), 0, $genLength);
 			if ($this->controlData->getUseMd5Password()) {
-				$length = intval($GLOBALS['TSFE']->config['plugin.']['tx_newloginbox_pi1.']['defaultPasswordLength']);
-				if (!$length)	{
-					$length = ($genLength ? $genLength : 32);
-				}
 
 				if (t3lib_extMgm::isLoaded('kb_md5fepw'))	{
+					$length = intval($GLOBALS['TSFE']->config['plugin.']['tx_newloginbox_pi1.']['defaultPasswordLength']);
+					if (!$length)	{
+						$length = ($genLength ? $genLength : 32);
+					}
+
 					include_once(t3lib_extMgm::extPath('kb_md5fepw').'class.tx_kbmd5fepw_funcs.php');
 					$dataArray['password'] = tx_kbmd5fepw_funcs::generatePassword($length );
 				} else {
@@ -1226,7 +1231,7 @@ class tx_srfeuserregister_data {
 	*
 	* @return parsedArray
 	*/
-	function parseIncomingData ($origArray = array()) {
+	function parseIncomingData ($origArray, $bUnsetZero=TRUE) {
 		global $TYPO3_DB;
 
 		$parsedArr = array();
@@ -1243,7 +1248,11 @@ class tx_srfeuserregister_data {
 								$parsedArr[$theField] = date($this->conf['dateFormat'], $origArray[$theField]);
 							}
 							if (!$parsedArr[$theField]) {
-								unset($parsedArr[$theField]);
+								if ($bUnsetZero)	{
+									unset($parsedArr[$theField]);
+								} else {
+									$parsedArr[$theField] = '';
+								}
 							}
 						break;
 						case 'adodb_date':
@@ -1258,13 +1267,18 @@ class tx_srfeuserregister_data {
 								$parsedArr[$theField] = $adodbTime->adodb_date( $this->conf['dateFormat'], $origArray[$theField]);
 							}
 							if (!$parsedArr[$theField]) {
-								unset($parsedArr[$theField]);
+								if ($bUnsetZero)	{
+									unset($parsedArr[$theField]);
+								} else {
+									$parsedArr[$theField] = '';
+								}
 							}
 						break;
 					}
 				}
 			}
 		}
+
 		return $parsedArr;
 	}	// parseIncomingData
 

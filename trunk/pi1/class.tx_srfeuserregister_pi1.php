@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 1999-2003 Kasper Skårhøj <kasperYYYY@typo3.com>
-*  (c) 2004-2008 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
+*  (c) 2004-2009 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -30,11 +30,11 @@
  * A variant restricted to front end user self-registration and profile maintenance, with a number of enhancements (see the manual).
  *
  * $Id$
- * 
+ *
  * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
  * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
  * @author	Franz Holzinger <contact@fholzinger.com>
- * @maintainer	Franz Holzinger <contact@fholzinger.com> 
+ * @maintainer	Franz Holzinger <contact@fholzinger.com>
  *
  *
  */

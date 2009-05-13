@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 1999-2003 Kasper Skårhøj <kasperYYYY@typo3.com>
-*  (c) 2004-2008 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
+*  (c) 2004-2009 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -45,6 +45,7 @@ require_once(PATH_t3lib.'class.t3lib_page.php');
 	// For translating items from other extensions
 // require_once (t3lib_extMgm::extPath('lang').'lang.php');
 
+require_once(PATH_BE_div2007.'class.tx_div2007_alpha.php');
 require_once(PATH_BE_srfeuserregister.'pi1/class.tx_srfeuserregister_pi1_urlvalidator.php');
 require_once(PATH_BE_srfeuserregister.'control/class.tx_srfeuserregister_control.php');
 require_once(PATH_BE_srfeuserregister.'control/class.tx_srfeuserregister_setfixed.php');
@@ -81,6 +82,7 @@ class tx_srfeuserregister_control_main {
 	var $tca;  // object of type tx_srfeuserregister_tca
 	var $marker; // object of type tx_srfeuserregister_marker
 	var $pibaseObj;
+	var $extKey;
 
 	function main (
 		$content,
@@ -94,6 +96,7 @@ class tx_srfeuserregister_control_main {
 		global $TSFE;
 
 		$this->pibaseObj = &$pibaseObj;
+		$this->extKey = $this->pibaseObj->extKey;
 		$rc = $this->init($conf,$theTable,$adminFieldList,$buttonLabelsList,$otherLabelsList);
 		if ($rc !== FALSE)	{
 			$error_message = '';
@@ -123,19 +126,13 @@ class tx_srfeuserregister_control_main {
 			$theTable  = $conf['table.']['name'];
 		}
 		$this->controlData = &t3lib_div::getUserObj('&tx_srfeuserregister_controldata');
-		$this->controlData->init($conf, $this->pibaseObj->prefixId, $this->pibaseObj->extKey, $this->pibaseObj->piVars, $theTable);
+		$this->controlData->init($conf, $this->pibaseObj->prefixId, $this->extKey, $this->pibaseObj->piVars, $theTable);
 
 		if ($this->extKey != SR_FEUSER_REGISTER_EXTkey)	{
-			if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
+
 					// Static Methods for Extensions for fetching the texts of sr_feuser_register
-				require_once(PATH_BE_div2007.'class.tx_div2007_alpha.php');
 				tx_div2007_alpha::loadLL_fh001($this->pibaseObj,'EXT:'.SR_FEUSER_REGISTER_EXTkey.'/pi1/locallang.xml',FALSE);
-			} else if (t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
-					// FE BE library for flexform functions
-				require_once(PATH_BE_fh_library.'lib/class.tx_fhlibrary_language.php');
-				tx_fhlibrary_language::pi_loadLL($this->pibaseObj,'EXT:'.SR_FEUSER_REGISTER_EXTkey.'/pi1/locallang.xml',FALSE);
-			} // otherwise the labels from sr_feuser_register will not be included
-		}
+		} // otherwise the labels from sr_feuser_register need not be included, because this has been done in
 
 		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey)) {
 			include_once(PATH_BE_static_info_tables.'pi1/class.tx_staticinfotables_pi1.php');
@@ -165,7 +162,7 @@ class tx_srfeuserregister_control_main {
 
 		$this->urlObj->init ($this->controlData, $this->cObj);
 		$this->langObj->init($this->pibaseObj, $this->conf, $this->LLkey);
-		$rc = $this->langObj->pi_loadLL();
+		$rc = $this->langObj->loadLL();
 		if ($rc !== FALSE)	{
 			$this->tca->init($this->pibaseObj, $this->conf, $this->controlData, $this->langObj, $this->extKey, $theTable);
 			$this->control->init($this->pibaseObj, $this->controlData, $this->display, $this->marker, $this->email, $this->tca, $this->setfixedObj);

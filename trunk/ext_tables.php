@@ -46,6 +46,17 @@ $TCA['fe_users']['columns']['image']['config']['max_size'] = $GLOBALS['TYPO3_CON
 $TCA['fe_users']['columns']['image']['config']['allowed'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageTypes'];
 
 t3lib_extMgm::addTCAcolumns('fe_users', Array(
+	'cnum' => Array (
+		'exclude' => 0,
+		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.cnum',
+		'config' => Array (
+			'type' => 'input',
+			'size' => '20',
+			'max' => '50',
+			'eval' => 'trim',
+			'default' => ''
+		)
+	),
 	'static_info_country' => Array (
 		'exclude' => 0,
 		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.static_info_country',
@@ -163,7 +174,7 @@ $TCA['fe_users']['interface']['showRecordFieldList'] = str_replace(',country', '
 $TCA['fe_users']['interface']['showRecordFieldList'] = str_replace('title,', 'gender,first_name,last_name,status,date_of_birth,title,', $TCA['fe_users']['interface']['showRecordFieldList']);
 
 $TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace(',country', ',zone,static_info_country,country,language,comments', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
-$TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace(',title', ',gender,first_name,last_name,status,title', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
+$TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace(',title', ',gender,first_name,last_name,cnum,status,title', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
 $TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',image,disable,date_of_birth,by_invitation';
 
 $TCA['fe_users']['types']['0']['showitem'] = str_replace(', country', ', zone, static_info_country, country,language', $TCA['fe_users']['types']['0']['showitem']);
@@ -180,7 +191,7 @@ for ($i=0; $i<10; $i++)	{
 }
 
 $TCA['fe_users']['palettes'][$lastPalette+1]['showitem'] = 'gender,first_name';
-$TCA['fe_users']['types']['0']['showitem'] = str_replace(', name', ',last_name;;'.($lastPalette+1).';;1-1-1, name', $TCA['fe_users']['types']['0']['showitem']);
+$TCA['fe_users']['types']['0']['showitem'] = str_replace(', name', ',cnum,last_name;;'.($lastPalette+1).';;1-1-1, name', $TCA['fe_users']['types']['0']['showitem']);
 
 $TCA['fe_users']['ctrl']['thumbnail'] = 'image';
 

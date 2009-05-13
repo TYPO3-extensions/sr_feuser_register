@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
+*  (c) 2007-2009 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -78,7 +78,7 @@ class tx_srfeuserregister_setfixed {
 	* @param array  Array with key/values being marker-strings/substitution values.
 	* @return string  the template with substituted markers
 	*/
-	function processSetFixed ($theTable, $uid, &$markerArray, &$templateCode, &$dataArray, &$origArray, &$pObj, &$dataObj, &$feuData) {
+	function processSetFixed ($theTable, $uid, $cmdKey, &$markerArray, &$templateCode, &$dataArray, &$origArray, &$pObj, &$dataObj, &$feuData) {
 		global $TSFE;
 
 		$row = $origArray;
@@ -109,11 +109,10 @@ class tx_srfeuserregister_setfixed {
 					$res = $this->cObj->DBgetDelete($theTable, $uid, true);
 					$dataObj->deleteMMRelations($theTable, $uid, $row);
 				} else {
+
 					if ($theTable == 'fe_users') {
 						if ($this->conf['create.']['allowUserGroupSelection']) {
 							$row['usergroup'] = implode(',', array_unique(array_merge(array_diff(t3lib_div::trimExplode(',', $origUsergroup, 1), t3lib_div::trimExplode(',', $this->conf['create.']['overrideValues.']['usergroup'], 1)), t3lib_div::trimExplode(',', $setfixedUsergroup, 1))));
-						} elseif ($feuData['sFK'] == 'APPROVE' && $origUsergroup != $this->conf['create.']['overrideValues.']['usergroup']) {
-							$row['usergroup'] = $origUsergroup;
 						}
 					}
 						// Hook: first we initialize the hooks
@@ -130,12 +129,11 @@ class tx_srfeuserregister_setfixed {
 						}
 					}
 					$newFieldList = implode(array_intersect(t3lib_div::trimExplode(',', $dataObj->fieldList), t3lib_div::trimExplode(',', implode($fieldArr, ','), 1)), ',');
-					$res = $this->cObj->DBgetUpdate($theTable, $uid, $row, $newFieldList, true);
+					$res = $this->cObj->DBgetUpdate($theTable, $uid, $row, $newFieldList, TRUE);
 					$currArr = $origArray;
-					$modArray=array();
+					$modArray = array();
 					$currArr = $this->tca->modifyTcaMMfields($currArr,$modArray);
-//					$this->data->setCurrentArray ($currArr);
-					$row = array_merge ($row, $modArray);
+					$row = array_merge($row, $modArray);
 
 					$pObj->userProcess_alt($this->conf['setfixed.']['userFunc_afterSave'],$this->conf['setfixed.']['userFunc_afterSave.'],array('rec'=>$currArr, 'origRec'=>$origArray));
 
@@ -181,7 +179,7 @@ class tx_srfeuserregister_setfixed {
 						$origArray[$this->conf['email.']['field']],
 						$markerArray,
 						'setfixed',
-						$this->controlData->getCmdKey(),
+						$cmdKey,
 						$templateCode,
 						$this->conf['setfixed.']
 					);
@@ -198,7 +196,7 @@ class tx_srfeuserregister_setfixed {
 							$this->conf['email.']['admin'],
 							$markerArray,
 							'setfixed',
-							$this->controlData->getCmdKey(),
+							$cmdKey,
 							$templateCode,
 							$this->conf['setfixed.']
 						);

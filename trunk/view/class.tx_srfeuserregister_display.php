@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+*  (c) 2007-2009 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -90,9 +90,9 @@ class tx_srfeuserregister_display {
 		$templateCode = $this->removeRequired($templateCode, $failure);
 		$markerArray = $this->marker->fillInMarkerArray($markerArray, $currentArray, '', TRUE, 'FIELD_', TRUE);
 		$this->marker->addStaticInfoMarkers($markerArray, $currentArray);
-		$this->tca->addTcaMarkers($markerArray, $currentArray, $origArray, $cmd, $cmdKey, $theTable, true);
+		$this->tca->addTcaMarkers($markerArray, $currentArray, $origArray, $cmd, $cmdKey, $theTable, TRUE);
 		$this->tca->addTcaMarkers($markerArray, $currentArray, $origArray, $cmd, $cmdKey, $theTable);
-		$this->marker->addLabelMarkers($markerArray, $theTable, $currentArray, $origArray, array(), $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns'], false);
+		$this->marker->addLabelMarkers($markerArray, $theTable, $currentArray, $origArray, array(), $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns'], FALSE);
 		$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $currentArray, $this->controlData->getMode() == MODE_PREVIEW);
 		$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
 		$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][uid]" value="'.$currentArray['uid'].'" />';
@@ -166,10 +166,13 @@ class tx_srfeuserregister_display {
 			$this->marker->addStaticInfoMarkers($markerArray, $dataArray);
 			$this->tca->addTcaMarkers($markerArray, $dataArray, $origArray, $cmd, $cmdKey, $theTable);
 			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $dataArray, $this->controlData->getMode() == MODE_PREVIEW);
-			$this->marker->addLabelMarkers($markerArray, $theTable, $dataArray, $origArray, array(), $this->controlData->getRequiredArray(), $infoFields, $this->tca->TCA['columns'], false);
+			$this->marker->addLabelMarkers($markerArray, $theTable, $dataArray, $origArray, array(), $this->controlData->getRequiredArray(), $infoFields, $this->tca->TCA['columns'], FALSE);
+
 			$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
 			$this->marker->addHiddenFieldsMarkers($markerArray, $cmdKey, $mode, $dataArray);
+
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
+
 			// if ($this->conf['templateStyle'] != 'css-styled' || $mode != MODE_PREVIEW) {
 			if ($mode != MODE_PREVIEW) {
 				$form = tx_div2007_alpha::getClassName($theTable.'_form',$this->controlData->getPrefixId());
@@ -231,7 +234,7 @@ class tx_srfeuserregister_display {
 			}
 		} else {
 			$langObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lang');
-			$content .= $langObj->pi_getLL('internal_edit_option');
+			$content .= $langObj->getLL('internal_edit_option');
 		}
 		return $content;
 	}	// editScreen
@@ -307,13 +310,13 @@ class tx_srfeuserregister_display {
 			$cmd = $this->controlData->getCmd();
 			$cmdKey = $this->controlData->getCmdKey();
 			$theTable = $this->controlData->getTable();
-			$this->tca->addTcaMarkers($markerArray, $row, $origArray, $cmd, $cmdKey, $theTable, true);
-			$this->marker->addLabelMarkers($markerArray, $theTable, $row, $origArray, array(), $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns'], false);
+			$this->tca->addTcaMarkers($markerArray, $row, $origArray, $cmd, $cmdKey, $theTable, TRUE);
+			$this->marker->addLabelMarkers($markerArray, $theTable, $row, $origArray, array(), $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns'], FALSE);
 			$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
 			$rc = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 		} else if ($bCheckEmpty) {
 			$langObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lang');
-			$errorText = $langObj->pi_getLL('internal_no_subtemplate');
+			$errorText = $langObj->getLL('internal_no_subtemplate');
 			$rc = sprintf($errorText, $subpartMarker);
 		}
 		return $rc;
@@ -388,8 +391,10 @@ class tx_srfeuserregister_display {
 		return $templateCode;
 	}	// removeRequired
 
-	function removeHTMLComments ($content) {
-		return preg_replace('/<!(?:--[\s\S]*?--\s*)?>[\t\v\n\r\f]*/','',$content);
+	function &removeHTMLComments ($content) {
+
+		$rc = preg_replace('/<!(?:--[\s\S]*?--\s*)?>[\t\v\n\r\f]*/','',$content);
+		return $rc;
 	}
 
 	function replaceHTMLBr ($content) {
