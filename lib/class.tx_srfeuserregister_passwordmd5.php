@@ -76,7 +76,7 @@ class tx_srfeuserregister_passwordmd5 {
 
 		if ($challengeTable != '')	{
 			$res = $TYPO3_DB->exec_SELECTquery('count(*) as count', $challengeTable, 'challenge='.$TYPO3_DB->fullQuoteStr($this->chal_val, $challengeTable));
-			if ($TYPO3_DB->debug_check_recordset($res))	{
+			if (!method_exists($TYPO3_DB,debug_check_recordset) || $TYPO3_DB->debug_check_recordset($res))	{
 				$row = $TYPO3_DB->sql_fetch_assoc($res);
 				$cnt = $row['count'];
 				$TYPO3_DB->sql_free_result($res);

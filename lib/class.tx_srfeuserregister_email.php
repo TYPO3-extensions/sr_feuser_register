@@ -159,7 +159,7 @@ class tx_srfeuserregister_email {
 				$content = $this->display->getPlainTemplate($templateCode,$subpartkey,$markerArray,$origArr);
 			}
 		} else {
-			$content=$this->langObj->pi_getLL('internal_infomail_configuration');
+			$content=$this->langObj->getLL('internal_infomail_configuration');
 		}
 		return $content;
 	}
@@ -190,35 +190,27 @@ class tx_srfeuserregister_email {
 		$content['user']['all'] = '';
 		$content['HTML']['all'] = '';
 		$content['admin']['all'] = '';
+		$setfixedArray = array('SETFIXED_CREATE', 'SETFIXED_CREATE_REVIEW', 'SETFIXED_INVITE',
+			'SETFIXED_REVIEW', 'INFOMAIL', 'INFOMAIL_NORECORD');
 
 			//	if ($this->conf['enableEmailConfirmation'] || $this->conf['infomail'])	{
 		if (
 			$this->conf['email.'][$key] ||
-			(
-			$this->controlData->getSetfixedEnabled() &&
-				(
-				$key == 'SETFIXED_CREATE' ||
-				$key == 'SETFIXED_CREATE_REVIEW' ||
-				$key == 'SETFIXED_INVITE' ||
-				$key == 'SETFIXED_REVIEW' ||
-				$key == 'INFOMAIL'  ||
-				$key == 'INFOMAIL_NORECORD'
-				)
-			)
+			$this->controlData->getSetfixedEnabled() && in_array($key, $setfixedArray)
 		) {
-			$subpartMarker = $this->emailMarkPrefix.$key;
-			$content ['user']['all'] = trim($this->cObj->getSubpart($templateCode, '###'.$subpartMarker.'###'));
+			$subpartMarker = $this->emailMarkPrefix . $key;
+			$content['user']['all'] = trim($this->cObj->getSubpart($templateCode, '###'.$subpartMarker.'###'));
 
 			if ($content ['user']['all'] == '')	{
-				$errorText = $this->langObj->pi_getLL('internal_no_subtemplate');
+				$errorText = $this->langObj->getLL('internal_no_subtemplate');
 				$content = sprintf($errorText, $subpartMarker);
 				return $content;
 			}
 			$content['user']['all'] = $this->display->removeRequired($content['user']['all']);
-			$subpartMarker = $this->emailMarkPrefix.$key.$this->emailMarkHTMLSuffix;
+			$subpartMarker = $this->emailMarkPrefix . $key . $this->emailMarkHTMLSuffix;
 			$bHTMLallowed = $this->data->getDataArray('module_sys_dmail_html');
 
-			$content['HTML']['all'] = ($this->HTMLMailEnabled && $bHTMLallowed) ? trim($this->cObj->getSubpart($templateCode, '###'.$subpartMarker.'###')):'';
+			$content['HTML']['all'] = ($this->HTMLMailEnabled && $bHTMLallowed) ? trim($this->cObj->getSubpart($templateCode, '###' . $subpartMarker . '###')):'';
 			$content['HTML']['all'] = $this->display->removeRequired($content['HTML']['all']);
 		}
 		if ($this->conf['notify.'][$key] ) {
@@ -291,7 +283,9 @@ class tx_srfeuserregister_email {
 			// Substitute the markers and eliminate HTML markup from plain text versions, but preserve <http://...> constructs
 		if ($content['user']['all']) {
 			$content['user']['final'] .= $this->cObj->substituteSubpart($content['user']['all'], '###SUB_RECORD###', $content['user']['accum']);
-			$content['user']['final'] = str_replace('###http', '<http', strip_tags(str_replace('<http', '###http', $content['user']['final'])));
+			$tmp = str_replace('<http', '###http', $content['user']['final']);
+			$tmp = strip_tags($tmp);
+			$content['user']['final'] = str_replace('###http', '<http', strip_tags($tmp));
 			$content['user']['final'] = $this->display->removeHTMLComments($content['user']['final']);
 			$content['user']['final'] = $this->display->replaceHTMLBr($content['user']['final']);
 		}

@@ -1,3 +1,9 @@
+2009-05-13 Franz Holzinger  <franz@ttproducts.de>
+	* new field cnum which holds the customer number for different ERP software
+	* fix bug with wrong class attribute for the image preview tag
+	* fix bug with not replace marker for FIELD_date_of_birth
+	* fix bug 10981: the merging of language file did remove new translations
+
 2009-04-06 Franz Holzinger  <franz@ttproducts.de>
 	* fix security issue TYPO3-SA-2009-004
 
