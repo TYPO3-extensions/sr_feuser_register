@@ -63,16 +63,13 @@ class tx_srfeuserregister_auth {
 		$this->config['addKey'] = ($this->conf['authcodeFields.']['addKey'] ? $this->conf['authcodeFields.']['addKey'] : 'A');
 	}
 
-
 	function setAuthCode ($code)	{
 		$this->authCode = $code;
 	}
 
-
 	function getAuthCode ()	{
 		return $this->authCode;
 	}
-
 
 	/**
 	* Computes the authentication code
@@ -100,7 +97,6 @@ class tx_srfeuserregister_auth {
 		return $rc;
 	}	// authCode
 
-
 	/**
 	* Authenticates a record
 	*
@@ -114,7 +110,6 @@ class tx_srfeuserregister_auth {
 		}
 		return $rc;
 	}
-
 
 	/**
 	* Computes the setfixed hash
@@ -137,7 +132,7 @@ class tx_srfeuserregister_auth {
 		if (isset($recCopy_temp) && is_array($recCopy_temp))	{
 			$preKey = implode('|',$recCopy_temp);
 		}
-		$authCode = $preKey.'|'.$this->config['addKey'].'|'.$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
+		$authCode = $preKey . '|' . $this->config['addKey'] . '|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
 		$authCode = substr(md5($authCode), 0, $this->config['codeLength']);
 
 		return $authCode;

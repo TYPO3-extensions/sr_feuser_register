@@ -1,3 +1,18 @@
+2009-09-17 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 11185: usergroup(s) are not correctly saved while using user group selection upon registration
+	* new eval values uniqueDeletedGlobal and uniqueDeletedLocal: This considers that also deleted users are prohibited from a recreation in the future.
+	* fix bug 11304: password has not been MD5 encrypted if autogeneration has been set
+	* fix bug with HTMLMailEnabled: check the correct data row
+	* fix bug 10785: support middle_name in the name
+	* fix bug 10714: confirmation mail not sent as HTML
+	* fix bug 8831: do not save htmlspecialchar'ed records
+	* fix bug 11527: correct html for group selection with check boxes
+	* fix bug 11534: allowUserGroupSelection has lead to SQL error in some cases
+	* fix bug 10989: Javascript has true and false in lower case
+	* new feature: consider the localization of Direct Mail categories only if useLocalization has been set. Otherwise all categories are listed.
+	* new feature: preg for the evaluation of Perl regular expressions
+	* new feature: set enableEmailOnDeny=0 if a rejected user shall not get any email
+
 2009-05-13 Franz Holzinger  <franz@ttproducts.de>
 	* new field cnum which holds the customer number for different ERP software
 	* fix bug with wrong class attribute for the image preview tag

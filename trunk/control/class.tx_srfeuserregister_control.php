@@ -326,11 +326,19 @@ class tx_srfeuserregister_control {
 			$this->data->setDataArray($dataArray);
 
 			if ($this->controlData->getFailure()=='' && !$this->controlData->getFeUserData('preview') && !$this->controlData->getFeUserData('doNotSave') ) {
-				$this->data->setPassword($dataArray, $cmdKey);
+				$this->data->generatePassword($dataArray, $cmdKey);
 				$prefixId = $this->controlData->getPrefixId();
 				$extKey = $this->controlData->getExtKey();
-				$theUid = $this->data->save($theTable, $dataArray, $origArray, $cmd, $cmdKey, $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess']);
-				$dataArray['uid'] = $theUid;
+
+				$theUid = $this->data->save(
+					$theTable,
+					$dataArray,
+					$origArray,
+					$newDataArray,
+					$cmd,
+					$cmdKey,
+					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess']
+				);
 			}
 		} else {
 			$this->marker->setNoError($cmdKey, $markerArray);
@@ -395,8 +403,8 @@ class tx_srfeuserregister_control {
 			$templateCode = $this->cObj->getSubpart($this->data->getTemplateCode(), $subpartMarker);
 
 			if ($templateCode)	{
-				$markerArray = $this->marker->fillInMarkerArray($markerArray, $this->data->getCurrentArray(), '',TRUE, 'FIELD_', TRUE);
-				$this->marker->addStaticInfoMarkers($markerArray, $this->data->getCurrentArray());
+				$markerArray = $this->marker->fillInMarkerArray($markerArray, $dataArray, '',TRUE, 'FIELD_', TRUE);
+				$this->marker->addStaticInfoMarkers($markerArray, $dataArray);
 				$this->tca->addTcaMarkers($markerArray, $dataArray, $origArray, $cmd, $cmdKey, $theTable, true);
 				$this->marker->addLabelMarkers(
 					$markerArray,
@@ -415,15 +423,6 @@ class tx_srfeuserregister_control {
 				}
 				$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 				$markerArray = $this->marker->getArray(); // uses its own markerArray
-				$newDataArray = $TSFE->sys_page->getRawRecord($theTable, $theUid); // the new data array is necessary after saving because default fields might have been added.
-
-				if (isset($changesArray) && is_array($changesArray))	{
-					$newDataArray = array_merge($newDataArray, $changesArray);
-				}
-
-				if (isset($newDataArray) && is_array($newDataArray))	{
-					$this->tca->modifyRow($newDataArray, TRUE);
-				}
 
 				if ($this->conf['enableAdminReview'] && $bDefaultMode && !$bCustomerConfirmsMode) {
 
@@ -439,20 +438,25 @@ class tx_srfeuserregister_control {
 						'setfixed',
 						$cmdKey,
 						$this->data->getTemplateCode(),
+						$this->data->inError,
 						$this->conf['setfixed.']
 					);
 				} else {
-						// Send email message(s)
+					$emailField = $this->conf['email.']['field'];
+					$recipient = (isset($newDataArray) && is_array($newDataArray) ? $newDataArray[$emailField] : $origArray[$emailField]);
+
+					// Send email message(s)
 					$rc = $this->email->compile(
 						$key,
 						$theTable,
 						array($newDataArray),
 						array($origArray),
-						$newDataArray[$this->conf['email.']['field']],
+						$recipient,
 						$markerArray,
 						$cmd,
 						$cmdKey,
 						$this->data->getTemplateCode(),
+						$this->data->inError,
 						$this->conf['setfixed.']
 					);
 				}
@@ -472,8 +476,7 @@ class tx_srfeuserregister_control {
 
 						// Auto-login on create
 					if ($theTable == 'fe_users' && $cmd == 'create' && !$this->controlData->getSetfixedEnabled() && $this->conf['enableAutoLoginOnCreate']) {
-						$row = $this->data->getCurrentArray();
-						$this->login($row);
+						$this->login($dataArray);
 
 						if ($this->conf['autoLoginRedirect_url'])	{
 							exit;
@@ -506,6 +509,7 @@ class tx_srfeuserregister_control {
 		} else {
 				// Finally, if there has been no attempt to save. That is either preview or just displaying and empty or not correctly filled form:
 			$this->marker->setArray($markerArray);
+
 			switch($cmd) {
 				case 'setfixed':
 					if ($this->conf['infomail']) {
@@ -553,7 +557,16 @@ class tx_srfeuserregister_control {
 					break;
 				case 'edit':
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
-					$content = $this->display->editScreen($markerArray, $theTable, $dataArray, $origArray, $cmd, $cmdKey, $this->controlData->getMode());
+					$content = $this->display->editScreen(
+						$markerArray,
+						$theTable,
+						$dataArray,
+						$origArray,
+						$cmd,
+						$cmdKey,
+						$this->controlData->getMode(),
+						$this->data->inError
+					);
 					break;
 				case 'invite':
 				case 'create':
@@ -566,7 +579,8 @@ class tx_srfeuserregister_control {
 						$theTable,
 						$dataArray,
 						$origArray,
-						$this->data->getFieldList()
+						$this->data->getFieldList(),
+						$this->data->inError
 					);
 					break;
 				case 'login':
@@ -582,7 +596,8 @@ class tx_srfeuserregister_control {
 						$theTable,
 						$dataArray,
 						$origArray,
-						$this->data->getFieldList()
+						$this->data->getFieldList(),
+						$this->data->inError
 					);
 					break;
 			}

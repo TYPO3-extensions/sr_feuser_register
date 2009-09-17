@@ -185,7 +185,7 @@ class tx_srfeuserregister_control_main {
 			}
 
 			$this->display->init($this->cObj, $this->conf, $this->config, $this->data, $this->marker, $this->tca, $this->control);
-			$this->email->init($this->pibaseObj, $this->conf, $this->config, $this->display, $this->data, $this->marker, $this->tca, $this->controlData, $this->setfixedObj);
+			$this->email->init($this->langObj, $this->cObj, $this->conf, $this->config, $this->display, $this->data, $this->marker, $this->tca, $this->controlData, $this->setfixedObj);
 			$this->setfixedObj->init($this->cObj, $this->conf, $this->config, $this->controlData, $this->tca, $this->display, $this->email, $this->marker);
 		}
 

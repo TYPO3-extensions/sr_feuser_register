@@ -101,6 +101,9 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable email on refusal: If set, an email will be sent to the prospective front end user when he refuses to confirm his(her) registration.
   enableEmailOnRefuse = 1
 
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable email on denial: If set, an email will be sent to the prospective front end user when the site administrator refuses to confirm his(her) registration.
+  enableEmailOnAdminRefuse = 1
+
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable email on registration: If set, an email will be sent to the front end user confirming his(her) registration. This is ignored if email confirmation request is enabled.
   enableEmailOnRegister = 1
 
@@ -220,6 +223,9 @@ plugin.tx_srfeuserregister_pi1 {
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label=Short URL cache lifespan: Number of days that short URL's will be kept in the DB. After this delay, the short URL's will be removed. Confirmation URL's included in email messages older than this number of days will not work.
   shortUrlLife = 30
+
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable localization: If set, only localized records are shown.
+  useLocalization = 0
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Date Format (d-m-y)
   dateFormat = d-m-Y
