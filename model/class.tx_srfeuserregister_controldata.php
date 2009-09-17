@@ -62,6 +62,7 @@ class tx_srfeuserregister_controldata {
 	var $feUserData = array();
 	var $jsMd5Added; // If the JavaScript for MD5 encoding has already been added
 
+
 	function init (&$conf, $prefixId, $extKey, $piVars, $theTable)	{
 		global $TSFE;
 
@@ -128,12 +129,13 @@ class tx_srfeuserregister_controldata {
 						}
 					}
 					$restoredFeUserData = $getVars[$this->getPrefixId()];
+
 					foreach ($getVars as $k => $v ) {
 						// restore former GET values for the url
 						t3lib_div::_GETset($v,$k);
 					}
 					if ($restoredFeUserData['rU'] > 0 && $restoredFeUserData['rU'] == $feUserData['rU'])	{
-						$feUserData = array_merge ($feUserData, $restoredFeUserData);
+						$feUserData = array_merge($feUserData, $restoredFeUserData);
 					} else {
 						$feUserData = $restoredFeUserData;
 					}
@@ -147,12 +149,12 @@ class tx_srfeuserregister_controldata {
 		}
 
 		if (isset($feUserData) && is_array($feUserData))	{
-			$this->setFeUserData ($feUserData);
+			$this->setFeUserData($feUserData);
 		}
 
 			// Establishing compatibility with Direct Mail extension
 		$piVarArray = array('rU', 'aC', 'cmd', 'sFK');
-		foreach ($piVarArray as $pivar)	{
+		foreach($piVarArray as $pivar)	{
 			$value = htmlspecialchars(t3lib_div::_GP($pivar));
 			if ($value != '')	{
 				$this->setFeUserData($value, $pivar);
@@ -167,6 +169,7 @@ class tx_srfeuserregister_controldata {
 		$this->setFeUserData($feUserData);
 	}
 
+
 	/**
 	* Changes potential malicious script code of the input to harmless HTML
 	*
@@ -179,24 +182,60 @@ class tx_srfeuserregister_controldata {
 					foreach ($value as $k2 => $value2)	{
 						if (is_array($value2))	{
 							foreach ($value2 as $k3 => $value3)	{
-								if ($k3 != 'password')	{
+								if ($k3 != 'password' && $k3 != 'password_again')	{
+									$value3 = htmlspecialchars_decode($value3);
 									$dataArray[$k][$k2][$k3] = htmlspecialchars($value3);
 								}
 							}
 						} else {
-							if ($k2 != 'password')	{
+							if ($k2 != 'password' && $k2 != 'password_again')	{
+								$value2 = htmlspecialchars_decode($value2);
 								$dataArray[$k][$k2] = htmlspecialchars($value2);
 							}
 						}
 					}
 				} else {
-					if ($k != 'password')	{
+					if ($k != 'password' && $k != 'password_again')	{
+						$value = htmlspecialchars_decode($value);
 						$dataArray[$k] = htmlspecialchars($value);
 					}
 				}
 			}
 		}
 	}
+
+
+	/**
+	* undoes HTML encryption
+	*
+	* @return void
+	*/
+	function decodeInput (&$dataArray)	{
+		if (isset($dataArray) && is_array($dataArray))	{
+			foreach ($dataArray as $k => $value)	{
+				if (is_array($value))	{
+					foreach ($value as $k2 => $value2)	{
+						if (is_array($value2))	{
+							foreach ($value2 as $k3 => $value3)	{
+								if ($k3 != 'password' && $k3 != 'password_again')	{
+									$dataArray[$k][$k2][$k3] = htmlspecialchars_decode($value3);
+								}
+							}
+						} else {
+							if ($k2 != 'password' && $k2 != 'password_again')	{
+								$dataArray[$k][$k2] = htmlspecialchars_decode($value2);
+							}
+						}
+					}
+				} else {
+					if ($k != 'password' && $k != 'password_again')	{
+						$dataArray[$k] = htmlspecialchars_decode($value);
+					}
+				}
+			}
+		}
+	}
+
 
 	function useCaptcha ($theCode)	{
 		$rc = FALSE;
@@ -210,6 +249,7 @@ class tx_srfeuserregister_controldata {
 		}
 		return $rc;
 	}
+
 
 	// example: plugin.tx_srfeuserregister_pi1.conf.sys_dmail_category.ALL.sys_language_uid = 0
 	function getSysLanguageUid ($theCode,$theTable)	{
@@ -227,45 +267,56 @@ class tx_srfeuserregister_controldata {
 		return $rc;
 	}
 
+
 	function getPidTitle ()	{
 		return $this->thePidTitle;
 	}
+
 
 	function getSiteUrl ()	{
 		return $this->site_url;
 	}
 
+
 	function getPrefixId ()	{
 		return $this->prefixId;
 	}
+
 
 	function getExtKey ()	{
 		return $this->extKey;
 	}
 
+
 	function getPiVars ()	{
 		return $this->piVars;
 	}
+
 
 	function setPiVars ($piVars)	{
 		$this->piVars = $piVars;
 	}
 
+
 	function getCmd () {
 		return $this->cmd;
 	}
+
 
 	function setCmd ($cmd) {
 		$this->cmd = $cmd;
 	}
 
+
 	function getCmdKey () {
 		return $this->cmdKey;
 	}
 
+
 	function setCmdKey ($cmdKey)	{
 		$this->cmdKey = $cmdKey;
 	}
+
 
 	function getFeUserData ($k='')	{
 		if ($k)	{
@@ -276,6 +327,7 @@ class tx_srfeuserregister_controldata {
 		return $rc;
 	}
 
+
 	function setFeUserData ($dataArray, $k='')	{
 		if ($k != '')	{
 			$this->feUserData[$k] = $dataArray;
@@ -284,21 +336,26 @@ class tx_srfeuserregister_controldata {
 		}
 	}
 
+
 	function getFailure ()	{
 		return $this->failure;
 	}
+
 
 	function setFailure ($failure)	{
 		$this->failure = $failure;
 	}
 
+
 	function setSubmit ($bSubmit)	{
 		$this->bSubmit = $bSubmit;
 	}
 
+
 	function getSubmit ()	{
 		return $this->bSubmit;
 	}
+
 
 	function getPid ($type='')	{
 		global $TSFE;
@@ -315,6 +372,7 @@ class tx_srfeuserregister_controldata {
 
 		return $rc;
 	}
+
 
 	function setPid ($type, $pid)	{
 		global $TSFE;
@@ -336,58 +394,72 @@ class tx_srfeuserregister_controldata {
 		$this->pid[$type] = $pid;
 	}
 
+
 	function getMode ()	{
 		return $this->mode;
 	}
+
 
 	function setMode ($mode)	{
 		$this->mode = $mode;
 	}
 
+
 	function setUseMd5Password ($useMd5Password)	{
 		$this->useMd5Password = $useMd5Password;
 	}
+
 
 	function getUseMd5Password()	{
 		return $this->useMd5Password;
 	}
 
+
 	function getJSmd5Added ()	{
 		return ($this->jsMd5Added);
 	}
+
 
 	function setJSmd5Added ($var)	{
 		$this->jsMd5Added = TRUE;
 	}
 
+
 	function getTable ()	{
 		return $this->theTable;
 	}
+
 
 	function setTable ($theTable)	{
 		$this->theTable = $theTable;
 	}
 
+
 	function &getRequiredArray ()	{
 		return $this->requiredArray;
 	}
+
 
 	function setRequiredArray (&$requiredArray)	{
 		$this->requiredArray = $requiredArray;
 	}
 
+
 	function getSetfixedEnabled ()	{
 		return $this->setfixedEnabled;
 	}
+
 
 	function setSetfixedEnabled ($setfixedEnabled)	{
 		$this->setfixedEnabled = $setfixedEnabled;
 	}
 
+
 	function getBackURL ()	{
 		$rc = rawurldecode($this->getFeUserData('backURL'));
 		return $rc;
 	}
+
 
 	/**
 	* Checks if preview display is on.
@@ -401,6 +473,7 @@ class tx_srfeuserregister_controldata {
 		$rc = ($this->conf[$cmdKey.'.']['preview'] && $this->getFeUserData('preview'));
 		return $rc;
 	}	// isPreview
+
 
 	/**
 	*  Get the stored variables using the hash value to access the database
@@ -428,6 +501,7 @@ class tx_srfeuserregister_controldata {
 		return $retArray;
 	}	// getShortUrl
 
+
 	/**
 	*  Get the stored variables using the hash value to access the database
 	*/
@@ -439,6 +513,7 @@ class tx_srfeuserregister_controldata {
 			$TYPO3_DB->exec_DELETEquery('cache_md5params','md5hash='.$TYPO3_DB->fullQuoteStr($regHash,'cache_md5params'));
 		}
 	}
+
 
 	/**
 	*  Clears obsolete hashes used for short url's

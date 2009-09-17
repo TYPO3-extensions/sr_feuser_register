@@ -38,6 +38,7 @@ plugin.tx_srfeuserregister_pi1 {
 
 	useShortUrls = {$plugin.tx_srfeuserregister_pi1.useShortUrls}
 	shortUrlLife = {$plugin.tx_srfeuserregister_pi1.shortUrlLife}
+	useLocalization = {$plugin.tx_srfeuserregister_pi1.useLocalization}
 	dateFormat = {$plugin.tx_srfeuserregister_pi1.dateFormat}
 	dateSplit = {$plugin.tx_srfeuserregister_pi1.dateSplit}
 
@@ -209,7 +210,7 @@ plugin.tx_srfeuserregister_pi1 {
 	email.SETFIXED_APPROVE = {$plugin.tx_srfeuserregister_pi1.enableEmailOnApprove}
 	email.SETFIXED_DELETE = {$plugin.tx_srfeuserregister_pi1.enableEmailOnRefuse}
 	email.SETFIXED_ACCEPT = 1
-	email.SETFIXED_REFUSE = 1
+	email.SETFIXED_REFUSE = {$plugin.tx_srfeuserregister_pi1.enableEmailOnAdminRefuse}
 
 	notify.CREATE_SAVED = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnRegister}
 	notify.EDIT_SAVED = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnUpdate}

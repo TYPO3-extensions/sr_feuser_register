@@ -61,8 +61,62 @@ if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey)) {
 	}
 }
 
-if (t3lib_extMgm::isLoaded('tt_products')) {
+if (t3lib_extMgm::isLoaded('tt_products') && TYPO3_MODE=='FE') {
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tt_products']['extendingTCA'][] = SR_FEUSER_REGISTER_EXTkey;
 }
+
+
+if ($_EXTCONF['usePatch1822'] &&
+!defined($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_users']['MENU'])) {
+	$tableArray = array('fe_users', 'fe_groups', 'fe_groups_language_overlay');
+	foreach ($tableArray as $theTable)	{
+		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['LLFile'][$theTable] = 'EXT:'.SR_FEUSER_REGISTER_EXTkey.'/locallang.xml';
+	}
+
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_users'] = array (
+		'default' => array(
+			'MENU' => 'm_default',
+			'fList' =>  'username,usergroup,name,zip,city,email,telephone,gender,uid',
+			'icon' => TRUE
+		),
+		'ext' => array (
+			'MENU' => 'm_ext',
+			'fList' =>  'username,first_name,last_name,title,date_of_birth,comments',
+			'icon' => TRUE
+		),
+		'country' => array(
+			'MENU' => 'm_country',
+			'fList' =>  'username,static_info_country,zone,language',
+			'icon' => TRUE
+		),
+		'other' => array(
+			'MENU' => 'm_other',
+			'fList' =>  'username,www,company,status,image,lastlogin,by_invitation,is_online,module_sys_dmail_html',
+			'icon' => TRUE
+		)
+	);
+
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_groups'] = array (
+		'default' => array(
+			'MENU' => 'm_default',
+			'fList' =>  'title,description',
+			'icon' => TRUE
+		),
+		'ext' => array(
+			'MENU' => 'm_ext',
+			'fList' =>  'title,subgroup,lockToDomain,TSconfig',
+			'icon' => TRUE
+		)
+	);
+
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_groups_language_overlay'] = array (
+		'default' => array(
+			'MENU' => 'm_default',
+			'fList' =>  'title,fe_group,sys_language_uid',
+			'icon' => TRUE
+		)
+	);
+}
+
 
 ?>

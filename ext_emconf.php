@@ -11,7 +11,7 @@
 ########################################################################
 
 $EM_CONF[$_EXTKEY] = array(
-	'title' => 'Frontend User Registration',
+	'title' => 'Front End User Registration',
 	'description' => 'A self-registration variant of Kasper Skårhøj\'s Front End User Admin extension.',
 	'category' => 'plugin',
 	'shy' => 0,
@@ -43,7 +43,7 @@ $EM_CONF[$_EXTKEY] = array(
 			'static_info_tables' => '2.0.5-',
 			'php' => '4.2.0-0.0.0',
 			'typo3' => '4.0-0.0.0',
-			'div2007' => '0.1.19-',
+			'div2007' => '0.2.2-',
 		),
 		'conflicts' => array(
 			'germandates' => '0.0.0-1.0.1',

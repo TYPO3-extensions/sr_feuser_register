@@ -61,7 +61,8 @@ class tx_srfeuserregister_email {
 	var $HTMLMailEnabled = TRUE;
 	var $cObj;
 
-	function init (&$langObj, &$conf, &$config, &$display, &$data, &$marker, &$tca, &$controlData, &$setfixedObj)	{
+
+	function init (&$langObj, &$cObj, &$conf, &$config, &$display, &$data, &$marker, &$tca, &$controlData, &$setfixedObj)	{
 		$this->langObj = &$langObj;
 		$this->conf = &$conf;
 		$this->config = &$config;
@@ -71,12 +72,13 @@ class tx_srfeuserregister_email {
 		$this->tca = &$tca;
 		$this->controlData = &$controlData;
 		$this->setfixedObj = &$setfixedObj;
-		$this->cObj = &$langObj->cObj;
+		$this->cObj = &$cObj;
 		$enablestring = $GLOBALS['TSFE']->sys_page->enableFields('fe_users');
 		if (isset($this->conf['email.']['HTMLMail'])) {
 			$this->HTMLMailEnabled = $this->conf['email.']['HTMLMail'];
 		}
 	}
+
 
 	/**
 	 * Sends info mail to subscriber or displays a screen to update or delete the membership
@@ -130,11 +132,24 @@ class tx_srfeuserregister_email {
 						$cmd,
 						$cmdKey,
 						$templateCode,
+						$this->data->inError,
 						$this->conf['setfixed.']
 					);
 				} elseif ($this->cObj->checkEmail($fetch)) {
 					$fetchArray = array( '0' => array('email' => $fetch));
-					$this->compile('INFOMAIL_NORECORD', $theTable, $fetchArray, $fetchArray, $fetch, $markerArray, $cmd, $cmdKey, $templateCode, array());
+					$this->compile(
+						'INFOMAIL_NORECORD',
+						$theTable,
+						$fetchArray,
+						$fetchArray,
+						$fetch,
+						$markerArray,
+						$cmd,
+						$cmdKey,
+						$templateCode,
+						$this->data->inError,
+						array()
+					);
 				}
 				$subpartkey = '###TEMPLATE_'.$this->infomailPrefix.'SENT###';
 				$content =
@@ -164,6 +179,7 @@ class tx_srfeuserregister_email {
 		return $content;
 	}
 
+
 	/**
 		* Prepares an email message
 		*
@@ -171,24 +187,29 @@ class tx_srfeuserregister_email {
 		* @param array  $DBrows: invoked with just one row of fe_users!!
 		* @param string  $recipient: an email or the id of a front user
 		* @param array  Array with key/values being marker-strings/substitution values.
+		* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
 		* @param array  $setFixedConfig: a setfixed TS config array
 		* @return void
 		*/
-	function compile ($key, $theTable, $DBrows, $origRows, $recipient, &$markerArray, $cmd, $cmdKey, &$templateCode, $setFixedConfig = array()) {
+	function compile ($key, $theTable, $DBrows, $origRows, $recipient, &$markerArray, $cmd, $cmdKey, &$templateCode, $errorFieldArray, $setFixedConfig = array()) {
 		global $TSFE;
 
 		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
+		if (!isset($DBrows[0]) || !is_array($DBrows[0]))	{
+			$DBrows = $origRows;
+		}
+		$bHTMLallowed = $DBrows[0]['module_sys_dmail_html'];
 
 			// Setting CSS style markers if required
-		if ($this->HTMLMailEnabled) {
+		if ($this->HTMLMailEnabled && $bHTMLallowed) {
 			$this->addCSSStyleMarkers($markerArray);
 		}
 
-		$viewOnly = true;
-		$content = array('user' => array(), 'HTML' => array(), 'admin' => array(), 'mail' => array());
+		$viewOnly = TRUE;
+		$content = array('user' => array(), 'html' => array(), 'admin' => array(), 'mail' => array());
 		$content['mail'] = '';
 		$content['user']['all'] = '';
-		$content['HTML']['all'] = '';
+		$content['html']['all'] = '';
 		$content['admin']['all'] = '';
 		$setfixedArray = array('SETFIXED_CREATE', 'SETFIXED_CREATE_REVIEW', 'SETFIXED_INVITE',
 			'SETFIXED_REVIEW', 'INFOMAIL', 'INFOMAIL_NORECORD');
@@ -206,26 +227,27 @@ class tx_srfeuserregister_email {
 				$content = sprintf($errorText, $subpartMarker);
 				return $content;
 			}
-			$content['user']['all'] = $this->display->removeRequired($content['user']['all']);
+			$content['user']['all'] = $this->display->removeRequired($content['user']['all'],$errorFieldArray);
 			$subpartMarker = $this->emailMarkPrefix . $key . $this->emailMarkHTMLSuffix;
-			$bHTMLallowed = $this->data->getDataArray('module_sys_dmail_html');
 
-			$content['HTML']['all'] = ($this->HTMLMailEnabled && $bHTMLallowed) ? trim($this->cObj->getSubpart($templateCode, '###' . $subpartMarker . '###')):'';
-			$content['HTML']['all'] = $this->display->removeRequired($content['HTML']['all']);
+			$content['html']['all'] = ($this->HTMLMailEnabled && $bHTMLallowed) ? trim($this->cObj->getSubpart($templateCode, '###' . $subpartMarker . '###')):'';
+			$content['html']['all'] = $this->display->removeRequired($content['HTML']['all'],$errorFieldArray);
 		}
 		if ($this->conf['notify.'][$key] ) {
 			$subpartMarker = '###'.$this->emailMarkPrefix.$key.$this->emailMarkAdminSuffix.'###';
 			$content['admin']['all'] = trim($this->cObj->getSubpart($templateCode, $subpartMarker));
-			$content['admin']['all'] = $this->display->removeRequired($content['admin']['all']);
+			$content['admin']['all'] = $this->display->removeRequired($content['admin']['all'],$errorFieldArray);
 		}
 		$content['user']['rec'] = $this->cObj->getSubpart($content['user']['all'], '###SUB_RECORD###');
-		$content['HTML']['rec'] = $this->cObj->getSubpart($content['HTML']['all'], '###SUB_RECORD###');
+		if ($content['html']['all'])	{
+			$content['html']['rec'] = $this->cObj->getSubpart($content['html']['all'], '###SUB_RECORD###');
+		}
 		$content['admin']['rec'] = $this->cObj->getSubpart($content['admin']['all'], '###SUB_RECORD###');
 		$bChangesOnly = ($this->conf['email.']['EDIT_SAVED'] == '2' && $cmd == 'edit');
-		$markerArray = $this->marker->fillInMarkerArray($markerArray, $DBrows[0], '', 0);
+		$markerArray = $this->marker->fillInMarkerArray($markerArray, $DBrows[0], '', FALSE);
 		$this->marker->addLabelMarkers($markerArray, $theTable, $DBrows[0], $origRows[0], $keepFields, $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns'], $bChangesOnly);
 		$content['user']['all'] = $this->cObj->substituteMarkerArray($content['user']['all'], $markerArray);
-		$content['HTML']['all'] = $this->cObj->substituteMarkerArray($content['HTML']['all'], $markerArray);
+/*		$content['html']['all'] = $this->cObj->substituteMarkerArray($content['html']['all'], $markerArray);*/
 		$content['admin']['all'] = $this->cObj->substituteMarkerArray($content['admin']['all'], $markerArray);
 
 		foreach ($DBrows as $k => $row)	{
@@ -258,25 +280,39 @@ class tx_srfeuserregister_email {
 				$mrow = $currentRow;
 			}
 
-			$markerArray = $this->marker->fillInMarkerArray($markerArray, $mrow, '', 0);
 			$markerArray['###SYS_AUTHCODE###'] = $authObj->authCode($row);
 			$this->setfixedObj->computeUrl($markerArray, $setFixedConfig, $currentRow, $this->controlData->getTable());
 			$this->marker->addStaticInfoMarkers($markerArray, $row, $viewOnly);
-			$this->tca->addTcaMarkers($markerArray, $row, $origRow, $cmd, $cmdKey, $theTable, $viewOnly, 'email', $bChangesOnly);
 			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $row, $viewOnly);
 			$this->marker->addLabelMarkers($markerArray, $theTable, $row, $origRow, $keepFields, $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns'], $bChangesOnly);
+			$emailTypeArray = array('text');
 
-			if ($content['user']['rec']) {
-				$content['user']['rec'] = $this->marker->removeStaticInfoSubparts($content['user']['rec'], $markerArray, $viewOnly);
-				$content['user']['accum'] .= $this->cObj->substituteMarkerArray($content['user']['rec'], $markerArray);
+			if ($content['html']['all'])	{
+				$emailTypeArray[] = 'html';
 			}
-			if ($content['HTML']['rec']) {
-				$content['HTML']['rec'] = $this->marker->removeStaticInfoSubparts($content['HTML']['rec'], $markerArray, $viewOnly);
-				$content['HTML']['accum'] .= $this->cObj->substituteMarkerArray($content['HTML']['rec'], $markerArray);
-			}
-			if ($content['admin']['rec']) {
-				$content['admin']['rec'] = $this->marker->removeStaticInfoSubparts($content['admin']['rec'], $markerArray, $viewOnly);
-				$content['admin']['accum'] .= $this->cObj->substituteMarkerArray($content['admin']['rec'], $markerArray);
+
+			foreach ($emailTypeArray as $emailType)	{
+				$fieldMarkerArray = array();
+				$fieldMarkerArray = $this->marker->fillInMarkerArray($fieldMarkerArray, $mrow, '',  FALSE, 'FIELD_', ($emailType=='html'));
+				$this->tca->addTcaMarkers($fieldMarkerArray, $row, $origRow, $cmd, $cmdKey, $theTable, $viewOnly, 'email', $bChangesOnly,($emailType=='html'));
+				$markerArray = array_merge($markerArray, $fieldMarkerArray);
+
+				if ($emailType=='html')	{
+
+					if ($content['html']['rec']) {
+						$content['html']['rec'] = $this->marker->removeStaticInfoSubparts($content['html']['rec'], $markerArray, $viewOnly);
+						$content['html']['accum'] .= $this->cObj->substituteMarkerArray($content['html']['rec'], $markerArray);
+					}
+				} else {
+					if ($content['user']['rec']) {
+						$content['user']['rec'] = $this->marker->removeStaticInfoSubparts($content['user']['rec'], $markerArray, $viewOnly);
+						$content['user']['accum'] .= $this->cObj->substituteMarkerArray($content['user']['rec'], $markerArray);
+					}
+					if ($content['admin']['rec']) {
+						$content['admin']['rec'] = $this->marker->removeStaticInfoSubparts($content['admin']['rec'], $markerArray, $viewOnly);
+						$content['admin']['accum'] .= $this->cObj->substituteMarkerArray($content['admin']['rec'], $markerArray);
+					}
+				}
 			}
 		}
 
@@ -289,9 +325,13 @@ class tx_srfeuserregister_email {
 			$content['user']['final'] = $this->display->removeHTMLComments($content['user']['final']);
 			$content['user']['final'] = $this->display->replaceHTMLBr($content['user']['final']);
 		}
-		if ($content['HTML']['all']) {
-			$content['HTML']['final'] .= $this->cObj->substituteSubpart($content['HTML']['all'], '###SUB_RECORD###', $this->langObj->pi_wrapInBaseClass($content['HTML']['accum']));
-			$content['HTML']['final'] = $this->cObj->substituteMarkerArray($content['HTML']['final'], $markerArray);
+		if ($content['html']['all']) {
+			$content['html']['final'] .= $this->cObj->substituteSubpart(
+				$content['html']['all'],
+				'###SUB_RECORD###',
+				tx_div2007_alpha::wrapInBaseClass_fh001($content['html']['accum'], $this->controlData->getPrefixId(), $this->controlData->getExtKey())
+			);
+			// $content['html']['final'] = $this->cObj->substituteMarkerArray($content['html']['final'], $markerArray);
 		}
 		if ($content['admin']['all']) {
 			$content['admin']['final'] .= $this->cObj->substituteSubpart($content['admin']['all'], '###SUB_RECORD###', $content['admin']['accum']);
@@ -307,8 +347,10 @@ class tx_srfeuserregister_email {
 		if ($this->conf['addAttachment'] && $this->conf['addAttachment.']['cmd'] == $cmd && $this->conf['addAttachment.']['sFK'] == $this->controlData->getFeUserData('sFK')) {
 			$file = ($this->conf['addAttachment.']['file']) ? $TSFE->tmpl->getFileName($this->conf['addAttachment.']['file']):'';
 		}
-		$this->send($recipient, $this->conf['email.']['admin'], $content['user']['final'], $content['admin']['final'], $content['HTML']['final'], $file);
+
+		$this->send($recipient, $this->conf['email.']['admin'], $content['user']['final'], $content['admin']['final'], $content['html']['final'], $file);
 	}
+
 
 	/**
 	* Dispatches the email messsage
@@ -352,6 +394,7 @@ class tx_srfeuserregister_email {
 			$fileAttachment
 		);
 	}
+
 
 	/**
 	* Adds CSS styles marker to a marker array for substitution in an HTML email message
