@@ -71,8 +71,10 @@ class tx_srfeuserregister_url {
 			$vars = array_merge($this->controlData->getPiVars(), $vars); //vars override pivars
 
 			foreach($unsetVars as $key) {
-				// unsetvars override anything
-				unset($vars[$key]);
+				if (isset($vars[$key]))	{
+					// unsetvars override anything
+					unset($vars[$key]);
+				}
 			}
 		}
 
