@@ -25,7 +25,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Part of the sr_feuser_register (Frontend User Registration) extension.
+ * Part of the sr_feuser_register (Front End User Registration) extension.
  *
  * display functions
  *
@@ -190,6 +190,7 @@ class tx_srfeuserregister_display {
 				$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
 			}
 		}
+
 		return $content;
 	} // createScreen
 

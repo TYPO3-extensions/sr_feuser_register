@@ -25,7 +25,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Part of the sr_feuser_register (Frontend User Registration) extension.
+ * Part of the sr_feuser_register (Front End User Registration) extension.
  *
  * TCA functions
  *
@@ -168,7 +168,7 @@ class tx_srfeuserregister_tca {
 									'sorting'
 								);
 								while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
-									$valuesArray[$row['uid_foreign']] = $row['uid_foreign'];
+									$valuesArray[] = $row['uid_foreign'];
 								}
 								$dataArray[$colName] = $valuesArray;
 							} else {
@@ -388,7 +388,7 @@ class tx_srfeuserregister_tca {
 										t3lib_div::loadTCA($colConfig['foreign_table']);
 										$reservedValues = array();
 										if ($theTable == 'fe_users' && $colName == 'usergroup') {
-											$userGroupObj = &$addressObj->getFieldObj ('usergroup');
+											$userGroupObj = &$addressObj->getFieldObj('usergroup');
 											$reservedValues = $userGroupObj->getReservedValues();
 										}
 										$valuesArray = array_diff($valuesArray, $reservedValues);
@@ -564,9 +564,9 @@ class tx_srfeuserregister_tca {
 									t3lib_div::loadTCA($colConfig['foreign_table']);
 									$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
 									if ($theTable == 'fe_users' && $colName == 'usergroup') {
-										$userGroupObj = &$addressObj->getFieldObj ('usergroup');
+										$userGroupObj = &$addressObj->getFieldObj('usergroup');
 										$reservedValues = $userGroupObj->getReservedValues();
-										$selectedValue = false;
+										$selectedValue = FALSE;
 									}
 									$whereClause = ($theTable == 'fe_users' && $colName == 'usergroup') ? ' pid=' . intval($this->controlData->getPid()) . ' ' : ' 1=1';
 

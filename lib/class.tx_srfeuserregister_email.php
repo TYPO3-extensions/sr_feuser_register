@@ -25,7 +25,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Part of the sr_feuser_register (Frontend User Registration) extension.
+ * Part of the sr_feuser_register (Front End User Registration) extension.
  *
  * email functions
  *
@@ -231,7 +231,7 @@ class tx_srfeuserregister_email {
 			$subpartMarker = $this->emailMarkPrefix . $key . $this->emailMarkHTMLSuffix;
 
 			$content['html']['all'] = ($this->HTMLMailEnabled && $bHTMLallowed) ? trim($this->cObj->getSubpart($templateCode, '###' . $subpartMarker . '###')):'';
-			$content['html']['all'] = $this->display->removeRequired($content['HTML']['all'],$errorFieldArray);
+			$content['html']['all'] = $this->display->removeRequired($content['html']['all'],$errorFieldArray);
 		}
 		if ($this->conf['notify.'][$key] ) {
 			$subpartMarker = '###'.$this->emailMarkPrefix.$key.$this->emailMarkAdminSuffix.'###';
@@ -244,10 +244,15 @@ class tx_srfeuserregister_email {
 		}
 		$content['admin']['rec'] = $this->cObj->getSubpart($content['admin']['all'], '###SUB_RECORD###');
 		$bChangesOnly = ($this->conf['email.']['EDIT_SAVED'] == '2' && $cmd == 'edit');
+		if ($bChangesOnly)	{
+			$keepFields = array('uid', 'pid', 'tstamp', 'name', 'username');
+		} else {
+			$keepFields = array();
+		}
 		$markerArray = $this->marker->fillInMarkerArray($markerArray, $DBrows[0], '', FALSE);
 		$this->marker->addLabelMarkers($markerArray, $theTable, $DBrows[0], $origRows[0], $keepFields, $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns'], $bChangesOnly);
 		$content['user']['all'] = $this->cObj->substituteMarkerArray($content['user']['all'], $markerArray);
-/*		$content['html']['all'] = $this->cObj->substituteMarkerArray($content['html']['all'], $markerArray);*/
+		$content['html']['all'] = $this->cObj->substituteMarkerArray($content['html']['all'], $markerArray);
 		$content['admin']['all'] = $this->cObj->substituteMarkerArray($content['admin']['all'], $markerArray);
 
 		foreach ($DBrows as $k => $row)	{
@@ -263,7 +268,6 @@ class tx_srfeuserregister_email {
 				$currentRow = $row;
 			}
 			if ($bChangesOnly)	{
-				$keepFields = array('uid', 'pid', 'tstamp', 'name', 'username');
 				$mrow = array();
 				foreach ($row as $field => $v)	{
 					if (in_array($field, $keepFields))	{

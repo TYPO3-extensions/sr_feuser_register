@@ -25,7 +25,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Part of the sr_feuser_register (Frontend User Registration) extension.
+ * Part of the sr_feuser_register (Front End User Registration) extension.
  *
  * data store functions
  *
@@ -258,7 +258,7 @@ class tx_srfeuserregister_data {
 						$dataValue = $theValue;
 					}
 				}
-				$dataArray [$theField] = $dataValue;
+				$dataArray[$theField] = $dataValue;
 			}
 		}
 	}	// overrideValues
@@ -857,7 +857,7 @@ class tx_srfeuserregister_data {
 	*
 	* @return void  sets $this->saved
 	*/
-	function save ($theTable, $dataArray, $origArray, &$newDataArray, $cmd, $cmdKey, &$hookClassArray) {
+	function save ($theTable, $dataArray, $origArray, &$newRow, $cmd, $cmdKey, &$hookClassArray) {
 		global $TYPO3_DB, $TSFE;
 		$rc = 0;
 
@@ -882,7 +882,6 @@ class tx_srfeuserregister_data {
 					if (!in_array('username', $fieldArray) && $dataArray['username'] == '') {
 						$newFieldArray = array_diff($newFieldArray, array('username'));
 					}
-
 					$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 					if ($authObj->aCAuth($origArray) || $this->cObj->DBmayFEUserEdit($theTable, $origArray, $TSFE->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 
@@ -892,9 +891,10 @@ class tx_srfeuserregister_data {
 						$res = $this->cObj->DBgetUpdate($theTable, $theUid, $outGoingData, $newFieldList, TRUE);
 						$this->updateMMRelations($dataArray);
 						$this->saved = TRUE;
-						$newRow = array_merge($origArray, $this->parseIncomingData($outGoingData));
-						$dataArray = $newRow;
-						$this->control->userProcess_alt($this->conf['edit.']['userFunc_afterSave'], $this->conf['edit.']['userFunc_afterSave.'], array('rec' => $dataArray, 'origRec' => $origArray));
+						$newRow = $this->parseIncomingData($outGoingData);
+						$this->tca->modifyRow($newRow, FALSE);
+						$newRow = array_merge($origArray, $newRow);
+						$this->control->userProcess_alt($this->conf['edit.']['userFunc_afterSave'], $this->conf['edit.']['userFunc_afterSave.'], array('rec' => $newRow, 'origRec' => $origArray));
 
 						// Post-edit processing: call user functions and hooks
 						// Call all afterSaveEdit hooks after the record has been edited and saved
@@ -902,7 +902,7 @@ class tx_srfeuserregister_data {
 							foreach($hookClassArray as $classRef) {
 								$hookObj= &t3lib_div::getUserObj($classRef);
 								if (method_exists($hookObj, 'registrationProcess_afterSaveEdit')) {
-									$hookObj->registrationProcess_afterSaveEdit($dataArray, $this);
+									$hookObj->registrationProcess_afterSaveEdit($newRow, $this);
 								}
 							}
 						}
@@ -955,21 +955,20 @@ class tx_srfeuserregister_data {
 					$this->saved = TRUE;
 
 						// Post-create processing: call user functions and hooks
-					$newDataArray = $this->parseIncomingData($TSFE->sys_page->getRawRecord($theTable, $newId));
-					$this->tca->modifyRow($newDataArray, TRUE);
-					$this->control->userProcess_alt($this->conf['create.']['userFunc_afterSave'], $this->conf['create.']['userFunc_afterSave.'], array('rec' => $newDataArray));
+					$newRow = $this->parseIncomingData($TSFE->sys_page->getRawRecord($theTable, $newId));
+					$this->tca->modifyRow($newRow, TRUE);
+					$this->control->userProcess_alt($this->conf['create.']['userFunc_afterSave'], $this->conf['create.']['userFunc_afterSave.'], array('rec' => $newRow));
 
 					// Call all afterSaveCreate hooks after the record has been created and saved
 					if (is_array ($hookClassArray)) {
 						foreach  ($hookClassArray as $classRef) {
 							$hookObj= &t3lib_div::getUserObj($classRef);
 							if (method_exists($hookObj, 'registrationProcess_afterSaveCreate')) {
-								$hookObj->registrationProcess_afterSaveCreate($newDataArray, $this);
+								$hookObj->registrationProcess_afterSaveCreate($newRow, $this);
 							}
 						}
 					}
-
-					$newDataArray['password'] = $password; // restore password before MD5 encryption
+					$newRow['password'] = $password; // restore password before MD5 encryption
 				}
 			break;
 		}
@@ -1298,13 +1297,10 @@ class tx_srfeuserregister_data {
 					}
 
 					include_once(t3lib_extMgm::extPath('kb_md5fepw').'class.tx_kbmd5fepw_funcs.php');
-					$dataArray['password'] = tx_kbmd5fepw_funcs::generatePassword($length );
-				} else {
-					$dataArray['password'] = $genPassword;
+					$genPassword = tx_kbmd5fepw_funcs::generatePassword($length );
 				}
-			} else {
-				$dataArray['password'] = $genPassword;
 			}
+			$dataArray['password'] = $genPassword;
 			$this->setPassword ($dataArray['password']);
 		}
 	}	// setPassword

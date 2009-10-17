@@ -1,3 +1,10 @@
+2009-10-17 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 12171: fix PHP errors caused with enableEmailOnUpdate setup
+	* fix bug with not sent HTML emails
+	* fix bug 10227: error in deleting registration to directmail because of missing aC parameter
+	* fix bug 12261: srfeuserregister v 2.5.23 some markers not set in email
+	* fix bug 9687: Problems when Admin invites a new user width md5 encrypted password
+
 2009-09-17 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug 11185: usergroup(s) are not correctly saved while using user group selection upon registration
 	* new eval values uniqueDeletedGlobal and uniqueDeletedLocal: This considers that also deleted users are prohibited from a recreation in the future.
