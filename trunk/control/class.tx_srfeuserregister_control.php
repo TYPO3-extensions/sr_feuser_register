@@ -25,7 +25,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Part of the sr_feuser_register (Frontend User Registration) extension.
+ * Part of the sr_feuser_register (Front End User Registration) extension.
  *
  * display functions
  *
@@ -103,6 +103,7 @@ class tx_srfeuserregister_control {
 		$this->controlData->setCmd($cmd);
 	}
 
+
 	function init2 ($theTable, &$controlData, &$data, &$adminFieldList)	{
 		global $TSFE;
 
@@ -156,6 +157,7 @@ class tx_srfeuserregister_control {
 
 			// Setting the list of fields allowed for editing and creation.
 		$tableTCA = &$this->tca->getTCA();
+
 		$fieldlist = implode(',', t3lib_div::trimExplode(',', $tableTCA['feInterface']['fe_admin_fieldList'], 1));
 		$this->data->setFieldList($fieldlist);
 
@@ -240,9 +242,11 @@ class tx_srfeuserregister_control {
 		$controlData->setRequiredArray($requiredArray);
 	}
 
+
 	function getControlData ()	{
 		return $this->controlData;
 	}
+
 
 	/**
 	* All processing of the codes is done here
@@ -339,6 +343,9 @@ class tx_srfeuserregister_control {
 					$cmdKey,
 					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess']
 				);
+				if ($newDataArray)	{
+					$dataArray = $newDataArray;
+				}
 			}
 		} else {
 			$this->marker->setNoError($cmdKey, $markerArray);
@@ -431,7 +438,7 @@ class tx_srfeuserregister_control {
 					$rc = $this->email->compile(
 						SETFIXED_PREFIX.'REVIEW',
 						$theTable,
-						array($newDataArray),
+						array($dataArray),
 						array($origArray),
 						$this->conf['email.']['admin'],
 						$markerArray,
@@ -441,15 +448,15 @@ class tx_srfeuserregister_control {
 						$this->data->inError,
 						$this->conf['setfixed.']
 					);
-				} else {
+				} else if ($cmdKey == 'create' || $this->conf['email.']['EDIT_SAVED'])	{
 					$emailField = $this->conf['email.']['field'];
-					$recipient = (isset($newDataArray) && is_array($newDataArray) ? $newDataArray[$emailField] : $origArray[$emailField]);
+					$recipient = (isset($dataArray) && is_array($dataArray) ? $dataArray[$emailField] : $origArray[$emailField]);
 
 					// Send email message(s)
 					$rc = $this->email->compile(
 						$key,
 						$theTable,
-						array($newDataArray),
+						array($dataArray),
 						array($origArray),
 						$recipient,
 						$markerArray,
@@ -613,6 +620,7 @@ class tx_srfeuserregister_control {
 		return $content;
 	}
 
+
 	function login ($row)	{
 		global $TSFE;
 
@@ -635,6 +643,7 @@ class tx_srfeuserregister_control {
 		header('Location: '.t3lib_div::locationHeaderUrl($absUrl));
 	}
 
+
 	/**
 	* Invokes a user process
 	*
@@ -652,6 +661,7 @@ class tx_srfeuserregister_control {
 		}
 		return $passVar;
 	}	// userProcess
+
 
 	/**
 	* Invokes a user process

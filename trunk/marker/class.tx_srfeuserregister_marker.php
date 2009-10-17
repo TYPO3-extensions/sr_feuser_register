@@ -25,7 +25,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Part of the sr_feuser_register (Frontend User Registration) extension.
+ * Part of the sr_feuser_register (Front End User Registration) extension.
  *
  * marker functions
  *
@@ -431,12 +431,14 @@ class tx_srfeuserregister_marker {
 		$form = $this->pibase->pi_getClassName($theTable.'_form');
 		$markerArray['###FORM_NAME###'] = $form; // $this->conf['formName'];
 		$unsetVars['cmd'] = '';
+		$vars['aC'] = $this->controlData->getFeUserData('aC');
 		$vars['cmd'] = $this->controlData->getCmd();
 		$vars['backURL'] = rawurlencode($this->urlObj->get('', $GLOBALS['TSFE']->id.','.$GLOBALS['TSFE']->type, $vars));
 		$vars['cmd'] = 'delete';
 		$vars['rU'] = $uid;
 		$vars['preview'] = '1';
 		$markerArray['###DELETE_URL###'] = $this->urlObj->get('', $this->controlData->getPid('edit').','.$GLOBALS['TSFE']->type, $vars);
+		unset($vars['aC']);
 		$vars['backURL'] = rawurlencode($formUrl);
 		$vars['cmd'] = 'create';
 		$markerArray['###REGISTER_URL###'] = $this->urlObj->get('', $this->controlData->getPid('register').','.$GLOBALS['TSFE']->type, $vars, $unsetVars);

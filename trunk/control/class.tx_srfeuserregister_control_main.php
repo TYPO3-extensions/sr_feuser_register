@@ -26,6 +26,8 @@
 ***************************************************************/
 /**
  *
+ * Part of the sr_feuser_register (Front End User Registration) extension.
+ *
  * Front End creating/editing/deleting records authenticated by fe_user login.
  * A variant restricted to front end user self-registration and profile maintenance, with a number of enhancements (see the manual).
  *
