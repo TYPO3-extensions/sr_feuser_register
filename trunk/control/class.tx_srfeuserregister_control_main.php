@@ -119,14 +119,23 @@ class tx_srfeuserregister_control_main {
 	function init (&$conf, $theTable, $adminFieldList,$buttonLabelsList,$otherLabelsList) {
 		global $TSFE, $TCA;
 
+		$this->tca = &t3lib_div::getUserObj('&tx_srfeuserregister_tca');
+
 			// plugin initialization
 		$this->conf = &$conf;
-
-		$fe = t3lib_div::_GP('FE');
 
 		if (isset($conf['table.']) && is_array($conf['table.']) && $conf['table.']['name'])	{
 			$theTable  = $conf['table.']['name'];
 		}
+		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_conf');
+		$confObj->init($conf);
+
+		$this->tca->init($this->extKey, $theTable);
+
+		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
+		$tablesObj->init($theTable);
+		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
+		$authObj->init($this->pibaseObj, $this->conf, $this->config);
 		$this->controlData = &t3lib_div::getUserObj('&tx_srfeuserregister_controldata');
 		$this->controlData->init($conf, $this->pibaseObj->prefixId, $this->extKey, $this->pibaseObj->piVars, $theTable);
 
@@ -146,27 +155,20 @@ class tx_srfeuserregister_control_main {
 			}
 		}
 
-		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_conf');
-		$confObj->init($conf);
 		$this->langObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lang');
 		$this->urlObj = &t3lib_div::getUserObj('&tx_srfeuserregister_url');
 		$this->data = &t3lib_div::getUserObj('&tx_srfeuserregister_data');
-		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 		$this->marker = &t3lib_div::getUserObj('&tx_srfeuserregister_marker');
-		$this->tca = &t3lib_div::getUserObj('&tx_srfeuserregister_tca');
 		$this->display = &t3lib_div::getUserObj('&tx_srfeuserregister_display');
 		$this->setfixedObj = &t3lib_div::getUserObj('&tx_srfeuserregister_setfixed');
 		$this->email = &t3lib_div::getUserObj('&tx_srfeuserregister_email');
 		$this->control = &t3lib_div::getUserObj('&tx_srfeuserregister_control');
 
-		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
-		$tablesObj->init($theTable);
-
 		$this->urlObj->init ($this->controlData, $this->cObj);
 		$this->langObj->init($this->pibaseObj, $this->conf, $this->LLkey);
 		$rc = $this->langObj->loadLL();
 		if ($rc !== FALSE)	{
-			$this->tca->init($this->pibaseObj, $this->conf, $this->controlData, $this->langObj, $this->extKey, $theTable);
+			$this->tca->init2($this->pibaseObj, $this->conf, $this->controlData, $this->langObj);
 			$this->control->init($this->pibaseObj, $this->controlData, $this->display, $this->marker, $this->email, $this->tca, $this->setfixedObj);
 			$this->data->init($this->pibaseObj, $this->conf, $this->config,$this->langObj, $this->tca, $this->control, $theTable, $this->controlData);
 			$this->control->init2($theTable, $this->controlData, $this->data, $adminFieldList);
@@ -174,7 +176,6 @@ class tx_srfeuserregister_control_main {
 			$md5Obj = &t3lib_div::getUserObj('&tx_srfeuserregister_passwordmd5');
 			$md5Obj->init ($this->marker, $this->data, $this->controlData);
 
-			$authObj->init($this->pibaseObj, $this->conf, $this->config, $this->controlData->getFeUserData('aC'));
 			$uid=$this->data->getRecUid();
 
 			$this->marker->init($this->pibaseObj, $this->conf, $this->config, $this->data, $this->tca, $this->langObj, $this->controlData, $this->urlObj, $uid);

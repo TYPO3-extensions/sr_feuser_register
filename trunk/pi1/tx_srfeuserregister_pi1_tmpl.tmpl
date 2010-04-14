@@ -58,7 +58,7 @@
 			<p>###GW2B######MISSING_PASSWORD######GW2E###</p>
 			<p>###EVAL_ERROR_FIELD_password###</p>
 			<!--###SUB_REQUIRED_FIELD_password###-->
-			<p><input type="password" name="###NAME_PASSWORD###" size="10" ###PASSWORD_ONCHANGE### /> ###LABEL_PASSWORD_AGAIN### <input type="password" name="###NAME_PASSWORD_AGAIN###" size="10" /></p>
+			<p><input type="password" name="###NAME_PASSWORD###" value="###FIELD_password###" size="10" ###PASSWORD_ONCHANGE### /> ###LABEL_PASSWORD_AGAIN### <input type="password" name="###NAME_PASSWORD_AGAIN###" value="###FIELD_password_again###" size="10" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_gender###-->
@@ -746,7 +746,7 @@ The user is informed that a message has been sent to his email address and that 
 			<p>###GW2B######MISSING_PASSWORD######GW2E###</p>
 			<p>###EVAL_ERROR_FIELD_password###</p>
 			<!--###SUB_REQUIRED_FIELD_password###-->
-			<p><input type="password" name="FE[fe_users][password]" size="10" ###PASSWORD_ONCHANGE### /> ###LABEL_PASSWORD_AGAIN### <input type="password" name="FE[fe_users][password_again]" size="10" /></p>
+			<p><input type="password" name="FE[fe_users][password]" value="###FIELD_password###" size="10" ###PASSWORD_ONCHANGE### /> ###LABEL_PASSWORD_AGAIN### <input type="password" name="FE[fe_users][password_again]" value="###FIELD_password_again###" size="10" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_gender###-->
@@ -1283,8 +1283,6 @@ The user is informed that a message has been sent to his email address and that 
 	<td>
 	<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
 	<input type="hidden" name="FE[fe_users][username]" />
-	<input type="hidden" name="FE[fe_users][password]" />
-	<input type="hidden" name="FE[fe_users][password_again]" />
 	<input type="hidden" name="FE[fe_users][gender]" />
 	<input type="hidden" name="FE[fe_users][name]" />
 	<input type="hidden" name="FE[fe_users][first_name]" />
@@ -1376,7 +1374,7 @@ The user is informed that a message has been sent to the email address and that 
 			<p>###GW2B######MISSING_PASSWORD######GW2E###</p>
 			<p>###EVAL_ERROR_FIELD_password###</p>
 			<!--###SUB_REQUIRED_FIELD_password###-->
-			<p><input type="password" id="FE[fe_users][password]" name="FE[fe_users][password]" size="10" ###PASSWORD_ONCHANGE### /> ###LABEL_PASSWORD_AGAIN### <input type="password" name="FE[fe_users][password_again]" size="10" ###PASSWORD_ONCHANGE### /></p>
+			<p><input type="password" id="FE[fe_users][password]" name="FE[fe_users][password]" value="###FIELD_password###" size="10" ###PASSWORD_ONCHANGE### /> ###LABEL_PASSWORD_AGAIN### <input type="password" name="FE[fe_users][password_again]" value="###FIELD_password_again###" size="10" ###PASSWORD_ONCHANGE### /></p>
 		</td>
 	</tr>
 	<tr>
@@ -1930,8 +1928,6 @@ The user is informed that a message has been sent to the email address and that 
 	<tr>
 	<td>
 	<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
-	<input type="hidden" name="FE[fe_users][password]" />
-	<input type="hidden" name="FE[fe_users][password_again]" />
 	<input type="hidden" name="FE[fe_users][gender]" />
 	<input type="hidden" name="FE[fe_users][name]" />
 	<input type="hidden" name="FE[fe_users][first_name]" />

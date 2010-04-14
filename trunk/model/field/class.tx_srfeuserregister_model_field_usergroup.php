@@ -58,7 +58,27 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_conf');
 		$conf = &$confObj->getConf();
 		$rc = array_merge(t3lib_div::trimExplode(',', $conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $conf['setfixed.']['ACCEPT.']['usergroup'],1));
+		$rc = array_unique($rc);
 		return $rc;
+	}
+
+	function removeReservedValues (&$row)	{
+		if (isset($row['usergroup']))	{
+			$reservedValues = $this->getReservedValues();
+			if (is_array($row['usergroup']))	{
+				$userGroupArray = $row['usergroup'];
+				$bUseArray = TRUE;
+			} else {
+				$userGroupArray = explode(',', $row['usergroup']);
+				$bUseArray = FALSE;
+			}
+			$userGroupArray = array_diff($userGroupArray, $reservedValues);
+			if ($bUseArray)	{
+				$row['usergroup'] = $userGroupArray;
+			} else {
+				$row['usergroup'] = implode(',', $userGroupArray);
+			}
+		}
 	}
 
 	function parseOutgoingData ($fieldname, $dataArray, &$origArray, &$parsedArr) {

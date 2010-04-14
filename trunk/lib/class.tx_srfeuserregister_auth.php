@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+*  (c) 2007-2009 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -48,19 +48,23 @@ class tx_srfeuserregister_auth {
 	var $config = array();
 	var $authCode;
 
-	function init (&$pibase, &$conf, &$config, $authCode)	{
+	function init (&$pibase, &$conf, &$config)	{
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
 		$this->config = &$config;
-		$this->setAuthCode ($authCode);
+		$this->config['addKey'] = 'A';
 
 			// Setting the authCode length
 		$this->config['codeLength'] = 8;
-		if (isset($this->conf['authcodeFields.']) && is_array($this->conf['authcodeFields.']) && intval($this->conf['authcodeFields.']['codeLength']))	{
+		if (isset($this->conf['authcodeFields.']) && is_array($this->conf['authcodeFields.']))	{
+			if (intval($this->conf['authcodeFields.']['codeLength']))	{
+				$this->config['codeLength'] = intval($this->conf['authcodeFields.']['codeLength']);
+			}
 
-			$this->config['codeLength'] = intval($this->conf['authcodeFields.']['codeLength']);
+			if ($this->conf['authcodeFields.']['addKey'])	{
+				$this->config['addKey'] = $this->conf['authcodeFields.']['addKey'];
+			}
 		}
-		$this->config['addKey'] = ($this->conf['authcodeFields.']['addKey'] ? $this->conf['authcodeFields.']['addKey'] : 'A');
 	}
 
 	function setAuthCode ($code)	{
@@ -87,11 +91,12 @@ class tx_srfeuserregister_auth {
 			foreach($fieldArr as $field) {
 				$value .= $r[$field].'|';
 			}
-			$value .= $extra.'|'.$this->conf['authcodeFields.']['addKey'];
+			$value .= ($extra != '' ? $extra . '|' : '') . $this->config['addKey'];
+
 			if ($this->conf['authcodeFields.']['addDate']) {
 				$value .= '|'.date($this->conf['authcodeFields.']['addDate']);
 			}
-			$value .= $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
+			$value .= '|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
 			$rc = substr(md5($value), 0, $l);
 		}
 		return $rc;
@@ -120,6 +125,7 @@ class tx_srfeuserregister_auth {
 	* @return string  the hash value
 	*/
 	function setfixedHash ($recCopy, $fields = '') {
+
 		$recCopy_temp=array();
 		if ($fields) {
 			$fieldArr = t3lib_div::trimExplode(',', $fields, 1);
@@ -129,14 +135,29 @@ class tx_srfeuserregister_auth {
 		} else {
 			$recCopy_temp = $recCopy;
 		}
+
 		if (isset($recCopy_temp) && is_array($recCopy_temp))	{
 			$preKey = implode('|',$recCopy_temp);
 		}
 		$authCode = $preKey . '|' . $this->config['addKey'] . '|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
+
 		$authCode = substr(md5($authCode), 0, $this->config['codeLength']);
 
 		return $authCode;
 	}	// setfixedHash
+
+	/**
+	* Generates a token for the form to secure agains Cross Site Request Forgery (CSRF)
+	*
+	* @param void
+	* @return string  the token value
+	*/
+	function generateToken ()	{
+		$time = time();
+		$rc = md5($time . getmypid() . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
+
+		return $rc;
+	}
 }
 
 

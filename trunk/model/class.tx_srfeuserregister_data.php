@@ -92,13 +92,18 @@ class tx_srfeuserregister_data {
 			$this->setSpecialFieldList('captcha_response');
 		}
 
-			// Get parameters
+		$bHtmlSpecial = FALSE;
+			// Get POST parameters
 		$fe = t3lib_div::_GP('FE');
 
-		if (isset($fe) && is_array($fe))	{
+		if (isset($fe) && is_array($fe) && $this->controlData->isTokenValid())	{
 			$feDataArray = $fe[$theTable];
-			$this->controlData->decodeInput($feDataArray);
+			$this->controlData->secureInput($feDataArray,FALSE);
+
 			$this->tca->modifyRow($feDataArray, FALSE);
+			if ($theTable == 'fe_users')	{
+				$this->controlData->securePassword($feDataArray);
+			}
 			$this->setDataArray($feDataArray);
 		}
 	}
@@ -351,6 +356,7 @@ class tx_srfeuserregister_data {
 		if($this->controlData->useCaptcha($cmdKey))	{
 			$displayFieldArray[] = 'captcha_response';
 		}
+
 		// Check required, set failure if not ok.
 		$failureArray = array();
 
@@ -391,7 +397,7 @@ class tx_srfeuserregister_data {
 					$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
 
 					foreach ($listOfCommands as $k => $cmd)	{
-						$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
+						$cmdParts = preg_split('/\[|\]/', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 						$theCmd = trim($cmdParts[0]);
 						switch($theCmd) {
 							case 'uniqueGlobal':
@@ -439,7 +445,6 @@ class tx_srfeuserregister_data {
 							break;
 							case 'atLeast':
 								$chars = intval($cmdParts[1]);
-
 								if (strlen($dataArray[$theField]) < $chars) {
 									$failureArray[] = $theField;
 									$this->inError[$theField] = TRUE;
@@ -656,7 +661,7 @@ class tx_srfeuserregister_data {
 				if (isset($dataArray[$theField]) || isset($origArray[$theField]) || $internalType=='file')	{
 
 					foreach($listOfCommands as $cmd) {
-						$cmdParts = split('\[|\]', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
+						$cmdParts = preg_split('/\[|\]/', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 						$theCmd = trim($cmdParts[0]);
 						$bValueAssigned = TRUE;
 						$dataValue = (isset($dataArray[$theField]) ? $dataArray[$theField] : $origArray[$theField]);
@@ -861,6 +866,10 @@ class tx_srfeuserregister_data {
 		global $TYPO3_DB, $TSFE;
 		$rc = 0;
 
+		if ($theTable == 'fe_users')	{
+			$password = $this->controlData->readPassword();
+		}
+
 		switch($cmdKey) {
 			case 'edit':
 				$theUid = $dataArray['uid'];
@@ -888,6 +897,10 @@ class tx_srfeuserregister_data {
 						$outGoingData = $this->parseOutgoingData($dataArray,$origArray);
 						$newFieldList = implode (',', $newFieldArray);
 
+						if ($theTable == 'fe_users')	{
+
+							$outGoingData['password'] = $password;
+						}
 						$res = $this->cObj->DBgetUpdate($theTable, $theUid, $outGoingData, $newFieldList, TRUE);
 						$this->updateMMRelations($dataArray);
 						$this->saved = TRUE;
@@ -913,14 +926,19 @@ class tx_srfeuserregister_data {
 			break;
 			default:
 				if (is_array($this->conf[$cmdKey.'.'])) {
-					$password = $dataArray['password'];
+
 					$newFieldList = implode(',', array_intersect(explode(',', $this->getFieldList()), t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)));
 					$newFieldList  = implode(',', array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->getAdminFieldList()))));
 					$parsedArray = array();
 					$parsedArray = $this->parseOutgoingData($dataArray, $origArray);
 
-					if (($cmdKey == 'invite' || $cmdKey == 'create' && $this->conf[$cmdKey . '.']['generatePassword']) && $this->controlData->getUseMd5Password()) {
-						$parsedArray['password'] = md5($password);
+					if ($theTable == 'fe_users')	{
+
+						if (($cmdKey == 'invite' || $cmdKey == 'create' && $this->conf[$cmdKey . '.']['generatePassword']) && $this->controlData->getUseMd5Password()) {
+							$parsedArray['password'] = md5($password);
+						} else {
+							$parsedArray['password'] = $password;
+						}
 					}
 					$res = $this->cObj->DBgetInsert($theTable, $this->controlData->getPid(), $parsedArray, $newFieldList, TRUE);
 					$newId = $TYPO3_DB->sql_insert_id();
@@ -1067,8 +1085,10 @@ class tx_srfeuserregister_data {
 		if (!$split)	{
 			$split = '-';
 		}
-		$dateFormatArray = split($split, $dateFormat);
-		$dateValueArray = split($split, $dateValue);
+		$split = '/' . $split . '/';
+		$dateFormatArray = preg_split($split, $dateFormat);
+		$dateValueArray = preg_split($split, $dateValue);
+
 		$max = sizeof($dateFormatArray);
 		$yearOffset = 0;
 		for ($i=0; $i < $max; $i++) {
@@ -1191,7 +1211,7 @@ class tx_srfeuserregister_data {
 			foreach($this->conf[$cmdKey.'.']['evalValues.'] as $theField => $theValue) {
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
 				foreach($listOfCommands as $k => $cmd) {
-					$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
+					$cmdParts = preg_split('/\[|\]/', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 					$theCmd = trim($cmdParts[0]);
 					switch($theCmd) {
 						case 'twice':
@@ -1211,7 +1231,7 @@ class tx_srfeuserregister_data {
 			foreach($this->conf['parseValues.'] as $theField => $theValue) {
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
 				foreach($listOfCommands as $k => $cmd) {
-					$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
+					$cmdParts = preg_split('/\[|\]/', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 					$theCmd = trim($cmdParts[0]);
 					switch($theCmd) {
 						case 'multiple':
@@ -1238,10 +1258,13 @@ class tx_srfeuserregister_data {
 
 		foreach($inputArr as $theField => $value)	{
 			if (is_array($value))	{
-				$value = implode (',', $value);
+				$value = implode(',', $value);
 			}
-			$inputArr[$theField] = htmlspecialchars_decode($value);
+			$inputArr[$theField] = $value;
 		}
+
+		$this->controlData->secureInput($inputArr, TRUE);
+
 		return $inputArr;
 	}	// modifyDataArrForFormUpdate
 
@@ -1321,7 +1344,7 @@ class tx_srfeuserregister_data {
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
 				if (is_array($listOfCommands))	{
 					foreach($listOfCommands as $k2 => $cmd) {
-						$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
+						$cmdParts = preg_split('/\[|\]/', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 						$theCmd = trim($cmdParts[0]);
 						switch($theCmd) {
 							case 'date':
@@ -1384,7 +1407,7 @@ class tx_srfeuserregister_data {
 			foreach($this->conf['parseToDBValues.'] as $theField => $theValue) {
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
 				foreach($listOfCommands as $k2 => $cmd) {
-					$cmdParts = split("\[|\]", $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
+					$cmdParts = preg_split('/\[|\]/', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 					$theCmd = trim($cmdParts[0]);
 					if (($theCmd == 'date' || $theCmd == 'adodb_date') && $dataArray[$theField])	{
 						if(strlen($dataArray[$theField]) == 8) {

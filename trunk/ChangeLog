@@ -1,3 +1,16 @@
+2010-04-14 Franz Holzinger  <franz@ttproducts.de>
+	* new feature: add a token to the form. Form data is only read with a valid token.
+	* new feature: no password and password_again fields are shown in the update Javascript
+	* new marker for a simulated password and password_again, where only a dummy password will be used
+	  The HTML template file must be modified with value="###FIELD_password###" in the input tags
+	* check for the authorization code in confirmation links and setfixed at the beginning when the incoming data is read
+	* do not use special groups in authorization code because these values are changed very frequently
+	* fix bug 12323: PHP 5.3 checks the TYPO3 api parameter $conf and no reference is allowed
+	* fix bug 13107: consider invite for sending of email
+	* fix bug 11999: PHP 5.3 does not allow the split function
+	* fix bug 13140: absRefPrefix has been wrongly implemented
+	* change default settings for the password to allow blank characters
+
 2009-10-17 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug 12171: fix PHP errors caused with enableEmailOnUpdate setup
 	* fix bug with not sent HTML emails

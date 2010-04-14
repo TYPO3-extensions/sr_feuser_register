@@ -157,8 +157,9 @@ class tx_srfeuserregister_control {
 
 			// Setting the list of fields allowed for editing and creation.
 		$tableTCA = &$this->tca->getTCA();
-
-		$fieldlist = implode(',', t3lib_div::trimExplode(',', $tableTCA['feInterface']['fe_admin_fieldList'], 1));
+		$tcaFieldArray = t3lib_div::trimExplode(',', $tableTCA['feInterface']['fe_admin_fieldList'], 1);
+		$tcaFieldArray = array_unique($tcaFieldArray);
+		$fieldlist = implode(',', $tcaFieldArray);
 		$this->data->setFieldList($fieldlist);
 
 		if (trim($this->conf['addAdminFieldList'])) {
@@ -261,7 +262,7 @@ class tx_srfeuserregister_control {
 		$cmd = $this->controlData->getCmd();
 		$cmdKey = $this->controlData->getCmdKey();
 		$theTable = $this->controlData->getTable();
-		$this->controlData->setMode (MODE_NORMAL);
+		$this->controlData->setMode(MODE_NORMAL);
 
 		// Commands with which the Data will not be saved by $this->data->save
 		$noSaveCommands = array('infomail','login','delete');
@@ -271,9 +272,11 @@ class tx_srfeuserregister_control {
 		// It won't help against data being visible by back buttoning in create forms.
 		$origArray = $this->data->getOrigArray();
 		$dataArray = $this->data->getDataArray();
+
 		$uid = $this->data->getRecUid();
 
-		if ($theTable == 'fe_users' && (!$TSFE->loginUser || ($uid > 0 && $TSFE->fe_user->user['uid'] != $uid)) && !in_array($cmd,$this->noLoginCommands)) {
+		// check for valid token
+		if (!$this->controlData->isTokenValid() || $theTable == 'fe_users' && (!$TSFE->loginUser || ($uid > 0 && $TSFE->fe_user->user['uid'] != $uid)) && !in_array($cmd,$this->noLoginCommands)) {
 
 			$cmd = '';
 			$this->controlData->setCmd($cmd);
@@ -448,7 +451,7 @@ class tx_srfeuserregister_control {
 						$this->data->inError,
 						$this->conf['setfixed.']
 					);
-				} else if ($cmdKey == 'create' || $this->conf['email.']['EDIT_SAVED'])	{
+				} else if ($cmdKey == 'create' || $cmdKey == 'invite' || $this->conf['email.']['EDIT_SAVED'])	{
 					$emailField = $this->conf['email.']['field'];
 					$recipient = (isset($dataArray) && is_array($dataArray) ? $dataArray[$emailField] : $origArray[$emailField]);
 
@@ -475,7 +478,7 @@ class tx_srfeuserregister_control {
 					if ($theTable == 'fe_users' &&
 						$cmd == 'edit' &&
 						($this->controlData->getBackURL() || ($this->conf['linkToPID'] && ($this->controlData->getFeUserData('linkToPID') || !$this->conf['linkToPIDAddButton']))) ) {
-						$destUrl = ($this->controlData->getBackURL() ? $this->controlData->getBackURL() : ($TSFE->absRefPrefix ? '' : $this->controlData->getSiteUrl()).$this->cObj->getTypoLink_URL($this->conf['linkToPID'].','.$TSFE->type));
+						$destUrl = ($this->controlData->getBackURL() ? $this->controlData->getBackURL() : $this->cObj->getTypoLink_URL($this->conf['linkToPID'] . ',' . $TSFE->type));
 
 						header('Location: '.t3lib_div::locationHeaderUrl($destUrl));
 						exit;
@@ -516,6 +519,7 @@ class tx_srfeuserregister_control {
 		} else {
 				// Finally, if there has been no attempt to save. That is either preview or just displaying and empty or not correctly filled form:
 			$this->marker->setArray($markerArray);
+			$token = $this->controlData->readToken();
 
 			switch($cmd) {
 				case 'setfixed':
@@ -538,11 +542,12 @@ class tx_srfeuserregister_control {
 						$origArray,
 						$this,
 						$this->data,
-						$feuData
+						$feuData,
+						$token
 					);
 					break;
 				case 'infomail':
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
+					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
 					if ($this->conf['infomail']) {
 						$this->controlData->setSetfixedEnabled(1);
 					}
@@ -559,11 +564,11 @@ class tx_srfeuserregister_control {
 					);
 					break;
 				case 'delete':
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
-					$content = $this->display->deleteScreen($markerArray, $theTable, $dataArray, $origArray);
+					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
+					$content = $this->display->deleteScreen($markerArray, $theTable, $dataArray, $origArray, $token);
 					break;
 				case 'edit':
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
+					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
 					$content = $this->display->editScreen(
 						$markerArray,
 						$theTable,
@@ -572,12 +577,13 @@ class tx_srfeuserregister_control {
 						$cmd,
 						$cmdKey,
 						$this->controlData->getMode(),
-						$this->data->inError
+						$this->data->inError,
+						$token
 					);
 					break;
 				case 'invite':
 				case 'create':
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
+					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
 					$content = $this->display->createScreen(
 						$markerArray,
 						$cmd,
@@ -587,14 +593,15 @@ class tx_srfeuserregister_control {
 						$dataArray,
 						$origArray,
 						$this->data->getFieldList(),
-						$this->data->inError
+						$this->data->inError,
+						$token
 					);
 					break;
 				case 'login':
 					// nothing. The login parameters are processed by TYPO3 Core
 					break;
 				default:
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd);
+					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
 					$content = $this->display->createScreen(
 						$markerArray,
 						$cmd,
@@ -604,7 +611,8 @@ class tx_srfeuserregister_control {
 						$dataArray,
 						$origArray,
 						$this->data->getFieldList(),
-						$this->data->inError
+						$this->data->inError,
+						$token
 					);
 					break;
 			}
@@ -639,7 +647,7 @@ class tx_srfeuserregister_control {
 			$loginVars['redirect_url'] = htmlspecialchars(trim($this->conf['autoLoginRedirect_url']));
 		}
 		$relUrl = $this->cObj->getTypoLink_URL($this->controlData->getPID('login').','.$TSFE->type, $loginVars);
-		$absUrl = ($TSFE->absRefPrefix ? '' : $this->controlData->getSiteUrl()).$relUrl;
+		$absUrl = $this->controlData->getSiteUrl() . $relUrl;
 		header('Location: '.t3lib_div::locationHeaderUrl($absUrl));
 	}
 

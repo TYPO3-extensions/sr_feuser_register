@@ -216,5 +216,4 @@ plugin.tx_srfeuserregister_pi1 {
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Split char for Date Format (-)
   dateSplit = -
-
 }

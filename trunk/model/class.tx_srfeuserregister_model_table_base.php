@@ -59,6 +59,7 @@ class tx_srfeuserregister_model_table_base	{
 	function getFieldClassAndPath ($fieldname)	{
 		global $TCA;
 
+
 		$class = '';
 		$path = '';
 		$tablename = $this->getTablename();
@@ -77,6 +78,7 @@ class tx_srfeuserregister_model_table_base	{
 
 	function &getFieldObj ($fieldname)	{
 		$classAndPath = $this->getFieldClassAndPath($fieldname);
+
 		if ($classAndPath['class'])	{
 			$rc = $this->getObj($classAndPath);
 		}
