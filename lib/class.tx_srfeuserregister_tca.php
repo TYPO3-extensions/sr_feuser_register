@@ -54,14 +54,8 @@ class tx_srfeuserregister_tca {
 	var $cObj;
 
 
-	function init (&$pibase, &$conf, &$controlData, &$langObj, $extKey, $theTable)	{
+	function init ($extKey, $theTable)	{
 		global $TSFE, $TCA;
-
-		$this->pibase = &$pibase;
-		$this->conf = &$conf;
-		$this->controlData = &$controlData;
-		$this->langObj = &$langObj;
-		$this->cObj = &$pibase->cObj;
 
 			// get the table definition
 	//	$TSFE->includeTCA();	takes too much memory
@@ -75,6 +69,17 @@ class tx_srfeuserregister_tca {
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['uploadFolder'])	{
 			$this->TCA[$theTable]['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['uploadFolder'];
 		}
+	}
+
+
+	function init2 (&$pibase, &$conf, &$controlData, &$langObj)	{
+		global $TSFE, $TCA;
+
+		$this->pibase = &$pibase;
+		$this->conf = &$conf;
+		$this->controlData = &$controlData;
+		$this->langObj = &$langObj;
+		$this->cObj = &$pibase->cObj;
 	}
 
 
@@ -560,6 +565,7 @@ class tx_srfeuserregister_tca {
 										$i++;
 									}
 								}
+
 								if ($colConfig['foreign_table']) {
 									t3lib_div::loadTCA($colConfig['foreign_table']);
 									$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];

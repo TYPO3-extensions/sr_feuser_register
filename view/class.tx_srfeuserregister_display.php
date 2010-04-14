@@ -72,10 +72,9 @@ class tx_srfeuserregister_display {
 	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
 	* @return string  the template with substituted markers
 	*/
-	function editForm (&$markerArray, $theTable, $dataArray, $origArray, $cmd, $cmdKey, $mode, $errorFieldArray) {
+	function editForm (&$markerArray, $theTable, $dataArray, $origArray, $cmd, $cmdKey, $mode, $errorFieldArray, $token) {
 		global $TSFE;
 
-		$prefixId = $this->controlData->getPrefixId();
 		$currentArray = array_merge($origArray, $dataArray);
 		$subpart = '###TEMPLATE_EDIT'.$this->marker->getPreviewLabel().'###';
 		$templateCode = $this->cObj->getSubpart($this->data->getTemplateCode(),$subpart);
@@ -90,6 +89,7 @@ class tx_srfeuserregister_display {
 		}
 		$this->marker->addMd5EventsMarkers($markerArray, 'edit', $this->controlData->getUseMd5Password());
 		$templateCode = $this->removeRequired($templateCode, $errorFieldArray, $failure);
+		$currentArray['password_again'] = $currentArray['password'];
 		$markerArray = $this->marker->fillInMarkerArray($markerArray, $currentArray, '', TRUE);
 
 		$this->marker->addStaticInfoMarkers($markerArray, $currentArray);
@@ -109,15 +109,14 @@ class tx_srfeuserregister_display {
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][username]" value="'.$currentArray['username'].'" />';
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][email]" value="'.$currentArray['email'].'" />';
 		}
-
-		$this->marker->addHiddenFieldsMarkers($markerArray, $cmdKey, $mode, $currentArray);
+		$this->marker->addHiddenFieldsMarkers($markerArray, $cmdKey, $mode, $token, $currentArray);
 		$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 		if ($this->conf['templateStyle'] != 'css-styled' || $mode != MODE_PREVIEW) {
 
 			$form = tx_div2007_alpha::getClassName($theTable.'_form',$this->controlData->getPrefixId());
 			$modData = $this->data->modifyDataArrForFormUpdate($currentArray, $cmdKey);
 			$fields = $this->data->getFieldList().$this->data->getAdditionalUpdateFields();
-
+			$fields = $this->controlData->getOpenFields($fields);
 			$updateJS = $this->cObj->getUpdateJS($modData, $form, 'FE['.$theTable.']', $fields);
 			$content .= $updateJS;
 			$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
@@ -133,13 +132,20 @@ class tx_srfeuserregister_display {
 	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
 	* @return string  the template with substituted markers
 	*/
-	function createScreen (&$markerArray, $cmd, $cmdKey, $mode, $theTable, $dataArray, $origArray, $infoFields, $errorFieldArray) {
+	function createScreen (&$markerArray, $cmd, $cmdKey, $mode, $theTable, $dataArray, $origArray, $infoFields, $errorFieldArray, $token) {
 		global $TSFE;
 
 		$templateCode = $this->data->getTemplateCode();
 		$prefixId = $this->controlData->getPrefixId();
 		$extKey = $this->controlData->getExtKey();
 		$currentArray = array_merge($origArray, $dataArray);
+
+		if ($theTable == 'fe_users')	{
+			if (!isset($currentArray['password']))	{
+				$currentArray['password'] = '';
+			}
+			$currentArray['password_again'] = $currentArray['password'];
+		}
 
 		if ($this->conf['create']) {
 
@@ -177,16 +183,17 @@ class tx_srfeuserregister_display {
 			$this->tca->addTcaMarkers($markerArray, $dataArray, $origArray, $cmd, $cmdKey, $theTable);
 			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $dataArray, $this->controlData->getMode() == MODE_PREVIEW);
 			$this->marker->addLabelMarkers($markerArray, $theTable, $dataArray, $origArray, array(), $this->controlData->getRequiredArray(), $infoFields, $this->tca->TCA['columns'], FALSE);
-
 			$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
-			$this->marker->addHiddenFieldsMarkers($markerArray, $cmdKey, $mode, $dataArray);
+			$this->marker->addHiddenFieldsMarkers($markerArray, $cmdKey, $mode, $token, $dataArray);
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 
 			if ($mode != MODE_PREVIEW && $bNeedUpdateJS) {
-				$form = tx_div2007_alpha::getClassName($theTable.'_form',$this->controlData->getPrefixId());
+				$fields = $this->data->fieldList . $this->data->additionalUpdateFields;
+				$fields = $this->controlData->getOpenFields($fields);
 				$modData = $this->data->modifyDataArrForFormUpdate($dataArray, $cmdKey);
-				$updateJScontent = $this->cObj->getUpdateJS($modData, $form, 'FE['.$theTable.']', $this->data->fieldList.$this->data->additionalUpdateFields);
-				$content .= $updateJScontent;
+				$form = tx_div2007_alpha::getClassName($theTable.'_form',$this->controlData->getPrefixId());
+				$updateJS = $this->cObj->getUpdateJS($modData, $form, 'FE['.$theTable.']', $fields);
+				$content .= $updateJS;
 				$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
 			}
 		}
@@ -201,7 +208,7 @@ class tx_srfeuserregister_display {
 	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
 	* @return string  the template with substituted markers
 	*/
-	function editScreen (&$markerArray, $theTable, $dataArray, $origArray, $cmd, $cmdKey, $mode, $errorFieldArray) {
+	function editScreen (&$markerArray, $theTable, $dataArray, $origArray, $cmd, $cmdKey, $mode, $errorFieldArray, $token) {
 		global $TSFE;
 
 			// If editing is enabled
@@ -241,7 +248,8 @@ class tx_srfeuserregister_display {
 						$cmd,
 						$cmdKey,
 						$mode,
-						$errorFieldArray
+						$errorFieldArray,
+						$token
 					);
 				} else {
 					// Else display error, that you could not edit that particular record...
@@ -264,7 +272,7 @@ class tx_srfeuserregister_display {
 		*
 		* @return string  the template with substituted markers
 		*/
-	function deleteScreen ($markerArray, $theTable, $dataArray, $origArray) {
+	function deleteScreen ($markerArray, $theTable, $dataArray, $origArray, $token) {
 
 		if ($this->conf['delete']) {
 			$prefixId = $this->controlData->getPrefixId();
@@ -273,6 +281,7 @@ class tx_srfeuserregister_display {
 
 			// If deleting is enabled
 			$origArray = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $this->data->getRecUid());
+
 			if ( ($theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $authObj->aCAuth($origArray)) {
 				// Must be logged in OR be authenticated by the aC code in order to delete
 
@@ -288,6 +297,8 @@ class tx_srfeuserregister_display {
 							$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$prefixId .'[aC]" value="'.$authObj->authCode($origArray).'" />';
 						}
 						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="'.$prefixId .'[cmd]" value="delete" />';
+						$this->marker->addFormToken($markerArray, $token);
+
 						$this->marker->setArray($markerArray);
 						$content = $this->getPlainTemplate($templateCode, '###TEMPLATE_DELETE_PREVIEW###', $markerArray, $dataArray, $origArray);
 					} else {
@@ -392,7 +403,7 @@ class tx_srfeuserregister_display {
 					if (is_array($this->conf['parseValues.']) && strstr($this->conf['parseValues.'][$theField],'checkArray')) {
 						$listOfCommands = t3lib_div::trimExplode(',', $this->conf['parseValues.'][$theField], 1);
 						foreach($listOfCommands as $cmd) {
-							$cmdParts = split('\[|\]', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
+							$cmdParts = preg_split('/\[|\]/', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 							$theCmd = trim($cmdParts[0]);
 							switch($theCmd) {
 								case 'checkArray':

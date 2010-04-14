@@ -79,7 +79,7 @@ class tx_srfeuserregister_setfixed {
 	* @param array  Array with key/values being marker-strings/substitution values.
 	* @return string  the template with substituted markers
 	*/
-	function processSetFixed ($theTable, $uid, $cmdKey, &$markerArray, &$templateCode, &$dataArray, &$origArray, &$pObj, &$dataObj, &$feuData) {
+	function processSetFixed ($theTable, $uid, $cmdKey, &$markerArray, &$templateCode, &$dataArray, &$origArray, &$pObj, &$dataObj, &$feuData, $token) {
 		global $TSFE;
 
 		$row = $origArray;
@@ -100,7 +100,19 @@ class tx_srfeuserregister_setfixed {
 				}
 			}
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
-			$theCode = $authObj->setfixedHash($row, $row['_FIELDLIST']);
+			$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
+			$addressObj = $tablesObj->get('address');
+			$userGroupObj = &$addressObj->getFieldObj('usergroup');
+
+			$fieldList = $row['_FIELDLIST'];
+			if (t3lib_div::inList($fieldList,'usergroup'))	{
+				$oldUserGroup = $row['usergroup'];
+				$userGroupObj->removeReservedValues($row); // do not consider frequently changed user groups
+			}
+			$theCode = $authObj->setfixedHash($row, $fieldList);
+			if (isset($oldUserGroup))	{
+				$row['usergroup'] = $oldUserGroup;
+			}
 
 			if (!strcmp($authObj->getAuthCode(), $theCode) && !($sFK == 'APPROVE' && count($origArray) && $origArray['disable']=='0')) {
 
@@ -165,11 +177,11 @@ class tx_srfeuserregister_setfixed {
 					$theTable == 'fe_users' &&
 					in_array($sFK, array('APPROVE','ENTER','LOGIN'))	// LOGIN is here only for an error case
 				)	{
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, 'login');
+					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, 'login', $token);
 					$this->marker->addMd5LoginMarkers($markerArray, $dataArray, $this->controlData->getUseMd5Password());
 					$this->marker->setArray($markerArray);
 				} else {
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, 'setfixed');
+					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, 'setfixed', $token);
 				}
 
 				if ($this->conf['enableAdminReview'] && $sFK == 'APPROVE' && !$row['by_invitation']) {
@@ -186,6 +198,7 @@ class tx_srfeuserregister_setfixed {
 					($this->conf['email.']['SETFIXED_REFUSE'] || $sFK !== 'REFUSE') &&
 					($this->conf['enableEmailConfirmation'] || $this->conf['infomail'])
 				)	{
+
 					// Compiling email
 					$this->email->compile(
 						SETFIXED_PREFIX . $setfixedSuffix,
@@ -206,6 +219,7 @@ class tx_srfeuserregister_setfixed {
 
 						// If applicable, send admin a request to review the registration request
 					if ($this->conf['enableAdminReview'] && $sFK == 'APPROVE' && !$row['by_invitation']) {
+
 						$this->email->compile(
 							SETFIXED_PREFIX . 'REVIEW',
 							$theTable,
@@ -241,6 +255,20 @@ class tx_srfeuserregister_setfixed {
 
 
 	/**
+	* Converts the setfixed key into a command
+	*
+	*//*
+	function convertSfk2Cmd ($setfixed, $sFK)	{
+
+		$rc = 'EDIT';
+		switch ($sFK)	{
+
+		}
+		return $rc;
+	}*/
+
+
+	/**
 	* Computes the setfixed url's
 	*
 	* @param array  $markerArray: the input marker array
@@ -255,6 +283,9 @@ class tx_srfeuserregister_setfixed {
 		if ($this->controlData->getSetfixedEnabled() && is_array($setfixed) ) {
 			$setfixedpiVars = array();
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
+			$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
+			$addressObj = $tablesObj->get('address');
+			$userGroupObj = &$addressObj->getFieldObj('usergroup');
 
 			foreach($setfixed as $theKey => $data) {
 				if (strstr($theKey, '.') ) {
@@ -263,6 +294,7 @@ class tx_srfeuserregister_setfixed {
 				unset($setfixedpiVars);
 				$recCopy = $r;
 				$setfixedpiVars[$prefixId .'[rU]'] = $r['uid'];
+				$fieldList = $data['_FIELDLIST'];
 
 				if ($theTable != 'fe_users' && $theKey == 'EDIT' ) {
 					if (is_array($data) ) {
@@ -272,7 +304,11 @@ class tx_srfeuserregister_setfixed {
 						}
 					}
 					if( $this->conf['edit.']['setfixed'] ) {
-						$setfixedpiVars[$prefixId.'[aC]'] = $authObj->setfixedHash($recCopy, $data['_FIELDLIST']);
+						if (t3lib_div::inList($fieldList,'usergroup'))	{
+							$userGroupObj->removeReservedValues($recCopy);
+						}
+
+						$setfixedpiVars[$prefixId.'[aC]'] = $authObj->setfixedHash($recCopy, $fieldList);
 					} else {
 						$setfixedpiVars[$prefixId.'[aC]'] = $authObj->authCode($r);
 					}
@@ -292,7 +328,10 @@ class tx_srfeuserregister_setfixed {
 							$recCopy[$fieldName] = $fieldValue;
 						}
 					}
-					$setfixedpiVars[$prefixId.'[aC]'] = $authObj->setfixedHash($recCopy, $data['_FIELDLIST']);
+					if (t3lib_div::inList($fieldList,'usergroup'))	{
+						$userGroupObj->removeReservedValues($recCopy);
+					}
+					$setfixedpiVars[$prefixId.'[aC]'] = $authObj->setfixedHash($recCopy, $fieldList);
 					$linkPID = $this->controlData->getPID('confirm');
 					if ($this->controlData->getCmd() == 'invite') {
 						$linkPID = $this->controlData->getPID('confirmInvitation');
@@ -311,9 +350,9 @@ class tx_srfeuserregister_setfixed {
 				$conf['disableGroupAccessCheck'] = TRUE;
 				$confirmType = (t3lib_div::testInt($this->conf['confirmType']) ? intval($this->conf['confirmType']) : $TSFE->type);
 				$url = tx_div2007_alpha::getTypoLink_URL_fh002($this->cObj, $linkPID . ',' . $confirmType,$setfixedpiVars,'',$conf);
-				$bIsAbsoluteURL = ($TSFE->absRefPrefix || (strncmp($url,'http',4) == 0) || (strncmp($url,'https',5) == 0));
+				$bIsAbsoluteURL = ((strncmp($url,'http://',7) == 0) || (strncmp($url,'https://',8) == 0));
 				$markerKey = '###SETFIXED_'.$this->cObj->caseshift($theKey,'upper').'_URL###';
-				$markerArray[$markerKey] = ($bIsAbsoluteURL ? '' : $this->controlData->getSiteUrl()) . $url;
+				$markerArray[$markerKey] = ($bIsAbsoluteURL ? '' : $this->controlData->getSiteUrl()) . ltrim($url,'/');
 			}
 		}
 	}	// computeUrl

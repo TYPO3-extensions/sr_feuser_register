@@ -351,7 +351,6 @@ class tx_srfeuserregister_email {
 		if ($this->conf['addAttachment'] && $this->conf['addAttachment.']['cmd'] == $cmd && $this->conf['addAttachment.']['sFK'] == $this->controlData->getFeUserData('sFK')) {
 			$file = ($this->conf['addAttachment.']['file']) ? $TSFE->tmpl->getFileName($this->conf['addAttachment.']['file']):'';
 		}
-
 		$this->send($recipient, $this->conf['email.']['admin'], $content['user']['final'], $content['admin']['final'], $content['html']['final'], $file);
 	}
 
@@ -438,12 +437,13 @@ class tx_srfeuserregister_email {
 	function sendHTML ($HTMLContent, $PLAINContent, $recipient, $dummy, $fromEmail, $fromName, $replyTo = '', $fileAttachment = '') {
 		// HTML
 		if (trim($recipient) && (trim($HTMLContent) || trim($PLAINContent))) {
+
 			$defaultSubject = 'Front end user registration message';
 			if ($HTMLContent)	{
-				$parts = spliti('<title>|</title>', $HTMLContent, 3);
+				$parts = preg_split('/<title>|</title>/i', $HTMLContent, 3);
 				$subject = trim($parts[1]) ? strip_tags(trim($parts[1])) : $defaultSubject;
 			} else {
-				$parts = split(chr(10),$PLAINContent,2);    // First line is subject
+				$parts = explode(chr(10),$PLAINContent,2);    // First line is subject
 				$subject = trim($parts[0]) ? trim($parts[0]) : $defaultSubject;
 				$PLAINContent = trim($parts[1]);
 			}

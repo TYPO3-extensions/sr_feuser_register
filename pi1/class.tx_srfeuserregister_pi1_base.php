@@ -50,7 +50,7 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 	var $scriptRelPath = 'pi1/class.tx_srfeuserregister_pi1_base.php'; // Path to this script relative to the extension dir.
 	var $extKey = SR_FEUSER_REGISTER_EXTkey;		// Extension key.
 
-	function main($content, &$conf) {
+	function main($content, $conf) {
 		global $TSFE;
 
 		$this->pi_setPiVarDefaults();
