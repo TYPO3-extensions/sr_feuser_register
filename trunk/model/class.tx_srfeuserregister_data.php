@@ -611,7 +611,7 @@ class tx_srfeuserregister_data {
 				if (in_array($theField, $displayFieldArray))	{
 					$markContentArray['###EVAL_ERROR_FIELD_'.$theField.'###'] = is_array($this->failureMsg[$theField]) ? implode($this->failureMsg[$theField], '<br />'): '<!--no error-->';
 				} else {
-					if (is_array($this->failureMsg[$theField]))	{
+					if (isset($this->failureMsg[$theField]) && is_array($this->failureMsg[$theField]))	{
 						if ($markContentArray['###EVAL_ERROR_saved###'])	{
 							$markContentArray['###EVAL_ERROR_saved###'].='<br />';
 						}
@@ -875,9 +875,10 @@ class tx_srfeuserregister_data {
 				$theUid = $dataArray['uid'];
 				$rc = $theUid;
 				$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
+				$aCAuth = $authObj->aCAuth($origArray,$this->conf['setfixed.']['EDIT.']['_FIELDLIST']);
 
 					// Fetch the original record to check permissions
-				if ($this->conf['edit'] && ($TSFE->loginUser || $authObj->aCAuth($origArray))) {
+				if ($this->conf['edit'] && ($TSFE->loginUser || $aCAuth)) {
 						// Must be logged in in order to edit  (OR be validated by email)
 					$newFieldList = implode(',', array_intersect(explode(',', $this->getFieldList()), t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)));
 					$newFieldArray = array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->getAdminFieldList())));
@@ -891,8 +892,7 @@ class tx_srfeuserregister_data {
 					if (!in_array('username', $fieldArray) && $dataArray['username'] == '') {
 						$newFieldArray = array_diff($newFieldArray, array('username'));
 					}
-					$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
-					if ($authObj->aCAuth($origArray) || $this->cObj->DBmayFEUserEdit($theTable, $origArray, $TSFE->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
+					if ($aCAuth || $this->cObj->DBmayFEUserEdit($theTable, $origArray, $TSFE->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 
 						$outGoingData = $this->parseOutgoingData($dataArray,$origArray);
 						$newFieldList = implode (',', $newFieldArray);
@@ -934,7 +934,7 @@ class tx_srfeuserregister_data {
 
 					if ($theTable == 'fe_users')	{
 
-						if (($cmdKey == 'invite' || $cmdKey == 'create' && $this->conf[$cmdKey . '.']['generatePassword']) && $this->controlData->getUseMd5Password()) {
+						if (($cmdKey == 'invite' || $cmdKey == 'create' /*&& $this->conf[$cmdKey . '.']['generatePassword']*/) && $this->controlData->getUseMd5Password()) {
 							$parsedArray['password'] = md5($password);
 						} else {
 							$parsedArray['password'] = $password;
@@ -1006,12 +1006,14 @@ class tx_srfeuserregister_data {
 			// If deleting is enabled
 
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
-			if ($GLOBALS['TSFE']->loginUser || $authObj->aCAuth($origArray)) {
+			$aCAuth = $authObj->aCAuth($origArray,$this->conf['setfixed.']['DELETE.']['_FIELDLIST']);
+
+			if ($GLOBALS['TSFE']->loginUser || $aCAuth) {
 				// Must be logged in OR be authenticated by the aC code in order to delete
 				// If the recUid selects a record.... (no check here)
 
 				if (is_array($origArray)) {
-					if ($authObj->aCAuth($origArray) || $this->cObj->DBmayFEUserEdit($theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
+					if ($aCAuth || $this->cObj->DBmayFEUserEdit($theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 							// Delete the record and display form, if access granted.
 
 						$extKey = $this->controlData->getExtKey();
@@ -1325,6 +1327,7 @@ class tx_srfeuserregister_data {
 			}
 			$dataArray['password'] = $genPassword;
 			$this->setPassword ($dataArray['password']);
+			$this->controlData->writePassword ($dataArray['password']);
 		}
 	}	// setPassword
 
@@ -1449,7 +1452,7 @@ class tx_srfeuserregister_data {
 				if (isset($fieldObj) && is_object($fieldObj))	{
 					$fieldObj->parseOutgoingData($colName, $dataArray, $origArray, $parsedArray);
 				}
-				if (is_array ($parsedArray[$colName]))	{
+				if (is_array($parsedArray[$colName]))	{
 					if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
 						// set the count instead of the comma separated list
 						if ($parsedArray[$colName])	{

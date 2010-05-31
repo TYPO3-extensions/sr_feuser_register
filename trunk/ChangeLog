@@ -1,3 +1,8 @@
+2010-05-31 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 14125: if user group can be selected by user, then the authorization key has been using an empty group field
+	* fix bug 14163: an automatically generated password had been sent as an empty password to the user
+	* new feature: do not check the token, if a create or edit cmd is provided without any additional data
+
 2010-04-14 Franz Holzinger  <franz@ttproducts.de>
 	* new feature: add a token to the form. Form data is only read with a valid token.
 	* new feature: no password and password_again fields are shown in the update Javascript
@@ -10,6 +15,7 @@
 	* fix bug 11999: PHP 5.3 does not allow the split function
 	* fix bug 13140: absRefPrefix has been wrongly implemented
 	* change default settings for the password to allow blank characters
+	* dependency on div2007 version 0.2.6
 
 2009-10-17 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug 12171: fix PHP errors caused with enableEmailOnUpdate setup

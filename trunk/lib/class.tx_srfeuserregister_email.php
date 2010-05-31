@@ -283,9 +283,9 @@ class tx_srfeuserregister_email {
 			} else {
 				$mrow = $currentRow;
 			}
-
 			$markerArray['###SYS_AUTHCODE###'] = $authObj->authCode($row);
-			$this->setfixedObj->computeUrl($markerArray, $setFixedConfig, $currentRow, $this->controlData->getTable());
+
+			$this->setfixedObj->computeUrl($cmdKey, $markerArray, $setFixedConfig, $currentRow, $this->controlData->getTable());
 			$this->marker->addStaticInfoMarkers($markerArray, $row, $viewOnly);
 			$this->marker->addFileUploadMarkers('image', $markerArray, $cmd, $cmdKey, $row, $viewOnly);
 			$this->marker->addLabelMarkers($markerArray, $theTable, $row, $origRow, $keepFields, $this->controlData->getRequiredArray(), $this->data->getFieldList(), $this->tca->TCA['columns'], $bChangesOnly);

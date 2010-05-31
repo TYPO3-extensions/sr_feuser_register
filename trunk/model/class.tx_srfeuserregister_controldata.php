@@ -112,6 +112,7 @@ class tx_srfeuserregister_controldata {
 
 			// Get hash variable if provided and if short url feature is enabled
 		$feUserData = t3lib_div::_GP($this->getPrefixId());
+		$bSecureStartCmd = (count($feUserData) == 1 && in_array($feUserData['cmd'], array('create', 'edit')));
 		$bValidRegHash = FALSE;
 
 		// <Steve Webster added short url feature>
@@ -122,6 +123,7 @@ class tx_srfeuserregister_controldata {
 			}
 			if (!$regHash)	{
 				$getData = t3lib_div::_GET($this->getPrefixId());
+
 				if (isset($getData) && is_array($getData))	{
 					$regHash = $getData['regHash'];
 				}
@@ -142,7 +144,6 @@ class tx_srfeuserregister_controldata {
 						}
 					}
 					$restoredFeUserData = $getVars[$this->getPrefixId()];
-
 					foreach ($getVars as $k => $v ) {
 						// restore former GET values for the url
 						t3lib_div::_GETset($v,$k);
@@ -186,6 +187,7 @@ class tx_srfeuserregister_controldata {
 		if (
 			is_array($feUserData) && (
 				!count($feUserData) ||
+				$bSecureStartCmd ||
 				$token != '' && $feUserData['token'] == $token
 			)
 		)	{
@@ -203,14 +205,8 @@ class tx_srfeuserregister_controldata {
 
 			if (isset($fdArray) && is_array($fdArray))	{
 				$fieldList = rawurldecode($fdArray['_FIELDLIST']);
-
-				if (t3lib_div::inList($fieldList,'usergroup'))	{
-					$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
-					$addressObj = $tablesObj->get('address');
-					$userGroupObj = &$addressObj->getFieldObj('usergroup');
-					$userGroupObj->removeReservedValues($origArray);
-				}
-				$authCode = $authObj->setfixedHash($origArray, $fieldList);
+				$setFixedArray = array_merge($origArray, $fdArray);
+				$authCode = $authObj->setfixedHash($setFixedArray, $fieldList);
 
 				if ($authCode == $feUserData['aC'])	{
 					$this->setTokenValid(TRUE);
@@ -220,13 +216,26 @@ class tx_srfeuserregister_controldata {
 
 		if ($this->isTokenValid())	{
 
+			$this->setValidRegHash($bValidRegHash);
 			$this->setFeUserData($feUserData);
+
 			// generate a new token for the next created forms
 			$token = $authObj->generateToken();
 			$this->writeToken($token);
 		} else {
 			$this->setFeUserData(array());	// delete all FE user data when the token is not valid
+			$this->writePassword('');   	// delete the stored password
 		}
+	}
+
+
+	function setValidRegHash ($bValidRegHash)	{
+		$this->bValidRegHash = $bValidRegHash;
+	}
+
+
+	function getValidRegHash ()	{
+		return $this->bValidRegHash;
 	}
 
 

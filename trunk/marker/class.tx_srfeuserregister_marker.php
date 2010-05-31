@@ -386,10 +386,11 @@ class tx_srfeuserregister_marker {
 		$dataArray = array();
 		$dataArray['row'] = $row;
 		$this->setReplaceData($dataArray);
+		$password = $this->controlData->readPassword();
 
 		foreach($otherLabels as $labelName) {
 			$langText = $this->langObj->getLL($labelName);
-			$label = sprintf($langText, $this->controlData->getPidTitle(), $row['username'], $name, $row['email'], $row['password']);
+			$label = sprintf($langText, $this->controlData->getPidTitle(), $row['username'], $name, $row['email'], $password);
 			// ACTIVE SOLUTION
 			$label = preg_replace_callback('/{([a-z_]+):([a-z_]+)}/', array(&$this, 'replaceVariables'), $label);
 			$markerkey = $this->cObj->caseshift($labelName,'upper');
@@ -572,14 +573,14 @@ class tx_srfeuserregister_marker {
 		* @param array  $markerArray: the input marker array
 		* @return void
 		*/
-	function addMd5EventsMarkers (&$markerArray,$cmd,$useMd5Password) {
+	function addMd5EventsMarkers (&$markerArray,$bEncryptMd5,$useMd5Password) {
 		if (!$markerArray)	{
 			$markerArray = $this->getArray();
 		}
 		if ($useMd5Password) {
 			if (!$this->controlData->getJSmd5Added())	{
 				$GLOBALS['TSFE']->additionalHeaderData['MD5_script'] = '<script type="text/javascript" src="typo3/md5.js"></script>';
-				$GLOBALS['TSFE']->JSCode .= $this->getMD5Submit($cmd);
+				$GLOBALS['TSFE']->JSCode .= $this->getMD5Submit($bEncryptMd5);
 				$this->controlData->setJSmd5Added(TRUE);
 			}
 			$markerArray['###FORM_ONSUBMIT###'] = 'onsubmit="return enc_form(this);"';
@@ -625,7 +626,7 @@ class tx_srfeuserregister_marker {
 		$markerArray['###HIDDENFIELDS###'] .= $extraHidden;
 		if (!$this->controlData->getJSmd5Added())	{
 			$GLOBALS['TSFE']->additionalHeaderData['MD5_script'] = '<script type="text/javascript" src="typo3/md5.js"></script>';
-			$GLOBALS['TSFE']->JSCode .= $this->getMD5Submit($cmd);
+			$GLOBALS['TSFE']->JSCode .= $this->getMD5Submit(TRUE);
 			$this->controlData->setJSmd5Added(TRUE);
 		}
 		$markerArray['###PASSWORD_ONCHANGE###'] = 'onchange="pw_change=1; return true;"';
@@ -669,7 +670,7 @@ class tx_srfeuserregister_marker {
 	*
 	* @author	Kraft Bernhard <kraftb@gmx.net>
 	**/
-	function getMD5Submit ($cmd) {
+	function getMD5Submit ($bEncryptMd5) {
 
 		$theTable = $this->controlData->getTable();
 		$JSPart = '
@@ -685,13 +686,14 @@ class tx_srfeuserregister_marker {
 					form[\'FE[' . $theTable . '][password]\'].select();
 					form[\'FE[' . $theTable . '][password]\'].focus();
 					return false;
-				}
+				}' .
+				($bEncryptMd5 ? '
 				if (pw_change) {
 					var enc_pass = MD5(pass);
 					form[\'FE[' . $theTable . '][password]\'].value = enc_pass;
 					form[\'FE[' . $theTable . '][password_again]\'].value = enc_pass;
-				}
-				return true;
+				}' : '') .
+				'return true;
 			}';
 		return $JSPart;
 	}	// getMD5Submit
@@ -775,10 +777,9 @@ class tx_srfeuserregister_marker {
 
 		$tokenError = '';
 		if ($token == '')	{
-			$tokenError = 'The form\'s token is empty!';
-		}
-		if (strlen($token) < 10)	{
-			$tokenError = 'The form\'s token is too short!';
+			$tokenError = $this->langObj->getLL('internal_token_empty');
+		} else if (strlen($token) < 10)	{
+			$tokenError = $this->langObj->getLL('token_short');
 		}
 		if ($tokenError != '')	{
 			exit($this->pibase->extKey . ': ' . $tokenError);

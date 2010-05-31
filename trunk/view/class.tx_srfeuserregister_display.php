@@ -87,7 +87,7 @@ class tx_srfeuserregister_display {
 		if (!$failure) {
 			$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
 		}
-		$this->marker->addMd5EventsMarkers($markerArray, 'edit', $this->controlData->getUseMd5Password());
+		$this->marker->addMd5EventsMarkers($markerArray, TRUE, $this->controlData->getUseMd5Password());
 		$templateCode = $this->removeRequired($templateCode, $errorFieldArray, $failure);
 		$currentArray['password_again'] = $currentArray['password'];
 		$markerArray = $this->marker->fillInMarkerArray($markerArray, $currentArray, '', TRUE);
@@ -159,7 +159,7 @@ class tx_srfeuserregister_display {
 				}
 			}
 			$key = ($cmd == 'invite') ? 'INVITE': 'CREATE';
-			$this->marker->addMd5EventsMarkers($markerArray, 'create', $this->controlData->getUseMd5Password());
+			$this->marker->addMd5EventsMarkers($markerArray, FALSE, $this->controlData->getUseMd5Password());
 
 			$bNeedUpdateJS = TRUE;
 			if ($cmd == 'create' || $cmd == 'invite')	{
@@ -230,15 +230,16 @@ class tx_srfeuserregister_display {
 				$origArray = $this->data->parseIncomingData($origArray);
 			}
 
+			$aCAuth = $authObj->aCAuth($origArray,$this->conf['setfixed.']['EDIT.']['_FIELDLIST']);
 			if (
 				is_array($origArray) &&
-				( ($theTable == 'fe_users' && $TSFE->loginUser) || $authObj->aCAuth($origArray) || $theCode && !strcmp($authObj->authCode, $theCode) )
+				( ($theTable == 'fe_users' && $TSFE->loginUser) || $aCAuth || $theCode && !strcmp($authObj->authCode, $theCode) )
 			) {
-				$this->marker->addMd5EventsMarkers($markerArray, 'edit', $this->controlData->getUseMd5Password());
+				$this->marker->addMd5EventsMarkers($markerArray, TRUE, $this->controlData->getUseMd5Password());
 				$this->marker->setArray($markerArray);
 				// Must be logged in OR be authenticated by the aC code in order to edit
 				// If the recUid selects a record.... (no check here)
-				if ( !strcmp($authObj->authCode, $theCode) || $authObj->aCAuth($origArray) || $this->cObj->DBmayFEUserEdit($theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
+				if ( !strcmp($authObj->authCode, $theCode) || $aCAuth || $this->cObj->DBmayFEUserEdit($theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 					// Display the form, if access granted.
 					$content = $this->editForm(
 						$markerArray,
@@ -281,15 +282,16 @@ class tx_srfeuserregister_display {
 
 			// If deleting is enabled
 			$origArray = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $this->data->getRecUid());
+			$aCAuth = $authObj->aCAuth($origArray,$this->conf['setfixed.']['DELETE.']['_FIELDLIST']);
 
-			if ( ($theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $authObj->aCAuth($origArray)) {
+			if ( ($theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) || $aCAuth) {
 				// Must be logged in OR be authenticated by the aC code in order to delete
 
 				// If the recUid selects a record.... (no check here)
 				if (is_array($origArray)) {
 					$bMayEdit = $this->cObj->DBmayFEUserEdit($theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf']);
 
-					if ($authObj->aCAuth($origArray) || $bMayEdit) {
+					if ($aCAuth || $bMayEdit) {
 						$markerArray = $this->marker->getArray();
 						// Display the form, if access granted.
 						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="rU" value="'.$this->data->getRecUid().'" />';
