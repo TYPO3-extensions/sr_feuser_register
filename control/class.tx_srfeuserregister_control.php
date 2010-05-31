@@ -204,7 +204,7 @@ class tx_srfeuserregister_control {
 					$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('email')));
 				}
 			}
-			$userGroupObj = &$addressObj->getFieldObj ('usergroup');
+			$userGroupObj = &$addressObj->getFieldObj('usergroup');
 			if (is_object($userGroupObj))	{
 				$userGroupObj->modifyConf($this->conf, $cmdKey);
 			}
@@ -336,7 +336,6 @@ class tx_srfeuserregister_control {
 				$this->data->generatePassword($dataArray, $cmdKey);
 				$prefixId = $this->controlData->getPrefixId();
 				$extKey = $this->controlData->getExtKey();
-
 				$theUid = $this->data->save(
 					$theTable,
 					$dataArray,

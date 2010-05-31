@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2009 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
+*  (c) 2007-2010 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -105,14 +105,7 @@ class tx_srfeuserregister_setfixed {
 			$userGroupObj = &$addressObj->getFieldObj('usergroup');
 
 			$fieldList = $row['_FIELDLIST'];
-			if (t3lib_div::inList($fieldList,'usergroup'))	{
-				$oldUserGroup = $row['usergroup'];
-				$userGroupObj->removeReservedValues($row); // do not consider frequently changed user groups
-			}
 			$theCode = $authObj->setfixedHash($row, $fieldList);
-			if (isset($oldUserGroup))	{
-				$row['usergroup'] = $oldUserGroup;
-			}
 
 			if (!strcmp($authObj->getAuthCode(), $theCode) && !($sFK == 'APPROVE' && count($origArray) && $origArray['disable']=='0')) {
 
@@ -198,7 +191,6 @@ class tx_srfeuserregister_setfixed {
 					($this->conf['email.']['SETFIXED_REFUSE'] || $sFK !== 'REFUSE') &&
 					($this->conf['enableEmailConfirmation'] || $this->conf['infomail'])
 				)	{
-
 					// Compiling email
 					$this->email->compile(
 						SETFIXED_PREFIX . $setfixedSuffix,
@@ -255,20 +247,6 @@ class tx_srfeuserregister_setfixed {
 
 
 	/**
-	* Converts the setfixed key into a command
-	*
-	*//*
-	function convertSfk2Cmd ($setfixed, $sFK)	{
-
-		$rc = 'EDIT';
-		switch ($sFK)	{
-
-		}
-		return $rc;
-	}*/
-
-
-	/**
 	* Computes the setfixed url's
 	*
 	* @param array  $markerArray: the input marker array
@@ -276,7 +254,7 @@ class tx_srfeuserregister_setfixed {
 	* @param array  $r: the record row
 	* @return void
 	*/
-	function computeUrl (&$markerArray, $setfixed, $r, $theTable) {
+	function computeUrl ($cmdKey, &$markerArray, $setfixed, $r, $theTable) {
 		global $TSFE;
 
 		$prefixId = $this->controlData->getPrefixId();
@@ -293,10 +271,10 @@ class tx_srfeuserregister_setfixed {
 				}
 				unset($setfixedpiVars);
 				$recCopy = $r;
-				$setfixedpiVars[$prefixId .'[rU]'] = $r['uid'];
+				$setfixedpiVars[$prefixId . '[rU]'] = $r['uid'];
 				$fieldList = $data['_FIELDLIST'];
-
 				if ($theTable != 'fe_users' && $theKey == 'EDIT' ) {
+
 					if (is_array($data) ) {
 						foreach($data as $fieldName => $fieldValue) {
 							$setfixedpiVars['fD['.$fieldName.']'] = rawurlencode($fieldValue);
@@ -304,13 +282,9 @@ class tx_srfeuserregister_setfixed {
 						}
 					}
 					if( $this->conf['edit.']['setfixed'] ) {
-						if (t3lib_div::inList($fieldList,'usergroup'))	{
-							$userGroupObj->removeReservedValues($recCopy);
-						}
-
 						$setfixedpiVars[$prefixId.'[aC]'] = $authObj->setfixedHash($recCopy, $fieldList);
 					} else {
-						$setfixedpiVars[$prefixId.'[aC]'] = $authObj->authCode($r);
+						$setfixedpiVars[$prefixId.'[aC]'] = $authObj->authCode($r, $fieldList);
 					}
 					$setfixedpiVars[$prefixId.'[cmd]'] = 'edit';
 					$linkPID = $this->controlData->getPID('edit');
@@ -321,15 +295,11 @@ class tx_srfeuserregister_setfixed {
 					if (isset($r['chalvalue']))	{
 						$setfixedpiVars[$prefixId.'[cv]'] = $r['chalvalue'];
 					}
-
 					if (is_array($data) ) {
 						foreach($data as $fieldName => $fieldValue) {
 							$setfixedpiVars['fD['.$fieldName.']'] = rawurlencode($fieldValue);
 							$recCopy[$fieldName] = $fieldValue;
 						}
-					}
-					if (t3lib_div::inList($fieldList,'usergroup'))	{
-						$userGroupObj->removeReservedValues($recCopy);
 					}
 					$setfixedpiVars[$prefixId.'[aC]'] = $authObj->setfixedHash($recCopy, $fieldList);
 					$linkPID = $this->controlData->getPID('confirm');

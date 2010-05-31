@@ -81,6 +81,16 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 		}
 	}
 
+	function removeInvalidValues ($conf, $cmdKey, &$row)	{
+
+		if (isset($row['usergroup']) && $conf[$cmdKey.'.']['allowUserGroupSelection'])	{
+
+// Todo
+		} else {
+			$row['usergroup'] = ''; // the setting of the usergropus has not been allowed
+		}
+	}
+
 	function parseOutgoingData ($fieldname, $dataArray, &$origArray, &$parsedArr) {
 
 		$valuesArray = array();

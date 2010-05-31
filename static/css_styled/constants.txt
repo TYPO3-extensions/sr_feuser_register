@@ -40,9 +40,6 @@ plugin.tx_srfeuserregister_pi1 {
       # cat=plugin.tx_srfeuserregister_pi1/enable; type=int+; label= Generate the password: If non-zero, a random password is generated. The number of characters in the password is given by this parameter.
   generatePassword = 0
 
-    # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Authentication code fields: List of fields that are used in the calculation of authentication codes. Direct Mail uses only uid.
-  authcodeFields = uid
-
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Authentication code length: Length of the authentication codes. Direct Mail uses 8.
   codeLength = 12
 

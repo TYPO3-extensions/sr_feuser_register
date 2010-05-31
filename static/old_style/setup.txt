@@ -139,7 +139,6 @@ plugin.tx_srfeuserregister_pi1 {
 	enableAdminReview = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
 	autoLoginRedirect_url = {$plugin.tx_srfeuserregister_pi1.autoLoginRedirect_url}
 
-	authcodeFields = {$plugin.tx_srfeuserregister_pi1.authcodeFields}
 	authcodeFields.codeLength = {$plugin.tx_srfeuserregister_pi1.codeLength}
 
 	invite < .create
