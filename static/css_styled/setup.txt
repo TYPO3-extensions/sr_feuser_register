@@ -34,6 +34,7 @@ plugin.tx_srfeuserregister_pi1 {
 	useShortUrls = {$plugin.tx_srfeuserregister_pi1.useShortUrls}
 	shortUrlLife = {$plugin.tx_srfeuserregister_pi1.shortUrlLife}
 	useLocalization = {$plugin.tx_srfeuserregister_pi1.useLocalization}
+	useLocalCountry = {$plugin.tx_srfeuserregister_pi1.useLocalCountry}
 	dateFormat = {$plugin.tx_srfeuserregister_pi1.dateFormat}
 	dateSplit = {$plugin.tx_srfeuserregister_pi1.dateSplit}
 
@@ -69,13 +70,13 @@ plugin.tx_srfeuserregister_pi1 {
 			module_sys_dmail_html = {$plugin.tx_srfeuserregister_pi1.dmailCheckedUponRegistration}
 			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
 			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
-			by_invitation =
+			by_invitation = 0
 		}
 
 		overrideValues {
 			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
 			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
-			by_invitation =
+			by_invitation = 0
 		}
 
 		evalValues {
@@ -228,6 +229,7 @@ plugin.tx_srfeuserregister_pi1 {
 	notify.SETFIXED_APPROVE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnApprove}
 	notify.SETFIXED_APPROVE_REVIEW = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnApprove}
 	notify.SETFIXED_DELETE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnRefuse}
+	notify.SETFIXED_ENTER = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnEnter}
 	notify.SETFIXED_ACCEPT = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnAdminAccept}
 	notify.SETFIXED_REFUSE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnAdminRefuse}
 

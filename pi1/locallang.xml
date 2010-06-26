@@ -467,6 +467,8 @@ username.</label>
 			<label index="internal_no_subtemplate">The subpart %s has not been found inside of the template file.</label>
 			<label index="internal_edit_option">Edit-option is not set in TypoScript.</label>
 			<label index="internal_infomail_configuration">Configuration error: infomail option is not available or emailField is not set in TypoScript</label>
+			<label index="internal_token_empty">The form\'s token is empty!</label>
+			<label index="internal_token_short">The form\'s token is too short!</label>
 		</languageKey>
 	</data>
 </T3locallang>

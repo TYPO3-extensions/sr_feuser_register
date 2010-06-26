@@ -170,7 +170,6 @@ class tx_srfeuserregister_lang {
 				}
 			}
 		}
-
 		$locallang = $this->pibase->LOCAL_LANG;
 		$this->pibase->pi_loadLL();
 

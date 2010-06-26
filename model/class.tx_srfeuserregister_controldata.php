@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2009 Franz Holzinger <franz@ttproducts.de>
+*  (c) 2007-2010 Franz Holzinger <franz@ttproducts.de>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -57,6 +57,7 @@ class tx_srfeuserregister_controldata {
 	var $useMd5Password = FALSE;
 	var $setfixedEnabled = 0;
 	var $bSubmit = FALSE;
+	var $bDoNotSave = FALSE;
 	var $failure = FALSE; // is set if data did not have the required fields set.
 	var $sys_language_content;
 	var $feUserData = array();
@@ -64,6 +65,8 @@ class tx_srfeuserregister_controldata {
 	var $securedFieldArray = array('password', 'password_again');
 	var $bTokenValid = FALSE;
 	var $dummyPassword = 'Joh 3,16';
+	var $bValidRegHash;
+	var $regHash;
 
 
 	function init (&$conf, $prefixId, $extKey, $piVars, $theTable)	{
@@ -123,7 +126,6 @@ class tx_srfeuserregister_controldata {
 			}
 			if (!$regHash)	{
 				$getData = t3lib_div::_GET($this->getPrefixId());
-
 				if (isset($getData) && is_array($getData))	{
 					$regHash = $getData['regHash'];
 				}
@@ -144,6 +146,7 @@ class tx_srfeuserregister_controldata {
 						}
 					}
 					$restoredFeUserData = $getVars[$this->getPrefixId()];
+
 					foreach ($getVars as $k => $v ) {
 						// restore former GET values for the url
 						t3lib_div::_GETset($v,$k);
@@ -158,6 +161,7 @@ class tx_srfeuserregister_controldata {
 					} else {
 						$feUserData = $origFeuserData;
 					}
+					$this->setRegHash($regHash);
 				}
 			}
 		}
@@ -174,7 +178,8 @@ class tx_srfeuserregister_controldata {
 				$this->setFeUserData($value, $pivar);
 			}
 		}
-		$authObj->setAuthCode($this->getFeUserData('aC'));
+		$aC = $this->getFeUserData('aC');
+		$authObj->setAuthCode($aC);
 
 		if (isset($feUserData) && is_array($feUserData) && isset($feUserData['cmd']))	{
 			$cmd = htmlspecialchars($feUserData['cmd']);
@@ -193,6 +198,7 @@ class tx_srfeuserregister_controldata {
 		)	{
 			$this->setTokenValid(TRUE);
 		} else if (($bValidRegHash || !$this->conf['useShortUrls']) && t3lib_div::testInt($feUserData['rU']))	{
+
 			$theUid = intval($feUserData['rU']);
 			$origArray = $TSFE->sys_page->getRawRecord($theTable, $theUid);
 
@@ -200,7 +206,7 @@ class tx_srfeuserregister_controldata {
 
 				$fdArray = $getVars['fD'];
 			} else if (!isset($getVars)) {
-				$fdArray = t3lib_div::_GET('fD');
+				$fdArray = t3lib_div::_GP('fD', 1);
 			}
 
 			if (isset($fdArray) && is_array($fdArray))	{
@@ -215,17 +221,27 @@ class tx_srfeuserregister_controldata {
 		}
 
 		if ($this->isTokenValid())	{
-
 			$this->setValidRegHash($bValidRegHash);
 			$this->setFeUserData($feUserData);
+			$this->writeSpecialData();
 
 			// generate a new token for the next created forms
 			$token = $authObj->generateToken();
 			$this->writeToken($token);
 		} else {
 			$this->setFeUserData(array());	// delete all FE user data when the token is not valid
-			$this->writePassword('');   	// delete the stored password
+			$this->writePassword('');	// delete the stored password
 		}
+	}
+
+
+	function setRegHash ($regHash)	{
+		$this->regHash = $regHash;
+	}
+
+
+	function getRegHash ()	{
+		return $this->regHash;
 	}
 
 
@@ -241,6 +257,11 @@ class tx_srfeuserregister_controldata {
 
 	function getSecuredFieldArray ()	{
 		return $this->securedFieldArray;
+	}
+
+
+	function getDummyPassword ()	{
+		return $this->dummyPassword;
 	}
 
 
@@ -262,11 +283,48 @@ class tx_srfeuserregister_controldata {
 	}
 
 
+	function readSecuredArray ()	{
+		$rcArray = array();
+
+		foreach ($this->securedFieldArray as $field)	{
+			switch ($field)	{
+				case 'password':
+				case 'password_again':
+					$v = $this->getDummyPassword();
+					$rcArray[$field] = $v;
+					break;
+				default:
+					break;
+			}
+		}
+		return $rcArray;
+	}
+
+
+	function readUnsecuredArray ()	{
+		$rcArray = array();
+		$seData = $this->readSessionData();
+
+		foreach ($this->securedFieldArray as $field)	{
+			$v = $seData[$field];
+			if (isset($v))	{
+				$rcArray[$field] = $v;
+			}
+		}
+
+		return $rcArray;
+	}
+
+
 	function readPassword ()	{
 		global $TSFE;
 
-		$seData = $this->readSessionData();
-		$rc = $seData['password'];
+		$securedArray = $this->readUnsecuredArray();
+
+		if (isset($securedArray) && is_array($securedArray))	{
+			$rc = $securedArray['password'];
+		}
+
 		return $rc;
 	}
 
@@ -278,6 +336,7 @@ class tx_srfeuserregister_controldata {
 		$seData['password'] = $password;
 		$this->writeSessionData($seData);
 	}
+
 
 	function setTokenValid ($valid)	{
 		$this->bTokenValid = $valid;
@@ -304,29 +363,69 @@ class tx_srfeuserregister_controldata {
 
 		$seData = $this->readSessionData();
 		$seData['token'] = $token;
-		$this->writeSessionData($seData);
+		$this->writeSessionData($seData, FALSE);
 	}
 
 
-	function readSessionData ()	{
+	function readSessionData ($bReadAll = FALSE)	{
 		global $TSFE;
 
 		$extKey = $this->getExtKey();
 		$session = $TSFE->fe_user->getKey('ses','feuser');
-		if (isset($session) && is_array($session))	{
+
+		if ($bReadAll)	{
+			$rc = $session;
+		} else if (isset($session) && is_array($session))	{
 			$rc = $session[$extKey];
 		}
 		return $rc;
 	}
 
 
-	function writeSessionData ($data)	{
+	function writeSessionData ($data, $bKeepToken=TRUE, $bRedirectUrl=TRUE)	{
 		global $TSFE;
 
 		$extKey = $this->getExtKey();
-		$session = $this->readSessionData();
+		$session = $this->readSessionData(TRUE);
+		if ($bKeepToken && !isset($data['token']))	{
+			$data['token'] = $this->readToken();
+		}
+		if ($bRedirectUrl && !isset($data['redirect_url']))	{
+			$redirect_url = $this->readRedirectUrl();
+			if ($redirect_url != '')	{
+				$data['redirect_url'] = $redirect_url;
+			}
+		}
 		$session[$extKey] = $data;
 		$TSFE->fe_user->setKey('ses','feuser',$session);
+	}
+
+
+	// delete all session data except of the token
+	function clearSessionData ($bRedirectUrl=TRUE)	{
+		$seData = array();
+
+		$this->writeSessionData($seData, TRUE, $bRedirectUrl);
+	}
+
+
+	function writeSpecialData ()	{
+		$redirect_url = t3lib_div::_GET('redirect_url');
+
+		if ($redirect_url != '')	{
+			$data = array();
+			$data['redirect_url'] = $redirect_url;
+			$this->writeSessionData($data);
+		}
+	}
+
+
+	function readRedirectUrl ()	{
+		$data = $this->readSessionData();
+		if (isset($data) && is_array($data))	{
+			$rc = $data['redirect_url'];
+		}
+		return $rc;
 	}
 
 
@@ -338,7 +437,7 @@ class tx_srfeuserregister_controldata {
 	function getSecuredValue ($field, $value, $bHtmlSpecial)	{
 		$securedFieldArray = $this->getSecuredFieldArray();
 
-		if (in_array($field, $securedFieldArray))	{
+		if ($field != '' && in_array($field, $securedFieldArray))	{
 			// nothing for password and password_again
 		} else {
 			$value = htmlspecialchars_decode($value);
@@ -393,23 +492,34 @@ class tx_srfeuserregister_controldata {
 			$dummyPassword = md5($dummyPassword);
 		}
 
-		if (isset($row['password']))	{
-			$value = $row['password'];
+		$securedFieldArray = $this->getSecuredFieldArray();
+		$newSessionData = array();
+		$bNewSessionData = FALSE;
+
+		foreach ($securedFieldArray as $securedField)	{
+
+			$value = $row[$securedField];
+
 			if ($value != '' && $value != $dummyPassword)	{
-				$this->writePassword($value);
+
+				$newSessionData[$securedField] = $value;
 				$bWriteDummy = TRUE;
+				$bNewSessionData = TRUE;
 			}
-		} else if (isset($row['username']))	{
+		}
+
+		if ($bNewSessionData)	{
+			$this->writeSessionData($newSessionData);
+		} else if ($row['password'] != '' || $row['password'] != '')	{
 			$bWriteDummy = TRUE;
 		}
 
 		if ($bWriteDummy)	{
-			if ($row['password'] == $row['password_again'])	{
-				$bWritePasswordAgain = TRUE;
+			if ($row['password'] != '')	{
+				$row['password'] = $dummyPassword;
 			}
-			$row['password'] = $dummyPassword; // hide the real password from FE
-			if ($bWritePasswordAgain)	{
-				$row['password_again'] = $dummyPassword; // hide the real password from FE
+			if ($row['password_again'] != '')	{
+				$row['password_again'] = $dummyPassword;
 			}
 		}
 	}
@@ -507,6 +617,7 @@ class tx_srfeuserregister_controldata {
 
 
 	function getFeUserData ($k='')	{
+
 		if ($k)	{
 			$rc = $this->feUserData[$k];
 		} else {
@@ -516,11 +627,12 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function setFeUserData ($dataArray, $k='')	{
+	function setFeUserData ($v, $k='')	{
+
 		if ($k != '')	{
-			$this->feUserData[$k] = $dataArray;
+			$this->feUserData[$k] = $v;
 		} else {
-			$this->feUserData = $dataArray;
+			$this->feUserData = $v;
 		}
 	}
 
@@ -542,6 +654,16 @@ class tx_srfeuserregister_controldata {
 
 	function getSubmit ()	{
 		return $this->bSubmit;
+	}
+
+
+	function setDoNotSave ($bParam)	{
+		$this->bDoNotSave = $bParam;
+	}
+
+
+	function getDoNotSave ()	{
+		return $this->bDoNotSave;
 	}
 
 
@@ -680,10 +802,10 @@ class tx_srfeuserregister_controldata {
 			// convert the array to one that will be properly incorporated into the GET global array.
 		$retArray = array();
 		foreach($varArray as $key => $val)	{
-			$search = array('[\]]', '[\[]');
-			$replace = array ('\']', '\'][\'');
+			$search = array('[%5D]', '[%5B]');
+			$replace = array('\']', '\'][\'');
 			$newkey = "['" . preg_replace($search, $replace, $key);
-			eval("\$retArray".$newkey."='$val';");
+			eval("\$retArray" . $newkey . "='$val';");
 		}
 		return $retArray;
 	}	// getShortUrl

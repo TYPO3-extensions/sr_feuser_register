@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2009 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+*  (c) 2007-2010 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -190,7 +190,7 @@ class tx_srfeuserregister_tca {
 									$dataArray[$colName] |= (1 << $dec);
 								}
 							}
-						} else if (isset($dataArray[$colName]) && $dataArray[$colName]!='0') {
+						} else if (isset($dataArray[$colName]) && $dataArray[$colName] != '0') {
 							$dataArray[$colName] = '1';
 						} else {
 							$dataArray[$colName] = '0';
@@ -218,6 +218,44 @@ class tx_srfeuserregister_tca {
 			}
 		}
 	} // modifyRow
+
+
+	/**
+	* Replaces the markers in the foreign table where clause
+	*
+	* @param string  $whereClause: foreign table where clause
+	* @param array  $colConfig: $TCA column configuration
+	* @return string 	foreign table where clause with replaced markers
+	*/
+	function replaceForeignWhereMarker($whereClause, $colConfig)	{
+		global $TYPO3_DB, $TSFE;
+
+		$foreignWhere = $colConfig['foreign_table_where'];
+
+		if ($foreignWhere)	{
+			$pageTSConfig = $TSFE->getPagesTSconfig();
+			$TSconfig = $pageTSConfig['TCEFORM.'][$theTable.'.'][$colName.'.'];
+
+			if ($TSconfig) {
+
+					// substitute whereClause
+				$foreignWhere = str_replace('###PAGE_TSCONFIG_ID###', intval($TSconfig['PAGE_TSCONFIG_ID']), $foreignWhere);
+				$foreignWhere = str_replace('###PAGE_TSCONFIG_IDLIST###', $TYPO3_DB->cleanIntList($TSconfig['PAGE_TSCONFIG_IDLIST']), $foreignWhere);
+			}
+
+			// have all markers in the foreign where been replaced?
+			if (strpos($foreignWhere, '###') === FALSE) {
+				$orderbyPos = stripos($foreignWhere, 'ORDER BY');
+				if ($orderbyPos !== FALSE) {
+					$whereClause .= ' ' . substr($foreignWhere, 0, $orderbyPos);
+				} else {
+					$whereClause .= ' ' . $foreignWhere;
+				}
+			}
+		}
+
+		return $whereClause;
+	}
 
 
 	/**
@@ -250,7 +288,12 @@ class tx_srfeuserregister_tca {
 			$mrow = $row;
 		}
 		$fields = $this->conf[$cmdKey.'.']['fields'];
-		if (!$mode == MODE_PREVIEW && !$viewOnly && $activity!='email') {
+
+		if ($mode == MODE_PREVIEW)	{
+			if ($activity=='')	{
+				$activity = 'preview';
+			}
+		} else if (!$viewOnly && $activity != 'email') {
 			$activity = 'input';
 		}
 
@@ -260,6 +303,7 @@ class tx_srfeuserregister_tca {
 
 				$colConfig = $colSettings['config'];
 				$colContent = '';
+
 				if (!$bChangesOnly || isset($mrow[$colName]))	{
 					$type = $colConfig['type'];
 
@@ -268,9 +312,12 @@ class tx_srfeuserregister_tca {
 					$bNotLast = FALSE;
 					$bStdWrap = FALSE;
 					// any item wraps set?
-					if (is_array($this->conf[$type . '.']) && is_array($this->conf[$type . '.'][$activity.'.']) &&
-					is_array($this->conf[$type . '.'][$activity . '.'][$colName . '.']) &&
-					is_array($this->conf[$type . '.'][$activity . '.'][$colName . '.']['item.']))	{
+					if (
+						is_array($this->conf[$type . '.']) &&
+						is_array($this->conf[$type . '.'][$activity.'.']) &&
+						is_array($this->conf[$type . '.'][$activity . '.'][$colName . '.']) &&
+						is_array($this->conf[$type . '.'][$activity . '.'][$colName . '.']['item.'])
+					)	{
 						$stdWrap = $this->conf[$type. '.'][$activity . '.'][$colName . '.']['item.'];
 						$bStdWrap = TRUE;
 						if ($this->conf[$type . '.'][$activity . '.'][$colName . '.']['item.']['notLast'])	{
@@ -292,6 +339,7 @@ class tx_srfeuserregister_tca {
 
 					if ($mode == MODE_PREVIEW || $viewOnly) {
 						// Configure preview based on input type
+
 						switch ($type) {
 							//case 'input':
 							case 'text':
@@ -308,17 +356,28 @@ class tx_srfeuserregister_tca {
 									if (!$bListWrap)	{
 										$listWrap['wrap'] = '<ul class="tx-srfeuserregister-multiple-checked-values">|</ul>';
 									}
+									$bCheckedArray = array();
+									foreach($colConfig['items'] as $key => $value) {
+										$checked = ($mrow[$colName] & (1 << $key));
+										if ($checked)	{
+											$bCheckedArray[$key] = TRUE;
+										}
+									}
 
 									$count = 0;
+									$checkedCount = 0;
 									foreach($colConfig['items'] as $key => $value) {
 										$count++;
 										$label = $this->langObj->getLLFromString($colConfig['items'][$key][0]);
 										if ($HSC)	{
 											$label = htmlspecialchars($label,ENT_QUOTES,$charset);
 										}
-										$checked = ($mrow[$colName] & (1 << $key));
-										$label = ($checked ? $label : '');
-										$colContent .= ((!$bNotLast || $count < count($colConfig['items'])) ?  $this->cObj->stdWrap($label,$stdWrap) : $label);
+										$checked = ($bCheckedArray[$key]);
+										if ($checked)	{
+											$checkedCount++;
+											$label = ($checked ? $label : '');
+											$colContent .= ((!$bNotLast || $checkedCount < count($bCheckedArray)) ?  $this->cObj->stdWrap($label,$stdWrap) : $label);
+										}
 									}
 									$this->cObj->alternativeData = $colConfig['items'];
 									$colContent = $this->cObj->stdWrap($colContent,$listWrap);
@@ -371,7 +430,6 @@ class tx_srfeuserregister_tca {
 									if (!count ($itemArray))	{
 										$itemArray = $colConfig['items'];
 									}
-
 									if (!$bStdWrap)	{
 										$stdWrap['wrap'] = '|<br />';
 									}
@@ -384,7 +442,6 @@ class tx_srfeuserregister_tca {
 											if ($HSC)	{
 												$label = htmlspecialchars($label,ENT_QUOTES,$charset);
 											}
-
 											$colContent .= ((!$bNotLast || $i < count($valuesArray) - 1 ) ?  $this->cObj->stdWrap($label,$stdWrap) : $label);
 										}
 									}
@@ -454,8 +511,8 @@ class tx_srfeuserregister_tca {
 									$bUseTCA = TRUE;
 								}
 						}
-
 						switch ($type) {
+
 							case 'input':
 								$colContent = '<input type="input" name="FE['.$theTable.']['.$colName.']"'.
 									' size="'.($colConfig['size']?$colConfig['size']:30).'"';
@@ -483,15 +540,17 @@ class tx_srfeuserregister_tca {
 							case 'check':
 								$label = $this->langObj->getLL('tooltip_' . $colName);
 								$label = htmlspecialchars($label,ENT_QUOTES,$charset);
+
 								if (is_array($itemArray)) {
 									$uidText = $this->pibase->pi_getClassName($colName).'-'.$mrow['uid'];
-									$colContent  = '<ul id="'. $uidText . ' " class="tx-srfeuserregister-multiple-checkboxes">';
+									$colContent = '<ul id="'. $uidText . ' " class="tx-srfeuserregister-multiple-checkboxes">';
+									if ($this->controlData->getSubmit() || $this->controlData->getDoNotSave() || $cmd=='edit')	{
+										$startVal = $mrow[$colName];
+									} else {
+										$startVal = $colConfig['default'];
+									}
+
 									foreach ($itemArray as $key => $value) {
-										if ($this->controlData->getSubmit() || $cmd=='edit')	{
-											$startVal = $mrow[$colName];
-										} else {
-											$startVal = $colConfig['default'];
-										}
 										$checked = ($startVal & (1 << $key))?' checked="checked"':'';
 										$label = $this->langObj->getLLFromString($itemArray[$key][0]);
 										$label = htmlspecialchars($label,ENT_QUOTES,$charset);
@@ -548,7 +607,6 @@ class tx_srfeuserregister_tca {
 								} else {
 									$colContent .= '<select id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
 								}
-
 								if (is_array($itemArray)) {
 									$itemArray = $this->getItemKeyArray($itemArray);
 									$i = 0;
@@ -592,6 +650,8 @@ class tx_srfeuserregister_tca {
 										$whereClause .= ' AND sys_dmail_category.pid IN (' . implode(',',$pidArray) . ')' . ($this->conf['useLocalization'] ? ' AND sys_language_uid=' . intval($languageUid) : '');
 									}
 									$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
+									$whereClause = $this->replaceForeignWhereMarker($whereClause, $colConfig);
+
 									$res = $TYPO3_DB->exec_SELECTquery('*', $colConfig['foreign_table'], $whereClause, '', $TCA[$colConfig['foreign_table']]['ctrl']['sortby']);
 									if (!in_array($colName, $this->controlData->getRequiredArray())) {
 										if ($colConfig['renderMode'] == 'checkbox' || $colContent)	{
@@ -634,6 +694,7 @@ class tx_srfeuserregister_tca {
 										}
 									}
 								}
+
 								if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
 									$colContent .= '</dl>';
 								} else {

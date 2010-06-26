@@ -93,6 +93,7 @@ class tx_srfeuserregister_auth {
 			$recCopy_temp=array();
 			$fieldArr = t3lib_div::trimExplode(',', $fields, 1);
 			foreach($fieldArr as $k => $v) {
+
 				if (isset($r[$v]))	{
 					if (is_array($r[$v]))	{
 						$recCopy_temp[$k] = implode(',',$r[$v]);
@@ -106,7 +107,7 @@ class tx_srfeuserregister_auth {
 				$preKey = implode('|',$recCopy_temp);
 			}
 		}
-		$value .= $preKey . ($extra != '' ? $extra . '|' : '') . $this->config['addKey'];
+		$value .= $preKey . ($extra != '' ? '|' . $extra : '') . '|'  . $this->config['addKey'];
 
 		if ($this->conf['authcodeFields.']['addDate']) {
 			$value .= '|'.date($this->conf['authcodeFields.']['addDate']);
@@ -124,8 +125,13 @@ class tx_srfeuserregister_auth {
 	*/
 	function aCAuth ($r, $fields) {
 		$rc = false;
-		if ($this->authCode && !strcmp($this->authCode, $this->authCode($r, $fields))) {
-			$rc = true;
+
+		if ($this->authCode) {
+			$authCode = $this->authCode($r, $fields);
+
+			if (!strcmp($this->authCode, $authCode))	{
+				$rc = true;
+			}
 		}
 		return $rc;
 	}

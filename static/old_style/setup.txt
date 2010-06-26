@@ -216,7 +216,7 @@ plugin.tx_srfeuserregister_pi1 {
 	notify.DELETE_SAVED =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnDelete}
 	notify.SETFIXED_CREATE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyConfirmation}
 	notify.SETFIXED_INVITE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyConfirmation}
-	notify.SETFIXED_APPROVE =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnApprove}
+	notify.SETFIXED_APPROVE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnApprove}
 	notify.SETFIXED_DELETE =  {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnRefuse}
 	notify.SETFIXED_ACCEPT = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnAdminAccept}
 	notify.SETFIXED_REFUSE = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnAdminRefuse}

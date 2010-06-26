@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2009 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+*  (c) 2007-2010 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -65,7 +65,7 @@ class tx_srfeuserregister_marker {
 	var $dataArray; // temporary array of data
 
 
-	function init (&$pibase, &$conf, &$config, $data, &$tca, &$langObj, &$controlData, &$urlObj, $uid)	{
+	function init (&$pibase, &$conf, &$config, $data, &$tca, &$langObj, &$controlData, &$urlObj, $uid, $token)	{
 		global $TSFE;
 
 		$this->pibase = &$pibase;
@@ -83,31 +83,22 @@ class tx_srfeuserregister_marker {
 		}
 		$markerArray = array();
 
-			// Set globally substituted markers, fonts and colors.
-		if ($this->conf['templateStyle'] != 'css-styled') {
-			$splitMark = md5(microtime());
-			list($markerArray['###GW1B###'], $markerArray['###GW1E###']) = explode($splitMark, $this->cObj->stdWrap($splitMark, $this->conf['wrap1.']));
-			list($markerArray['###GW2B###'], $markerArray['###GW2E###']) = explode($splitMark, $this->cObj->stdWrap($splitMark, $this->conf['wrap2.']));
-			list($markerArray['###GW3B###'], $markerArray['###GW3E###']) = explode($splitMark, $this->cObj->stdWrap($splitMark, $this->conf['wrap3.']));
-			$markerArray['###GC1###'] = $this->cObj->stdWrap($this->conf['color1'], $this->conf['color1.']);
-			$markerArray['###GC2###'] = $this->cObj->stdWrap($this->conf['color2'], $this->conf['color2.']);
-			$markerArray['###GC3###'] = $this->cObj->stdWrap($this->conf['color3'], $this->conf['color3.']);
-		}
-
 			// prepare for character set settings
 		if ($TSFE->metaCharset) {
 			$charset = $TSFE->csConvObj->parse_charset($TSFE->metaCharset);
 		} else {
 			$charset = 'iso-8859-1'; // charset to be used in emails and form conversions
 		}
+		$prefixId = $this->controlData->getPrefixId();
+		$extKey = $this->controlData->getExtKey();
 		$markerArray['###CHARSET###'] = $charset;
-		$markerArray['###PREFIXID###'] = $this->controlData->getPrefixId();
+		$markerArray['###PREFIXID###'] = $prefixId;
 
 			// Setting URL, HIDDENFIELDS and signature markers
-		$this->addURLMarkers($markerArray, $this->controlData->getBackURL(), $uid, $this->controlData->readToken());
+		$this->addURLMarkers($markerArray, $this->controlData->getBackURL(), $uid, $token);
 
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->pibase->extKey][$this->pibase->prefixId]['registrationProcess'])) {
-			foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->pibase->extKey][$this->pibase->prefixId]['registrationProcess'] as $classRef) {
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'])) {
+			foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'] as $classRef) {
 				$hookObj= &t3lib_div::getUserObj($classRef);
 				if (method_exists($hookObj, 'addGlobalMarkers')) {
 					$hookObj->addGlobalMarkers($markerArray, $this);
@@ -126,10 +117,10 @@ class tx_srfeuserregister_marker {
 			// Button labels
 		$buttonLabelsList = 'register,confirm_register,back_to_form,update,confirm_update,enter,confirm_delete,cancel_delete,update_and_more,password_forgotten';
 
-		$this->setButtonLabelsList ($buttonLabelsList);
+		$this->setButtonLabelsList($buttonLabelsList);
 
 		$otherLabelsList = 'yes,no,password_again,tooltip_password_again,tooltip_invitation_password_again,click_here_to_register,tooltip_click_here_to_register,click_here_to_edit,tooltip_click_here_to_edit,click_here_to_delete,tooltip_click_here_to_delete'.
-			',copy_paste_link,enter_account_info,enter_invitation_account_info,required_info_notice,excuse_us,'.
+		',copy_paste_link,enter_account_info,enter_invitation_account_info,required_info_notice,excuse_us,'.
 			',tooltip_login_username,tooltip_login_password,'.
 			',registration_problem,registration_sorry,registration_clicked_twice,registration_help,kind_regards,kind_regards_cre,kind_regards_del,kind_regards_ini,kind_regards_inv,kind_regards_upd'.
 			',v_verify_before_create,v_verify_invitation_before_create,v_verify_before_update,v_really_wish_to_delete,v_edit_your_account'.
@@ -172,6 +163,20 @@ class tx_srfeuserregister_marker {
 
 	function setOtherLabelsList (&$otherLabelsList)	{
 		$this->otherLabelsList = $otherLabelsList;
+	}
+
+
+	function addOtherLabelsList (&$otherLabelsList)	{
+		if ($otherLabelsList != '')	{
+
+			$formerOtherLabelsList = $this->getOtherLabelsList();
+
+			if ($formerOtherLabelsList != '')	{
+				$newOtherLabelsList = $formerOtherLabelsList . ',' . $otherLabelsList;
+				$newOtherLabelsList = t3lib_div::uniqueList($newOtherLabelsList);
+				$this->setOtherLabelsList($newOtherLabelsList);
+			}
+		}
 	}
 
 
@@ -280,8 +285,14 @@ class tx_srfeuserregister_marker {
 	* @param array  $TCA[tablename]['columns']
 	* @return void
 	*/
-	function addLabelMarkers (&$markerArray, $theTable, $row, $origRow, $keepFields, $requiredArray, $infoFields, &$tcaColumns, $bChangesOnly=FALSE) {
+	function addLabelMarkers (&$markerArray, $theTable, $row, $origRow, $securedArray, $keepFields, $requiredArray, $infoFields, &$tcaColumns, $bChangesOnly=FALSE) {
 		global $TSFE;
+
+		if (is_array($securedArray))	{
+			foreach ($securedArray as $field => $value)	{
+				$row[$field] = $securedArray[$field];
+			}
+		}
 
 		if (!$markerArray)	{
 			$markerArray = $this->getArray();
@@ -291,6 +302,7 @@ class tx_srfeuserregister_marker {
 		$infoFieldArray = t3lib_div::trimExplode(',', $infoFields, 1);
 		$charset = $TSFE->renderCharset;
 		$specialFieldArray = t3lib_div::trimExplode(',',$this->data->getSpecialFieldList(),1);
+
 		if ($specialFieldArray[0] != '')	{
 			$infoFieldArray = array_merge($infoFieldArray, $specialFieldArray);
 			$requiredArray = array_merge($requiredArray, $specialFieldArray);
@@ -386,12 +398,11 @@ class tx_srfeuserregister_marker {
 		$dataArray = array();
 		$dataArray['row'] = $row;
 		$this->setReplaceData($dataArray);
-		$password = $this->controlData->readPassword();
+		$username = ($row['username'] != '' ? $row['username'] : $row['email']);
 
 		foreach($otherLabels as $labelName) {
 			$langText = $this->langObj->getLL($labelName);
-			$label = sprintf($langText, $this->controlData->getPidTitle(), $row['username'], $name, $row['email'], $password);
-			// ACTIVE SOLUTION
+			$label = sprintf($langText, $this->controlData->getPidTitle(), $username, $name, $row['email'], $row['password']);
 			$label = preg_replace_callback('/{([a-z_]+):([a-z_]+)}/', array(&$this, 'replaceVariables'), $label);
 			$markerkey = $this->cObj->caseshift($labelName,'upper');
 			$markerArray['###LABEL_'.$markerkey.'###'] = $label;
@@ -429,11 +440,13 @@ class tx_srfeuserregister_marker {
 		$unsetVarsAll = $unsetVars;
 		$unsetVarsAll[] = 'token';
 		$formUrl = $this->urlObj->get('', $GLOBALS['TSFE']->id.','.$GLOBALS['TSFE']->type, $vars, $unsetVarsAll);
+
+		unset($unsetVars['cmd']);
 		$markerArray['###FORM_URL###'] = $formUrl;
 		$theTable = $this->controlData->getTable();
 		$form = $this->pibase->pi_getClassName($theTable.'_form');
 		$markerArray['###FORM_NAME###'] = $form; // $this->conf['formName'];
-		$unsetVars['cmd'] = '';
+
 		$ac = $this->controlData->getFeUserData('aC');
 		if ($ac)	{
 			$vars['aC'] = $ac;
@@ -444,17 +457,27 @@ class tx_srfeuserregister_marker {
 		$vars['cmd'] = 'delete';
 		$vars['rU'] = $uid;
 		$vars['preview'] = '1';
+
 		$markerArray['###DELETE_URL###'] = $this->urlObj->get('', $this->controlData->getPid('edit').','.$GLOBALS['TSFE']->type, $vars);
+
 		$vars['backURL'] = rawurlencode($formUrl);
 		$vars['cmd'] = 'create';
+
 		$url = $this->urlObj->get('', $this->controlData->getPid('register').','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
 		$markerArray['###REGISTER_URL###'] = $url;
-		$vars['cmd'] = 'edit';
-		$markerArray['###EDIT_URL###'] = $this->urlObj->get('', $this->controlData->getPid('edit').','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
+
+		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,doNotSave,preview';
+		$unsetVars = t3lib_div::trimExplode(',', $unsetVarsList);
+
 		$vars['cmd'] = 'login';
 		$markerArray['###LOGIN_FORM###'] = $this->urlObj->get('', $this->controlData->getPid('login').','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
+
 		$vars['cmd'] = 'infomail';
 		$markerArray['###INFOMAIL_URL###'] = $this->urlObj->get('', $this->controlData->getPid('infomail').','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
+
+		$vars['cmd'] = 'edit';
+
+		$markerArray['###EDIT_URL###'] = $this->urlObj->get('', $this->controlData->getPid('edit').','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
 		$markerArray['###THE_PID###'] = $this->controlData->getPid();
 		$markerArray['###THE_PID_TITLE###'] = $this->controlData->getPidTitle();
 		$markerArray['###BACK_URL###'] = $backUrl;
@@ -481,9 +504,9 @@ class tx_srfeuserregister_marker {
 		$prefixId = $this->controlData->getPrefixId();
 		$backUrl = $this->controlData->getBackURL();
 
-		$localMarkerArray['###HIDDENFIELDS###'] = $markerArray['###HIDDENFIELDS###'] . ($cmd ? '<input type="hidden" name="'.$prefixId.'[cmd]" value="'.$cmd.'" />':'');
-		$localMarkerArray['###HIDDENFIELDS###'] .= chr(10) . ($authCode?'<input type="hidden" name="'.$prefixId.'[aC]" value="'.$authCode.'" />':'');
-		$localMarkerArray['###HIDDENFIELDS###'] .= chr(10) . ($backUrl?'<input type="hidden" name="'.$prefixId.'[backURL]" value="'.htmlspecialchars($backUrl).'" />':'');
+		$localMarkerArray['###HIDDENFIELDS###'] = $markerArray['###HIDDENFIELDS###'] . ($cmd ? '<input type="hidden" name="' . $prefixId . '[cmd]" value="' . $cmd . '" />':'');
+		$localMarkerArray['###HIDDENFIELDS###'] .= chr(10) . ($authCode?'<input type="hidden" name="' . $prefixId . '[aC]" value="' . $authCode . '" />':'');
+		$localMarkerArray['###HIDDENFIELDS###'] .= chr(10) . ($backUrl?'<input type="hidden" name="' . $prefixId . '[backURL]" value="' . htmlspecialchars($backUrl) . '" />':'');
 		$this->addFormToken($localMarkerArray, $token);
 
 		$markerArray = array_merge($markerArray, $localMarkerArray);
@@ -534,7 +557,9 @@ class tx_srfeuserregister_marker {
 					$this->conf['onChangeCountryAttribute'],
 					$idCountry,
 					$titleCountry,
-					$where
+					$where,
+					'',
+					$this->conf['useLocalCountry']
 				);
 				$markerArray['###SELECTOR_ZONE###'] =
 					$this->staticInfo->buildStaticInfoSelector(
@@ -574,6 +599,7 @@ class tx_srfeuserregister_marker {
 		* @return void
 		*/
 	function addMd5EventsMarkers (&$markerArray,$bEncryptMd5,$useMd5Password) {
+
 		if (!$markerArray)	{
 			$markerArray = $this->getArray();
 		}
@@ -584,7 +610,7 @@ class tx_srfeuserregister_marker {
 				$this->controlData->setJSmd5Added(TRUE);
 			}
 			$markerArray['###FORM_ONSUBMIT###'] = 'onsubmit="return enc_form(this);"';
-			$markerArray['###PASSWORD_ONCHANGE###'] = 'onchange="pw_change=1; return true;"';
+			$markerArray['###PASSWORD_ONCHANGE###'] = ($bEncryptMd5 ? 'onchange="pw_change=1; return true;"' : '');
 		} else {
 			$markerArray['###FORM_ONSUBMIT###'] = '';
 			$markerArray['###PASSWORD_ONCHANGE###'] = '';
@@ -622,14 +648,16 @@ class tx_srfeuserregister_marker {
 			}
 		}
 		$markerArray['###FORM_ONSUBMIT###'] = $onSubmit;
-		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="tx_srfeuserregister_pi1[sFK]" value="LOGIN" />';
+		$prefixId = $this->controlData->getPrefixId();
+
+		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $prefixId . '[sFK]" value="LOGIN" />';
 		$markerArray['###HIDDENFIELDS###'] .= $extraHidden;
 		if (!$this->controlData->getJSmd5Added())	{
 			$GLOBALS['TSFE']->additionalHeaderData['MD5_script'] = '<script type="text/javascript" src="typo3/md5.js"></script>';
 			$GLOBALS['TSFE']->JSCode .= $this->getMD5Submit(TRUE);
 			$this->controlData->setJSmd5Added(TRUE);
 		}
-		$markerArray['###PASSWORD_ONCHANGE###'] = 'onchange="pw_change=1; return true;"';
+		$markerArray['###PASSWORD_ONCHANGE###'] = '';
 	}	// addMd5LoginMarkers
 
 
@@ -654,7 +682,7 @@ class tx_srfeuserregister_marker {
 	}
 ';
 		$GLOBALS['TSFE']->JSCode .= $js;
-		$GLOBALS['TSFE']->additionalHeaderData['tx_kbmd5fepw_newloginbox'] = '<script language="JavaScript" type="text/javascript" src="typo3/md5.js"></script>';
+		$GLOBALS['TSFE']->additionalHeaderData['tx_kbmd5fepw_felogin'] = '<script language="JavaScript" type="text/javascript" src="typo3/md5.js"></script>';
 
 		$md5Obj = &t3lib_div::getUserObj('&tx_srfeuserregister_passwordmd5');
 		$md5Obj->generateChallenge($dataArray);
@@ -674,7 +702,6 @@ class tx_srfeuserregister_marker {
 
 		$theTable = $this->controlData->getTable();
 		$JSPart = '
-			var pw_change = 0;
 			function enc_form(form) {
 				var pass = form[\'FE[' . $theTable . '][password]\'].value;
 				var pass_again = form[\'FE[' . $theTable . '][password_again]\'].value;
@@ -708,7 +735,17 @@ class tx_srfeuserregister_marker {
 	* @param string  $prefix: the field name prefix
 	* @return string  generated HTML uploading tags
 	*/
-	function buildFileUploader ($theField, $config, $cmd, $cmdKey, $filenameArray = array(), $prefix, $viewOnly = FALSE) {
+	function buildFileUploader (
+		$theField,
+		$config,
+		$cmd,
+		$cmdKey,
+		$filenameArray = array(),
+		$prefix,
+		$viewOnly = FALSE,
+		$activity = '',
+		$bHtml = TRUE
+	) {
 		$HTMLContent = '';
 		$size = $config['maxitems'];
 		$cmdParts = preg_split('/\[|\]/', $this->conf[$cmdKey.'.']['evalValues.'][$theField]);
@@ -722,7 +759,17 @@ class tx_srfeuserregister_marker {
 		if ($this->controlData->getMode() == MODE_PREVIEW || $viewOnly) {
 			for ($i = 0; $i < sizeof($filenameArray); $i++) {
 				if ($this->conf['templateStyle'] == 'css-styled') {
-					$HTMLContent .= $filenameArray[$i] . '<a href="' . $dir.'/' . $filenameArray[$i] . '"' . $this->pibase->pi_classParam('file-view') . ' target="_blank" title="' . $this->langObj->getLL('file_view') . '">' . $this->langObj->getLL('file_view') . '</a><br />';
+					$HTMLContent .= $filenameArray[$i];
+
+					if ($activity == 'email')	{
+						if ($bHtml)	{
+							$HTMLContent .= '<br />';
+						} else {
+							$HTMLContent .= chr(13) . chr(10);
+						}
+					} else if ($bHtml)	{
+						$HTMLContent .= '<a href="' . $dir.'/' . $filenameArray[$i] . '"' . $this->pibase->pi_classParam('file-view') . ' target="_blank" title="' . $this->langObj->getLL('file_view') . '">' . $this->langObj->getLL('file_view') . '</a><br />';
+					}
 				} else {
 					$HTMLContent .= $filenameArray[$i] . '&nbsp;&nbsp;<small><a href="' . $dir.'/' . $filenameArray[$i] . '" target="_blank">' . $this->langObj->getLL('file_view') . '</a></small><br />';
 				}
@@ -753,7 +800,17 @@ class tx_srfeuserregister_marker {
 	* @param array  $dataArray: the record array
 	* @return void
 	*/
-	function addFileUploadMarkers ($theField, &$markerArray, $cmd, $cmdKey, $dataArray = array(), $viewOnly = FALSE) {
+	function addFileUploadMarkers (
+		$theField,
+		$fieldConfig,
+		&$markerArray,
+		$cmd,
+		$cmdKey,
+		$dataArray = array(),
+		$viewOnly = FALSE,
+		$activity = '',
+		$bHtml = TRUE
+	) {
 		$theTable = $this->controlData->getTable();
 
 		if (!$markerArray)	{
@@ -763,18 +820,40 @@ class tx_srfeuserregister_marker {
 		if ($dataArray[$theField]) {
 			$filenameArray = $dataArray[$theField];
 		}
+
 		if ($viewOnly) {
-			$markerArray['###UPLOAD_PREVIEW_' . $theField . '###'] = $this->buildFileUploader($theField, $this->tca->TCA['columns'][$theField]['config'], $cmd, $cmdKey, $filenameArray, 'FE['.$theTable.']', TRUE);
+			$markerArray['###UPLOAD_PREVIEW_' . $theField . '###'] =
+				$this->buildFileUploader(
+					$theField,
+					$fieldConfig['config'],
+					$cmd,
+					$cmdKey,
+					$filenameArray,
+					'FE['.$theTable.']',
+					TRUE,
+					$activity,
+					$bHtml
+				);
 		} else {
-			$markerArray['###UPLOAD_' . $theField . '###'] = $this->buildFileUploader($theField, $this->tca->TCA['columns'][$theField]['config'], $cmd, $cmdKey, $filenameArray, 'FE['.$theTable.']');
-			$max_size = $this->tca->TCA['columns'][$theField]['config']['max_size']*1024;
-			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="MAX_FILE_SIZE" value="'.$max_size.'" />';
+			$markerArray['###UPLOAD_' . $theField . '###'] =
+				$this->buildFileUploader(
+					$theField,
+					$fieldConfig['config'],
+					$cmd,
+					$cmdKey,
+					$filenameArray,
+					'FE['.$theTable.']',
+					FALSE,
+					$activity,
+					$bHtml
+				);
+			$max_size = $fieldConfig['config']['max_size'] * 1024;
+			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="MAX_FILE_SIZE" value="' . $max_size . '" />';
 		}
 	}	// addFileUploadMarkers
 
 
 	function checkToken ($token)	{
-
 		$tokenError = '';
 		if ($token == '')	{
 			$tokenError = $this->langObj->getLL('internal_token_empty');
@@ -810,10 +889,10 @@ class tx_srfeuserregister_marker {
 		$prefixId = $this->controlData->getPrefixId();
 
 		if ($this->conf[$cmdKey.'.']['preview'] && $mode != MODE_PREVIEW) {
-			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="'.$prefixId.'[preview]" value="1" />';
+			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="' . $prefixId .  '[preview]" value="1" />';
 			if ($theTable == 'fe_users' && $cmdKey == 'edit' && $this->conf[$cmdKey.'.']['useEmailAsUsername']) {
-				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][username]" value="'. htmlspecialchars($dataArray['username']).'" />';
-				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][email]" value="'. htmlspecialchars($dataArray['email']).'" />';
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $theTable . '][username]" value="' . htmlspecialchars($dataArray['username']).'" />';
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $theTable . '][email]" value="' . htmlspecialchars($dataArray['email']).'" />';
 			}
 		}
 		if ($mode == MODE_PREVIEW) {
@@ -839,7 +918,7 @@ class tx_srfeuserregister_marker {
 				} else {
 					$value = htmlspecialchars($dataArray[$theField]);
 				}
-				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.']['.$theField.']" value="'. $value .'" />';
+				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $theTable . '][' . $theField . ']" value="' . $value . '" />';
 			}
 		}
 
@@ -882,8 +961,13 @@ class tx_srfeuserregister_marker {
 	 * @param	boolean		If set, all values are passed through htmlspecialchars() - RECOMMENDED to avoid most obvious XSS and maintain XHTML compliance.
 	 * @return	array		The modified $markContentArray
 	 */
-	function fillInMarkerArray ($markerArray, $row, $fieldList='', $nl2br=TRUE, $prefix='FIELD_', $HSC=TRUE)	{
+	function fillInMarkerArray ($markerArray, $row, $securedArray, $fieldList='', $nl2br=TRUE, $prefix='FIELD_', $HSC=TRUE)	{
 
+		if (is_array($securedArray))	{
+			foreach ($securedArray as $field => $value)	{
+				$row[$field] = $securedArray[$field];
+			}
+		}
 		if ($fieldList)	{
 			$fArr = t3lib_div::trimExplode(',',$fieldList,1);
 			foreach($fArr as $field)	{
