@@ -1,0 +1,15 @@
+/* Default stylesheet for the html mails of extension sr_feuser_register */
+* { margin: 0; padding: 0; }
+body { background:#ffffff none; margin: 0; padding: 1em; font-family:Verdana, sans-serif; font-size: 12px; color: #35006d; line-height: 125%; }
+.tx-srfeuserregister-pi1 p, .tx-srfeuserregister-pi1 h4 { margin: 0; padding: 0 .4em; text-indent: 0; }
+.tx-srfeuserregister-pi1 p, .tx-srfeuserregister-pi1 dl { padding-top: .5em; }
+.tx-srfeuserregister-pi1 h4 { font-weight: bold; }
+.tx-srfeuserregister-pi1 a:link { color: navy; background-color: transparent; font-weight: bold; text-decoration: none; }
+.tx-srfeuserregister-pi1 a:visited { color :navy; }
+.tx-srfeuserregister-pi1 a:hover { color: #333333; }
+.tx-srfeuserregister-pi1 a:active { color: navy; }
+.tx-srfeuserregister-pi1 dt, .tx-srfeuserregister-pi1 dd { padding-bottom: .5em; }
+.tx-srfeuserregister-pi1 dt { float: left; clear: both; width: 20%; text-align: right; }
+.tx-srfeuserregister-pi1 dd { text-align: left; float: right; clear: right; width: 78%; }
+.tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checked-values { list-style-type: square; list-style-image: none; list-style-position: inside; }
+.tx-srfeuserregister-pi1 ul.tx-srfeuserregister-multiple-checked-values li { float: left; margin: 0 1em 0 0; }
