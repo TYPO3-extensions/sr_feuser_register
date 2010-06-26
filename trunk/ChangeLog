@@ -1,3 +1,13 @@
+2010-06-26 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug: a md5 encoded password must be shown as clear text in the password marker
+	* fix bug: if enableHTMLMail is 1, then the admin must always receive a HTML email independant from the FE users preferences
+	* new feature: useLocalCountry to show the country names in their local languages
+	* remove support for old styled template
+	* change of subpart markers: ###EMAIL_TEMPLATE_SETFIXED_REVIEW### and HTML variant renamed to ###EMAIL_TEMPLATE_SETFIXED_REVIEW_ADMIN###, because it is sent to the admin and not to the user.
+	* fix bug 4341: delete regHash after usage and no confirmation email will be sent twice using short urls
+	* enhance feature: ###EMAIL_TEMPLATE_SETFIXED_ENTER_ADMIN### and HTML as notification when a user has clicked on the login link
+	* fix bug in order not to lose the chosen checkbox entries on create if the user steps back to the entry form.
+
 2010-05-31 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug 14125: if user group can be selected by user, then the authorization key has been using an empty group field
 	* fix bug 14163: an automatically generated password had been sent as an empty password to the user

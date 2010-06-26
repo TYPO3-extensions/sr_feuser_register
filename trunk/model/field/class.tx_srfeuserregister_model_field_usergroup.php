@@ -64,6 +64,7 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 
 	function removeReservedValues (&$row)	{
 		if (isset($row['usergroup']))	{
+
 			$reservedValues = $this->getReservedValues();
 			if (is_array($row['usergroup']))	{
 				$userGroupArray = $row['usergroup'];

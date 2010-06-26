@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 1999-2003 Kasper Skårhøj <kasperYYYY@typo3.com>
-*  (c) 2004-2009 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
+*  (c) 2004-2010 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -85,6 +85,7 @@ class tx_srfeuserregister_control_main {
 	var $marker; // object of type tx_srfeuserregister_marker
 	var $pibaseObj;
 	var $extKey;
+	var $LLkey;
 
 	function main (
 		$content,
@@ -99,7 +100,15 @@ class tx_srfeuserregister_control_main {
 
 		$this->pibaseObj = &$pibaseObj;
 		$this->extKey = $this->pibaseObj->extKey;
-		$rc = $this->init($conf,$theTable,$adminFieldList,$buttonLabelsList,$otherLabelsList);
+		$this->LLkey = $this->pibaseObj->LLkey;
+		$rc = $this->init(
+			$conf,
+			$theTable,
+			$adminFieldList,
+			$buttonLabelsList,
+			$otherLabelsList
+		);
+
 		if ($rc !== FALSE)	{
 			$error_message = '';
 			$content = $this->control->doProcessing ($error_message);
@@ -169,22 +178,51 @@ class tx_srfeuserregister_control_main {
 		$rc = $this->langObj->loadLL();
 		if ($rc !== FALSE)	{
 			$this->tca->init2($this->pibaseObj, $this->conf, $this->controlData, $this->langObj);
-			$this->control->init($this->pibaseObj, $this->controlData, $this->display, $this->marker, $this->email, $this->tca, $this->setfixedObj);
-			$this->data->init($this->pibaseObj, $this->conf, $this->config,$this->langObj, $this->tca, $this->control, $theTable, $this->controlData);
+			$this->control->init(
+				$this->langObj,
+				$this->pibaseObj->cObj,
+				$this->controlData,
+				$this->display,
+				$this->marker,
+				$this->email,
+				$this->tca,
+				$this->setfixedObj
+			);
+			$this->data->init(
+				$this->pibaseObj,
+				$this->conf,
+				$this->config,
+				$this->langObj,
+				$this->tca,
+				$this->control,
+				$theTable,
+				$this->controlData
+			);
 			$this->control->init2($theTable, $this->controlData, $this->data, $adminFieldList);
 
 			$md5Obj = &t3lib_div::getUserObj('&tx_srfeuserregister_passwordmd5');
-			$md5Obj->init ($this->marker, $this->data, $this->controlData);
+			$md5Obj->init($this->marker, $this->data, $this->controlData);
 
 			$uid=$this->data->getRecUid();
 
-			$this->marker->init($this->pibaseObj, $this->conf, $this->config, $this->data, $this->tca, $this->langObj, $this->controlData, $this->urlObj, $uid);
+			$this->marker->init(
+				$this->pibaseObj,
+				$this->conf,
+				$this->config,
+				$this->data,
+				$this->tca,
+				$this->langObj,
+				$this->controlData,
+				$this->urlObj,
+				$uid,
+				$this->controlData->readToken()
+			);
 
 			if ($buttonLabelsList!='')	{
 				$this->marker->setButtonLabelsList($buttonLabelsList);
 			}
 			if ($otherLabelsList != '')	{
-				$this->marker->setOtherLabelsList($otherLabelsList);
+				$this->marker->addOtherLabelsList($otherLabelsList);
 			}
 
 			$this->display->init($this->cObj, $this->conf, $this->config, $this->data, $this->marker, $this->tca, $this->control);

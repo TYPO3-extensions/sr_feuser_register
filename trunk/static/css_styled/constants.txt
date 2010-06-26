@@ -130,6 +130,9 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable admin notification on deletion: If set, an email will be sent to the site administration when a user deletes his(her) account.
   enableAdminNotifyOnDelete = 1
 
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable admin notification on entering: If set, an email will be sent to the site administration when a user clicks on the link to log in.
+  enableAdminNotifyOnEnter = 0
+
      # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable admin notification on approval by admin: If set, an email will be sent to the site administration when a registration is accepted by the administration.
   enableAdminNotifyOnAdminAccept = 1
 
@@ -207,6 +210,9 @@ plugin.tx_srfeuserregister_pi1 {
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable localization: If set, only localized records are shown.
   useLocalization = 0
+
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Local country: If set, the country names are shown in their local languages
+  useLocalCountry = 0
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Date Format (d-m-y)
   dateFormat = d-m-Y

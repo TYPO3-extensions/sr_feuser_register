@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 1999-2003 Kasper Skårhøj <kasperYYYY@typo3.com>
-*  (c) 2004-2009 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+*  (c) 2004-2010 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -50,7 +50,7 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 	var $scriptRelPath = 'pi1/class.tx_srfeuserregister_pi1_base.php'; // Path to this script relative to the extension dir.
 	var $extKey = SR_FEUSER_REGISTER_EXTkey;		// Extension key.
 
-	function main($content, $conf) {
+	public function main($content, $conf) {
 		global $TSFE;
 
 		$this->pi_setPiVarDefaults();

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2008 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
+*  (c) 2007-2010 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -43,11 +43,11 @@
 
 
 class tx_srfeuserregister_url {
-	var $controlData;
-	var $cObj;
+	public $controlData;
+	public $cObj;
 
 
-	function init(&$controlData, &$cObj)	{
+	public function init (&$controlData, &$cObj)	{
 		$this->controlData = &$controlData;
 		$this->cObj = &$cObj;
 	}
@@ -63,7 +63,7 @@ class tx_srfeuserregister_url {
 	* @param boolean  $usePiVars: if set, input vars and incoming piVars arrays are merge
 	* @return string  generated link or url
 	*/
-	function get($tag='', $id, $vars = array(), $unsetVars = array(), $usePiVars = TRUE) {
+	function get ($tag='', $id, $vars = array(), $unsetVars = array(), $usePiVars = TRUE) {
 
 		$vars = (array) $vars;
 		$unsetVars = (array) $unsetVars;
@@ -79,7 +79,7 @@ class tx_srfeuserregister_url {
 		}
 
 		foreach($vars as $key => $val) {
-			$piVars[$this->controlData->getPrefixId() . '['. $key . ']'] = $val;
+			$piVars[$this->controlData->getPrefixId() . '%5B' . $key . '%5D'] = $val;
 		}
 
 		if ($tag) {
@@ -87,8 +87,8 @@ class tx_srfeuserregister_url {
 		} else {
 			$rc = $this->cObj->getTypoLink_URL($id, $piVars);
 		}
+		$rc = str_replace(array('[',']'), array('%5B', '%5D'), $rc);
 		$rc = htmlspecialchars($rc);
-
 		return $rc;
 	}	// get_url
 }
