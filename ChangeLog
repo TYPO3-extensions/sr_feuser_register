@@ -1,3 +1,244 @@
+2010-07-01 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 13579: Replace deprecated tslib_cObj->checkEmail() with t3lib_div::validEmail()
+	* fix bug 12475: not working with sr_freecap v 1.2.2
+
+2010-05-31 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 14125: if user group can be selected by user, then the authorization key has been using an empty group field
+	* fix bug 14163: an automatically generated password had been sent as an empty password to the user
+	* new feature: do not check the token, if a create or edit cmd is provided without any additional data
+
+2010-04-14 Franz Holzinger  <franz@ttproducts.de>
+	* new feature: add a token to the form. Form data is only read with a valid token.
+	* new feature: no password and password_again fields are shown in the update Javascript
+	* new marker for a simulated password and password_again, where only a dummy password will be used
+	  The HTML template file must be modified with value="###FIELD_password###" in the input tags
+	* check for the authorization code in confirmation links and setfixed at the beginning when the incoming data is read
+	* do not use special groups in authorization code because these values are changed very frequently
+	* fix bug 12323: PHP 5.3 checks the TYPO3 api parameter $conf and no reference is allowed
+	* fix bug 13107: consider invite for sending of email
+	* fix bug 11999: PHP 5.3 does not allow the split function
+	* fix bug 13140: absRefPrefix has been wrongly implemented
+	* change default settings for the password to allow blank characters
+	* dependency on div2007 version 0.2.6
+
+2009-10-17 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 12171: fix PHP errors caused with enableEmailOnUpdate setup
+	* fix bug with not sent HTML emails
+	* fix bug 10227: error in deleting registration to directmail because of missing aC parameter
+	* fix bug 12261: srfeuserregister v 2.5.23 some markers not set in email
+	* fix bug 9687: Problems when Admin invites a new user width md5 encrypted password
+
+2009-09-17 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 11185: usergroup(s) are not correctly saved while using user group selection upon registration
+	* new eval values uniqueDeletedGlobal and uniqueDeletedLocal: This considers that also deleted users are prohibited from a recreation in the future.
+	* fix bug 11304: password has not been MD5 encrypted if autogeneration has been set
+	* fix bug with HTMLMailEnabled: check the correct data row
+	* fix bug 10785: support middle_name in the name
+	* fix bug 10714: confirmation mail not sent as HTML
+	* fix bug 8831: do not save htmlspecialchar'ed records
+	* fix bug 11527: correct html for group selection with check boxes
+	* fix bug 11534: allowUserGroupSelection has lead to SQL error in some cases
+	* fix bug 10989: Javascript has true and false in lower case
+	* new feature: consider the localization of Direct Mail categories only if useLocalization has been set. Otherwise all categories are listed.
+	* new feature: preg for the evaluation of Perl regular expressions
+	* new feature: set enableEmailOnDeny=0 if a rejected user shall not get any email
+
+2009-05-13 Franz Holzinger  <franz@ttproducts.de>
+	* new field cnum which holds the customer number for different ERP software
+	* fix bug with wrong class attribute for the image preview tag
+	* fix bug with not replace marker for FIELD_date_of_birth
+	* fix bug 10981: the merging of language file did remove new translations
+
+2009-04-06 Franz Holzinger  <franz@ttproducts.de>
+	* fix security issue TYPO3-SA-2009-004
+
+2009-01-18 Franz Holzinger  <franz@ttproducts.de>
+	* new hook for data field evaluation
+	* fix bug 9556: email with forgotten password did not work properly. Add the missing template subparts to the CSS template.
+	* fix bug 10156 and support the felogin extension
+	* fix bugs with problems on editing
+	* support for patch 1822
+
+2008-09-24 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.19:
+	* Fix bug 9380: $conf has not been used for the translations
+
+2008-09-17 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.17-18:
+	* Fix bug 8844: delete link
+	* Always submit the cmd with infomail
+
+2008-07-28 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.16:
+	* Fix bug with not working radio button ḟor tt_address gender because it has values different from 0 and 1
+	* Fix bug to always show the registration link before the CREATE or EDIT template is displayed.
+
+2008-06-23 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.15:
+	* Fix bug 8789: User group is emptied after editing and updating data
+
+2008-06-20 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.14:
+	* Fix bug with not substituted hidden field markers for infomail
+
+2008-06-19 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.13:
+	* Do not require email confirmation if enableEmailConfirmation is 0. v_your_account_was_created_nomail will be used in this case.
+	* new feature 0007933: Confirmation link cannot be clicked more than once if regHash is used.
+	* fix bug with translation for Direct Mail categories
+	* fix bug with admin email confirmation which did not contain all new fields after creation if default values have been added during the saving before
+	* fix bug with md5 password encryption
+
+2008-05-28 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.12:
+	* fix bug 8382: when some records have already been stored and there is evaluation to edit fields which are not shown then the error message is not displayed. ###EVAL_ERROR_saved### is a new marker in order to display an error message for all fields which have been wrongly stored.
+	* restructure code: The cmd piVar must be evaluated already in the controldata because cmdKey must be set after it.
+
+2008-05-20 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.11:
+	* fix bug 8416: the CODE and flexforms have been emptied
+
+2008-05-15 Franz Holzinger  <franz@fholzinger.com>
+	* fix security issues
+
+2008-04-01 Franz Holzinger  <franz@fholzinger.com>
+	* new hook addGlobalMarkers for additional global markers
+	* new constant dmailCheckedUponRegistration if the Direct Mail categories shall be checked by default
+	* fix bug 3650: Password is not md5 hashed if changed after making an error on registration
+	* new feature dateFormat
+	* fix bug with not sent HTML emails in sr_email_subscribe due to wrong initializations
+	* fix bug 7376: evalFunc does not work in 2.5.8 but crashes TYPO3
+	* add &nbsp; after the preview markers in the CSS HTML template as a workaround for a bug in MS Internet Explorer 7
+	* many additions to the old style template file
+	* small modification to captcha for sr_freecap
+	* labels for eval errors translations
+	* new feature: make all objects globally available over t3lib_div::getUserObj
+	* fix bug 7822: DMAIL- Category Subscription did not work
+
+2007-10-17 Franz Holzinger  <franz@fholzinger.com>
+	* new feature: enableEmailOnUpdate = 2 to send only the changed fields in an email if a user alters his data
+	* fix bug with not saved change of unchecked check box input
+	* fix bugs with wrong HTML output at select box and check boxes
+	* new feature: select.static_country to use a SQL WHERE clause as a filter over the countries in the select box
+
+2007-09-12 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug with checkboxes set to zero when errors in the entered data
+	* fix wrong lower case markers of checkboxes to upper case
+
+2007-09-04 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug with having same html ids many times when more records are shown
+
+2007-08-29 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug with wrong $row variable in tx_srfeuserregister_tca
+	* start with encoding in renderCharset
+
+2007-08-14 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug with no editing possible for sr_email_subscribe and a setfixed link
+	* fix bug 5609: informal texts did not work
+	* fix bug with not saved entries for mm relations
+	* fix bug when delete did not work with setfixed becaue the cmd has been overridden by restored regHash value
+
+2007-07-12 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug 5291: new translations for Dutch by Felippe van Eekhout <feekhout@worldonline.nl>
+
+2007-06-16 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug with autocreation of usernames
+	* new classes for setfixed, control data and url functions
+	* fix bug with not shown status field in backend
+
+2007-06-11 Franz Holzinger  <franz@fholzinger.com>
+	* rename ###EMAIL_TEMPLATE_INFOMAIL_EMPTY### back to ###TEMPLATE_INFOMAIL### because it is not sent in an email
+	* fix bug 5766: no notification emails have been sent due to wrong $templateCode variable.
+
+2007-06-07 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug with missing getTemplateCode function in data object
+
+2007-06-04 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug 5329: The inError property has been missing in the data object
+	* fix bug 5687: setfixed could not be turned off
+
+2007-05-29 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug 5256: replace also the ',' in str_replace in order not avoid replacement of other fields with the same name but from other extensions.
+	* fix bug 5397: images could not be uploaded and have not been shown
+
+2007-05-26 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug 5641: modifications needed to make sr_email_subsribe working again
+
+2007-05-18 Franz Holzinger  <franz@fholzinger.com>
+	* use first line of plain text emails as the subject
+	* when there is already an items array in TCA and also records from a foreign table, then both will be added
+
+2007-05-10 Franz Holzinger  <franz@fholzinger.com>
+	* use t3lib_htmlmail also for sending of plain text emails
+	* fix bugs with invite (see bug #5588)
+	* Version 2.5.6 relaunch
+
+2007-05-02 Franz Holzinger  <franz@fholzinger.com>
+	* Danish backend texts
+	* fix bug with not possible image upload
+	* Version 2.5.6 relaunch
+
+2007-04-18 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.6 relaunch
+
+2007-03-15 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.6 relaunch
+	* fix bugs caused by restructuring of code
+
+2007-03-09 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.6 relaunch
+	* more flexform entries
+	* fix bugs caused by restructuring of code
+
+2007-03-06 Franz Holzinger  <franz@fholzinger.com>
+	* some bug fixes due to restructuring
+
+2007-02-28 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.6
+	* internal restructuring of code into more classes
+
+2007-02-09 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.5 relaunch
+	* Fix bug 4056: The comparison of the authorisation code has been wrong.
+
+2007-02-07 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.5 relaunch
+	* Fix bug with not considered multiple select fields with text fields. A text string must be allowed as a value in a select box.
+
+2007-01-17 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.5
+	* enable overrideValues setup with stdWrap function call - by Jens Hirschfeld <Jens.Hirschfeld@KeepOut.de>
+	* If useEmailAsUsername is set, and the user changes their email address, the username will also be changed.
+	* automatic password generation by Dennis S. Hennen <dennis@28studios.com>
+	* Ralph Brugger <Ralph.Brugger@linkpool.de> added captcha feature
+
+2006-12-29 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.4
+	* enable always INFOMAIL when function compileMail has been reached
+	* message for lost password is possible: v_registration_infomail_message1
+	* split pi1/locallang.xml into separate files for each language in l10n/pi1
+
+2006-12-11 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.3
+	* Fix bug: input-Tags shall be shown as <input ... />
+	* Fix bug with wrongly filled in field values of mm table records with setfixed command, e.g. module_sys_dmail_category
+	* Gideon So: all Hongkong Chinese translations
+	* Thomas Dubach: more German translations
+
+2006-11-24 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.2 relaunch
+	* add 'infomail' to the commands where not FE login is necessary
+
+2006-11-16 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.2
+	* no edit functions shall be available when user has logged out
+	* htmlspecialchar around the url links to have clean HTML
+	* overridable select items for status via TS _LOCAL_LANG setup
+	* Fix bugtracker issue 3986: formName has been deleted. No data has been visible in edit form.
+	* Fix bugtracker issue 4055: $_GET array should not get lost
+	* Fix bug: The select box entries could not be saved
+	* enhance CSS template to show the select box entries as plain texts
+
 2006-08-14 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Version 2.5.1
 	* Update to Russian translation.
@@ -81,11 +322,11 @@
 2006-02-03 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Honor TCA default value for TCA-driven multiple checkboxes. Thanks to Simon Tuck.
 	* Remove support for TYPO3 3.5.0.
-	
+
 2006-01-30 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Verify enabled fields when selecting MM relations, in particular module_sys_dmail_category.
 	* Accept value '0' on required fields (see bugtracker issue #2027).
-	
+
 2006-01-30 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Correction to css-styled html template (see bugtracker issue #2403).
 	* Remove changes to the TCA for fields module_sys_dmail_category and module_sys_dmail_html
@@ -113,11 +354,11 @@
 
 2005-12-05  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Use backURL linkVar to link back from the edit page, after saving, to some referring extension such as tt_products. Thanks to Franz Holzinger.
-	
+
 2005-12-04  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Correction: setting usergroupAfterAcceptation did not work if the original usergroup assigned at creation was changed by usergroupAfterConfirmation.
 
-2005-11-30  Franz Holzinger  <kontakt@fholzinger.com>
+2005-11-30  Franz Holzinger  <franz@fholzinger.com>
 	* German texts for the flexform
 
 2005-11-28  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
@@ -128,10 +369,10 @@
 	* Version 2.2.1:
 	* Fix in ext_localconf.php
 	* Documentation update.
-	
+
 2005-11-25  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Added support for backend flexforms by Franz Holzinger.
-	
+
 2005-11-25  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
 	* Version 2.2.0:
 	* Further correction due to IE mishandling of button elements of type button. Eliminated all button elements from the html template.
