@@ -29,7 +29,7 @@
  *
  * class the usergroup field
  *
- * $Id: class.tx_srfeuserregister_model_field_usergroup.php 33773 2010-05-31 20:03:31Z franzholz $
+ * $Id$
  *
  * @author	Franz Holzinger <franz@ttproducts.de>
  * @maintainer	Franz Holzinger <franz@ttproducts.de>
