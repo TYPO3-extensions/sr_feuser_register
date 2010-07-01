@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Frond End User Registration Template</title>
+<!-- $Id$ -->
 </head>
 <body>
 
@@ -25,10 +26,10 @@
 <br />
 <br />
 <!-- ###TEMPLATE_CREATE### begin -->
-<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 <table border="0" cellspacing="0" cellpadding="1">
 	<tr>
-		<td><img src="clear.gif" height="1" width="160"></td>
+		<td><img src="clear.gif" height="1" width="160" alt="" /></td>
 		<td></td>
 	</tr>
 	<tr>
@@ -44,7 +45,7 @@
 			<p>###GW2B######MISSING_USERNAME######GW2E###</p>
 			<p>###EVAL_ERROR_FIELD_username###</p>
 			<!--###SUB_REQUIRED_FIELD_username###-->
-			<p><input type="text" name="FE[fe_users][username]" size="20" /></p>
+			<p><input type="text" name="###NAME_USERNAME###" size="20" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_username###-->
@@ -57,7 +58,7 @@
 			<p>###GW2B######MISSING_PASSWORD######GW2E###</p>
 			<p>###EVAL_ERROR_FIELD_password###</p>
 			<!--###SUB_REQUIRED_FIELD_password###-->
-			<p><input type="password" name="FE[fe_users][password]" size="10" /> ###LABEL_PASSWORD_REPEAT### <input type="password" name="FE[fe_users][password_again]" size="10" /></p>
+			<p><input type="password" name="###NAME_PASSWORD###" value="###FIELD_password###" size="10" ###PASSWORD_ONCHANGE### /> ###LABEL_PASSWORD_AGAIN### <input type="password" name="###NAME_PASSWORD_AGAIN###" value="###FIELD_password_again###" size="10" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_gender###-->
@@ -84,7 +85,7 @@
 			<!--###SUB_REQUIRED_FIELD_name###-->
 			<p>###GW2B######MISSING_NAME######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_name###-->
-			<p><input type="text" name="FE[fe_users][name]" size ="50" /></p>
+			<p><input type="text" name="###NAME_NAME###" size ="50" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_name###-->
@@ -98,7 +99,7 @@
 			<!--###SUB_REQUIRED_FIELD_first_name###-->
 			<p>###GW2B######MISSING_FIRST_NAME######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_first_name###-->
-			<p><input type="text" name="FE[fe_users][first_name]" size ="50" /></p>
+			<p><input type="text" name="###NAME_FIRST_NAME###" size ="50" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_first_name###-->
@@ -112,7 +113,7 @@
 			<!--###SUB_REQUIRED_FIELD_last_name###-->
 			<p>###GW2B######MISSING_LAST_NAME######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_last_name###-->
-			<p><input type="text" name="FE[fe_users][last_name]" size ="50" /></p>
+			<p><input type="text" name="###NAME_LAST_NAME###" size ="50" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_last_name###-->
@@ -140,7 +141,7 @@
 			<!--###SUB_REQUIRED_FIELD_date_of_birth###-->
 			<p>###GW2B######MISSING_DATE_OF_BIRTH######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_date_of_birth###-->
-			<p><input type="text" name="FE[fe_users][date_of_birth]" size ="20" /></p>
+			<p><input type="text" name="###NAME_DATE_OF_BIRTH###" size ="20" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_date_of_birth###-->
@@ -154,7 +155,7 @@
 			<!--###SUB_REQUIRED_FIELD_title###-->
 			<p>###GW2B######MISSING_TITLE######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_title###-->
-			<p><input type="text" name="FE[fe_users][title]" size="40" /></p>
+			<p><input type="text" name="###NAME_TITLE###" size="40" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_title###-->
@@ -168,7 +169,7 @@
 			<!--###SUB_REQUIRED_FIELD_company###-->
 			<p>###GW2B######MISSING_COMPANY######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_company###-->
-			<p><input type="text" name="FE[fe_users][company]" size="50" /></p>
+			<p><input type="text" name="###NAME_COMPANY###" size="50" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_company###-->
@@ -182,7 +183,7 @@
 			<!--###SUB_REQUIRED_FIELD_address###-->
 			<p>###GW2B######MISSING_ADDRESS######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_address###-->
-			<p><input type="text" name="FE[fe_users][address]" size="60" /></p>
+			<p><input type="text" name="###NAME_ADDRESS###" size="60" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_address###-->
@@ -196,7 +197,7 @@
 			<!--###SUB_REQUIRED_FIELD_city###-->
 			<p>###GW2B######MISSING_CITY######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_city###-->
-			<p><input type="text" name="FE[fe_users][city]" size="40" /></p>
+			<p><input type="text" name="###NAME_CITY###" size="40" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_city###-->
@@ -223,7 +224,7 @@
 			<!--###SUB_REQUIRED_FIELD_country###-->
 			<p>###GW2B######MISSING_COUNTRY######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_country###-->
-			<p><input type="text" name="FE[fe_users][country]" size="60" /></p>
+			<p><input type="text" name="###NAME_COUNTRY###" size="60" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_country###-->
@@ -250,7 +251,7 @@
 			<!--###SUB_REQUIRED_FIELD_zip###-->
 			<p>###GW2B######MISSING_ZIP######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_zip###-->
-			<p><input type="text" name="FE[fe_users][zip]" size="20" /></p>
+			<p><input type="text" name="###NAME_ZIP###" size="20" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_zip###-->
@@ -264,7 +265,7 @@
 			<!--###SUB_REQUIRED_FIELD_telephone###-->
 			<p>###GW2B######MISSING_TELEPHONE######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_telephone###-->
-			<p><input type="text" name="FE[fe_users][telephone]" size="25" /></p>
+			<p><input type="text" name="###NAME_TELEPHONE###" size="25" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_telephone###-->
@@ -278,7 +279,7 @@
 			<!--###SUB_REQUIRED_FIELD_fax###-->
 			<p>###GW2B######MISSING_FAX######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_fax###-->
-			<p><input type="text" name="FE[fe_users][fax]" size="25" /></p>
+			<p><input type="text" name="###NAME_FAX###" size="25" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_fax###-->
@@ -292,7 +293,7 @@
 			<!--###SUB_REQUIRED_FIELD_email###-->
 			<p>###GW2B######MISSING_EMAIL######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_email###-->
-			<p><input type="text" name="FE[fe_users][email]" size="50" /></p>
+			<p><input type="text" name="###NAME_EMAIL###" size="50" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_email###-->
@@ -333,7 +334,8 @@
 			<!--###SUB_REQUIRED_FIELD_module_sys_dmail_html###-->
 			<p>###GW2B######MISSING_MODULE_SYS_DMAIL_HTML######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_module_sys_dmail_html###-->
-			<p><div class="tx-srfeuserregister-pi1-checkbox"><input type="checkbox" name="FE[fe_users][module_sys_dmail_html]" value="1" /></div></p>
+			<div class="tx-srfeuserregister-pi1-checkbox"><input type="checkbox" name="###NAME_MODULE_SYS_DMAIL_HTML###" value="1" /></div>
+			<br />
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_module_sys_dmail_html###-->
@@ -360,7 +362,7 @@
 			<!--###SUB_REQUIRED_FIELD_www###-->
 			<p>###GW2B######MISSING_WWW######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_www###-->
-			<p><input type="text" name="FE[fe_users][www]" size="50" /></p>
+			<p><input type="text" name="###NAME_WWW###" size="50" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_www###-->
@@ -397,6 +399,24 @@
 			<p>###GW3B######LABEL_REQUIRED_INFO_NOTICE######GW3E###</p>
 		</td>
 	</tr>
+
+	<!--###SUB_INCLUDED_FIELD_captcha_response###-->
+	<tr>
+		<td>
+			<p>###SR_FREECAP_NOTICE###</p>
+			<p>###SR_FREECAP_CANT_READ###</p>
+		</td>
+		<td>
+			<p>###GW2B######EVAL_ERROR_FIELD_captcha_response######GW2E###</p>
+			<!--###SUB_REQUIRED_FIELD_captcha_response###-->
+			<p>###GW2B######MISSING_CAPTCHA_RESPONSE######GW2E###</p>
+			<!--###SUB_REQUIRED_FIELD_captcha_response###-->
+			<p><input type="text" size="15" id="tx-srfeuserregister-pi1-captcha-response" name="###NAME_CAPTCHA_RESPONSE###" title="###SR_FREECAP_NOTICE###" value=""></p>
+			<p>###SR_FREECAP_IMAGE###</p>
+		</td>
+	</tr>
+	<!--###SUB_INCLUDED_FIELD_captcha_response###-->
+
 	<tr>
 		<td>###HIDDENFIELDS###</td>
 		<td>
@@ -416,7 +436,7 @@
 <!-- ###TEMPLATE_CREATE_PREVIEW### begin -->
 <table border="0" cellspacing="0" cellpadding="1">
 	<tr>
-		<td><img src="clear.gif" height="1" width="160"></td>
+		<td><img src="clear.gif" height="1" width="160" alt="" /></td>
 		<td></td>
 	</tr>
 	<tr>
@@ -548,7 +568,7 @@
 	<!--###SUB_INCLUDED_FIELD_module_sys_dmail_html###-->
 	<tr>
 		<td><p>###LABEL_MODULE_SYS_DMAIL_HTML###</p></td>
-		<td><p>###LABEL_module_sys_dmail_html_CHECKED###</p></td>
+		<td><p>###LABEL_MODULE_SYS_DMAIL_HTML_CHECKED###</p></td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_module_sys_dmail_html###-->
 	<!--###SUB_INCLUDED_FIELD_language###-->
@@ -576,42 +596,20 @@
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_comments###-->
 	<tr>
-	<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
-		<td>
-	<input type="hidden" name="FE[fe_users][username]" />
-	<input type="hidden" name="FE[fe_users][password]" />
-	<input type="hidden" name="FE[fe_users][password_again]" />
-	<input type="hidden" name="FE[fe_users][gender]" />
-	<input type="hidden" name="FE[fe_users][name]" />
-	<input type="hidden" name="FE[fe_users][first_name]" />
-	<input type="hidden" name="FE[fe_users][last_name]" />
-	<input type="hidden" name="FE[fe_users][status]" />
-	<input type="hidden" name="FE[fe_users][date_of_birth]" />
-	<input type="hidden" name="FE[fe_users][address]" />
-	<input type="hidden" name="FE[fe_users][city]" />
-	<input type="hidden" name="FE[fe_users][zone]" />
-	<input type="hidden" name="FE[fe_users][country]" />
-	<input type="hidden" name="FE[fe_users][static_info_country]" />
-	<input type="hidden" name="FE[fe_users][zip]" />
-	<input type="hidden" name="FE[fe_users][telephone]" />
-	<input type="hidden" name="FE[fe_users][fax]" />
-	<input type="hidden" name="FE[fe_users][email]" />
-	<input type="hidden" name="FE[fe_users][module_sys_dmail_category]" />
-	<input type="hidden" name="FE[fe_users][usergroup]" />
-	<input type="hidden" name="FE[fe_users][module_sys_dmail_html]" />
-	<input type="hidden" name="FE[fe_users][language]" />
-	<input type="hidden" name="FE[fe_users][title]" />
-	<input type="hidden" name="FE[fe_users][company]" />
-	<input type="hidden" name="FE[fe_users][www]" />
-	<input type="hidden" name="FE[fe_users][image]" />
-	<input type="hidden" name="FE[fe_users][comments]" />
+	<td>
+	<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
 	###HIDDENFIELDS###
-		</td>
+	<table border="0" cellspacing="0" cellpadding="1">
+	<tr>
+		<td><img src="clear.gif" height="1" width="160" /></td>
 		<td>
-	<p><input type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_BACK_TO_FORM###" class="tx-srfeuserregister-pi1-submit" />
-	<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_REGISTER###" class="tx-srfeuserregister-pi1-submit" /></p>
+		<p class="submitButtons"><input type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_BACK_TO_FORM###" class="tx-srfeuserregister-pi1-submit" />
+		<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_REGISTER###" class="tx-srfeuserregister-pi1-submit" /></p>
 		</td>
+	</tr>
+	</table>
 	</form>
+	</td>
 	</tr>
 </table>
 <!-- ###TEMPLATE_CREATE_PREVIEW### end-->
@@ -635,26 +633,26 @@
 <!-- ###TEMPLATE_CREATE_SAVED### begin-->
 <table border="0" cellspacing="0" cellpadding="1" width="100%">
 	<tr><td>
-		<p>###GW1B######LABEL_V_DEAR######GW1E###</p> 
+		<p>###GW1B######LABEL_V_DEAR######GW1E###</p>
 		<p>###LABEL_V_REGISTRATION_CREATED_SUBJECT###</p>
 		<p>###LABEL_V_REGISTRATION_CREATED_MESSAGE1###</p>
 		<p>###LABEL_V_REGISTRATION_CREATED_MESSAGE2###</p>
 		<p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
-		<p><table border="0" cellspacing="0" cellpadding="1">
-			<form name="###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
-				<tr>
-					<td><img src="clear.gif" height="1" width="20" /></td>
+		<form id="###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
+			<table border="0" cellspacing="0" cellpadding="1">
+			<tr>
+					<td><img src="clear.gif" height="1" width="20" alt="" /></td>
 					<td><p>###LABEL_USERNAME###</p></td>
 					<td><p><input type="text" name="user" value="###FIELD_username###" /></p></td>
 				</tr>
 				<tr>
-					<td><img src="clear.gif" height="1" width="20" /></td>
+					<td><img src="clear.gif" height="1" width="20" alt="" /></td>
 					<td><p>###LABEL_PASSWORD###</p></td>
-					<td><p><input type="password" name="pass" value="###FIELD_password###" /></p></td>
+					<td><p><input type="password" name="pass" value="###FIELD_password###" ###PASSWORD_ONCHANGE### /></p></td>
 				</tr>
 				<tr>
-					<td><img src="clear.gif" height="1" width="20" /></td>
-					<td><img src="clear.gif" width="1" height="1" /></td>
+					<td><img src="clear.gif" height="1" width="20" alt="" /></td>
+					<td><img src="clear.gif" width="1" height="1" alt="" /></td>
 					<td><p><input type="submit" name="submit" value="###LABEL_BUTTON_ENTER###"  class="tx-srfeuserregister-pi1-submit" /></p>
 						<input type="hidden" name="logintype" value="login" />
 						<input type="hidden" name="pid" value="###THE_PID###" />
@@ -662,8 +660,8 @@
 						###HIDDENFIELDS###
 					</td>
 				</tr>
-			</form>
-		</table></p>
+		</table>
+		</form>
 	</td></tr>
 </table>
 <!-- ###TEMPLATE_CREATE_SAVED### end-->
@@ -679,10 +677,7 @@ The user is informed that a message has been sent to his email address and that 
 <table border="0" cellspacing="0" cellpadding="1" width="100%">
 	<tr><td>
 		<p>###GW1B######LABEL_V_DEAR######GW1E###</p>
-		<p>###LABEL_V_PLEASE_CONFIRM###</p>
 		<p>###LABEL_V_YOUR_ACCOUNT_WAS_CREATED###</p>
-		<p>###LABEL_V_FOLLOW_INSTRUCTIONS1###</p>
-		<p>###LABEL_V_FOLLOW_INSTRUCTIONS2###</p>
 		<p>###LABEL_KIND_REGARDS###<br />
 		###GW1B######SITE_NAME######GW1E###</p>
 	</td></tr>
@@ -690,6 +685,24 @@ The user is informed that a message has been sent to his email address and that 
 <!-- ###TEMPLATE_SETFIXED_CREATE### end-->
 
 
+<br /><br /><br /><br /><hr /><br /><br /><br />
+<em>This is shown when the user is created, the option setfixed is configured and administrative review is required.
+The user is informed that a message has been sent to his email address and that he needs to confirm his registration.</em>
+<br />
+<br />
+<!-- ###TEMPLATE_SETFIXED_CREATE_REVIEW### begin -->
+<table border="0" cellspacing="0" cellpadding="1" width="100%">
+	<tr><td>
+		<p>###GW1B######LABEL_V_DEAR######GW1E###</p>
+		<p>###LABEL_V_PLEASE_CONFIRM###</p>
+		<p>###LABEL_V_YOUR_ACCOUNT_WAS_CREATED###</p>
+		<p>###LABEL_V_FOLLOW_INSTRUCTIONS_REVIEW1###</p>
+		<p>###LABEL_V_FOLLOW_INSTRUCTIONS_REVIEW2###</p>
+		<p>###LABEL_KIND_REGARDS###<br />
+		###GW1B######SITE_NAME######GW1E###</p>
+	</td></tr>
+</table>
+<!-- ###TEMPLATE_SETFIXED_CREATE_REVIEW### end-->
 
 
 <h2>'INVITE' TEMPLATES:</h2>
@@ -701,10 +714,10 @@ The user is informed that a message has been sent to his email address and that 
 <br />
 <br />
 <!-- ###TEMPLATE_INVITE### begin -->
-<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 <table border="0" cellspacing="0" cellpadding="1">
 	<tr>
-		<td><img src="clear.gif" height="1" width="160"></td>
+		<td><img src="clear.gif" height="1" width="160" alt="" /></td>
 		<td></td>
 	</tr>
 	<tr>
@@ -733,7 +746,7 @@ The user is informed that a message has been sent to his email address and that 
 			<p>###GW2B######MISSING_PASSWORD######GW2E###</p>
 			<p>###EVAL_ERROR_FIELD_password###</p>
 			<!--###SUB_REQUIRED_FIELD_password###-->
-			<p><input type="password" name="FE[fe_users][password]" size="10" /> ###LABEL_PASSWORD_REPEAT### <input type="password" name="FE[fe_users][password_again]" size="10" /></p>
+			<p><input type="password" name="FE[fe_users][password]" value="###FIELD_password###" size="10" ###PASSWORD_ONCHANGE### /> ###LABEL_PASSWORD_AGAIN### <input type="password" name="FE[fe_users][password_again]" value="###FIELD_password_again###" size="10" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_gender###-->
@@ -1008,7 +1021,8 @@ The user is informed that a message has been sent to his email address and that 
 			<!--###SUB_REQUIRED_FIELD_module_sys_dmail_html###-->
 			<p>###GW2B######MISSING_MODULE_SYS_DMAIL_HTML######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_module_sys_dmail_html###-->
-			<p><div class="tx-srfeuserregister-pi1-checkbox"><input type="checkbox" name="FE[fe_users][module_sys_dmail_html]" value="1" /></div></p>
+			<div class="tx-srfeuserregister-pi1-checkbox"><input type="checkbox" name="FE[fe_users][module_sys_dmail_html]" value="1" /></div>
+			<br />
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_module_sys_dmail_html###-->
@@ -1072,6 +1086,22 @@ The user is informed that a message has been sent to his email address and that 
 			<p>###GW3B######LABEL_REQUIRED_INFO_NOTICE######GW3E###</p>
 		</td>
 	</tr>
+	<!--###SUB_INCLUDED_FIELD_captcha_response###-->
+	<tr>
+		<td>
+			<p>###SR_FREECAP_NOTICE###</p>
+			<p>###SR_FREECAP_CANT_READ###</p>
+		</td>
+		<td>
+			<p>###GW2B######EVAL_ERROR_FIELD_captcha_response######GW2E###</p>
+			<!--###SUB_REQUIRED_FIELD_captcha_response###-->
+			<p>###GW2B######MISSING_CAPTCHA_RESPONSE######GW2E###</p>
+			<!--###SUB_REQUIRED_FIELD_captcha_response###-->
+			<p><input type="text" size="15" id="tx-srfeuserregister-pi1-captcha-response" name="###NAME_CAPTCHA_RESPONSE###" title="###SR_FREECAP_NOTICE###" value=""></p>
+			<p>###SR_FREECAP_IMAGE###</p>
+		</td>
+	</tr>
+	<!--###SUB_INCLUDED_FIELD_captcha_response###-->
 	<tr>
 		<td>###HIDDENFIELDS###</td>
 		<td>
@@ -1091,7 +1121,7 @@ The user is informed that a message has been sent to his email address and that 
 <!-- ###TEMPLATE_INVITE_PREVIEW### begin -->
 <table border="0" cellspacing="0" cellpadding="1">
 	<tr>
-		<td><img src="clear.gif" height="1" width="160"></td>
+		<td><img src="clear.gif" height="1" width="160" alt="" /></td>
 		<td></td>
 	</tr>
 	<tr>
@@ -1222,7 +1252,7 @@ The user is informed that a message has been sent to his email address and that 
 	<!--###SUB_INCLUDED_FIELD_module_sys_dmail_html###-->
 	<tr>
 		<td><p>###LABEL_MODULE_SYS_DMAIL_HTML###</p></td>
-		<td><p>###LABEL_module_sys_dmail_html_CHECKED###</p></td>
+		<td><p>###LABEL_MODULE_SYS_DMAIL_HTML_CHECKED###</p></td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_module_sys_dmail_html###-->
 	<!--###SUB_INCLUDED_FIELD_language###-->
@@ -1250,11 +1280,9 @@ The user is informed that a message has been sent to his email address and that 
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_comments###-->
 	<tr>
-	<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
-		<td>
+	<td>
+	<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
 	<input type="hidden" name="FE[fe_users][username]" />
-	<input type="hidden" name="FE[fe_users][password]" />
-	<input type="hidden" name="FE[fe_users][password_again]" />
 	<input type="hidden" name="FE[fe_users][gender]" />
 	<input type="hidden" name="FE[fe_users][name]" />
 	<input type="hidden" name="FE[fe_users][first_name]" />
@@ -1280,12 +1308,17 @@ The user is informed that a message has been sent to his email address and that 
 	<input type="hidden" name="FE[fe_users][image]" />
 	<input type="hidden" name="FE[fe_users][comments]" />
 	###HIDDENFIELDS###
-		</td>
+	<table border="0" cellspacing="0" cellpadding="1">
+	<tr>
+		<td><img src="clear.gif" height="1" width="160" alt="" /></td>
 		<td>
-	<p><input type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_BACK_TO_FORM###" class="tx-srfeuserregister-pi1-submit" />
-	<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_REGISTER###" class="tx-srfeuserregister-pi1-submit" /></p>
+		<p class="submitButtons"><input type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_BACK_TO_FORM###" class="tx-srfeuserregister-pi1-submit" />
+		<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_REGISTER###" class="tx-srfeuserregister-pi1-submit" /></p>
 		</td>
+	</tr>
+	</table>
 	</form>
+	</td>
 	</tr>
 </table>
 <!-- ###TEMPLATE_INVITE_PREVIEW### end-->
@@ -1320,10 +1353,10 @@ The user is informed that a message has been sent to the email address and that 
 <br />
 <br />
 <!-- ###TEMPLATE_EDIT### begin -->
-<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
 <table border="0" cellspacing="0" cellpadding="1">
 	<tr>
-		<td><img src="clear.gif" height="1" width="160"></td>
+		<td><img src="clear.gif" height="1" width="160" alt="" /></td>
 		<td></td>
 	</tr>
 	<tr>
@@ -1341,11 +1374,11 @@ The user is informed that a message has been sent to the email address and that 
 			<p>###GW2B######MISSING_PASSWORD######GW2E###</p>
 			<p>###EVAL_ERROR_FIELD_password###</p>
 			<!--###SUB_REQUIRED_FIELD_password###-->
-			<p><input type="password" name="FE[fe_users][password]" size="10" ###PASSWORD_ONCHANGE### /> ###LABEL_PASSWORD_REPEAT### <input type="password" name="FE[fe_users][password_again]" size="10" ###PASSWORD_ONCHANGE### /></p>
+			<p><input type="password" id="FE[fe_users][password]" name="FE[fe_users][password]" value="###FIELD_password###" size="10" ###PASSWORD_ONCHANGE### /> ###LABEL_PASSWORD_AGAIN### <input type="password" name="FE[fe_users][password_again]" value="###FIELD_password_again###" size="10" ###PASSWORD_ONCHANGE### /></p>
 		</td>
 	</tr>
 	<tr>
-		<td><img src="clear.gif" height="1" width="160"></td>
+		<td><img src="clear.gif" height="1" width="160" alt="" /></td>
 		<td></td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_gender###-->
@@ -1372,7 +1405,7 @@ The user is informed that a message has been sent to the email address and that 
 			<!--###SUB_REQUIRED_FIELD_name###-->
 			<p>###GW2B######MISSING_NAME######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_name###-->
-			<p><input type="text" name="FE[fe_users][name]" size ="50" /></p>
+			<p><input type="text" name="FE[fe_users][name]" id="FE[fe_users][name]" size ="50" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_name###-->
@@ -1386,7 +1419,7 @@ The user is informed that a message has been sent to the email address and that 
 			<!--###SUB_REQUIRED_FIELD_first_name###-->
 			<p>###GW2B######MISSING_FIRST_NAME######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_first_name###-->
-			<p><input type="text" name="FE[fe_users][first_name]" size ="50" /></p>
+			<p><input type="text" name="FE[fe_users][first_name]" id="FE[fe_users][first_name]" size ="50" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_first_name###-->
@@ -1400,7 +1433,7 @@ The user is informed that a message has been sent to the email address and that 
 			<!--###SUB_REQUIRED_FIELD_last_name###-->
 			<p>###GW2B######MISSING_LAST_NAME######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_last_name###-->
-			<p><input type="text" name="FE[fe_users][last_name]" size ="50" /></p>
+			<p><input type="text" name="FE[fe_users][last_name]" id="FE[fe_users][last_name]" size ="50" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_last_name###-->
@@ -1428,7 +1461,7 @@ The user is informed that a message has been sent to the email address and that 
 			<!--###SUB_REQUIRED_FIELD_date_of_birth###-->
 			<p>###GW2B######MISSING_DATE_OF_BIRTH######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_date_of_birth###-->
-			<p><input type="text" name="FE[fe_users][date_of_birth]" size ="20" /></p>
+			<p><input type="text" name="FE[fe_users][date_of_birth]" id="FE[fe_users][date_of_birth]" size ="20" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_date_of_birth###-->
@@ -1442,7 +1475,7 @@ The user is informed that a message has been sent to the email address and that 
 			<!--###SUB_REQUIRED_FIELD_title###-->
 			<p>###GW2B######MISSING_TITLE######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_title###-->
-			<p><input type="text" name="FE[fe_users][title]" size="40" /></p>
+			<p><input type="text" name="FE[fe_users][title]" id="FE[fe_users][title]" size="40" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_title###-->
@@ -1456,7 +1489,7 @@ The user is informed that a message has been sent to the email address and that 
 			<!--###SUB_REQUIRED_FIELD_company###-->
 			<p>###GW2B######MISSING_COMPANY######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_company###-->
-			<p><input type="text" name="FE[fe_users][company]" size="50" /></p>
+			<p><input type="text" name="FE[fe_users][company]" id="FE[fe_users][company]" size="50" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_company###-->
@@ -1470,7 +1503,7 @@ The user is informed that a message has been sent to the email address and that 
 			<!--###SUB_REQUIRED_FIELD_address###-->
 			<p>###GW2B######MISSING_ADDRESS######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_address###-->
-			<p><input type="text" name="FE[fe_users][address]" size="60" /></p>
+			<p><input type="text" name="FE[fe_users][address]" id="FE[fe_users][address]" size="60" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_address###-->
@@ -1484,7 +1517,7 @@ The user is informed that a message has been sent to the email address and that 
 			<!--###SUB_REQUIRED_FIELD_city###-->
 			<p>###GW2B######MISSING_CITY######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_city###-->
-			<p><input type="text" name="FE[fe_users][city]" size="40" /></p>
+			<p><input type="text" name="FE[fe_users][city]" id="FE[fe_users][city]" size="40" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_city###-->
@@ -1511,7 +1544,7 @@ The user is informed that a message has been sent to the email address and that 
 			<!--###SUB_REQUIRED_FIELD_country###-->
 			<p>###GW2B######MISSING_COUNTRY######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_country###-->
-			<p><input type="text" name="FE[fe_users][country]" size="60" /></p>
+			<p><input type="text" name="FE[fe_users][country]" id="FE[fe_users][country]" size="60" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_country###-->
@@ -1538,7 +1571,7 @@ The user is informed that a message has been sent to the email address and that 
 			<!--###SUB_REQUIRED_FIELD_zip###-->
 			<p>###GW2B######MISSING_ZIP######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_zip###-->
-			<p><input type="text" name="FE[fe_users][zip]" size="20" /></p>
+			<p><input type="text" name="FE[fe_users][zip]" id="FE[fe_users][zip]" size="20" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_zip###-->
@@ -1552,7 +1585,7 @@ The user is informed that a message has been sent to the email address and that 
 			<!--###SUB_REQUIRED_FIELD_telephone###-->
 			<p>###GW2B######MISSING_TELEPHONE######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_telephone###-->
-			<p><input type="text" name="FE[fe_users][telephone]" size="25" /></p>
+			<p><input type="text" name="FE[fe_users][telephone]" id="FE[fe_users][telephone]" size="25" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_telephone###-->
@@ -1566,7 +1599,7 @@ The user is informed that a message has been sent to the email address and that 
 			<!--###SUB_REQUIRED_FIELD_fax###-->
 			<p>###GW2B######MISSING_FAX######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_fax###-->
-			<p><input type="text" name="FE[fe_users][fax]" size="25" /></p>
+			<p><input type="text" name="FE[fe_users][fax]" id="FE[fe_users][fax]" size="25" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_fax###-->
@@ -1580,7 +1613,7 @@ The user is informed that a message has been sent to the email address and that 
 			<!--###SUB_REQUIRED_FIELD_email###-->
 			<p>###GW2B######MISSING_EMAIL######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_email###-->
-			<p><input type="text" name="FE[fe_users][email]" size="50" /></p>
+			<p><input type="text" name="FE[fe_users][email]" id="FE[fe_users][email]" size="50" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_email###-->
@@ -1621,7 +1654,8 @@ The user is informed that a message has been sent to the email address and that 
 			<!--###SUB_REQUIRED_FIELD_module_sys_dmail_html###-->
 			<p>###GW2B######MISSING_MODULE_SYS_DMAIL_HTML######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_module_sys_dmail_html###-->
-			<p><div class="tx-srfeuserregister-pi1-checkbox"><input type="checkbox" name="FE[fe_users][module_sys_dmail_html]" value="1" /></div></p>
+			<div class="tx-srfeuserregister-pi1-checkbox"><input type="checkbox" name="FE[fe_users][module_sys_dmail_html]" id="FE[fe_users][module_sys_dmail_html]" value="1" /></div>
+			<br />
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_module_sys_dmail_html###-->
@@ -1648,7 +1682,7 @@ The user is informed that a message has been sent to the email address and that 
 			<!--###SUB_REQUIRED_FIELD_www###-->
 			<p>###GW2B######MISSING_WWW######GW2E###</p>
 			<!--###SUB_REQUIRED_FIELD_www###-->
-			<p><input type="text" name="FE[fe_users][www]" size="50" /></p>
+			<p><input type="text" name="FE[fe_users][www]" id="FE[fe_users][www]" size="50" /></p>
 		</td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_www###-->
@@ -1685,6 +1719,22 @@ The user is informed that a message has been sent to the email address and that 
 			<p>###GW3B######LABEL_REQUIRED_INFO_NOTICE######GW3E###</p>
 		</td>
 	</tr>
+	<!--###SUB_INCLUDED_FIELD_captcha_response###-->
+	<tr>
+		<td>
+			<p>###SR_FREECAP_NOTICE###</p>
+			<p>###SR_FREECAP_CANT_READ###</p>
+		</td>
+		<td>
+			<p>###GW2B######EVAL_ERROR_FIELD_captcha_response######GW2E###</p>
+			<!--###SUB_REQUIRED_FIELD_captcha_response###-->
+			<p>###GW2B######MISSING_CAPTCHA_RESPONSE######GW2E###</p>
+			<!--###SUB_REQUIRED_FIELD_captcha_response###-->
+			<p><input type="text" size="15" id="tx-srfeuserregister-pi1-captcha-response" name="###NAME_CAPTCHA_RESPONSE###" title="###SR_FREECAP_NOTICE###" value=""></p>
+			<p>###SR_FREECAP_IMAGE###</p>
+		</td>
+	</tr>
+	<!--###SUB_INCLUDED_FIELD_captcha_response###-->
 	<tr>
 		<td>###HIDDENFIELDS###
 		</td>
@@ -1692,7 +1742,7 @@ The user is informed that a message has been sent to the email address and that 
 			<p>
 				<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_UPDATE###" class="tx-srfeuserregister-pi1-submit" />
 				<!--###SUB_LINKTOPID_ADD_BUTTON###-->
-					<input type="submit" name="tx_srfeuserregister_pi1[linkToPID]" value="###LABEL_BUTTON_UPDATE_AND_MORE###" class="tx-srfeuserregister-pi1-submit" />
+					<input type="submit" name="tx_srfeuserregister_pi1[linkToPID]"  value="###LABEL_BUTTON_UPDATE_AND_MORE###" class="tx-srfeuserregister-pi1-submit" />
 				<!--###SUB_LINKTOPID_ADD_BUTTON###-->
 			</p>
 		</td>
@@ -1716,7 +1766,7 @@ The user is informed that a message has been sent to the email address and that 
 <!-- ###TEMPLATE_EDIT_PREVIEW### begin-->
 <table border="0" cellspacing="0" cellpadding="1">
 	<tr>
-		<td><img src="clear.gif" height="1" width="160"></td>
+		<td><img src="clear.gif" height="1" width="160" alt="" /></td>
 		<td></td>
 	</tr>
 	<tr>
@@ -1848,7 +1898,7 @@ The user is informed that a message has been sent to the email address and that 
 	<!--###SUB_INCLUDED_FIELD_module_sys_dmail_html###-->
 	<tr>
 		<td><p>###LABEL_MODULE_SYS_DMAIL_HTML###</p></td>
-		<td><p>###LABEL_module_sys_dmail_html_CHECKED###</p></td>
+		<td><p>###LABEL_MODULE_SYS_DMAIL_HTML_CHECKED###</p></td>
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_module_sys_dmail_html###-->
 	<!--###SUB_INCLUDED_FIELD_language###-->
@@ -1876,10 +1926,8 @@ The user is informed that a message has been sent to the email address and that 
 	</tr>
 	<!--###SUB_INCLUDED_FIELD_comments###-->
 	<tr>
-	<form name="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
-		<td>
-	<input type="hidden" name="FE[fe_users][password]" />
-	<input type="hidden" name="FE[fe_users][password_again]" />
+	<td>
+	<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
 	<input type="hidden" name="FE[fe_users][gender]" />
 	<input type="hidden" name="FE[fe_users][name]" />
 	<input type="hidden" name="FE[fe_users][first_name]" />
@@ -1905,17 +1953,22 @@ The user is informed that a message has been sent to the email address and that 
 	<input type="hidden" name="FE[fe_users][image]" />
 	<input type="hidden" name="FE[fe_users][comments]" />
 	###HIDDENFIELDS###
-		</td>
+	<table border="0" cellspacing="0" cellpadding="1">
+	<tr>
+		<td><img src="clear.gif" height="1" width="160" alt="" /></td>
 		<td>
-	<p>
-		<input type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_BACK_TO_FORM###" class="tx-srfeuserregister-pi1-submit" /> 
+		<p class="submitButtons">
+		<input type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_BACK_TO_FORM###" class="tx-srfeuserregister-pi1-submit" />
 		<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_UPDATE###" class="tx-srfeuserregister-pi1-submit" />
 		<!--###SUB_LINKTOPID_ADD_BUTTON###-->
 			<input type="submit" name="tx_srfeuserregister_pi1[linkToPID]" value="###LABEL_BUTTON_UPDATE_AND_MORE###" class="tx-srfeuserregister-pi1-submit" />
 		<!--###SUB_LINKTOPID_ADD_BUTTON###-->
-	</p>
-	</form>
+		</p>
 		</td>
+	</tr>
+	</table>
+	</form>
+	</td>
 	</tr>
 </table>
 <!-- ###TEMPLATE_EDIT_PREVIEW### end-->
@@ -1972,7 +2025,7 @@ The user is informed that a message has been sent to the email address and that 
 	<tr><td>
 		<p>###GW1B######LABEL_V_DEAR######GW1E###</p>
 		<p>###LABEL_V_REALLY_WISH_TO_DELETE###</p>
-		<form name="###FORM_NAME###" method="post" action="###FORM_URL###">
+		<form id="###FORM_NAME###" method="post" action="###FORM_URL###">
 		###HIDDENFIELDS###
 		<input type="hidden" name="FE[fe_users][module_sys_dmail_html]" value="###FIELD_module_sys_dmail_html###" />
 		<p><input type="submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_CANCEL_DELETE###" onClick="document.location='###BACK_URL###'; return false;" class="tx-srfeuserregister-pi1-submit" />
@@ -1992,26 +2045,26 @@ The user is informed that a message has been sent to the email address and that 
 <!-- ###TEMPLATE_SETFIXED_OK### begin -->
 <table border="0" cellspacing="0" cellpadding="1" width="100%">
 	<tr><td>
-		<p>###GW1B######LABEL_V_DEAR######GW1E###</p> 
+		<p>###GW1B######LABEL_V_DEAR######GW1E###</p>
 		<p>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</p>
 		<p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE1###</p>
 		<p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE2###</p>
 		<p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
-		<p><table border="0" cellspacing="0" cellpadding="1">
-			<form name="###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
-				<tr>
-					<td><img src="clear.gif" height="1" width="20" /></td>
+		<form id="###FORM_NAME###" action="###LOGIN_FORM###" method="post" ###FORM_ONSUBMIT###>
+		<table border="0" cellspacing="0" cellpadding="1">
+			<tr>
+					<td><img src="clear.gif" height="1" width="20" alt="" /></td>
 					<td><p>###LABEL_USERNAME###</p></td>
 					<td><p><input type="text" name="user" value="###FIELD_username###" /></p></td>
 				</tr>
 				<tr>
-					<td><img src="clear.gif" height="1" width="20" /></td>
+					<td><img src="clear.gif" height="1" width="20" alt="" /></td>
 					<td><p>###LABEL_PASSWORD###</p></td>
-					<td><p><input type="password" name="pass" value="###FIELD_password###" /></p></td>
+					<td><p><input type="password" name="pass" value="###FIELD_password###" ###PASSWORD_ONCHANGE### /></p></td>
 				</tr>
 				<tr>
-					<td><img src="clear.gif" height="1" width="20" /></td>
-					<td><img src="clear.gif" width="1" height="1" /></td>
+					<td><img src="clear.gif" height="1" width="20" alt="" /></td>
+					<td><img src="clear.gif" width="1" height="1" alt="" /></td>
 					<td><p><input type="submit" name="submit" value="###LABEL_BUTTON_ENTER###" class="tx-srfeuserregister-pi1-submit" /></p>
 						<input type="hidden" name="logintype" value="login" />
 						<input type="hidden" name="pid" value="###THE_PID###" />
@@ -2019,11 +2072,26 @@ The user is informed that a message has been sent to the email address and that 
 						###HIDDENFIELDS###
 					</td>
 				</tr>
-			</form>
-		</table></p>
+		</table>
+		</form>
 	</td></tr>
 </table>
 <!-- ###TEMPLATE_SETFIXED_OK### end-->
+
+
+<em>This template is the response page when the administrator accepts the account registration.</em>
+<!-- ###TEMPLATE_SETFIXED_OK_ACCEPT### begin -->
+<table border="0" cellspacing="0" cellpadding="1" width="100%">
+	<tr><td>
+		<p>###GW1B######LABEL_V_TO_THE_ADMINISTRATOR######GW1E###</p>
+		<p>###LABEL_V_REGISTRATION_ACCEPTED_SUBJECT###</p>
+		<p>###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE1###</p>
+		<p>###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE2###</p>
+		<p>###LABEL_KIND_REGARDS###<br />
+		###GW1B######SITE_NAME######GW1E###</p>
+	</td></tr>
+</table>
+<!-- ###TEMPLATE_SETFIXED_OK_ACCEPT### end-->
 
 
 
@@ -2167,7 +2235,9 @@ In these plain text email templates the first line with content is used as subje
 <br />
 <br />
 <!-- ###EMAIL_TEMPLATE_CREATE_SAVED_ADMIN### begin -->
-<!--###SUB_RECORD###-->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CREATED###
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_CREATED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_CREATED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2243,7 +2313,9 @@ In these plain text email templates the first line with content is used as subje
 <br />
 <br />
 <!-- ###EMAIL_TEMPLATE_EDIT_SAVED_ADMIN### begin -->
-<!--###SUB_RECORD###-->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_UPDATED###
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_UPDATED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_UPDATED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2332,7 +2404,9 @@ In these plain text email templates the first line with content is used as subje
 <br />
 <br />
 <!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_ADMIN### begin -->
-<!--###SUB_RECORD###-->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_INITIATED###
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_INITIATED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_INITIATED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2343,6 +2417,98 @@ In these plain text email templates the first line with content is used as subje
 ###SITE_NAME###
 <!--###SUB_RECORD###-->
 <!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_ADMIN### end-->
+
+
+
+<br /><br /><br /><br /><hr /><br /><br /><br />
+<em>This template is used to notify a person by email that he has created his account, he needs to confirm and administrative review is required.</em>
+<br />
+<br />
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW_HTML### begin -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<style type="text/css">
+<!--
+###CSS_STYLES###
+-->
+</style>
+<title>###LABEL_V_REGISTRATION_INITIATED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body bgColor="#ffffff" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10">
+<!--###SUB_RECORD###-->
+<table border="0" cellspacing="0" cellpadding="1" width="100%">
+	<tr><td>
+		<p>###GW1B######LABEL_V_DEAR######GW1E###</p>
+		<p>###LABEL_V_REGISTRATION_INITIATED_REVIEW1###<br/>
+		<a href="###SETFIXED_APPROVE_URL###">###SETFIXED_APPROVE_URL###</a><br />
+		###LABEL_COPY_PASTE_LINK###</p>
+		<p>###LABEL_V_REGISTRATION_INITIATED_REVIEW2###</p>
+		<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE2###<br/>
+		<a href="###SETFIXED_DELETE_URL###">###SETFIXED_DELETE_URL###</a><br />
+		###LABEL_COPY_PASTE_LINK###<br />
+		###LABEL_EXCUSE_US###</p>
+		<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE3### <a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+		<p>###LABEL_KIND_REGARDS_INI###<br />
+		###GW1B######SITE_NAME######GW1E###<br />
+		<a href="###SITE_URL###">###SITE_WWW###</a><br />
+		<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+	</td></tr>
+</table>
+<!--###SUB_RECORD###-->
+</body></html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW_HTML### end-->
+
+
+<br /><br /><br /><br /><hr /><br /><br /><br />
+<em>This template is used to notify a person by email that he has created his account, he needs to confirm and administrative review is required.</em>
+<br />
+<br />
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW### begin -->
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_INITIATED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_INITIATED_REVIEW1###
+<###SETFIXED_APPROVE_URL###>
+###LABEL_COPY_PASTE_LINK###
+
+###LABEL_V_REGISTRATION_INITIATED_REVIEW2###
+
+###LABEL_V_REGISTRATION_INITIATED_MESSAGE2###
+<###SETFIXED_DELETE_URL###>
+###LABEL_COPY_PASTE_LINK###
+###LABEL_EXCUSE_US###
+
+###LABEL_V_REGISTRATION_INITIATED_MESSAGE3### ###SITE_EMAIL###
+
+###LABEL_KIND_REGARDS_INI###
+###SITE_NAME###
+<###SITE_URL###>
+###SITE_EMAIL###
+<!--###SUB_RECORD###-->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW### end-->
+
+<br /><br /><br /><br /><hr /><br /><br /><br />
+<em>This is the template used for the administrator notification email upon a new user registration.</em>
+<br />
+<br />
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW_ADMIN### begin -->
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_INITIATED###
+###LABEL_V_NOTIFICATION###:
+
+###LABEL_V_REGISTRATION_INITIATED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!--###SUB_RECORD###-->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW_ADMIN### end-->
 
 
 
@@ -2469,7 +2635,7 @@ In these plain text email templates the first line with content is used as subje
 
 ###LABEL_KIND_REGARDS_INV###
 ###SITE_NAME###
-###SITE_URL###
+<###SITE_URL###>
 ###SITE_EMAIL###
 <!--###SUB_RECORD###-->
 <!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE### end-->
@@ -2481,7 +2647,9 @@ In these plain text email templates the first line with content is used as subje
 <br />
 <br />
 <!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE_ADMIN### begin -->
-<!--###SUB_RECORD###-->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_INVITED###
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_INVITED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_INVITED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2559,7 +2727,9 @@ In these plain text email templates the first line with content is used as subje
 <br />
 <br />
 <!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_ADMIN### begin -->
-<!--###SUB_RECORD###-->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CONFIRMED###
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_CONFIRMED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_CONFIRMED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2637,7 +2807,9 @@ In these plain text email templates the first line with content is used as subje
 <br />
 <br />
 <!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_ADMIN### begin -->
-<!--###SUB_RECORD###-->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_CANCELLED###
+<!--###SUB_RECORD###-->###LABEL_V_REGISTRATION_CANCELLED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_CANCELLED###
 
 ###LABEL_NAME### ###FIELD_name###
@@ -2709,7 +2881,9 @@ In these plain text email templates the first line with content is used as subje
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon deletion of a user account.</em></p>
 
 <!-- ###EMAIL_TEMPLATE_DELETE_SAVED_ADMIN### begin -->
-<!-- ###SUB_RECORD### -->###LABEL_V_NOTIFICATION### ###LABEL_V_REGISTRATION_DELETED###
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_DELETED###
+###LABEL_V_NOTIFICATION###:
+
 ###LABEL_V_REGISTRATION_DELETED###
 
 ###LABEL_NAME### ###FIELD_name###

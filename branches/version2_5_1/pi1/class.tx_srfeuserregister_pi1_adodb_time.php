@@ -1,31 +1,35 @@
 <?php
-	/***************************************************************
-	*  Copyright notice
-	*
-	*  (c) 2004 Stanislas Rolland (stanislas.rolland@fructifor.com)
-	*  All rights reserved
-	*
-	*  This script is part of the Typo3 project. The Typo3 project is
-	*  free software; you can redistribute it and/or modify
-	*  it under the terms of the GNU General Public License as published by
-	*  the Free Software Foundation; either version 2 of the License, or
-	*  (at your option) any later version.
-	*
-	*  The GNU General Public License can be found at
-	*  http://www.gnu.org/copyleft/gpl.html.
-	*
-	*  This script is distributed in the hope that it will be useful,
-	*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-	*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	*  GNU General Public License for more details.
-	*
-	*  This copyright notice MUST APPEAR in all copies of the script!
-	***************************************************************/
+/***************************************************************
+ *  Copyright notice
+ *
+ *  (c) 2004 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 	 
-	/**
-	* This class contains a libraby functions to manipulate date before 1970:
-	*
-	*/
+/**
+ * This class contains a library functions to manipulate date before 1970:
+ * The code comes from http://adodb.sourceforge.net/
+ *
+ * $Id$
+ *
+ * @author Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ */
 		 
 /**
 ADOdb Date Library, part of the ADOdb abstraction library
@@ -716,16 +720,6 @@ function _adodb_getdate($origd=false,$fast=false,$is_gmt=false)
 	return array(
 		'seconds' => $secs,
 		'minutes' => $min,
-
-
-
-
-
-
-
-
-
-
 		'hours' => $hour,
 		'mday' => $day,
 		'wday' => $dow,
@@ -1008,8 +1002,8 @@ function adodb_mktime($hr,$min,$sec,$mon=false,$day=false,$year=false,$is_dst=fa
 		 
 	} //end of class
 	 
-	if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_adodb_time.php"]) {
-		include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_adodb_time.php"]);
+	if (defined("TYPO3_MODE") && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_adodb_time.php"]) {
+		include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_adodb_time.php"]);
 	}
 	 
 ?>

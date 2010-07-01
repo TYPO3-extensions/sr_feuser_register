@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005, 2006 Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
+*  (c) 2005-2008 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -24,59 +24,68 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
-*
-* Example of hook handler for extension Front End User Registration (sr_feuser_register)
-*
-* @author Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>
-*
-*/
-	 // $invokingObj is a reference to the invoking object
+ *
+ * Example of hook handler for extension Front End User Registration (sr_feuser_register)
+ *
+ * $Id$
+ *
+ * @author Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ *
+ */
+
 
 class tx_srfeuserregister_hooksHandler {
-
-	function registrationProcess_beforeConfirmCreate(&$recordArray, &$invokingObj) {
+	function registrationProcess_beforeConfirmCreate(&$recordArray, &$controlDataObj) {
 			// in the case of this hook, the record array is passed by reference
 			// in this example hook, we generate a username based on the first and last names of the user
-		if ($invokingObj->feUserData['preview'] && $invokingObj->conf[$invokingObj->cmdKey.'.']['generateUsername']) {
-			$recordArray[username] = substr(strtolower(trim($recordArray[first_name])),0,1) . substr(strtolower(trim($recordArray[last_name])),0,2);
-			$counter = 1;
-			$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($invokingObj->theTable, 'username', $recordArray[username]."$counter", 'LIMIT 1');
-			while($recordArray[username]."$counter" && $DBrows) {
-				$counter = $counter + 1;
-				$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($invokingObj->theTable, 'username', $recordArray[username]."$counter", 'LIMIT 1');
+		$cmdKey = $controlDataObj->getCmdKey();
+		$theTable = $controlDataObj->getTable();
+		if ($controlDataObj->getFeUserData('preview') && $controlDataObj->conf[$cmdKey.'.']['generateUsername']) {
+			$firstName = trim($recordArray['first_name']);
+			$lastName = trim($recordArray['last_name']);
+			$name = trim($recordArray['name']);
+			if ((!$firstName || !$lastName) && $name)	{
+				$nameArray = t3lib_div::trimExplode(' ', $name);
+				$firstName = ($firstName ? $firstName : $nameArray[0]);
+				$lastName = ($lastName ? $lastName : $nameArray[1]);
 			}
-			$recordArray[username] = $recordArray[username]."$counter";
+			$recordArray['username'] = substr(strtolower($firstName),0,5) . substr(strtolower($lastName),0,5);
+			$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($theTable, 'username', $recordArray['username'], 'LIMIT 1');
+			$counter = 0;
+			while($DBrows) {
+				$counter = $counter + 1;
+				$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($theTable, 'username', $recordArray['username'].$counter, 'LIMIT 1');
+			}
+			if ($counter)	{
+				$recordArray['username'] = $recordArray['username'].$counter;
+			}
 		}
-		echo 'beforeConfirmCreate';
 	}
 
 	function registrationProcess_afterSaveEdit($recordArray, &$invokingObj) {
-		echo 'afterSaveEdit';
 	}
 
 	function registrationProcess_beforeSaveDelete($recordArray, &$invokingObj) {
-		echo 'beforeSaveDelete';
 	}
 
 	function registrationProcess_afterSaveCreate($recordArray, &$invokingObj) {
-		echo 'afterSaveCreate';
 	}
 
 	function confirmRegistrationClass_preProcess(&$recordArray, &$invokingObj) {
-			// in the case of this hook, the record array is passed by reference
-			// you may not see this echo if the page is redirected to auto-login
-		echo 'confirmRegistrationClass_preProcess';
+		// in the case of this hook, the record array is passed by reference
+		// you may not see this echo if the page is redirected to auto-login
 	}
 
 	function confirmRegistrationClass_postProcess($recordArray, &$invokingObj) {
+		// you may not see this echo if the page is redirected to auto-login
+	}
 
-			// you may not see this echo if the page is redirected to auto-login
-		echo 'confirmRegistrationClass_preProcess';
+	function addGlobalMarkers(&$markerArray, &$invokingObj)	{
 	}
 }
 
-if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/hooks/class.tx_srfeuserregister_hooksHandler.php"]) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/sr_feuser_register/hooks/class.tx_srfeuserregister_hooksHandler.php"]);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/hooks/class.tx_srfeuserregister_hooksHandler.php']) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/hooks/class.tx_srfeuserregister_hooksHandler.php']);
 }
 
 ?>

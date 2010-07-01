@@ -1,4 +1,13 @@
+##
+## @package TYPO3
+## @subpackage sr_feuser_register
+## @version $Id$
+##
+
+plugin.tx_srfeuserregister_pi1 = USER_INT
 plugin.tx_srfeuserregister_pi1 {
+
+	table.name = {$plugin.tx_srfeuserregister_pi1.tableName}
 
 	templateStyle = old-style
 	templateFile = {$plugin.tx_srfeuserregister_pi1.file.templateFile}
@@ -9,11 +18,11 @@ plugin.tx_srfeuserregister_pi1 {
 	color2.wrap = {$plugin.tx_srfeuserregister_pi1.color2}
 	color3.wrap = {$plugin.tx_srfeuserregister_pi1.color3}
 	icon_delete = {$plugin.tx_srfeuserregister_pi1.file.icon_delete}
-	
+
 	fe_userOwnSelf = 1
 	fe_userEditSelf = 1
 	delete = 1
-	
+
 	pid = {$plugin.tx_srfeuserregister_pi1.pid}
 	pidTitleOverride = {$plugin.tx_srfeuserregister_pi1.pidTitleOverride}
 	registerPID = {$plugin.tx_srfeuserregister_pi1.registerPID}
@@ -26,11 +35,13 @@ plugin.tx_srfeuserregister_pi1 {
 	linkToPIDAddButton = {$plugin.tx_srfeuserregister_pi1.linkToPIDAddButton}
 	module_sys_dmail_category_PIDLIST = {$plugin.tx_srfeuserregister_pi1.module_sys_dmail_category_PIDLIST}
 	defaultCODE = {$plugin.tx_srfeuserregister_pi1.defaultCODE}
-	
+
 	useShortUrls = {$plugin.tx_srfeuserregister_pi1.useShortUrls}
 	shortUrlLife = {$plugin.tx_srfeuserregister_pi1.shortUrlLife}
+	useLocalization = {$plugin.tx_srfeuserregister_pi1.useLocalization}
+	dateFormat = {$plugin.tx_srfeuserregister_pi1.dateFormat}
+	dateSplit = {$plugin.tx_srfeuserregister_pi1.dateSplit}
 
-	formName = {$plugin.tx_srfeuserregister_pi1.formName}
 	onChangeCountryAttribute = {$plugin.tx_srfeuserregister_pi1.onChangeCountryAttribute}
 
 	allowMultipleUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowMultipleUserGroupSelection}
@@ -43,16 +54,24 @@ plugin.tx_srfeuserregister_pi1 {
 	addAttachment.sFK = APPROVE
 	addAttachment.file = {$plugin.tx_srfeuserregister_pi1.file.attachmentFile}
 
+	displayRequired = TEXT
+	displayRequired {
+		value = *
+		wrap = <span>|</span>
+	}
+
 	create = 1
 	create {
 		preview = {$plugin.tx_srfeuserregister_pi1.enablePreviewRegister}
 		fields = {$plugin.tx_srfeuserregister_pi1.formFields}
 		required = {$plugin.tx_srfeuserregister_pi1.requiredFields}
 		useEmailAsUsername = {$plugin.tx_srfeuserregister_pi1.useEmailAsUsername}
+		generateUsername = {$plugin.tx_srfeuserregister_pi1.generateUsername}
+		generatePassword = {$plugin.tx_srfeuserregister_pi1.generatePassword}
 		allowUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowUserGroupSelection}
 
 		defaultValues {
-			module_sys_dmail_html = 1
+			module_sys_dmail_html = {$plugin.tx_srfeuserregister_pi1.dmailCheckedUponRegistration}
 			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
 			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
 		}
@@ -66,8 +85,7 @@ plugin.tx_srfeuserregister_pi1 {
 			password = twice, atLeast[{$plugin.tx_srfeuserregister_pi1.passwordAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.passwordAtMost}]
 			username = uniqueLocal, atLeast[{$plugin.tx_srfeuserregister_pi1.usernameAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.usernameAtMost}]
 			email = email,atMost[255],uniqueLocal
-			##email = email,atMost[255]
-			gender = 
+			gender =
 			name = atMost[{$plugin.tx_srfeuserregister_pi1.nameAtMost}]
 			first_name = atMost[50]
 			last_name = atMost[50]
@@ -78,39 +96,51 @@ plugin.tx_srfeuserregister_pi1 {
 			telephone = atMost[25]
 			fax = atMost[25]
 			image = upload[{$plugin.tx_srfeuserregister_pi1.maxImages}]
-			title = 
-			address = 
+			title =
+			address =
 			www = wwwURL
-			comments = 
-			status = 
+			comments =
+			status =
 			module_sys_dmail_category =
 			module_sys_dmail_html =
 			usergroup =
+			captcha_response =
+		}
+
+	}
+
+	select {
+		email {
+			module_sys_dmail_category.wrap = | <br/>
 		}
 	}
 
-	setfixed = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
+	setfixed = 0
 	setfixed.APPROVE {
 		_FIELDLIST = uid,pid,usergroup
 		usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupAfterConfirmation}
-		disable = 0
+		disable = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
 	}
-
-	enableAutoLoginOnConfirmation = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnConfirmation}
-	enableAutoLoginOnCreate = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnCreate}
-	autoLoginRedirect_url = {$plugin.tx_srfeuserregister_pi1.autoLoginRedirect_url}
-
 	setfixed.DELETE {
 		_FIELDLIST = uid,pid
 	}
+	setfixed.ACCEPT {
+		_FIELDLIST = uid,pid,usergroup
+		usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupAfterAcceptation}
+		disable = 0
+	}
 
-	authcodeFields = {$plugin.tx_srfeuserregister_pi1.authcodeFields}
+	setfixed.REFUSE < .setfixed.DELETE
+	setfixed.ENTER < .setfixed.ACCEPT
+
+	enableEmailConfirmation = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
+	enableAutoLoginOnConfirmation = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnConfirmation}
+	enableAutoLoginOnCreate = {$plugin.tx_srfeuserregister_pi1.enableAutoLoginOnCreate}
+	enableAdminReview = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
+	autoLoginRedirect_url = {$plugin.tx_srfeuserregister_pi1.autoLoginRedirect_url}
+
 	authcodeFields.codeLength = {$plugin.tx_srfeuserregister_pi1.codeLength}
 
-	enableAdminReview = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
-	setfixed.ACCEPT < .setfixed.APPROVE
-	setfixed.REFUSE < .setfixed.DELETE
-	
 	invite < .create
 
 	edit < .create
@@ -126,7 +156,7 @@ plugin.tx_srfeuserregister_pi1 {
 		}
 
 		overrideValues {
-			username = 
+			username =
 			usergroup >
 			disable = 0
 		}
@@ -135,7 +165,6 @@ plugin.tx_srfeuserregister_pi1 {
 			username = unsetEmpty
 			usergroup = unsetEmpty
 		}
-
 	}
 
 	infomail = 0
@@ -145,7 +174,7 @@ plugin.tx_srfeuserregister_pi1 {
 	parseValues {
 		username = nospace,trim
 		email = lower,nospace,trim
-		password = trim,nospace
+		password = trim
 		name = trim
 		first_name = trim
 		last_name = trim
@@ -171,6 +200,7 @@ plugin.tx_srfeuserregister_pi1 {
 	email.fromName = {$plugin.tx_srfeuserregister_pi1.siteName}
 	email.admin = {$plugin.tx_srfeuserregister_pi1.email}
 	email.field = email
+	email.replyTo = user
 	email.HTMLMail = {$plugin.tx_srfeuserregister_pi1.enableHTMLMail}
 	email.HTMLMailCSS = {$plugin.tx_srfeuserregister_pi1.HTMLMailCSS}
 	email.CREATE_SAVED = {$plugin.tx_srfeuserregister_pi1.enableEmailOnRegister}
@@ -179,7 +209,7 @@ plugin.tx_srfeuserregister_pi1 {
 	email.SETFIXED_APPROVE = {$plugin.tx_srfeuserregister_pi1.enableEmailOnApprove}
 	email.SETFIXED_DELETE = {$plugin.tx_srfeuserregister_pi1.enableEmailOnRefuse}
 	email.SETFIXED_ACCEPT = 1
-	email.SETFIXED_REFUSE = 1
+	email.SETFIXED_REFUSE = {$plugin.tx_srfeuserregister_pi1.enableEmailOnAdminRefuse}
 
 	notify.CREATE_SAVED = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnRegister}
 	notify.EDIT_SAVED = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnUpdate}
