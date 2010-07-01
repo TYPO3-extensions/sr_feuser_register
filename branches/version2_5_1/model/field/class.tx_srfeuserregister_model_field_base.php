@@ -29,7 +29,7 @@
  *
  * base class for all database table fields classes
  *
- * $Id: class.tx_srfeuserregister_model_field_base.php 15775 2009-01-18 14:27:11Z franzholz $
+ * $Id$
  *
  * @author	Franz Holzinger <franz@ttproducts.de>
  * @maintainer	Franz Holzinger <franz@ttproducts.de>
