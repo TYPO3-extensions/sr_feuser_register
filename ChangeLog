@@ -1,3 +1,7 @@
+2010-10-14 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 14976: PHP Warning: explode() expects parameter 2 to be string
+	* Fix security issue: CSS with first_name and last_name
+
 2010-07-01 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug 13579: Replace deprecated tslib_cObj->checkEmail() with t3lib_div::validEmail()
 	* fix bug 12475: not working with sr_freecap v 1.2.2

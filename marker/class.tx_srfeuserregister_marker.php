@@ -391,7 +391,14 @@ class tx_srfeuserregister_marker {
 
 		foreach($otherLabels as $labelName) {
 			$langText = $this->langObj->getLL($labelName);
-			$label = sprintf($langText, $this->controlData->getPidTitle(), $row['username'], $name, $row['email'], $password);
+			$label = sprintf(
+				$langText,
+				$this->controlData->getPidTitle(),
+				htmlspecialchars($row['username']),
+				htmlspecialchars($name),
+				htmlspecialchars($row['email']),
+				$row['password']
+			);
 			// ACTIVE SOLUTION
 			$label = preg_replace_callback('/{([a-z_]+):([a-z_]+)}/', array(&$this, 'replaceVariables'), $label);
 			$markerkey = $this->cObj->caseshift($labelName,'upper');
