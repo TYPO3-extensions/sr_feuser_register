@@ -42,7 +42,7 @@ $EM_CONF[$_EXTKEY] = array(
 			'cms' => '',
 			'static_info_tables' => '2.0.5-',
 			'php' => '4.2.0-0.0.0',
-			'typo3' => '4.0-0.0.0',
+			'typo3' => '4.0-4.3.99',
 			'div2007' => '0.2.6-',
 		),
 		'conflicts' => array(
