@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2010 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+*  (c) 2007-2010 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -31,7 +31,7 @@
  *
  * $Id$
  *
- * @author	Kasper Skaarhoj <kasper2008@typo3.com>
+ * @author	Kasper Skaarhoj <kasper2010@typo3.com>
  * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
  * @author	Franz Holzinger <franz@ttproducts.de>
  *
@@ -274,6 +274,7 @@ class tx_srfeuserregister_display {
 				$this->tca->TCA['columns'],
 				FALSE
 			);
+
 			$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
 			$this->marker->addHiddenFieldsMarkers($markerArray, $cmdKey, $mode, $token, $dataArray);
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
@@ -282,10 +283,8 @@ class tx_srfeuserregister_display {
 				$fields = $this->data->fieldList . $this->data->additionalUpdateFields;
 				$fields = $this->controlData->getOpenFields($fields);
 				$modData = $this->data->modifyDataArrForFormUpdate($dataArray, $cmdKey);
-
 				$form = tx_div2007_alpha::getClassName($theTable.'_form',$this->controlData->getPrefixId());
 				$updateJS = $this->cObj->getUpdateJS($modData, $form, 'FE['.$theTable.']', $fields);
-
 				$content .= $updateJS;
 				$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
 			}
@@ -621,4 +620,5 @@ class tx_srfeuserregister_display {
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/view/class.tx_srfeuserregister_display.php'])  {
   include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/view/class.tx_srfeuserregister_display.php']);
 }
+
 ?>

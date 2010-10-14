@@ -2,8 +2,8 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 1999-2003 Kasper Skårhøj <kasperYYYY@typo3.com>
-*  (c) 2004-2010 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+*  (c) 1999-2003 Kasper Skårhøj (kasperYYYY@typo3.com)
+*  (c) 2004-2010 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -50,12 +50,11 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 	var $scriptRelPath = 'pi1/class.tx_srfeuserregister_pi1_base.php'; // Path to this script relative to the extension dir.
 	var $extKey = SR_FEUSER_REGISTER_EXTkey;		// Extension key.
 
-	public function main($content, $conf) {
+	public function main ($content, $conf) {
 		global $TSFE;
 
 		$this->pi_setPiVarDefaults();
 		$this->conf = &$conf;
-
 		$mainObj = &t3lib_div::getUserObj('&tx_srfeuserregister_control_main');
 		$mainObj->cObj = &$this->cObj;
 		$content = &$mainObj->main($content, $conf, $this, 'fe_users');
@@ -67,4 +66,5 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_base.php']) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_base.php']);
 }
+
 ?>

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2010 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+*  (c) 2007-2010 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -98,7 +98,7 @@ class tx_srfeuserregister_data {
 
 		if (isset($fe) && is_array($fe) && $this->controlData->isTokenValid())	{
 			$feDataArray = $fe[$theTable];
-			$this->controlData->secureInput($feDataArray,FALSE);
+			$this->controlData->secureInput($feDataArray, FALSE);
 			$this->tca->modifyRow($feDataArray, FALSE);
 
 			if ($theTable == 'fe_users')	{
@@ -584,14 +584,15 @@ class tx_srfeuserregister_data {
 									// Store the sr_freecap word_hash
 									// sr_freecap will invalidate the word_hash after calling checkWord
 									$er = session_start();
-									$sr_freecap_word_hash = $_SESSION[$this->freeCap->extKey.'_word_hash'];
+									$sessionData = $TSFE->fe_user->getKey('ses', 'tx_' . $this->freeCap->extKey);
 									if (!$this->freeCap->checkWord($dataArray['captcha_response'])) {
 										$failureArray[] = $theField;
 										$this->inError[$theField] = TRUE;
 										$this->failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_captcha');
 									} else {
 										// Restore sr_freecap word_hash
-										$_SESSION[$this->freeCap->extKey . '_word_hash'] = $sr_freecap_word_hash;
+										$TSFE->fe_user->setKey('ses','tx_'.$this->freeCap->extKey,$sessionData);
+										$TSFE->storeSessionData();
 									}
 								}
 							break;
@@ -1489,7 +1490,7 @@ class tx_srfeuserregister_data {
 					if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
 						// set the count instead of the comma separated list
 						if ($parsedArray[$colName])	{
-							$parsedArray[$colName] = count(explode(',', $parsedArray[$colName]));
+							$parsedArray[$colName] = count($parsedArray[$colName]);
 						} else {
 							$parsedArray[$colName] = '';
 						}

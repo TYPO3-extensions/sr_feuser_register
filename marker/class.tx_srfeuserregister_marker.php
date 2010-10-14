@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2010 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+*  (c) 2007-2010 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -98,7 +98,7 @@ class tx_srfeuserregister_marker {
 		$this->addURLMarkers($markerArray, $this->controlData->getBackURL(), $uid, $token);
 
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'])) {
-			foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'] as $classRef) {
 				$hookObj= &t3lib_div::getUserObj($classRef);
 				if (method_exists($hookObj, 'addGlobalMarkers')) {
 					$hookObj->addGlobalMarkers($markerArray, $this);
@@ -275,7 +275,7 @@ class tx_srfeuserregister_marker {
 
 
 	/**
-	* Adds language-dependent label markers
+	* Adds language-dependant label markers
 	*
 	* @param array  $markerArray: the input marker array
 	* @param array  $row: the record array
@@ -402,7 +402,14 @@ class tx_srfeuserregister_marker {
 
 		foreach($otherLabels as $labelName) {
 			$langText = $this->langObj->getLL($labelName);
-			$label = sprintf($langText, $this->controlData->getPidTitle(), $username, $name, $row['email'], $row['password']);
+			$label = sprintf(
+				$langText,
+				$this->controlData->getPidTitle(),
+				htmlspecialchars($username),
+				htmlspecialchars($name),
+				htmlspecialchars($row['email']),
+				$row['password']
+			);
 			$label = preg_replace_callback('/{([a-z_]+):([a-z_]+)}/', array(&$this, 'replaceVariables'), $label);
 			$markerkey = $this->cObj->caseshift($labelName,'upper');
 			$markerArray['###LABEL_'.$markerkey.'###'] = $label;

@@ -2,8 +2,8 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 1999-2003 Kasper Skårhøj <kasperYYYY@typo3.com>
-*  (c) 2004-2010 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
+*  (c) 1999-2003 Kasper Skårhøj (kasperYYYY@typo3.com)
+*  (c) 2004-2010 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
