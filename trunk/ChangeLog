@@ -1,3 +1,11 @@
+2010-10-14 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 15660: locallang.xml has become invalid
+	* fix bug 14976: PHP Warning: explode() expects parameter 2 to be string
+	* fix bug 15176: no first_name and last_name for TYPO3 4.4+
+	* Fix security issue: CSS with first_name and last_name
+	* Fix bug 15664: replace marker ###LABEL_V_EMAIL_LOST_PASSWORD### by ###LABEL_V_INFOMAIL_LOST_PASSWORD###
+	* Fix bug 14936: restore the edit link
+
 2010-06-26 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug: a md5 encoded password must be shown as clear text in the password marker
 	* fix bug: if enableHTMLMail is 1, then the admin must always receive a HTML email independant from the FE users preferences

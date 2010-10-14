@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2010 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
+*  (c) 2007-2010 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -472,6 +472,19 @@ class tx_srfeuserregister_control {
 				if ($cmdKey == 'create')	{
 					$this->marker->addMd5LoginMarkers($markerArray, $dataArray, $this->controlData->getUseMd5Password());
 				}
+
+				if (isset($this->conf[$cmdKey.'.']['marker.']))	{
+					if ($this->conf[$cmdKey.'.']['marker.']['computeUrl'] == '1')	{
+						$this->setfixedObj->computeUrl(
+							$cmdKey,
+							$markerArray,
+							$this->conf['setfixed.'],
+							$dataArray,
+							$this->controlData->getTable()
+						);
+					}
+				}
+
 				$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 				$markerArray = $this->marker->getArray(); // uses its own markerArray
 
@@ -566,10 +579,6 @@ class tx_srfeuserregister_control {
 			$this->marker->setArray($markerArray);
 			$token = $this->controlData->readToken();
 
-			if ($cmd == '' && $cmdKey == 'edit')	{
-				$cmd = $cmdKey;
-			}
-
 			switch($cmd) {
 				case 'setfixed':
 					if ($this->conf['infomail']) {
@@ -648,6 +657,7 @@ class tx_srfeuserregister_control {
 					} else {
 						$securedArray = array();
 					}
+
 					$content = $this->display->createScreen(
 						$markerArray,
 						$cmd,

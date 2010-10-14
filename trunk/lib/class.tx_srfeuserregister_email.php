@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2010 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+*  (c) 2007-2010 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -411,7 +411,6 @@ class tx_srfeuserregister_email {
 			}
 
 			$markerArray['###SYS_AUTHCODE###'] = $authObj->authCode($row);
-
 			$this->setfixedObj->computeUrl(
 				$cmdKey,
 				$markerArray,

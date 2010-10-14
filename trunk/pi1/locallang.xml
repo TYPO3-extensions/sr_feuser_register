@@ -454,9 +454,9 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 			<label index="evalErrors_uniqueLocal">This value already exist. Please enter a new value.</label>
 			<label index="evalErrors_uniqueLocal_informal">This value already exist. Please enter a new value.</label>
 			<label index="evalErrors_uniqueLocal_username">This username already exists. Please enter a different username.</label>
-			<label index="evalErrors_uniqueLocal_username_informal">This username already exists. Please enter a different 			<label index="evalErrors_valid_email">You must enter a valid email address.</label>
+			<label index="evalErrors_uniqueLocal_username_informal">This username already exists. Please enter a different username.</label>
+			<label index="evalErrors_valid_email">You must enter a valid email address.</label>
 			<label index="evalErrors_valid_email_informal">You must enter a valid email address.</label>
-username.</label>
 			<label index="evalErrors_uniqueGlobal_username">This username already exists. Please enter a different username.</label>
 			<label index="evalErrors_uniqueGlobal_username_informal">This username already exists. Please enter a different username.</label>
 			<label index="evalErrors_uniqueGlobal">This value already exists. Please enter a new value.</label>
