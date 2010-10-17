@@ -1,3 +1,7 @@
+2010-10-17 Stanislas Rolland  <typo3@sjbr.ca>
+
+	* Version 2.5.28: Last version of this branch and last version to support PHP 4.
+
 2010-10-14 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug 14976: PHP Warning: explode() expects parameter 2 to be string
 	* Fix security issue: CSS with first_name and last_name
