@@ -1,3 +1,6 @@
+2010-10-17 Stanislas Rolland  <typo3@sjbr.ca>
+	* Updated manual
+
 2010-10-14 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug 15660: locallang.xml has become invalid
 	* fix bug 14976: PHP Warning: explode() expects parameter 2 to be string
