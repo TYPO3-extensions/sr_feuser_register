@@ -1,6 +1,7 @@
 2010-10-17 Stanislas Rolland  <typo3@sjbr.ca>
 	* Updated manual
 	* Fix XCLASS keys of files model/class.tx_srfeuserregister_model_table_base.php and model/class.tx_srfeuserregister_model_conf.php
+	* Version 2.6.1
 
 2010-10-14 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug 15660: locallang.xml has become invalid
