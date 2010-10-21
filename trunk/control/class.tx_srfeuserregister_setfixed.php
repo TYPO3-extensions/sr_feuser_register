@@ -103,6 +103,7 @@ class tx_srfeuserregister_setfixed {
 			$setfixedSuffix = $sFK = $feuData['sFK'];
 			$fD = t3lib_div::_GP('fD', 1);
 			$fieldArr = array();
+
 			if (is_array($fD)) {
 				foreach($fD as $field => $value) {
 					$row[$field] = rawurldecode($value);
@@ -116,7 +117,6 @@ class tx_srfeuserregister_setfixed {
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 			$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 			$addressObj = $tablesObj->get('address');
-			$userGroupObj = &$addressObj->getFieldObj('usergroup');
 
 			$fieldList = $row['_FIELDLIST'];
 			$theCode = $authObj->setfixedHash($row, $fieldList);
@@ -156,6 +156,7 @@ class tx_srfeuserregister_setfixed {
 								$this->conf['create.']['overrideValues.']['usergroup'],
 								TRUE
 							);
+
 							$remainingGroups = array_diff($originalGroups, $overwriteGroups);
 							$groupsToAdd = t3lib_div::trimExplode(',', $setfixedUsergroup, TRUE);
 							$finalGroups = array_merge(
@@ -306,9 +307,6 @@ class tx_srfeuserregister_setfixed {
 	}	// processSetFixed
 
 
-
-
-
 	/**
 	* Computes the setfixed url's
 	*
@@ -327,7 +325,6 @@ class tx_srfeuserregister_setfixed {
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 			$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 			$addressObj = $tablesObj->get('address');
-			$userGroupObj = &$addressObj->getFieldObj('usergroup');
 
 			if ($theTable != 'fe_users' && $theKey == 'EDIT' ) {
 				$noFeusersEdit = TRUE;
@@ -375,6 +372,7 @@ class tx_srfeuserregister_setfixed {
 					$setfixedpiVars[$prefixId . '%5BaC%5D'] = $authObj->setfixedHash($r, $fieldList);
 				}
 				$setfixedpiVars[$prefixId . '%5Bcmd%5D'] = $cmd;
+
 				if (is_array($data) ) {
 					foreach($data as $fieldName => $fieldValue) {
 						$setfixedpiVars['fD%5B' . $fieldName . '%5D'] = rawurlencode($fieldValue);
@@ -387,7 +385,6 @@ class tx_srfeuserregister_setfixed {
 				}
 
 				if ($this->conf['useShortUrls']) {
-
 					$thisHash = $this->storeFixedPiVars($setfixedpiVars);
 					$setfixedpiVars = array($prefixId . '%5BregHash%5D' => $thisHash);
 				}

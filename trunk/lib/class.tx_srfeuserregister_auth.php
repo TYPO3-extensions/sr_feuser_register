@@ -89,9 +89,9 @@ class tx_srfeuserregister_auth {
 		$value = '';
 
 		if ($fields) {
-
 			$recCopy_temp=array();
 			$fieldArr = t3lib_div::trimExplode(',', $fields, 1);
+
 			foreach($fieldArr as $k => $v) {
 
 				if (isset($r[$v]))	{
@@ -116,6 +116,7 @@ class tx_srfeuserregister_auth {
 		$rc = substr(md5($value), 0, $l);
 		return $rc;
 	}	// authCode
+
 
 	/**
 	* Authenticates a record

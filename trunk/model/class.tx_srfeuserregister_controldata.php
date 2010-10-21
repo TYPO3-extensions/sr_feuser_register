@@ -126,6 +126,7 @@ class tx_srfeuserregister_controldata {
 			}
 			if (!$regHash)	{
 				$getData = t3lib_div::_GET($this->getPrefixId());
+
 				if (isset($getData) && is_array($getData))	{
 					$regHash = $getData['regHash'];
 				}
@@ -398,6 +399,7 @@ class tx_srfeuserregister_controldata {
 		}
 		$session[$extKey] = $data;
 		$TSFE->fe_user->setKey('ses','feuser',$session);
+		$TSFE->fe_user->storeSessionData(); // The feuser session data shall not get lost when coming back from external scripts
 	}
 
 
@@ -802,6 +804,7 @@ class tx_srfeuserregister_controldata {
 			// convert the array to one that will be properly incorporated into the GET global array.
 		$retArray = array();
 		foreach($varArray as $key => $val)	{
+			$val = str_replace('%2C', ',', $val);
 			$search = array('[%5D]', '[%5B]');
 			$replace = array('\']', '\'][\'');
 			$newkey = "['" . preg_replace($search, $replace, $key);

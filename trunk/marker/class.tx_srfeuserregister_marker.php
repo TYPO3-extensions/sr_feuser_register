@@ -470,6 +470,7 @@ class tx_srfeuserregister_marker {
 		$vars['backURL'] = rawurlencode($formUrl);
 		$vars['cmd'] = 'create';
 
+		$unsetVars[] = 'regHash';
 		$url = $this->urlObj->get('', $this->controlData->getPid('register').','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
 		$markerArray['###REGISTER_URL###'] = $url;
 
