@@ -1,9 +1,9 @@
-2010-10-17 Stanislas Rolland  <typo3@sjbr.ca>
-	* Updated manual
-	* Fix XCLASS keys of files model/class.tx_srfeuserregister_model_table_base.php and model/class.tx_srfeuserregister_model_conf.php
-	* Version 2.6.1
+2010-10-21 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 15281: the authorization in the confirmation link did not work with multiple FE groups because the comma had been HTML encoded
+	* fix bug 15225: Form token is empty
 
 2010-10-14 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 15271: When logged in, edit form is shown instead of "click_here_to_edit"-link
 	* fix bug 15660: locallang.xml has become invalid
 	* fix bug 14976: PHP Warning: explode() expects parameter 2 to be string
 	* fix bug 15176: no first_name and last_name for TYPO3 4.4+

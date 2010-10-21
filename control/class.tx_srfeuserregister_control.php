@@ -509,7 +509,6 @@ class tx_srfeuserregister_control {
 				} else if ($cmdKey == 'create' || $cmdKey == 'invite' || $this->conf['email.']['EDIT_SAVED'])	{
 					$emailField = $this->conf['email.']['field'];
 					$recipient = (isset($finalDataArray) && is_array($finalDataArray) ? $finalDataArray[$emailField] : $origArray[$emailField]);
-
 					// Send email message(s)
 					$errorContent = $this->email->compile(
 						$key,

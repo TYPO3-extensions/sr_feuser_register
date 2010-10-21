@@ -91,6 +91,7 @@ class tx_srfeuserregister_display {
 		} else {
 			$currentArray = $origArray;
 		}
+
 		$subpart = '###TEMPLATE_EDIT'.$this->marker->getPreviewLabel().'###';
 		$templateCode = $this->cObj->getSubpart($this->data->getTemplateCode(),$subpart);
 
@@ -142,7 +143,6 @@ class tx_srfeuserregister_display {
 				);
 			}
 		}
-
 		$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $markerArray);
 		$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE['.$theTable.'][uid]" value="'.$currentArray['uid'].'" />';
 
@@ -168,7 +168,6 @@ class tx_srfeuserregister_display {
 			$content .= $updateJS;
 			$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
 		}
-
 		return $content;
 	}	// editForm
 
@@ -383,6 +382,7 @@ class tx_srfeuserregister_display {
 			$langObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lang');
 			$content .= $langObj->getLL('internal_edit_option');
 		}
+
 		return $content;
 	}	// editScreen
 
