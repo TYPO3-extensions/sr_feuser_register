@@ -311,7 +311,7 @@ class tx_srfeuserregister_control {
 			// Evaluate incoming data
 		if (count($finalDataArray) && !in_array($cmd, $noSaveCommands)) {
 			$this->data->setName($finalDataArray, $cmdKey);
-			$this->data->parseValues($theTable, $finalDataArray,$origArray);
+			$this->data->parseValues($theTable, $finalDataArray, $origArray);
 			$this->data->overrideValues($finalDataArray, $cmdKey);
 
 			if ($bSubmit || $bDoNotSave || $this->controlData->getFeUserData('linkToPID')) {
@@ -650,7 +650,11 @@ class tx_srfeuserregister_control {
 					break;
 				case 'invite':
 				case 'create':
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
+					$this->marker->addGeneralHiddenFieldsMarkers(
+						$markerArray,
+						$cmd,
+						$token
+					);
 					if ($this->data->bNewAvailable())	{
 						$securedArray = $this->controlData->readSecuredArray();
 					} else {
@@ -663,7 +667,7 @@ class tx_srfeuserregister_control {
 						$cmdKey,
 						$this->controlData->getMode(),
 						$theTable,
-						$dataArray,
+						$finalDataArray,
 						$origArray,
 						$securedArray,
 						$this->data->getFieldList(),
