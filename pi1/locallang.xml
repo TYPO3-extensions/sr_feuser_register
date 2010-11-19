@@ -278,6 +278,8 @@
 			<label index="v_verify_before_update_informal">Please verify that all the information is correct before your membership &lt;b&gt;%2$s&lt;/b&gt; will be updated</label>
 			<label index="v_dear">Dear %3$s,</label>
 			<label index="v_dear_informal">Hi %3$s,</label>
+			<label index="v_dear_male">Dear Mr. %3$s,</label>
+			<label index="v_dear_female">Dear Mrs. %3$s,</label>
 			<label index="v_infomail_dear">Dear madam/sir,</label>
 			<label index="v_infomail_dear_informal">Dear madam/sir,</label>
 			<label index="v_infomail_lost_password">Enter the email address under which you are registered.</label>

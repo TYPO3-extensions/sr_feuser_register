@@ -46,34 +46,34 @@
 require_once (PATH_t3lib.'class.t3lib_basicfilefunc.php');
 
 class tx_srfeuserregister_data {
-	var $pibase;
-	var $conf = array();
-	var $config = array();
-	var $lang;
-	var $tca;
-	var $freeCap; // object of type tx_srfreecap_pi2
-	var $controlData;
-	var $dataArray = array();
-	var $origArray = array();
-	var $cObj;
-	var $failureMsg = array();
-	var $saved = FALSE; // is set if data is saved
-	var $theTable;
-	var $addTableArray = array();
-	var $fileFunc = ''; // Set to a basic_filefunc object for file uploads
+	public $pibase;
+	public $conf = array();
+	public $config = array();
+	public $lang;
+	public $tca;
+	public $freeCap; // object of type tx_srfreecap_pi2
+	public $controlData;
+	public $dataArray = array();
+	public $origArray = array();
+	public $cObj;
+	public $failureMsg = array();
+	public $saved = FALSE; // is set if data is saved
+	public $theTable;
+	public $addTableArray = array();
+	public $fileFunc = ''; // Set to a basic_filefunc object for file uploads
 
-	var $error;
-	var $additionalUpdateFields;
-	var $fieldList; // List of fields from fe_admin_fieldList
-	var $specialfieldlist; // list of special fields like captcha
-	var $recUid = 0;
-	var $missing = array(); // array of required missing fields
-	var $inError = array(); // array of fields with eval errors other than absence
-	var $templateCode;
-	var $password = '';
+	public $error;
+	public $additionalUpdateFields;
+	public $fieldList; // List of fields from fe_admin_fieldList
+	public $specialfieldlist; // list of special fields like captcha
+	public $recUid = 0;
+	public $missing = array(); // array of required missing fields
+	public $inError = array(); // array of fields with eval errors other than absence
+	public $templateCode;
+	public $password = '';
 
 
-	function init (&$pibase, &$conf, &$config, &$lang, &$tca, &$control, $theTable, &$controlData)	{
+	public function init (&$pibase, &$conf, &$config, &$lang, &$tca, &$control, $theTable, &$controlData) {
 		global $TSFE, $TCA;
 
 		$this->pibase = &$pibase;
@@ -109,99 +109,99 @@ class tx_srfeuserregister_data {
 	}
 
 
-	function setError ($error)	{
+	public function setError ($error) {
 		$this->error = $error;
 	}
 
 
-	function getError ()	{
+	public function getError () {
 		return $this->error;
 	}
 
 
-	function setSaved ($value)	{
+	public function setSaved ($value) {
 		$this->saved = $value;
 	}
 
 
-	function getSaved ()	{
+	public function getSaved () {
 		return $this->saved;
 	}
 
 
-	function &getTemplateCode ()	{
+	public function &getTemplateCode () {
 		return $this->templateCode;
 	}
 
 
-	function setTemplateCode (&$templateCode)	{
+	public function setTemplateCode (&$templateCode) {
 		$this->templateCode = $templateCode;
 	}
 
 
-	function getFieldList ()	{
+	public function getFieldList () {
 		return $this->fieldList;
 	}
 
 
-	function setFieldList (&$fieldList)	{
+	public function setFieldList (&$fieldList) {
 		$this->fieldList = $fieldList;
 	}
 
 
-	function setSpecialFieldList ($specialfieldlist)	{
+	public function setSpecialFieldList ($specialfieldlist) {
 		$this->specialfieldlist = $specialfieldlist;
 	}
 
 
-	function getSpecialFieldList ()	{
+	public function getSpecialFieldList () {
 		return $this->specialfieldlist;
 	}
 
 
-	function getAdminFieldList ()	{
+	public function getAdminFieldList () {
 		return $this->adminFieldList;
 	}
 
 
-	function setAdminFieldList ($adminFieldList)	{
+	public function setAdminFieldList ($adminFieldList) {
 		$this->adminFieldList = $adminFieldList;
 	}
 
 
-	function getAdditionalUpdateFields ()	{
+	public function getAdditionalUpdateFields () {
 		return $this->additionalUpdateFields;
 	}
 
 
-	function setAdditionalUpdateFields ($additionalUpdateFields)	{
+	public function setAdditionalUpdateFields ($additionalUpdateFields) {
 		$this->additionalUpdateFields = $additionalUpdateFields;
 	}
 
 
-	function setRecUid ($uid)	{
+	public function setRecUid ($uid) {
 		$this->recUid = intval($uid);
 	}
 
 
-	function getRecUid ()	{
+	public function getRecUid () {
 		return $this->recUid;
 	}
 
 
-	function getAddTableArray ()	{
+	public function getAddTableArray () {
 		return $this->addTableArray;
 	}
 
 
-	function addTableArray ($table)	{
-		if (!in_array($table, $this->addTableArray))	{
+	public function addTableArray ($table) {
+		if (!in_array($table, $this->addTableArray)) {
 			$this->addTableArray[] = $table;
 		}
 	}
 
 
-	function setDataArray ($dataArray, $k='', $bOverrride=TRUE)	{
+	public function setDataArray ($dataArray, $k='', $bOverrride=TRUE) {
 
 		if ($k != '')	{
 			if ($bOverrride || !isset($this->dataArray[$k]))	{
@@ -213,7 +213,7 @@ class tx_srfeuserregister_data {
 	}
 
 
-	function getDataArray ($k=0)	{
+	public function getDataArray ($k=0) {
 		if ($k)	{
 			$rc = $this->dataArray[$k];
 		} else {
@@ -223,33 +223,33 @@ class tx_srfeuserregister_data {
 	}
 
 
-	function resetDataArray ()	{
+	public function resetDataArray () {
 		$this->dataArray = array();
 	}
 
 
-	function setOrigArray ($origArray)	{
+	public function setOrigArray ($origArray) {
 		$this->origArr = $origArray;
 	}
 
 
-	function getOrigArray ()	{
+	public function getOrigArray () {
 		return $this->origArr;
 	}
 
 
-	function setPassword ($password)	{
+	public function setPassword ($password) {
 		$this->password = $password;
 	}
 
 
-	function getPassword (&$dataArray)	{
+	public function getPassword (&$dataArray) {
 		$rc = ($this->password != '' ? $this->password : $dataArray['password']);
 		return $rc;
 	}
 
 
-	function bNewAvailable ()	{
+	public function bNewAvailable () {
 		$dataArray = $this->getDataArray();
 		$rc = ($dataArray['username'] != '' || $dataArray['email'] != '');
 		return $rc;
@@ -261,7 +261,7 @@ class tx_srfeuserregister_data {
 	*
 	* @return void  all overriding done directly on array $this->dataArray
 	*/
-	function overrideValues (&$dataArray, $cmdKey) {
+	public function overrideValues (&$dataArray, $cmdKey) {
 
 		// Addition of overriding values
 		if (is_array($this->conf[$cmdKey.'.']['overrideValues.'])) {
@@ -292,7 +292,7 @@ class tx_srfeuserregister_data {
 	* @param array  Array with key/values being marker-strings/substitution values.
 	* @return array the data row with key/value pairs
 	*/
-	function defaultValues ($cmdKey) {
+	public function defaultValues ($cmdKey) {
 		$dataArray = array();
 
 		// Addition of default values
@@ -316,8 +316,14 @@ class tx_srfeuserregister_data {
 	* @param boolean $bInternal: if the bug is caused by an internal problem
 	* @return string  the error message to be displayed
 	*/
-	function getFailureText ($theField, $theRule, $label, $orderNo='', $param='', $bInternal=FALSE) {
-
+	public function getFailureText (
+		$theField,
+		$theRule,
+		$label,
+		$orderNo='',
+		$param='',
+		$bInternal=FALSE
+	) {
  		if ($orderNo != '' && $theRule && isset($this->conf['evalErrors.'][$theField . '.'][$theRule . '.']))	{
 			$count = 0;
 			foreach ($this->conf['evalErrors.'][$theField . '.'][$theRule . '.'] as $k => $v)	{
@@ -366,7 +372,14 @@ class tx_srfeuserregister_data {
 	* @param array  Array with key/values being marker-strings/substitution values.
 	* @return void  on return, the ControlData failure will contain the list of fields which were not ok
 	*/
-	function evalValues ($theTable, &$dataArray, &$origArray, &$markContentArray, $cmdKey, $requiredArray) {
+	public function evalValues (
+		$theTable,
+		&$dataArray,
+		&$origArray,
+		&$markContentArray,
+		$cmdKey,
+		$requiredArray
+	) {
 		global $TYPO3_DB, $TSFE;
 
 		$displayFieldArray = t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1);
@@ -376,7 +389,6 @@ class tx_srfeuserregister_data {
 
 		// Check required, set failure if not ok.
 		$failureArray = array();
-
 		foreach ($requiredArray as $k => $theField)	{
 			if (!trim($dataArray[$theField]) && trim($dataArray[$theField]) != '0') {
 				if (isset($dataArray[$theField]))	{
@@ -677,7 +689,7 @@ class tx_srfeuserregister_data {
 	*
 	* @return void  all parsing done directly on input array $dataArray
 	*/
-	function parseValues ($theTable, &$dataArray, &$origArray) {
+	public function parseValues ($theTable, &$dataArray, &$origArray) {
 
 		if (is_array($this->conf['parseValues.'])) {
 
@@ -818,7 +830,7 @@ class tx_srfeuserregister_data {
 	* @param string  $filename: the name of the file
 	* @return void
 	*/
-	function checkFilename ($filename)	{
+	public function checkFilename ($filename) {
 		$rc = TRUE;
 
 		$fI = pathinfo($filename);
@@ -839,7 +851,7 @@ class tx_srfeuserregister_data {
 	* @param string  $theField: the name of the field
 	* @return void
 	*/
-	function processFiles ($theTable, $theField, &$fieldDataArray) {
+	public function processFiles ($theTable, $theField, &$fieldDataArray) {
 
 		if (is_array($this->tca->TCA['columns'][$theField])) {
 			$uploadPath = $this->tca->TCA['columns'][$theField]['config']['uploadfolder'];
@@ -893,7 +905,15 @@ class tx_srfeuserregister_data {
 	*
 	* @return void  sets $this->saved
 	*/
-	function save ($theTable, $dataArray, $origArray, &$newRow, $cmd, $cmdKey, &$hookClassArray) {
+	public function save (
+		$theTable,
+		$dataArray,
+		$origArray,
+		&$newRow,
+		$cmd,
+		$cmdKey,
+		&$hookClassArray
+	) {
 		global $TYPO3_DB, $TSFE;
 		$rc = 0;
 
@@ -1032,7 +1052,11 @@ class tx_srfeuserregister_data {
 	*
 	* @return void  sets $this->saved
 	*/
-	function deleteRecord ($theTable, &$origArray, &$dataArray) {
+	public function deleteRecord (
+		$theTable,
+		&$origArray,
+		&$dataArray
+	) {
 		$prefixId = $this->controlData->getPrefixId();
 
 		if ($this->conf['delete']) {
@@ -1086,7 +1110,7 @@ class tx_srfeuserregister_data {
 	 * @param string  $uid: record id
 	 * @return void
 	 */
-	function deleteFilesFromRecord ($uid) {
+	public function deleteFilesFromRecord ($uid) {
 		$rec = $GLOBALS['TSFE']->sys_page->getRawRecord($this->controlData->getTable(), $uid);
 		$updateFields = array();
 		foreach($this->tca->TCA['columns'] as $field => $conf) {
@@ -1109,10 +1133,10 @@ class tx_srfeuserregister_data {
 
 
 	/** fetchDate($value)
-		*
-		*  Check if the value is a correct date in format yyyy-mm-dd
+	*
+	*  Check if the value is a correct date in format yyyy-mm-dd
 	*/
-	function fetchDate ($value, $dateFormat) {
+	public function fetchDate ($value, $dateFormat) {
 
 		$rcArray = array('m' => '', 'd' => '', 'y' => '');
 		$dateValue = trim($value);
@@ -1171,7 +1195,7 @@ class tx_srfeuserregister_data {
 	 *
 	 *  Check if the value is a correct date in format yyyy-mm-dd
 	 */
-	function evalDate ($value, $dateFormat) {
+	public function evalDate ($value, $dateFormat) {
 		if( !$value) {
 			return FALSE;
 		}
@@ -1187,11 +1211,11 @@ class tx_srfeuserregister_data {
 
 
 	/**
-		* Update MM relations
-		*
-		* @return void
-		*/
-	function updateMMRelations ($row) {
+	* Update MM relations
+	*
+	* @return void
+	*/
+	public function updateMMRelations ($row) {
 		global $TYPO3_DB;
 
 			// update the MM relation
@@ -1218,11 +1242,11 @@ class tx_srfeuserregister_data {
 
 
 	/**
-		* Delete MM relations
-		*
-		* @return void
-		*/
-	function deleteMMRelations ($table,$uid,$row = array()) {
+	* Delete MM relations
+	*
+	* @return void
+	*/
+	public function deleteMMRelations ($table,$uid,$row = array()) {
 		global $TYPO3_DB;
 			// update the MM relation
 		$fieldsList = array_keys($row);
@@ -1240,7 +1264,7 @@ class tx_srfeuserregister_data {
 	* @param array  $inputArr: new values
 	* @return array  updated array
 	*/
-	function modifyDataArrForFormUpdate ($inputArr, $cmdKey) {
+	public function modifyDataArrForFormUpdate ($inputArr, $cmdKey) {
 
 		if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
 			foreach($this->conf[$cmdKey.'.']['evalValues.'] as $theField => $theValue) {
@@ -1310,7 +1334,7 @@ class tx_srfeuserregister_data {
 	*
 	* @return void  done directly on array $this->dataArray
 	*/
-	function setName (&$dataArray, $cmdKey) {
+	public function setName (&$dataArray, $cmdKey) {
 
 		if (in_array('name', explode(',', $this->getFieldList())) && !in_array('name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1))
 			&& in_array('first_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)) && in_array('last_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1))  ) {
@@ -1320,11 +1344,11 @@ class tx_srfeuserregister_data {
 
 
 	/**
-		* Moves email into username if useEmailAsUsername is set
-		*
-		* @return void  done directly on array $this->dataArray
-		*/
-	function setUsername ($theTable, &$dataArray, $cmdKey) {
+	* Moves email into username if useEmailAsUsername is set
+	*
+	* @return void  done directly on array $this->dataArray
+	*/
+	public function setUsername ($theTable, &$dataArray, $cmdKey) {
 
 		if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $theTable == "fe_users" && t3lib_div::inList($this->getFieldList(), 'username') && !$this->failureMsg['email']) {
 			$dataArray['username'] = trim($dataArray['email']);
@@ -1333,12 +1357,12 @@ class tx_srfeuserregister_data {
 
 
 	/**
-		* Assigns a value to the password if this is an invitation and md5 password encryption if kb_md5fepw is enabled
-		* or if we are creating and generatePassword is set.
-		*
-		* @return void  done directly on array $this->dataArray
-		*/
-	function generatePassword (&$dataArray, $cmdKey) {
+	* Assigns a value to the password if this is an invitation and md5 password encryption if kb_md5fepw is enabled
+	* or if we are creating and generatePassword is set.
+	*
+	* @return void  done directly on array $this->dataArray
+	*/
+	public function generatePassword (&$dataArray, $cmdKey) {
 
 		if (
 			($cmdKey == 'invite' && ($this->controlData->getUseMd5Password() || $this->conf[$cmdKey.'.']['generatePassword'])) ||
@@ -1371,7 +1395,7 @@ class tx_srfeuserregister_data {
 	*
 	* @return parsedArray
 	*/
-	function parseIncomingData ($origArray, $bUnsetZero=TRUE) {
+	public function parseIncomingData ($origArray, $bUnsetZero=TRUE) {
 		global $TYPO3_DB;
 
 		$parsedArray = array();
@@ -1434,7 +1458,7 @@ class tx_srfeuserregister_data {
 	 *
 	 * @return parsedArray
 	 */
-	function parseOutgoingData (&$dataArray, $origArray) {
+	public function parseOutgoingData (&$dataArray, $origArray) {
 		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 		$addressObj = $tablesObj->get('address');
 		$parsedArray = $dataArray;
@@ -1510,7 +1534,7 @@ class tx_srfeuserregister_data {
 	* @param string  $error_code: the error code
 	* @return boolean  TRUE if ok
 	*/
-	function evalFileError ($error_code) {
+	public function evalFileError ($error_code) {
 		$rc = FALSE;
 		if ($error_code == "0") {
 			$rc = TRUE;
@@ -1528,6 +1552,11 @@ class tx_srfeuserregister_data {
 
 		return $rc;
 	}	// evalFileError
+
+
+	public function getInError () {
+		return $this->inError;
+	}
 }
 
 

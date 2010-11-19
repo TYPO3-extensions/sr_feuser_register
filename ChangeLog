@@ -1,3 +1,9 @@
+
+2010-11-19 Franz Holzinger  <franz@ttproducts.de>
+	* new feature: use v_dear_male or v_dear_female instead of v_dear if a gender has been entered
+	* complete the contributor list in contributors.txt
+	* fix bug 16132: image is missing at CREATE and INVITE
+
 2010-10-21 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug 15281: the authorization in the confirmation link did not work with multiple FE groups because the comma had been HTML encoded
 	* fix bug 15225: Form token is empty

@@ -416,7 +416,7 @@ class tx_srfeuserregister_email {
 				$markerArray,
 				$setFixedConfig,
 				$currentRow,
-				$this->controlData->getTable()
+				$theTable
 			);
 			$this->marker->addStaticInfoMarkers($markerArray, $row, $viewOnly);
 
@@ -428,6 +428,7 @@ class tx_srfeuserregister_email {
 					$fieldConfig['config']['uploadfolder'] != ''
 				)	{
 					$this->marker->addFileUploadMarkers(
+						$theTable,
 						$theField,
 						$fieldConfig,
 						$markerArray,
@@ -436,7 +437,7 @@ class tx_srfeuserregister_email {
 						$row,
 						$viewOnly,
 						'email',
-						($emailType=='html')
+						($emailType == 'html')
 					);
 				}
 			}
@@ -550,6 +551,7 @@ class tx_srfeuserregister_email {
 		}
 
 		if ($subpartsFound >= 1)	{
+
 			$this->send(
 				$recipient,
 				$this->conf['email.']['admin'],

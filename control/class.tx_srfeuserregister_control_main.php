@@ -69,25 +69,26 @@ require_once(PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_model_con
 
 
 class tx_srfeuserregister_control_main {
-	var $config = array();
+	public $config = array();
 
-	var $incomingData = FALSE;
-	var $nc = ''; // "&no_cache=1" if you want that parameter sent.
-	var $additionalUpdateFields = '';
-	var $auth; // object of type tx_srfeuserregister_auth
-	var $control; // object of type tx_srfeuserregister_control
-	var $data; // object of type tx_srfeuserregister_data
-	var $urlObj;
-	var $display; // object of type tx_srfeuserregister_display
-	var $email; // object of type tx_srfeuserregister_email
-	var $langObj; // object of type tx_srfeuserregister_lang
-	var $tca;  // object of type tx_srfeuserregister_tca
-	var $marker; // object of type tx_srfeuserregister_marker
-	var $pibaseObj;
-	var $extKey;
-	var $LLkey;
+	public $incomingData = FALSE;
+	public $nc = ''; // "&no_cache=1" if you want that parameter sent.
+	public $additionalUpdateFields = '';
+	public $auth; // object of type tx_srfeuserregister_auth
+	public $control; // object of type tx_srfeuserregister_control
+	public $controlData; // data used for the control
+	public $data; // object of type tx_srfeuserregister_data
+	public $urlObj;
+	public $display; // object of type tx_srfeuserregister_display
+	public $email; // object of type tx_srfeuserregister_email
+	public $langObj; // object of type tx_srfeuserregister_lang
+	public $tca;  // object of type tx_srfeuserregister_tca
+	public $marker; // object of type tx_srfeuserregister_marker
+	public $pibaseObj;
+	public $extKey;
+	public $LLkey;
 
-	function main (
+	public function main (
 		$content,
 		&$conf,
 		&$pibaseObj,
@@ -108,10 +109,24 @@ class tx_srfeuserregister_control_main {
 			$buttonLabelsList,
 			$otherLabelsList
 		);
+		$cmd = $this->controlData->getCmd();
+		$cmdKey = $this->controlData->getCmdKey();
+		$theTable = $this->controlData->getTable();
+		$origArray = $this->data->getOrigArray();
+		$dataArray = $this->data->getDataArray();
+		$templateCode = $this->data->getTemplateCode();
 
 		if ($rc !== FALSE)	{
 			$error_message = '';
-			$content = $this->control->doProcessing ($error_message);
+			$content = $this->control->doProcessing (
+				$theTable,
+				$cmd,
+				$cmdKey,
+				$origArray,
+				$dataArray,
+				$templateCode,
+				$error_message
+			);
 		} else {
 			$content = '<em>Internal error in '.$pibaseObj->extKey.'!</em><br /> Maybe you forgot to include the basic template file under statics from extensions.';
 		}
@@ -125,7 +140,7 @@ class tx_srfeuserregister_control_main {
 	*
 	* @return void
 	*/
-	function init (&$conf, $theTable, $adminFieldList,$buttonLabelsList,$otherLabelsList) {
+	public function init (&$conf, $theTable, $adminFieldList,$buttonLabelsList,$otherLabelsList) {
 		global $TSFE, $TCA;
 
 		$this->tca = &t3lib_div::getUserObj('&tx_srfeuserregister_tca');

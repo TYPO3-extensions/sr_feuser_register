@@ -111,6 +111,7 @@ $addColumnArray = Array(
 		'config' => Array (
 			'type' => 'radio',
 			'items' => Array (
+				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender.I.99', '99'),
 				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender.I.0', '0'),
 				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender.I.1', '1')
 			),
