@@ -43,17 +43,17 @@
 
 
 class tx_srfeuserregister_display {
-	var $conf = array();
-	var $config = array();
-	var $data;
-	var $marker;
-	var $tca;
-	var $control;
-	var $controlData;
-	var $cObj;
+	public $conf = array();
+	public $config = array();
+	public $data;
+	public $marker;
+	public $tca;
+	public $control;
+	public $controlData;
+	public $cObj;
 
 
-	function init (&$cObj, &$conf, &$config, &$data, &$marker, &$tca, &$control)	{
+	public function init (&$cObj, &$conf, &$config, &$data, &$marker, &$tca, &$control) {
 		$this->conf = &$conf;
 		$this->config = &$config;
 		$this->data = &$data;
@@ -72,7 +72,7 @@ class tx_srfeuserregister_display {
 	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
 	* @return string  the template with substituted markers
 	*/
-	function editForm (
+	public function editForm (
 		&$markerArray,
 		$theTable,
 		$dataArray,
@@ -133,6 +133,7 @@ class tx_srfeuserregister_display {
 				$fieldConfig['config']['uploadfolder'] != ''
 			)	{
 				$this->marker->addFileUploadMarkers(
+					$theTable,
 					$theField,
 					$fieldConfig,
 					$markerArray,
@@ -179,7 +180,7 @@ class tx_srfeuserregister_display {
 	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
 	* @return string  the template with substituted markers
 	*/
-	function createScreen (
+	public function createScreen (
 		&$markerArray,
 		$cmd,
 		$cmdKey,
@@ -250,6 +251,7 @@ class tx_srfeuserregister_display {
 					$fieldConfig['config']['uploadfolder'] != ''
 				)	{
 					$this->marker->addFileUploadMarkers(
+						$theTable,
 						$theField,
 						$fieldConfig,
 						$markerArray,
@@ -288,7 +290,6 @@ class tx_srfeuserregister_display {
 				$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
 			}
 		}
-
 		return $content;
 	} // createScreen
 
@@ -299,7 +300,7 @@ class tx_srfeuserregister_display {
 	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
 	* @return string  the template with substituted markers
 	*/
-	function editScreen (
+	public function editScreen (
 		&$markerArray,
 		$theTable,
 		$dataArray,
@@ -388,11 +389,18 @@ class tx_srfeuserregister_display {
 
 
 	/**
-		* This is basically the preview display of delete
-		*
-		* @return string  the template with substituted markers
-		*/
-	function deleteScreen ($markerArray, $theTable, $dataArray, $origArray, $securedArray, $token) {
+	* This is basically the preview display of delete
+	*
+	* @return string  the template with substituted markers
+	*/
+	public function deleteScreen (
+		$markerArray,
+		$theTable,
+		$dataArray,
+		$origArray,
+		$securedArray,
+		$token
+	) {
 
 		if ($this->conf['delete']) {
 
@@ -479,7 +487,7 @@ class tx_srfeuserregister_display {
 	* @param array  $row: the data array, if any
 	* @return string  the template with substituted parts and markers
 	*/
-	function getPlainTemplate (
+	public function getPlainTemplate (
 		$templateCode,
 		$subpartMarker,
 		$markerArray,
@@ -531,20 +539,20 @@ class tx_srfeuserregister_display {
 
 
 	/**
-		* Removes required and error sub-parts when there are no errors
-		*
-		* Works like this:
-		* - Insert subparts like this ###SUB_REQUIRED_FIELD_".$theField."### that tells that the field is required, if it's not correctly filled in.
-		* - These subparts are all removed, except if the field is listed in $failure string!
-		* - Subparts like ###SUB_ERROR_FIELD_".$theField."### are also removed if there is no error on the field
-		* - Remove also the parts of non-included fields, using a similar scheme!
-		*
-		* @param string  $templateCode: the content of the HTML template
-		* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
-		* @param string  $failure: the list of fields with errors
-		* @return string  the template with susbstituted parts
-		*/
-	function removeRequired ($templateCode, $errorFieldArray, $failure='') {
+	* Removes required and error sub-parts when there are no errors
+	*
+	* Works like this:
+	* - Insert subparts like this ###SUB_REQUIRED_FIELD_".$theField."### that tells that the field is required, if it's not correctly filled in.
+	* - These subparts are all removed, except if the field is listed in $failure string!
+	* - Subparts like ###SUB_ERROR_FIELD_".$theField."### are also removed if there is no error on the field
+	* - Remove also the parts of non-included fields, using a similar scheme!
+	*
+	* @param string  $templateCode: the content of the HTML template
+	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
+	* @param string  $failure: the list of fields with errors
+	* @return string  the template with susbstituted parts
+	*/
+	public function removeRequired ($templateCode, $errorFieldArray, $failure='') {
 
 		$cmdKey = $this->controlData->getCmdKey();
 		$requiredArray = $this->controlData->getRequiredArray();
@@ -604,15 +612,143 @@ class tx_srfeuserregister_display {
 	}	// removeRequired
 
 
-	function &removeHTMLComments ($content) {
-		$rc = preg_replace('/<!(?:--[\s\S]*?--\s*)?>[\t\v\n\r\f]*/','',$content);
-		return $rc;
+	public function getKeyAfterSave ($cmd, $cmdKey, $bCustomerConfirmsMode)	{
+
+		$result = FALSE;
+		switch($cmd) {
+			case 'delete':
+				$result = 'DELETE' . SAVED_SUFFIX;
+				break;
+			case 'edit':
+				$result = 'EDIT' . SAVED_SUFFIX;
+				break;
+			case 'invite':
+				$result = SETFIXED_PREFIX . 'INVITE';
+				break;
+			case 'create':
+			default:
+				if ($cmdKey == 'edit') {
+					$result = 'EDIT' . SAVED_SUFFIX;
+				} else if ($this->controlData->getSetfixedEnabled()) {
+					$result = SETFIXED_PREFIX . 'CREATE';
+
+					if ($bCustomerConfirmsMode) {
+						$result .= '_REVIEW';
+					}
+				} else {
+					$result = 'CREATE' . SAVED_SUFFIX;
+				}
+				break;
+		}
+		return $result;
 	}
 
 
-	function replaceHTMLBr ($content) {
-		$rc = preg_replace('/<br\s?\/>/',chr(10),$content);
-		return $rc;
+	/**
+	* Displaying the page here that says, the record has been saved.
+	* You're able to include the saved values by markers.
+	*
+	* @param string  $subpartMarker: the template subpart marker
+	* @param array  $row: the data array, if any
+	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
+	* @return string  the template with substituted parts and markers
+	*/
+	public function afterSave (
+		$theTable,
+		$dataArray,
+		$origArray,
+		$securedArray,
+		$cmd,
+		$cmdKey,
+		$key,
+		$templateCode,
+		$markerArray,
+		$errorFieldArray,
+		&$content
+	) {
+		global $TSFE;
+
+		$errorContent = '';
+
+			// Display confirmation message
+		$subpartMarker = '###TEMPLATE_' . $key . '###';
+		$localTemplateCode = $this->cObj->getSubpart($templateCode, $subpartMarker);
+
+		if ($localTemplateCode) {
+			$markerArray =
+				$this->marker->fillInMarkerArray(
+					$markerArray,
+					$dataArray,
+					$securedArray,
+					'',
+					TRUE,
+					'FIELD_',
+					TRUE
+				);
+			$this->marker->addStaticInfoMarkers($markerArray, $dataArray);
+			$this->tca->addTcaMarkers(
+				$markerArray,
+				$dataArray,
+				$origArray,
+				$cmd,
+				$cmdKey,
+				$theTable,
+				TRUE
+			);
+			$this->marker->addLabelMarkers(
+				$markerArray,
+				$theTable,
+				$dataArray,
+				$origArray,
+				$securedArray,
+				array(),
+				$this->controlData->getRequiredArray(),
+				$this->data->getFieldList(),
+				$this->tca->TCA['columns'],
+				FALSE
+			);
+
+			if ($cmdKey == 'create') {
+				$this->marker->addMd5LoginMarkers(
+					$markerArray,
+					$dataArray,
+					$this->controlData->getUseMd5Password()
+				);
+			}
+
+			if (isset($this->conf[$cmdKey . '.']['marker.'])) {
+				if ($this->conf[$cmdKey . '.']['marker.']['computeUrl'] == '1') {
+					$this->setfixedObj->computeUrl(
+						$cmdKey,
+						$markerArray,
+						$this->conf['setfixed.'],
+						$dataArray,
+						$theTable
+					);
+				}
+			}
+
+			$content = $this->cObj->substituteMarkerArray(
+				$localTemplateCode,
+				$markerArray
+			);
+		} else {
+			$errorText = $this->langObj->getLL('internal_no_subtemplate');
+			$errorContent = sprintf($errorText, $subpartMarker);
+		}
+		return $errorContent;
+	}
+
+
+	public function &removeHTMLComments ($content) {
+		$result = preg_replace('/<!(?:--[\s\S]*?--\s*)?>[\t\v\n\r\f]*/','', $content);
+		return $result;
+	}
+
+
+	public function replaceHTMLBr ($content) {
+		$result = preg_replace('/<br\s?\/>/', chr(10), $content);
+		return $result;
 	}
 }
 

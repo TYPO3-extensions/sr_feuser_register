@@ -747,12 +747,12 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function &getRequiredArray ()	{
+	function getRequiredArray ()	{
 		return $this->requiredArray;
 	}
 
 
-	function setRequiredArray (&$requiredArray)	{
+	function setRequiredArray ($requiredArray)	{
 		$this->requiredArray = $requiredArray;
 	}
 
