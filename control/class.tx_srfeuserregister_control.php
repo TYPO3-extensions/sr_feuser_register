@@ -62,7 +62,7 @@ class tx_srfeuserregister_control {
 		global $TSFE;
 
 		$this->langObj = &$langObj;
-		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_conf');
+		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_conf');
 
 		$this->conf = &$confObj->getConf();
 		$this->display = &$display;
@@ -109,7 +109,7 @@ class tx_srfeuserregister_control {
 
 		$this->data = &$data;
 
-		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_conf');
+		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_conf');
 		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 		$addressObj = $tablesObj->get('address');
 		$origArray = array();
