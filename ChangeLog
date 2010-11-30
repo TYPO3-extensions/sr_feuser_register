@@ -1,6 +1,7 @@
 2010-11-29 Stanislas Rolland  <typo3@sjbr.ca>
 	* Restored missing entry in Changelog
 	* Fixed bug #11149(Forge): Extension Manager issues warning regarding class tx_srfeuserregister_lib_conf
+	* Fixed issue #11150(Forge): Remove references to obsolete extension patch1822
 
 2010-11-19 Franz Holzinger  <franz@ttproducts.de>
 	* new feature: use v_dear_male or v_dear_female instead of v_dear if a gender has been entered

@@ -13,7 +13,3 @@ useFlexforms = 1
 
   # cat=basic/enable; type=boolean; label=Use MD5 password: Enable the use of MD5 encrypted passwords in the backend.
 useMd5Password = 0
-
-  # cat=basic/enable; type=boolean; label=Use patch 1822: Automatically activated in TYPO3 >= 4.4. Otherwise you need to apply the patch for bug #1822 from bugs.typo3.org or install the extension patch1822 to have an advanced page module.
-usePatch1822 =
-

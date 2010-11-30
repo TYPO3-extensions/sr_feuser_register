@@ -17,9 +17,6 @@ $EM_CONF[$_EXTKEY] = array(
 	'shy' => 0,
 	'dependencies' => 'cms,static_info_tables,div2007',
 	'conflicts' => 'germandates,rlmp_language_detection',
-	'suggests' => array(
-		'0' => 'patch1822',
-	),
 	'priority' => '',
 	'loadOrder' => '',
 	'module' => '',
@@ -48,9 +45,6 @@ $EM_CONF[$_EXTKEY] = array(
 		'conflicts' => array(
 			'germandates' => '0.0.0-1.0.1',
 			'rlmp_language_detection' => '0.0.0-1.2.99',
-		),
-		'suggests' => array(
-			'patch1822' => '0.0.3-',
 		),
 	),
 );
