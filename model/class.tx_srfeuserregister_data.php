@@ -74,7 +74,6 @@ class tx_srfeuserregister_data {
 
 
 	public function init (&$pibase, &$conf, &$config, &$lang, &$tca, &$control, $theTable, &$controlData) {
-		global $TSFE, $TCA;
 
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
@@ -380,7 +379,6 @@ class tx_srfeuserregister_data {
 		$cmdKey,
 		$requiredArray
 	) {
-		global $TYPO3_DB, $TSFE;
 
 		$displayFieldArray = t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1);
 		if($this->controlData->useCaptcha($cmdKey))	{
@@ -433,14 +431,14 @@ class tx_srfeuserregister_data {
 							case 'uniqueDeletedGlobal':
 							case 'uniqueLocal':
 							case 'uniqueDeletedLocal':
-								$where = $theField . '=' . $TYPO3_DB->fullQuoteStr($dataArray[$theField], $theTable);
+								$where = $theField . '=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dataArray[$theField], $theTable);
 								if ($theCmd == 'uniqueLocal' || $theCmd == 'uniqueGlobal')	{
-									$where .= $TSFE->sys_page->deleteClause($theTable);
+									$where .= $GLOBALS['TSFE']->sys_page->deleteClause($theTable);
 								}
 								if ($theCmd == 'uniqueLocal' || $theCmd == 'uniqueDeletedLocal')	{
 									$where .= ' AND pid IN ('.$recordTestPid.')';
 								}
-								$DBrows = $TYPO3_DB->exec_SELECTgetRows('uid,'.$theField,$theTable,$where,'','','1');
+								$DBrows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid,'.$theField,$theTable,$where,'','','1');
 
 								if (trim($dataArray[$theField])!='' && isset($DBrows) && is_array($DBrows) && isset($DBrows[0]) && is_array($DBrows[0])) {
 									if (!$bRecordExists || $DBrows[0]['uid'] != $dataArray['uid']) {
@@ -596,15 +594,15 @@ class tx_srfeuserregister_data {
 									// Store the sr_freecap word_hash
 									// sr_freecap will invalidate the word_hash after calling checkWord
 									$er = session_start();
-									$sessionData = $TSFE->fe_user->getKey('ses', 'tx_' . $this->freeCap->extKey);
+									$sessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_' . $this->freeCap->extKey);
 									if (!$this->freeCap->checkWord($dataArray['captcha_response'])) {
 										$failureArray[] = $theField;
 										$this->inError[$theField] = TRUE;
 										$this->failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_captcha');
 									} else {
 										// Restore sr_freecap word_hash
-										$TSFE->fe_user->setKey('ses','tx_'.$this->freeCap->extKey,$sessionData);
-										$TSFE->storeSessionData();
+										$GLOBALS['TSFE']->fe_user->setKey('ses','tx_'.$this->freeCap->extKey,$sessionData);
+										$GLOBALS['TSFE']->storeSessionData();
 									}
 								}
 							break;
@@ -914,7 +912,6 @@ class tx_srfeuserregister_data {
 		$cmdKey,
 		&$hookClassArray
 	) {
-		global $TYPO3_DB, $TSFE;
 		$rc = 0;
 
 		if ($theTable == 'fe_users')	{
@@ -929,7 +926,7 @@ class tx_srfeuserregister_data {
 				$aCAuth = $authObj->aCAuth($origArray,$this->conf['setfixed.']['EDIT.']['_FIELDLIST']);
 
 					// Fetch the original record to check permissions
-				if ($this->conf['edit'] && ($TSFE->loginUser || $aCAuth)) {
+				if ($this->conf['edit'] && ($GLOBALS['TSFE']->loginUser || $aCAuth)) {
 						// Must be logged in in order to edit  (OR be validated by email)
 					$newFieldList = implode(',', array_intersect(explode(',', $this->getFieldList()), t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)));
 					$newFieldArray = array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->getAdminFieldList())));
@@ -944,7 +941,7 @@ class tx_srfeuserregister_data {
 						$newFieldArray = array_diff($newFieldArray, array('username'));
 					}
 
-					if ($aCAuth || $this->cObj->DBmayFEUserEdit($theTable, $origArray, $TSFE->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
+					if ($aCAuth || $this->cObj->DBmayFEUserEdit($theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 
 						$outGoingData = $this->parseOutgoingData($dataArray,$origArray);
 						$newFieldList = implode (',', $newFieldArray);
@@ -994,7 +991,7 @@ class tx_srfeuserregister_data {
 					}
 
 					$res = $this->cObj->DBgetInsert($theTable, $this->controlData->getPid(), $parsedArray, $newFieldList, TRUE);
-					$newId = $TYPO3_DB->sql_insert_id();
+					$newId = $GLOBALS['TYPO3_DB']->sql_insert_id();
 					$rc = $newId;
 
 						// Enable users to own themselves.
@@ -1026,7 +1023,7 @@ class tx_srfeuserregister_data {
 					$this->setSaved(TRUE);
 
 						// Post-create processing: call user functions and hooks
-					$newRow = $this->parseIncomingData($TSFE->sys_page->getRawRecord($theTable, $newId));
+					$newRow = $this->parseIncomingData($GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $newId));
 					$this->tca->modifyRow($newRow, TRUE);
 					$this->control->userProcess_alt($this->conf['create.']['userFunc_afterSave'], $this->conf['create.']['userFunc_afterSave.'], array('rec' => $newRow));
 
@@ -1216,7 +1213,6 @@ class tx_srfeuserregister_data {
 	* @return void
 	*/
 	public function updateMMRelations ($row) {
-		global $TYPO3_DB;
 
 			// update the MM relation
 		$fieldsList = array_keys($row);
@@ -1225,7 +1221,7 @@ class tx_srfeuserregister_data {
 			if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
 				$valuesArray = $row[$colName];
 				if (isset($valuesArray) && is_array($valuesArray)) {
-					$res = $TYPO3_DB->exec_DELETEquery($colSettings['config']['MM'], 'uid_local='.intval($row['uid']));
+					$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery($colSettings['config']['MM'], 'uid_local='.intval($row['uid']));
 					$insertFields = array();
 					$insertFields['uid_local'] = intval($row['uid']);
 					$insertFields['tablenames'] = '';
@@ -1233,7 +1229,7 @@ class tx_srfeuserregister_data {
 					foreach($valuesArray as $theValue) {
 						$insertFields['uid_foreign'] = intval($theValue);
 						$insertFields['sorting']++;
-						$res = $TYPO3_DB->exec_INSERTquery($colSettings['config']['MM'], $insertFields);
+						$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery($colSettings['config']['MM'], $insertFields);
 					}
 				}
 			}
@@ -1247,12 +1243,11 @@ class tx_srfeuserregister_data {
 	* @return void
 	*/
 	public function deleteMMRelations ($table,$uid,$row = array()) {
-		global $TYPO3_DB;
 			// update the MM relation
 		$fieldsList = array_keys($row);
 		foreach ($this->tca->TCA['columns'] as $colName => $colSettings) {
 			if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
-				$res = $TYPO3_DB->exec_DELETEquery($colSettings['config']['MM'], 'uid_local='.intval($uid));
+				$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery($colSettings['config']['MM'], 'uid_local='.intval($uid));
 			}
 		}
 	}	// deleteMMRelations
@@ -1396,7 +1391,6 @@ class tx_srfeuserregister_data {
 	* @return parsedArray
 	*/
 	public function parseIncomingData ($origArray, $bUnsetZero=TRUE) {
-		global $TYPO3_DB;
 
 		$parsedArray = array();
 		$parsedArray = $origArray;
