@@ -55,7 +55,7 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 	}
 
 	function getReservedValues ()	{
-		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_conf');
+		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_conf');
 		$conf = &$confObj->getConf();
 		$rc = array_merge(t3lib_div::trimExplode(',', $conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $conf['setfixed.']['ACCEPT.']['usergroup'],1));
 		$rc = array_unique($rc);

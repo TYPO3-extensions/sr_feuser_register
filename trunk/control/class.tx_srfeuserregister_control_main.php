@@ -64,7 +64,7 @@ require_once(PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_data.php'
 require_once(PATH_BE_srfeuserregister.'view/class.tx_srfeuserregister_display.php');
 
 require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_lib_tables.php');
-require_once(PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_model_conf.php');
+require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_conf.php');
 
 
 
@@ -151,7 +151,7 @@ class tx_srfeuserregister_control_main {
 		if (isset($conf['table.']) && is_array($conf['table.']) && $conf['table.']['name'])	{
 			$theTable  = $conf['table.']['name'];
 		}
-		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_conf');
+		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_conf');
 		$confObj->init($conf);
 
 		$this->tca->init($this->extKey, $theTable);

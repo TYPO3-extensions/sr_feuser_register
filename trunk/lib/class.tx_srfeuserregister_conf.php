@@ -29,7 +29,7 @@
  *
  * setup configuration functions
  *
- * $Id$
+ * $Id: class.tx_srfeuserregister_model_conf.php 39393 2010-10-21 11:14:17Z franzholz $
  *
  * @author	Franz Holzinger <franz@ttproducts.de>
  *
@@ -40,7 +40,7 @@
  */
 
 
-class tx_srfeuserregister_lib_conf {
+class tx_srfeuserregister_conf {
 	var $conf = array();
 	var $config = array();
 
@@ -63,7 +63,7 @@ class tx_srfeuserregister_lib_conf {
 }
 
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_model_conf.php'])  {
-  include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_model_conf.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_conf.php'])  {
+  include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_conf.php']);
 }
 ?>
