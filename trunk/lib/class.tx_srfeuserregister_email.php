@@ -276,11 +276,15 @@ class tx_srfeuserregister_email {
 		$setfixedArray = array('SETFIXED_CREATE', 'SETFIXED_CREATE_REVIEW', 'SETFIXED_INVITE',
 			'SETFIXED_REVIEW');
 		$infomailArray = array('INFOMAIL', 'INFOMAIL_NORECORD');
+			// Avoid sending admin-only mails to user
+		$adminOnly = array('SETFIXED_REVIEW');
 
 		if (
-			$this->conf['email.'][$key] ||
+			($this->conf['email.'][$key] ||
 			$this->conf['enableEmailConfirmation'] && in_array($key, $setfixedArray) ||
-			$this->conf['infomail'] && in_array($key, $infomailArray)
+			$this->conf['infomail'] && in_array($key, $infomailArray))
+			&&
+			!in_array($key, $adminOnly)
 		) {
 			$subpartMarker = '###' . $this->emailMarkPrefix . $key . '###';
 			$content['user']['all'] = trim($this->cObj->getSubpart($templateCode, $subpartMarker));
