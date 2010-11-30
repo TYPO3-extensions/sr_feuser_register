@@ -1,3 +1,5 @@
+2010-11-29 Stanislas Rolland  <typo3@sjbr.ca>
+	* Restored missing entry in Changelog
 
 2010-11-19 Franz Holzinger  <franz@ttproducts.de>
 	* new feature: use v_dear_male or v_dear_female instead of v_dear if a gender has been entered
@@ -7,6 +9,11 @@
 2010-10-21 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug 15281: the authorization in the confirmation link did not work with multiple FE groups because the comma had been HTML encoded
 	* fix bug 15225: Form token is empty
+
+2010-10-17 Stanislas Rolland  <typo3@sjbr.ca>
+	* Updated manual
+	* Fix XCLASS keys of files model/class.tx_srfeuserregister_model_table_base.php and model/class.tx_srfeuserregister_model_conf.php
+	* Version 2.6.1
 
 2010-10-14 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug 15271: When logged in, edit form is shown instead of "click_here_to_edit"-link
