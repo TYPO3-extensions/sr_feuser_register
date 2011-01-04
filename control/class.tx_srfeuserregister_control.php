@@ -528,6 +528,9 @@ class tx_srfeuserregister_control {
 				// Finally, if there has been no attempt to save. That is either preview or just displaying and empty or not correctly filled form:
 			$this->marker->setArray($markerArray);
 			$token = $this->controlData->readToken();
+			if ($cmd == '' && $this->controlData->getFeUserData('preview')) {
+				$cmd = $cmdKey;
+			}
 
 			switch($cmd) {
 				case 'setfixed':

@@ -1,3 +1,6 @@
+2011-01-04 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug with sr_email_subscribe: No saving of the edited data has been possible
+
 2010-12-01 Franz Holzinger  <franz@ttproducts.de>
 	* undo the change to disable a user confirmation when the admin receives the email to review SETFIXED_REVIEW
 
