@@ -232,6 +232,7 @@ class tx_srfeuserregister_display {
 					$subpartKey = '###TEMPLATE_AUTH###';
 				}
 			}
+
 			$templateCode = $this->cObj->getSubpart($templateCode, $subpartKey);
 			$failure = t3lib_div::_GP('noWarnings') ? FALSE: $this->controlData->getFailure();
 
@@ -290,6 +291,7 @@ class tx_srfeuserregister_display {
 				$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register') .'scripts/jsfunc.updateform.js"></script>';
 			}
 		}
+
 		return $content;
 	} // createScreen
 
