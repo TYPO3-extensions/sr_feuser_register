@@ -138,7 +138,7 @@ class tx_srfeuserregister_controldata {
 
 				if (isset($getVars) && is_array($getVars) && count($getVars))	{
 					$bValidRegHash = TRUE;
-					$origDataFieldArray = array('sFK','cmd','submit','fetch','regHash');
+					$origDataFieldArray = array('sFK', 'cmd', 'submit', 'fetch', 'regHash', 'preview');
 					$origFeuserData = array();
  					// copy the original values which must not be overridden by the regHash stored values
 					foreach ($origDataFieldArray as $origDataField)	{
@@ -152,12 +152,15 @@ class tx_srfeuserregister_controldata {
 						// restore former GET values for the url
 						t3lib_div::_GETset($v,$k);
 					}
+
 					if ($restoredFeUserData['rU'] > 0 && $restoredFeUserData['rU'] == $feUserData['rU'])	{
 						$feUserData = array_merge($feUserData, $restoredFeUserData);
+
 					} else {
 						$feUserData = $restoredFeUserData;
 					}
-					if (is_array($feUserData))	{
+
+					if (isset($feUserData) && is_array($feUserData))	{
 						$feUserData = array_merge($feUserData, $origFeuserData);
 					} else {
 						$feUserData = $origFeuserData;
@@ -173,6 +176,7 @@ class tx_srfeuserregister_controldata {
 
 			// Establishing compatibility with Direct Mail extension
 		$piVarArray = array('rU', 'aC', 'cmd', 'sFK');
+
 		foreach($piVarArray as $pivar)	{
 			$value = htmlspecialchars(t3lib_div::_GP($pivar));
 			if ($value != '')	{

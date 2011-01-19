@@ -134,10 +134,13 @@ class tx_srfeuserregister_control {
 			$cmdKey = $cmd;
 		} else {
 			if (
-				!$cmd &&
 				(
-					($this->controlData->getTable() == 'fe_users' && $TSFE->loginUser) ||
-					(count($origArray))
+					$cmd == ''
+					|| $cmd == 'setfixed'
+				)
+				&& (
+					($theTable != 'fe_users' || $theUid == $TSFE->fe_user->user['uid']) &&
+					count($origArray)
 				)
 			)	{
 				$cmdKey = 'edit';
@@ -374,6 +377,7 @@ class tx_srfeuserregister_control {
 					$cmdKey,
 					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess']
 				);
+
 				if ($newDataArray)	{
 					$dataArray = $newDataArray;
 				}
@@ -404,6 +408,7 @@ class tx_srfeuserregister_control {
 			$this->data->deleteRecord($theTable, $origArray, $dataArray);
 		}
 		$errorContent = '';
+		$bDeleteRegHash = FALSE;
 
 			// Display forms
 		if ($this->data->getSaved()) {
@@ -482,6 +487,7 @@ class tx_srfeuserregister_control {
 
 			if ($errorContent == '') {	// success case
 				$origGetFeUserData = t3lib_div::_GET($this->controlData->getPrefixId());
+				$bDeleteRegHash = TRUE;
 
 					// Link to on edit save
 					// backURL may link back to referring process
@@ -528,6 +534,7 @@ class tx_srfeuserregister_control {
 				// Finally, if there has been no attempt to save. That is either preview or just displaying and empty or not correctly filled form:
 			$this->marker->setArray($markerArray);
 			$token = $this->controlData->readToken();
+
 			if ($cmd == '' && $this->controlData->getFeUserData('preview')) {
 				$cmd = $cmdKey;
 			}
@@ -649,13 +656,22 @@ class tx_srfeuserregister_control {
 					);
 					break;
 			}
-			if (!$errorContent && !$this->controlData->getFeUserData('preview'))	{
 
-				if ($this->controlData->getValidRegHash())	{
-					$regHash = $this->controlData->getRegHash();
-					$this->controlData->deleteShortUrl($regHash);
-				}
+			if (
+				($cmd != 'setfixed' || $cmdKey != 'edit')
+				&& !$errorContent
+				&& !$this->controlData->getFeUserData('preview')
+			)	{
+				$bDeleteRegHash = TRUE;
 			}
+		}
+
+		if (
+			$bDeleteRegHash
+			&& $this->controlData->getValidRegHash()
+		) {
+			$regHash = $this->controlData->getRegHash();
+			$this->controlData->deleteShortUrl($regHash);
 		}
 		return $content;
 	}

@@ -379,7 +379,6 @@ class tx_srfeuserregister_data {
 		$cmdKey,
 		$requiredArray
 	) {
-
 		$displayFieldArray = t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1);
 		if($this->controlData->useCaptcha($cmdKey))	{
 			$displayFieldArray[] = 'captcha_response';
@@ -438,9 +437,11 @@ class tx_srfeuserregister_data {
 								if ($theCmd == 'uniqueLocal' || $theCmd == 'uniqueDeletedLocal')	{
 									$where .= ' AND pid IN ('.$recordTestPid.')';
 								}
+
 								$DBrows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid,'.$theField,$theTable,$where,'','','1');
 
 								if (trim($dataArray[$theField])!='' && isset($DBrows) && is_array($DBrows) && isset($DBrows[0]) && is_array($DBrows[0])) {
+
 									if (!$bRecordExists || $DBrows[0]['uid'] != $dataArray['uid']) {
 										// Only issue an error if the record is not existing (if new...) and if the record with the false value selected was not our self.
 										$failureArray[] = $theField;
@@ -950,6 +951,7 @@ class tx_srfeuserregister_data {
 
 							$outGoingData['password'] = $password;
 						}
+
 						$res = $this->cObj->DBgetUpdate($theTable, $theUid, $outGoingData, $newFieldList, TRUE);
 						$this->updateMMRelations($dataArray);
 						$this->setSaved(TRUE);

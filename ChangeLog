@@ -1,3 +1,7 @@
+2011-01-19 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug with sr_email_subscribe: regHash has been deleted too early before saving
+	* fix bug: preview data has not been read in with regHash
+
 2011-01-04 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug with sr_email_subscribe: No saving of the edited data has been possible
 
