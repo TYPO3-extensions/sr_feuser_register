@@ -592,7 +592,7 @@ class tx_srfeuserregister_pi1_adodb_time {
 	static $TZ;
 		if (isset($TZ)) return $TZ;
 
-		$TZ = mktime(0,0,0,1,2,1970,0) - gmmktime(0,0,0,1,2,1970,0);
+		$TZ = mktime(0,0,0,1,2,1970) - gmmktime(0,0,0,1,2,1970);
 		return $TZ;
 	}
 
