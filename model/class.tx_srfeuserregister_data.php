@@ -693,6 +693,7 @@ class tx_srfeuserregister_data {
 		if (is_array($this->conf['parseValues.'])) {
 
 			foreach($this->conf['parseValues.'] as $theField => $theValue) {
+
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
 				if (in_array('setEmptyIfAbsent', $listOfCommands) && !isset($dataArray[$theField]))	{
 					$dataArray[$theField]='';
@@ -706,6 +707,7 @@ class tx_srfeuserregister_data {
 						$theCmd = trim($cmdParts[0]);
 						$bValueAssigned = TRUE;
 						$dataValue = (isset($dataArray[$theField]) ? $dataArray[$theField] : $origArray[$theField]);
+
 						switch($theCmd) {
 							case 'int':
 								$dataValue = intval($dataValue);
@@ -718,16 +720,16 @@ class tx_srfeuserregister_data {
 								$dataValue = str_replace(' ', '', $dataValue);
 							break;
 							case 'alpha':
-								$dataValue = ereg_replace('[^a-zA-Z]', '', $dataValue);
+								$dataValue = preg_replace('/[^a-zA-Z]/', '', $dataValue);
 							break;
 							case 'num':
-								$dataValue = ereg_replace('[^0-9]', '', $dataValue);
+								$dataValue = preg_replace('/[^0-9]/', '', $dataValue);
 							break;
 							case 'alphanum':
-								$dataValue = ereg_replace('[^a-zA-Z0-9]', '', $dataValue);
+								$dataValue = preg_replace('/[^a-zA-Z0-9]/', '', $dataValue);
 							break;
 							case 'alphanum_x':
-								$dataValue = ereg_replace('[^a-zA-Z0-9_-]', '', $dataValue);
+								$dataValue = preg_replace('/[^a-zA-Z0-9_-]/', '', $dataValue);
 							break;
 							case 'trim':
 								$dataValue = trim($dataValue);
@@ -768,8 +770,8 @@ class tx_srfeuserregister_data {
 								$hashArray = array();
 								foreach($otherFields as $fN) {
 									$vv = $this->dataArray[$fN];
-									$vv = ereg_replace('[[:space:]]', '', $vv);
-									$vv = ereg_replace('[^[:alnum:]]', '', $vv);
+									$vv = preg_replace('/\s+/', '', $vv);
+									$vv = preg_replace('/[^a-zA-Z0-9]/', '', $vv);
 									$vv = strtolower($vv);
 									$hashArray[] = $vv;
 								}
