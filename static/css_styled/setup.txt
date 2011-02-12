@@ -181,7 +181,7 @@ plugin.tx_srfeuserregister_pi1 {
 	forceFileDelete = {$plugin.tx_srfeuserregister_pi1.forceFileDelete}
 
 	parseValues {
-		username = nospace,trim
+		username = nospace,trim,alphanum_x
 		email = lower,nospace,trim
 		password = trim
 		name = trim
