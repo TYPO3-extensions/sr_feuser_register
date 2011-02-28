@@ -42,6 +42,7 @@
  */
 
 require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
+require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha5.php');
 
 
 class tx_srfeuserregister_email {
@@ -680,6 +681,7 @@ class tx_srfeuserregister_email {
 
 		if (trim($recipient) && (trim($HTMLContent) || trim($PLAINContent))) {
 
+			$fromName = tx_div2007_alpha5::slashName($fromName);
 			$defaultSubject = 'Front end user registration message';
 			if ($HTMLContent)	{
 				$parts = preg_split('/<title>|<\\/title>/i', $HTMLContent, 3);
