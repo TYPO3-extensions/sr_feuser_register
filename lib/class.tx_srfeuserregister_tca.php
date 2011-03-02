@@ -44,17 +44,17 @@
 
 
 class tx_srfeuserregister_tca {
-	var $pibase;
-	var $conf = array();
-	var $control;
-	var $controlData;
-	var $langObj;
+	public $pibase;
+	public $conf = array();
+	public $control;
+	public $controlData;
+	public $langObj;
 
-	var $TCA = array();
-	var $cObj;
+	public $TCA = array();
+	public $cObj;
 
 
-	function init ($extKey, $theTable)	{
+	public function init ($extKey, $theTable)	{
 		global $TSFE, $TCA;
 
 			// get the table definition
@@ -72,7 +72,7 @@ class tx_srfeuserregister_tca {
 	}
 
 
-	function init2 (&$pibase, &$conf, &$controlData, &$langObj)	{
+	public function init2 (&$pibase, &$conf, &$controlData, &$langObj)	{
 		global $TSFE, $TCA;
 
 		$this->pibase = &$pibase;
@@ -83,7 +83,7 @@ class tx_srfeuserregister_tca {
 	}
 
 
-	function &getTCA ()	{
+	public function &getTCA ()	{
 		return $this->TCA;
 	}
 
@@ -94,7 +94,7 @@ class tx_srfeuserregister_tca {
 	* @param array  $dataArray: the record array
 	* @return array  the modified data array
 	*/
-	function modifyTcaMMfields ($dataArray, &$modArray) {
+	public function modifyTcaMMfields ($dataArray, &$modArray) {
 		global $TYPO3_DB;
 
 		$rcArray = $dataArray;
@@ -135,7 +135,7 @@ class tx_srfeuserregister_tca {
 	* @param array  $dataArray: the input data array will be changed
 	* @return void
 	*/
-	function modifyRow (&$dataArray, $bColumnIsCount=TRUE)	{
+	public function modifyRow (&$dataArray, $bColumnIsCount=TRUE)	{
 		global $TYPO3_DB;
 
 		if (isset($dataArray) && is_array($dataArray))	{
@@ -227,7 +227,7 @@ class tx_srfeuserregister_tca {
 	* @param array  $colConfig: $TCA column configuration
 	* @return string 	foreign table where clause with replaced markers
 	*/
-	function replaceForeignWhereMarker($whereClause, $colConfig)	{
+	public function replaceForeignWhereMarker($whereClause, $colConfig)	{
 		global $TYPO3_DB, $TSFE;
 
 		$foreignWhere = $colConfig['foreign_table_where'];
@@ -265,7 +265,7 @@ class tx_srfeuserregister_tca {
 	* @param array  $row: the record
 	* @return void
 	*/
-	function addTcaMarkers (&$markerArray, $row, $origRow, $cmd, $cmdKey, $theTable, $viewOnly=FALSE, $activity='', $bChangesOnly=FALSE,$HSC=TRUE) {
+	public function addTcaMarkers (&$markerArray, $row, $origRow, $cmd, $cmdKey, $theTable, $viewOnly=FALSE, $activity='', $bChangesOnly=FALSE,$HSC=TRUE) {
 		global $TYPO3_DB, $TCA, $TSFE;
 
 		$charset = $TSFE->renderCharset;
@@ -727,7 +727,7 @@ class tx_srfeuserregister_tca {
 	* @param	array	array of selectable items like found in TCA
 	* @ return	array	array of selectable items with correct key
 	*/
-	function getItemKeyArray ($itemArray) {
+	public function getItemKeyArray ($itemArray) {
 		$rc = array();
 
 		if (is_array($itemArray))	{
@@ -748,7 +748,7 @@ class tx_srfeuserregister_tca {
 		* @param	integer		Language UID if you want to set an alternative value to $this->controlData->sys_language_content which is default. Should be >=0
 		* @return	array		usergroup row which is overlayed with language_overlay record (or the overlay record alone)
 		*/
-	function getUsergroupOverlay ($usergroup, $languageUid='') {
+	public function getUsergroupOverlay ($usergroup, $languageUid='') {
 		global $TYPO3_DB;
 		// Initialize:
 		if ($languageUid=='') {

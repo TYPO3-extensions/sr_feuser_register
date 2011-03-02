@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2008-2008 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2008-2011 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -44,7 +44,7 @@ require_once(PATH_BE_srfeuserregister.'model/field/class.tx_srfeuserregister_mod
 
 class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_model_field_base {
 
-	function modifyConf (&$conf, $cmdKey)	{
+	public function modifyConf (&$conf, $cmdKey)	{
 
 		if ($conf[$cmdKey.'.']['allowUserGroupSelection']) {
 			$conf[$cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey.'.']['fields'] . ',usergroup', 1)));
@@ -54,7 +54,7 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 		}
 	}
 
-	function getReservedValues ()	{
+	public function getReservedValues ()	{
 		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_conf');
 		$conf = &$confObj->getConf();
 		$rc = array_merge(t3lib_div::trimExplode(',', $conf['create.']['overrideValues.']['usergroup'],1), t3lib_div::trimExplode(',', $conf['setfixed.']['APPROVE.']['usergroup'],1), t3lib_div::trimExplode(',', $conf['setfixed.']['ACCEPT.']['usergroup'],1));
@@ -62,7 +62,7 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 		return $rc;
 	}
 
-	function removeReservedValues (&$row)	{
+	public function removeReservedValues (&$row)	{
 		if (isset($row['usergroup']))	{
 
 			$reservedValues = $this->getReservedValues();
@@ -82,7 +82,7 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 		}
 	}
 
-	function removeInvalidValues ($conf, $cmdKey, &$row)	{
+	public function removeInvalidValues ($conf, $cmdKey, &$row)	{
 
 		if (isset($row['usergroup']) && $conf[$cmdKey.'.']['allowUserGroupSelection'])	{
 
@@ -92,7 +92,7 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 		}
 	}
 
-	function parseOutgoingData ($fieldname, $dataArray, &$origArray, &$parsedArr) {
+	public function parseOutgoingData ($fieldname, $dataArray, &$origArray, &$parsedArr) {
 
 		$valuesArray = array();
 		if (isset($origArray) && is_array($origArray) && isset($origArray[$fieldname]) && is_array($origArray[$fieldname]))	{

@@ -42,20 +42,20 @@
 
 
 class tx_srfeuserregister_lang {
-	var $pibase;
-	var $conf = array();
-	var $allowedSuffixes = array('formal', 'informal'); // list of allowed suffixes
-	var $LLkey;
+	public $pibase;
+	public $conf = array();
+	public $allowedSuffixes = array('formal', 'informal'); // list of allowed suffixes
+	public $LLkey;
 
 
-	function init (&$pibase, &$conf, $LLkey)	{
+	public function init (&$pibase, &$conf, $LLkey)	{
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
 		$this->LLkey = $LLkey;
 	}
 
 
-	function getLLFromString ($string, $bForce=TRUE) {
+	public function getLLFromString ($string, $bForce=TRUE) {
 		global $LOCAL_LANG, $TSFE;
 
 		$rc = '';
@@ -80,7 +80,7 @@ class tx_srfeuserregister_lang {
 	* @param	string	name of the field
 	* @ return	array	array of selectable items
 	*/
-	function getItemsLL ($textSchema, $bAll=TRUE, $valuesArray=array()) {
+	public function getItemsLL ($textSchema, $bAll=TRUE, $valuesArray=array()) {
 		$rc = array();
 		if ($bAll)	{
 			for ($i = 0; $i < 999; ++$i)	{
@@ -117,7 +117,7 @@ class tx_srfeuserregister_lang {
 		* @param    boolean        If true, the output label is passed through htmlspecialchars()
 		* @return    string        The value from LOCAL_LANG.
 		*/
-	function getLL ($key, $alt = '', $hsc = FALSE) {
+	public function getLL ($key, $alt = '', $hsc = FALSE) {
 
 			// If the suffix is allowed and we have a localized string for the desired salutation, we'll take that.
 		$rc = '';
@@ -133,7 +133,7 @@ class tx_srfeuserregister_lang {
 	}	// getLL
 
 
-	function loadLL () {
+	public function loadLL () {
 		$rc = TRUE;
 
 			// flatten the structure of labels overrides

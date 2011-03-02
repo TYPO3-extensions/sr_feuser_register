@@ -33,8 +33,8 @@
  *
  * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
  * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
- * @author	Franz Holzinger <contact@fholzinger.com>
- * @maintainer	Franz Holzinger <contact@fholzinger.com>
+ * @author	Franz Holzinger <franz@ttproducts.de>
+ * @maintainer	Franz Holzinger <franz@ttproducts.de>
  *
  *
  */
@@ -44,9 +44,9 @@ require_once(PATH_BE_srfeuserregister.'pi1/class.tx_srfeuserregister_pi1_base.ph
 
 
 class tx_srfeuserregister_pi1 {
-	var $cObj;
+	public $cObj;
 
-	function main($content, $conf) {
+	public function main($content, $conf) {
 		$pibaseObj = &t3lib_div::getUserObj('&tx_srfeuserregister_pi1_base');
 		$pibaseObj->cObj = &$this->cObj;
 		$content = &$pibaseObj->main($content, $conf);

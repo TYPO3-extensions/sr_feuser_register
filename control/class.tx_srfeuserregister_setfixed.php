@@ -43,23 +43,23 @@
 
 
 class tx_srfeuserregister_setfixed {
-	var $pibase;
-	var $conf = array();
-	var $config = array();
-	var $control;
-	var $controlData;
-	var $tca;
-	var $display;
-	var $email;
-	var $marker;
-	var $previewLabel;
-	var $setfixedEnabled;
-	var $cObj;
-	var $buttonLabelsList;
-	var $otherLabelsList;
+	public $pibase;
+	public $conf = array();
+	public $config = array();
+	public $control;
+	public $controlData;
+	public $tca;
+	public $display;
+	public $email;
+	public $marker;
+	public $previewLabel;
+	public $setfixedEnabled;
+	public $cObj;
+	public $buttonLabelsList;
+	public $otherLabelsList;
 
 
-	function init (&$cObj, &$conf, &$config, &$controlData, &$tca, &$display, &$email, &$marker)	{
+	public function init (&$cObj, &$conf, &$config, &$controlData, &$tca, &$display, &$email, &$marker)	{
 		global $TSFE;
 
 		$this->cObj = &$cObj;
@@ -79,7 +79,7 @@ class tx_srfeuserregister_setfixed {
 	* @param array  Array with key/values being marker-strings/substitution values.
 	* @return string  the template with substituted markers
 	*/
-	function processSetFixed (
+	public function processSetFixed (
 		$theTable,
 		$uid,
 		$cmdKey,
@@ -315,7 +315,7 @@ class tx_srfeuserregister_setfixed {
 	* @param array  $r: the record row
 	* @return void
 	*/
-	function computeUrl ($cmdKey, &$markerArray, $setfixed, $r, $theTable) {
+	public function computeUrl ($cmdKey, &$markerArray, $setfixed, $r, $theTable) {
 		global $TSFE;
 
 		$prefixId = $this->controlData->getPrefixId();
@@ -404,7 +404,7 @@ class tx_srfeuserregister_setfixed {
 	/**
 		*  Store the setfixed vars and return a replacement hash
 		*/
-	function storeFixedPiVars ($vars) {
+	public function storeFixedPiVars ($vars) {
 		global $TYPO3_DB;
 
 			// create a unique hash value

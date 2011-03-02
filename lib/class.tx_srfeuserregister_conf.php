@@ -41,19 +41,19 @@
 
 
 class tx_srfeuserregister_conf {
-	var $conf = array();
-	var $config = array();
+	public $conf = array();
+	public $config = array();
 
-	function init(&$conf)	{
+	public function init (&$conf)	{
 		$this->conf = &$conf;
 		$this->config = array();
 	}
 
-	function &getConf()	{
+	public function &getConf ()	{
 		return $this->conf;
 	}
 
-	function &setConf(&$dataArray, $k='')	{
+	public function &setConf (&$dataArray, $k='')	{
 		if ($k)	{
 			$this->conf[$k] = $dataArray;
 		} else {

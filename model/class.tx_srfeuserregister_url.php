@@ -63,7 +63,7 @@ class tx_srfeuserregister_url {
 	* @param boolean  $usePiVars: if set, input vars and incoming piVars arrays are merge
 	* @return string  generated link or url
 	*/
-	function get ($tag='', $id, $vars = array(), $unsetVars = array(), $usePiVars = TRUE) {
+	public function get ($tag='', $id, $vars = array(), $unsetVars = array(), $usePiVars = TRUE) {
 
 		$vars = (array) $vars;
 		$unsetVars = (array) $unsetVars;

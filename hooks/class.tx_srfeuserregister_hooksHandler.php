@@ -35,7 +35,7 @@
 
 
 class tx_srfeuserregister_hooksHandler {
-	function registrationProcess_beforeConfirmCreate(&$recordArray, &$controlDataObj) {
+	public function registrationProcess_beforeConfirmCreate (&$recordArray, &$controlDataObj) {
 			// in the case of this hook, the record array is passed by reference
 			// in this example hook, we generate a username based on the first and last names of the user
 		$cmdKey = $controlDataObj->getCmdKey();
@@ -62,25 +62,25 @@ class tx_srfeuserregister_hooksHandler {
 		}
 	}
 
-	function registrationProcess_afterSaveEdit($recordArray, &$invokingObj) {
+	public function registrationProcess_afterSaveEdit ($recordArray, &$invokingObj) {
 	}
 
-	function registrationProcess_beforeSaveDelete($recordArray, &$invokingObj) {
+	public function registrationProcess_beforeSaveDelete ($recordArray, &$invokingObj) {
 	}
 
-	function registrationProcess_afterSaveCreate($recordArray, &$invokingObj) {
+	public function registrationProcess_afterSaveCreate ($recordArray, &$invokingObj) {
 	}
 
-	function confirmRegistrationClass_preProcess(&$recordArray, &$invokingObj) {
+	public function confirmRegistrationClass_preProcess (&$recordArray, &$invokingObj) {
 		// in the case of this hook, the record array is passed by reference
 		// you may not see this echo if the page is redirected to auto-login
 	}
 
-	function confirmRegistrationClass_postProcess($recordArray, &$invokingObj) {
+	public function confirmRegistrationClass_postProcess ($recordArray, &$invokingObj) {
 		// you may not see this echo if the page is redirected to auto-login
 	}
 
-	function addGlobalMarkers(&$markerArray, &$invokingObj)	{
+	public function addGlobalMarkers (&$markerArray, &$invokingObj)	{
 	}
 }
 

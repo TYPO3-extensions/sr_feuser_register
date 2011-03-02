@@ -1,4 +1,7 @@
 2011-02-28 Franz Holzinger  <franz@ttproducts.de>
+	* TYPO3 coding guidelines: add "public" to the function and variable names
+
+2011-02-28 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug #17622: the email name must be encoded using addcslashes and have double quotes around it
 
 2011-02-12 Franz Holzinger  <franz@ttproducts.de>
