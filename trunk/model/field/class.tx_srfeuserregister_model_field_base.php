@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2008-2008 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2008-2011 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -40,24 +40,24 @@
 
 
 class tx_srfeuserregister_model_field_base  {
-	var $bHasBeenInitialised = FALSE;
+	public $bHasBeenInitialised = FALSE;
 
-	function init()	{
+	public function init ()	{
 		$this->bHasBeenInitialised = TRUE;
 	}
 
-	function needsInit()	{
+	public function needsInit ()	{
 		return !$this->bHasBeenInitialised;
 	}
 
-	function modifyConf (&$conf, $cmdKey)	{
+	public function modifyConf (&$conf, $cmdKey)	{
 	}
 
-	function get($row, $fieldname)	{
+	public function get ($row, $fieldname)	{
 		return $row[$fieldname];
 	}
 
-	function parseOutgoingData($fieldname, $dataArray, &$origArray, &$parsedArr) {
+	public function parseOutgoingData ($fieldname, $dataArray, &$origArray, &$parsedArr) {
 		$parsedArr[$fieldname] = $dataArray[$fieldname];	// just copied the original value
 	}
 }

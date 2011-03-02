@@ -37,7 +37,7 @@
 
 class tx_srfeuserregister_pi1_urlvalidator {
 
-	function _ValURL($value, $options = array()) {
+	public function _ValURL($value, $options = array()) {
 		$value = trim($value);
 
 		if (!$value)

@@ -46,9 +46,9 @@ require_once(PATH_BE_srfeuserregister.'control/class.tx_srfeuserregister_control
 class tx_srfeuserregister_pi1_base extends tslib_pibase {
 
 		// Plugin initialization variables
-	var $prefixId = 'tx_srfeuserregister_pi1';		// Should be same as classname of the plugin, used for CSS classes, variables
-	var $scriptRelPath = 'pi1/class.tx_srfeuserregister_pi1_base.php'; // Path to this script relative to the extension dir.
-	var $extKey = SR_FEUSER_REGISTER_EXTkey;		// Extension key.
+	public $prefixId = 'tx_srfeuserregister_pi1';		// Should be same as classname of the plugin, used for CSS classes, variables
+	public $scriptRelPath = 'pi1/class.tx_srfeuserregister_pi1_base.php'; // Path to this script relative to the extension dir.
+	public $extKey = SR_FEUSER_REGISTER_EXTkey;		// Extension key.
 
 	public function main ($content, $conf) {
 		global $TSFE;

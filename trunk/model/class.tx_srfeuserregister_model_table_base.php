@@ -41,22 +41,22 @@
 
 
 class tx_srfeuserregister_model_table_base	{
-	var $functablename;
-	var $tablename;
-	var $fieldClassArray = array(); // must be overridden
-	var $bHasBeenInitialised = FALSE;
+	public $functablename;
+	public $tablename;
+	public $fieldClassArray = array(); // must be overridden
+	public $bHasBeenInitialised = FALSE;
 
-	function init ($functablename, $tablename)	{
+	public function init ($functablename, $tablename)	{
 		$this->setFuncTablename($functablename);
 		$this->setTablename($tablename);
 		$this->bHasBeenInitialised = TRUE;
 	}
 
-	function needsInit()	{
+	public function needsInit()	{
 		return !$this->bHasBeenInitialised;
 	}
 
-	function getFieldClassAndPath ($fieldname)	{
+	public function getFieldClassAndPath ($fieldname)	{
 		global $TCA;
 
 
@@ -76,7 +76,7 @@ class tx_srfeuserregister_model_table_base	{
 		return $rc;
 	}
 
-	function &getFieldObj ($fieldname)	{
+	public function &getFieldObj ($fieldname)	{
 		$classAndPath = $this->getFieldClassAndPath($fieldname);
 
 		if ($classAndPath['class'])	{
@@ -85,7 +85,7 @@ class tx_srfeuserregister_model_table_base	{
 		return $rc;
 	}
 
-	function &getObj ($classArray)	{
+	public function &getObj ($classArray)	{
 
 		$className = $classArray['class'];
 		$classNameView = $className.'_view';
@@ -100,19 +100,19 @@ class tx_srfeuserregister_model_table_base	{
 		return $fieldObj;
 	}
 
-	function getFuncTablename ()	{
+	public function getFuncTablename ()	{
 		return $this->functablename;
 	}
 
-	function setFuncTablename ($tablename)	{
+	public function setFuncTablename ($tablename)	{
 		$this->functablename = $tablename;
 	}
 
-	function getTablename ()	{
+	public function getTablename ()	{
 		return $this->tablename;
 	}
 
-	function setTablename ($tablename)	{
+	public function setTablename ($tablename)	{
 		$this->tablename = $tablename;
 	}
 }

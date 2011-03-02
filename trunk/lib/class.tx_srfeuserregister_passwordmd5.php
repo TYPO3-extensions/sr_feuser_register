@@ -42,22 +42,22 @@
 
 
 class tx_srfeuserregister_passwordmd5 {
-	var $data;
-	var $marker;
-	var $controlData;
-	var $chal_val;
+	public $data;
+	public $marker;
+	public $controlData;
+	public $chal_val;
 
-	function init (&$marker, &$data, &$controlData)	{
+	public function init (&$marker, &$data, &$controlData)	{
 		$this->marker = &$marker;
 		$this->data = &$data;
 		$this->controlData = &$controlData;
 	}
 
-	function getChallenge ()	{
+	public function getChallenge ()	{
 		return $this->chal_val;
 	}
 
-	function generateChallenge (&$row)	{
+	public function generateChallenge (&$row)	{
 		global $TYPO3_DB;
 
 		$time = time();

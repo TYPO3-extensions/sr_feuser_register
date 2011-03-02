@@ -43,12 +43,12 @@
 
 
 class tx_srfeuserregister_auth {
-	var $pibase;
-	var $conf = array();
-	var $config = array();
-	var $authCode;
+	public $pibase;
+	public $conf = array();
+	public $config = array();
+	public $authCode;
 
-	function init (&$pibase, &$conf, &$config)	{
+	public function init (&$pibase, &$conf, &$config)	{
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
 		$this->config = &$config;
@@ -67,11 +67,11 @@ class tx_srfeuserregister_auth {
 		}
 	}
 
-	function setAuthCode ($code)	{
+	public function setAuthCode ($code)	{
 		$this->authCode = $code;
 	}
 
-	function getAuthCode ()	{
+	public function getAuthCode ()	{
 		return $this->authCode;
 	}
 
@@ -82,7 +82,7 @@ class tx_srfeuserregister_auth {
 	* @param string  $extra: some extra mixture
 	* @return string  the code
 	*/
-	function authCode ($r, $fields = '', $extra = '') {
+	public function authCode ($r, $fields = '', $extra = '') {
 
 		$rc = '';
 		$l = $this->config['codeLength'];
@@ -124,7 +124,7 @@ class tx_srfeuserregister_auth {
 	* @param array  $r: the record
 	* @return boolean  true if the record is authenticated
 	*/
-	function aCAuth ($r, $fields) {
+	public function aCAuth ($r, $fields) {
 		$rc = false;
 
 		if ($this->authCode) {
@@ -145,7 +145,7 @@ class tx_srfeuserregister_auth {
 	* @param string  $fields: the list of fields to include in the hash computation
 	* @return string  the hash value
 	*/
-	function setfixedHash ($recCopy, $fields = '') {
+	public function setfixedHash ($recCopy, $fields = '') {
 
 		$recCopy_temp=array();
 		if ($fields) {
@@ -183,7 +183,7 @@ class tx_srfeuserregister_auth {
 	* @param void
 	* @return string  the token value
 	*/
-	function generateToken ()	{
+	public function generateToken ()	{
 		$time = time();
 		$rc = md5($time . getmypid() . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
 

@@ -42,10 +42,10 @@
 require_once (PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_model_table_base.php');
 
 class tx_srfeuserregister_lib_tables	{
-	var $tableClassArray = array();
-	var $tablename;
+	public $tableClassArray = array();
+	public $tablename;
 
-	function init($tablename)	{
+	public function init($tablename)	{
 
 		$this->tablename = &$tablename;
 		if ($tablename == 'fe_users')	{
@@ -55,15 +55,15 @@ class tx_srfeuserregister_lib_tables	{
 		}
 	}	// init
 
-	function getTableClassArray()	{
+	public function getTableClassArray()	{
 		return $this->tableClassArray;
 	}
 
-	function setTableClassArray($tableClassArray)	{
+	public function setTableClassArray($tableClassArray)	{
 		$this->tableClassArray = $tableClassArray;
 	}
 
-	function getTableClass ($functablename, $bView=FALSE)	{
+	public function getTableClass ($functablename, $bView=FALSE)	{
 		$rc = '';
 		if ($functablename)	{
 			$rc = $this->tableClassArray[$functablename].($bView ? '_view': '');
@@ -71,7 +71,7 @@ class tx_srfeuserregister_lib_tables	{
 		return $rc;
 	}
 
-	function &get($functablename, $bView=FALSE)	{
+	public function &get($functablename, $bView=FALSE)	{
 		$classNameArray = array();
 		$tableObjArray = array();
 

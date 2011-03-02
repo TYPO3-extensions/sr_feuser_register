@@ -46,24 +46,24 @@ require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha5.php');
 
 
 class tx_srfeuserregister_email {
-	var $langObj;
-	var $conf = array();
-	var $config = array();
-	var $display;
-	var $data;
-	var $marker;
-	var $tca;
-	var $control;
-	var $controlData;
-	var $infomailPrefix = 'INFOMAIL_';
-	var $emailMarkPrefix = 'EMAIL_TEMPLATE_';
-	var $emailMarkAdminSuffix = '_ADMIN';
-	var $emailMarkHTMLSuffix = '_HTML';
-	var $HTMLMailEnabled = TRUE;
-	var $cObj;
+	public $langObj;
+	public $conf = array();
+	public $config = array();
+	public $display;
+	public $data;
+	public $marker;
+	public $tca;
+	public $control;
+	public $controlData;
+	public $infomailPrefix = 'INFOMAIL_';
+	public $emailMarkPrefix = 'EMAIL_TEMPLATE_';
+	public $emailMarkAdminSuffix = '_ADMIN';
+	public $emailMarkHTMLSuffix = '_HTML';
+	public $HTMLMailEnabled = TRUE;
+	public $cObj;
 
 
-	function init (
+	public function init (
 		&$langObj,
 		&$cObj,
 		&$conf,
@@ -100,7 +100,7 @@ class tx_srfeuserregister_email {
 	 * @return	string		HTML content message
 	 * @see init(),compile(), send()
 	 */
-	function sendInfo (
+	public function sendInfo (
 		$theTable,
 		$origArr,
 		$securedArray,
@@ -231,7 +231,7 @@ class tx_srfeuserregister_email {
 	* @param array  $setFixedConfig: a setfixed TS config array
 	* @return string : text in case of error
 	*/
-	function compile (
+	public function compile (
 		$key,
 		$theTable,
 		$DBrows,
@@ -582,7 +582,7 @@ class tx_srfeuserregister_email {
 	* @param string  $fileAttachment: file name
 	* @return void
 	*/
-	function send (
+	public function send (
 		$recipient,
 		$admin,
 		$content = '',
@@ -639,7 +639,7 @@ class tx_srfeuserregister_email {
 	* @param array  $markerArray: the input marker array
 	* @return void
 	*/
-	function addCSSStyleMarkers (&$markerArray) {
+	public function addCSSStyleMarkers (&$markerArray) {
 
 		if ($this->conf['templateStyle'] == 'css-styled') {
 			$markerArray['###CSS_STYLES###'] = '	/*<![CDATA[*/
@@ -667,7 +667,7 @@ class tx_srfeuserregister_email {
 	* @param string  $fileAttachment: file name
 	* @return void
 	*/
-	function sendHTML (
+	public function sendHTML (
 		$HTMLContent,
 		$PLAINContent,
 		$recipient,

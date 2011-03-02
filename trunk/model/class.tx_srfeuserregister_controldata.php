@@ -44,32 +44,32 @@ define ('MODE_PREVIEW', '1');
 
 
 class tx_srfeuserregister_controldata {
-	var $thePid = 0;
-	var $thePidTitle;
-	var $theTable;
-	var $site_url;
-	var $prefixId;
-	var $piVars;
-	var $extKey;
-	var $cmd='';
-	var $cmdKey;
-	var $pid = array();
-	var $useMd5Password = FALSE;
-	var $setfixedEnabled = 0;
-	var $bSubmit = FALSE;
-	var $bDoNotSave = FALSE;
-	var $failure = FALSE; // is set if data did not have the required fields set.
-	var $sys_language_content;
-	var $feUserData = array();
-	var $jsMd5Added; // If the JavaScript for MD5 encoding has already been added
-	var $securedFieldArray = array('password', 'password_again');
-	var $bTokenValid = FALSE;
-	var $dummyPassword = 'Joh 3,16';
-	var $bValidRegHash;
-	var $regHash;
+	public $thePid = 0;
+	public $thePidTitle;
+	public $theTable;
+	public $site_url;
+	public $prefixId;
+	public $piVars;
+	public $extKey;
+	public $cmd='';
+	public $cmdKey;
+	public $pid = array();
+	public $useMd5Password = FALSE;
+	public $setfixedEnabled = 0;
+	public $bSubmit = FALSE;
+	public $bDoNotSave = FALSE;
+	public $failure = FALSE; // is set if data did not have the required fields set.
+	public $sys_language_content;
+	public $feUserData = array();
+	public $jsMd5Added; // If the JavaScript for MD5 encoding has already been added
+	public $securedFieldArray = array('password', 'password_again');
+	public $bTokenValid = FALSE;
+	public $dummyPassword = 'Joh 3,16';
+	public $bValidRegHash;
+	public $regHash;
 
 
-	function init (&$conf, $prefixId, $extKey, $piVars, $theTable)	{
+	public function init (&$conf, $prefixId, $extKey, $piVars, $theTable)	{
 		global $TSFE;
 
 		$this->conf = &$conf;
@@ -240,38 +240,38 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function setRegHash ($regHash)	{
+	public function setRegHash ($regHash)	{
 		$this->regHash = $regHash;
 	}
 
 
-	function getRegHash ()	{
+	public function getRegHash ()	{
 		return $this->regHash;
 	}
 
 
-	function setValidRegHash ($bValidRegHash)	{
+	public function setValidRegHash ($bValidRegHash)	{
 		$this->bValidRegHash = $bValidRegHash;
 	}
 
 
-	function getValidRegHash ()	{
+	public function getValidRegHash ()	{
 		return $this->bValidRegHash;
 	}
 
 
-	function getSecuredFieldArray ()	{
+	public function getSecuredFieldArray ()	{
 		return $this->securedFieldArray;
 	}
 
 
-	function getDummyPassword ()	{
+	public function getDummyPassword ()	{
 		return $this->dummyPassword;
 	}
 
 
 	/* reduces to the field list which are allowed to be shown */
-	function getOpenFields ($fields)	{
+	public function getOpenFields ($fields)	{
 		$securedFieldArray = $this->getSecuredFieldArray();
 		$newFieldArray = array();
 		$fieldArray = t3lib_div::trimExplode(',',$fields);
@@ -288,7 +288,7 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function readSecuredArray ()	{
+	public function readSecuredArray ()	{
 		$rcArray = array();
 
 		foreach ($this->securedFieldArray as $field)	{
@@ -306,7 +306,7 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function readUnsecuredArray ()	{
+	public function readUnsecuredArray ()	{
 		$rcArray = array();
 		$seData = $this->readSessionData();
 
@@ -321,7 +321,7 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function readPassword ()	{
+	public function readPassword ()	{
 		global $TSFE;
 
 		$securedArray = $this->readUnsecuredArray();
@@ -334,7 +334,7 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function writePassword ($password)	{
+	public function writePassword ($password)	{
 		global $TSFE;
 
 		$seData = $this->readSessionData();
@@ -343,17 +343,17 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function setTokenValid ($valid)	{
+	public function setTokenValid ($valid)	{
 		$this->bTokenValid = $valid;
 	}
 
 
-	function isTokenValid ()	{
+	public function isTokenValid ()	{
 		return $this->bTokenValid;
 	}
 
 
-	function readToken ()	{
+	public function readToken ()	{
 		global $TSFE;
 
 		$seData = $this->readSessionData();
@@ -363,7 +363,7 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function writeToken ($token)	{
+	public function writeToken ($token)	{
 		global $TSFE;
 
 		$seData = $this->readSessionData();
@@ -372,7 +372,7 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function readSessionData ($bReadAll = FALSE)	{
+	public function readSessionData ($bReadAll = FALSE)	{
 		global $TSFE;
 
 		$extKey = $this->getExtKey();
@@ -387,7 +387,7 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function writeSessionData ($data, $bKeepToken=TRUE, $bRedirectUrl=TRUE)	{
+	public function writeSessionData ($data, $bKeepToken=TRUE, $bRedirectUrl=TRUE)	{
 		global $TSFE;
 
 		$extKey = $this->getExtKey();
@@ -408,14 +408,14 @@ class tx_srfeuserregister_controldata {
 
 
 	// delete all session data except of the token
-	function clearSessionData ($bRedirectUrl=TRUE)	{
+	public function clearSessionData ($bRedirectUrl=TRUE)	{
 		$seData = array();
 
 		$this->writeSessionData($seData, TRUE, $bRedirectUrl);
 	}
 
 
-	function writeSpecialData ()	{
+	public function writeSpecialData ()	{
 		$redirect_url = t3lib_div::_GET('redirect_url');
 
 		if ($redirect_url != '')	{
@@ -426,7 +426,7 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function readRedirectUrl ()	{
+	public function readRedirectUrl ()	{
 		$data = $this->readSessionData();
 		if (isset($data) && is_array($data))	{
 			$rc = $data['redirect_url'];
@@ -440,7 +440,7 @@ class tx_srfeuserregister_controldata {
 	*
 	* @return void
 	*/
-	function getSecuredValue ($field, $value, $bHtmlSpecial)	{
+	public function getSecuredValue ($field, $value, $bHtmlSpecial)	{
 		$securedFieldArray = $this->getSecuredFieldArray();
 
 		if ($field != '' && in_array($field, $securedFieldArray))	{
@@ -462,7 +462,7 @@ class tx_srfeuserregister_controldata {
 	*
 	* @return void
 	*/
-	function secureInput (&$dataArray, $bHtmlSpecial=TRUE)	{
+	public function secureInput (&$dataArray, $bHtmlSpecial=TRUE)	{
 
 		if (isset($dataArray) && is_array($dataArray))	{
 			foreach ($dataArray as $k => $value)	{
@@ -489,7 +489,7 @@ class tx_srfeuserregister_controldata {
 	*
 	* @return void
 	*/
-	function securePassword (&$row)	{
+	public function securePassword (&$row)	{
 
 		$bWriteDummy = FALSE;
 		$bMd5 = $this->getUseMd5Password();
@@ -531,7 +531,7 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function bFieldsAreFilled ($row)	{
+	public function bFieldsAreFilled ($row)	{
 		if (is_array($row))	{
 			$rc = isset($row['username']);
 		} else {
@@ -541,7 +541,7 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function useCaptcha ($theCode)	{
+	public function useCaptcha ($theCode)	{
 		$rc = FALSE;
 
 		if ((t3lib_extMgm::isLoaded('sr_freecap') &&
@@ -556,7 +556,7 @@ class tx_srfeuserregister_controldata {
 
 
 	// example: plugin.tx_srfeuserregister_pi1.conf.sys_dmail_category.ALL.sys_language_uid = 0
-	function getSysLanguageUid ($theCode,$theTable)	{
+	public function getSysLanguageUid ($theCode,$theTable)	{
 
 		if (
 			isset($this->conf['conf.']) && is_array($this->conf['conf.']) &&
@@ -572,57 +572,57 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function getPidTitle ()	{
+	public function getPidTitle ()	{
 		return $this->thePidTitle;
 	}
 
 
-	function getSiteUrl ()	{
+	public function getSiteUrl ()	{
 		return $this->site_url;
 	}
 
 
-	function getPrefixId ()	{
+	public function getPrefixId ()	{
 		return $this->prefixId;
 	}
 
 
-	function getExtKey ()	{
+	public function getExtKey ()	{
 		return $this->extKey;
 	}
 
 
-	function getPiVars ()	{
+	public function getPiVars ()	{
 		return $this->piVars;
 	}
 
 
-	function setPiVars ($piVars)	{
+	public function setPiVars ($piVars)	{
 		$this->piVars = $piVars;
 	}
 
 
-	function getCmd () {
+	public function getCmd () {
 		return $this->cmd;
 	}
 
 
-	function setCmd ($cmd) {
+	public function setCmd ($cmd) {
 		$this->cmd = $cmd;
 	}
 
 
-	function getCmdKey () {
+	public function getCmdKey () {
 		return $this->cmdKey;
 	}
 
 
-	function setCmdKey ($cmdKey)	{
+	public function setCmdKey ($cmdKey)	{
 		$this->cmdKey = $cmdKey;
 	}
 
 
-	function getFeUserData ($k='')	{
+	public function getFeUserData ($k='')	{
 
 		if ($k)	{
 			$rc = $this->feUserData[$k];
@@ -633,7 +633,7 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function setFeUserData ($v, $k='')	{
+	public function setFeUserData ($v, $k='')	{
 
 		if ($k != '')	{
 			$this->feUserData[$k] = $v;
@@ -643,37 +643,37 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function getFailure ()	{
+	public function getFailure ()	{
 		return $this->failure;
 	}
 
 
-	function setFailure ($failure)	{
+	public function setFailure ($failure)	{
 		$this->failure = $failure;
 	}
 
 
-	function setSubmit ($bSubmit)	{
+	public function setSubmit ($bSubmit)	{
 		$this->bSubmit = $bSubmit;
 	}
 
 
-	function getSubmit ()	{
+	public function getSubmit ()	{
 		return $this->bSubmit;
 	}
 
 
-	function setDoNotSave ($bParam)	{
+	public function setDoNotSave ($bParam)	{
 		$this->bDoNotSave = $bParam;
 	}
 
 
-	function getDoNotSave ()	{
+	public function getDoNotSave ()	{
 		return $this->bDoNotSave;
 	}
 
 
-	function getPid ($type='')	{
+	public function getPid ($type='')	{
 		global $TSFE;
 
 		if ($type)	{
@@ -690,7 +690,7 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function setPid ($type, $pid)	{
+	public function setPid ($type, $pid)	{
 		global $TSFE;
 
 		if (!intval($pid))	{
@@ -711,67 +711,67 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	function getMode ()	{
+	public function getMode ()	{
 		return $this->mode;
 	}
 
 
-	function setMode ($mode)	{
+	public function setMode ($mode)	{
 		$this->mode = $mode;
 	}
 
 
-	function setUseMd5Password ($useMd5Password)	{
+	public function setUseMd5Password ($useMd5Password)	{
 		$this->useMd5Password = $useMd5Password;
 	}
 
 
-	function getUseMd5Password()	{
+	public function getUseMd5Password()	{
 		return $this->useMd5Password;
 	}
 
 
-	function getJSmd5Added ()	{
+	public function getJSmd5Added ()	{
 		return ($this->jsMd5Added);
 	}
 
 
-	function setJSmd5Added ($var)	{
+	public function setJSmd5Added ($var)	{
 		$this->jsMd5Added = TRUE;
 	}
 
 
-	function getTable ()	{
+	public function getTable ()	{
 		return $this->theTable;
 	}
 
 
-	function setTable ($theTable)	{
+	public function setTable ($theTable)	{
 		$this->theTable = $theTable;
 	}
 
 
-	function getRequiredArray ()	{
+	public function getRequiredArray ()	{
 		return $this->requiredArray;
 	}
 
 
-	function setRequiredArray ($requiredArray)	{
+	public function setRequiredArray ($requiredArray)	{
 		$this->requiredArray = $requiredArray;
 	}
 
 
-	function getSetfixedEnabled ()	{
+	public function getSetfixedEnabled ()	{
 		return $this->setfixedEnabled;
 	}
 
 
-	function setSetfixedEnabled ($setfixedEnabled)	{
+	public function setSetfixedEnabled ($setfixedEnabled)	{
 		$this->setfixedEnabled = $setfixedEnabled;
 	}
 
 
-	function getBackURL ()	{
+	public function getBackURL ()	{
 		$rc = rawurldecode($this->getFeUserData('backURL'));
 		return $rc;
 	}
@@ -782,7 +782,7 @@ class tx_srfeuserregister_controldata {
 	*
 	* @return boolean  true if preview display is on
 	*/
-	function isPreview () {
+	public function isPreview () {
 		$rc = '';
 		$cmdKey = $this->getCmdKey();
 
@@ -794,7 +794,7 @@ class tx_srfeuserregister_controldata {
 	/**
 	*  Get the stored variables using the hash value to access the database
 	*/
-	function getShortUrl ($regHash) {
+	public function getShortUrl ($regHash) {
 		global $TYPO3_DB;
 
 			// get the serialised array from the DB based on the passed hash value
@@ -821,7 +821,7 @@ class tx_srfeuserregister_controldata {
 	/**
 	*  Get the stored variables using the hash value to access the database
 	*/
-	function deleteShortUrl ($regHash) {
+	public function deleteShortUrl ($regHash) {
 		global $TYPO3_DB;
 
 		if ($regHash != '')	{
@@ -834,7 +834,7 @@ class tx_srfeuserregister_controldata {
 	/**
 	*  Clears obsolete hashes used for short url's
 	*/
-	function cleanShortUrlCache () {
+	public function cleanShortUrlCache () {
 		global $TYPO3_DB;
 
 		$shortUrlLife = intval($this->conf['shortUrlLife']) ? strval(intval($this->conf['shortUrlLife'])) : '30';

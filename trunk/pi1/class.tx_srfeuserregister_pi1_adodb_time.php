@@ -330,7 +330,7 @@ define("ADODB_NO_NEGATIVE_TS",1);
 
 class tx_srfeuserregister_pi1_adodb_time {
 
-	function adodb_date_test_date($y1,$m)
+	public function adodb_date_test_date($y1,$m)
 	{
 		//print " $y1/$m ";
 		$t = $this->adodb_mktime(0,0,0,$m,13,$y1);
@@ -343,7 +343,7 @@ class tx_srfeuserregister_pi1_adodb_time {
 	/**
 		Test Suite
 	*/
-	function adodb_date_test()
+	public function adodb_date_test()
 	{
 
 		error_reporting(E_ALL);
@@ -497,7 +497,7 @@ class tx_srfeuserregister_pi1_adodb_time {
 		Returns day of week, 0 = Sunday,... 6=Saturday.
 		Algorithm from PEAR::Date_Calc
 	*/
-	function adodb_dow($year, $month, $day)
+	public function adodb_dow($year, $month, $day)
 	{
 	/*
 	Pope Gregory removed 10 days - October 5 to October 14 - from the year 1582 and
@@ -535,7 +535,7 @@ class tx_srfeuserregister_pi1_adodb_time {
 	Checks for leap year, returns true if it is. No 2-digit year check. Also
 	handles julian calendar correctly.
 	*/
-	function _adodb_is_leap_year($year)
+	public function _adodb_is_leap_year($year)
 	{
 		if ($year % 4 != 0) return false;
 
@@ -552,7 +552,7 @@ class tx_srfeuserregister_pi1_adodb_time {
 	/**
 	checks for leap year, returns true if it is. Has 2-digit year check
 	*/
-	function adodb_is_leap_year($year)
+	public function adodb_is_leap_year($year)
 	{
 		return  $this->_adodb_is_leap_year($this->adodb_year_digit_check($year));
 	}
@@ -561,7 +561,7 @@ class tx_srfeuserregister_pi1_adodb_time {
 		Fix 2-digit years. Works for any century.
 		Assumes that if 2-digit is more than 30 years in future, then previous century.
 	*/
-	function adodb_year_digit_check($y)
+	public function adodb_year_digit_check($y)
 	{
 		if ($y < 100) {
 
@@ -587,7 +587,7 @@ class tx_srfeuserregister_pi1_adodb_time {
 	/**
 	get local time zone offset from GMT
 	*/
-	function adodb_get_gmt_diff()
+	public function adodb_get_gmt_diff()
 	{
 	static $TZ;
 		if (isset($TZ)) return $TZ;
@@ -599,7 +599,7 @@ class tx_srfeuserregister_pi1_adodb_time {
 	/**
 		Returns an array with date info.
 	*/
-	function adodb_getdate($d=false,$fast=false)
+	public function adodb_getdate($d=false,$fast=false)
 	{
 		if ($d === false) return getdate();
 		if (!defined('ADODB_TEST_DATES')) {
@@ -616,7 +616,7 @@ class tx_srfeuserregister_pi1_adodb_time {
 		$fast flag, which if set to true, will return fewer array values,
 		and is much faster as it does not calculate dow, etc.
 	*/
-	function _adodb_getdate($origd=false,$fast=false,$is_gmt=false)
+	public function _adodb_getdate($origd=false,$fast=false,$is_gmt=false)
 	{
 		$d =  $origd - ($is_gmt ? 0 : $this->adodb_get_gmt_diff());
 
@@ -732,13 +732,13 @@ class tx_srfeuserregister_pi1_adodb_time {
 		);
 	}
 
-	function adodb_gmdate($fmt,$d=false)
+	public function adodb_gmdate($fmt,$d=false)
 	{
 		return $this->adodb_date($fmt,$d,true);
 	}
 
 	// accepts unix timestamp and iso date format in $d
-	function adodb_date2($fmt, $d=false, $is_gmt=false)
+	public function adodb_date2($fmt, $d=false, $is_gmt=false)
 	{
 		if ($d !== false) {
 			if (!preg_match(
@@ -759,7 +759,7 @@ class tx_srfeuserregister_pi1_adodb_time {
 	/**
 		Return formatted date based on timestamp $d
 	*/
-	function adodb_date($fmt,$d=false,$is_gmt=false)
+	public function adodb_date($fmt,$d=false,$is_gmt=false)
 	{
 	static $daylight;
 
@@ -899,7 +899,7 @@ class tx_srfeuserregister_pi1_adodb_time {
 		Returns a timestamp given a GMT/UTC time.
 		Note that $is_dst is not implemented and is ignored.
 	*/
-	function adodb_gmmktime($hr,$min,$sec,$mon=false,$day=false,$year=false,$is_dst=false)
+	public function adodb_gmmktime($hr,$min,$sec,$mon=false,$day=false,$year=false,$is_dst=false)
 	{
 		return $this->adodb_mktime($hr,$min,$sec,$mon,$day,$year,$is_dst,true);
 	}
@@ -910,7 +910,7 @@ class tx_srfeuserregister_pi1_adodb_time {
 
 		Not a very fast algorithm - O(n) operation. Could be optimized to O(1).
 	*/
-	function adodb_mktime($hr,$min,$sec,$mon=false,$day=false,$year=false,$is_dst=false,$is_gmt=false)
+	public function adodb_mktime($hr,$min,$sec,$mon=false,$day=false,$year=false,$is_dst=false,$is_gmt=false)
 	{
 		if (!defined('ADODB_TEST_DATES')) {
 			// for windows, we don't check 1970 because with timezone differences,
