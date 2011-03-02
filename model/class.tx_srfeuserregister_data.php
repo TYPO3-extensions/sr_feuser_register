@@ -386,9 +386,10 @@ class tx_srfeuserregister_data {
 
 		// Check required, set failure if not ok.
 		$failureArray = array();
-		foreach ($requiredArray as $k => $theField)	{
-			if (!trim($dataArray[$theField]) && trim($dataArray[$theField]) != '0') {
-				if (isset($dataArray[$theField]))	{
+		foreach ($requiredArray as $k => $theField) {
+
+			if (isset($dataArray[$theField]) && !is_array($dataArray[$theField])) {
+				if (!trim($dataArray[$theField]) && trim($dataArray[$theField]) != '0') {
 					$failureArray[] = $theField;
 					$this->missing[$theField] = TRUE;
 				}
