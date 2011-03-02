@@ -29,7 +29,7 @@
  *
  * setup configuration functions
  *
- * $Id: class.tx_srfeuserregister_model_conf.php 39393 2010-10-21 11:14:17Z franzholz $
+ * $Id$
  *
  * @author	Franz Holzinger <franz@ttproducts.de>
  *
