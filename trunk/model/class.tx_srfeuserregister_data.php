@@ -267,8 +267,14 @@ class tx_srfeuserregister_data {
 			foreach ($this->conf[$cmdKey.'.']['overrideValues.'] as $theField => $theValue) {
 
 				if ($theField == 'usergroup' && $this->controlData->getTable() == 'fe_users' && $this->conf[$cmdKey.'.']['allowUserGroupSelection']) {
-					$dataDiff = array_diff($dataArray[$theField], t3lib_div::trimExplode(',', $theValue, 1));
-					$dataValue = implode(',', array_merge($dataDiff, t3lib_div::trimExplode(',', $theValue, 1)));
+					$overrideArray = t3lib_div::trimExplode(',', $theValue, 1);
+
+					if (isset($dataArray[$theField])) {
+						$dataDiff = array_diff($dataArray[$theField], $overrideArray);
+						$dataValue = implode(',', array_merge($dataDiff, $overrideArray));
+					} else {
+						$dataValue = $overrideArray;
+					}
 				} else {
 					$stdWrap = $this->conf[$cmdKey.'.']['overrideValues.'][$theField.'.'];
 					if ($stdWrap)	{
