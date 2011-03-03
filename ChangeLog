@@ -1,3 +1,6 @@
+2011-03-03 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug: override values for group must not use array_diff if there has not been a usergroup array before
+
 2011-03-02 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug: PHP Warning: trim() expects parameter 1 to be string, array given in model/class.tx_srfeuserregister_data.php line 391
 	* TYPO3 coding guidelines: add "public" to the function and variable names
