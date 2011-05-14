@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2010 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2007-2011 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -105,7 +105,6 @@ class tx_srfeuserregister_controldata {
 			// Initialise password encryption
 		if ($theTable == 'fe_users' && $this->conf['useMd5Password']) {
 			$this->setUseMd5Password(TRUE);
-			$this->conf['enableAutoLoginOnConfirmation'] = FALSE;
 			$this->conf['enableAutoLoginOnCreate'] = FALSE;
 		}
 
