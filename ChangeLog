@@ -1,3 +1,6 @@
+2011-05-14 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug: enableAutoLoginOnConfirmation is also supported with md5 password
+
 2011-03-03 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug: override values for group must not use array_diff if there has not been a usergroup array before
 
