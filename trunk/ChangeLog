@@ -1,3 +1,6 @@
+2011-05-16 Franz Holzinger  <franz@ttproducts.de>
+	* avoid unnecessary commands when ext_tables.php is included in the FE hook tt_products extendingTCA
+
 2011-05-14 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug: enableAutoLoginOnConfirmation is also supported with md5 password
 
