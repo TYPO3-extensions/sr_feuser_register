@@ -29,7 +29,7 @@
  * Part of the sr_feuser_register (Front End User Registration) extension.
  * A variant restricted to front end user self-registration and profile maintenance, with a number of enhancements (see the manual).
  *
- * $Id: class.tx_srfeuserregister_pi1_base.php 32218 2010-04-14 17:43:56Z franzholz $
+ * $Id$
  *
  * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
  * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
