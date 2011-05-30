@@ -1,3 +1,6 @@
+2011-05-30 Franz Holzinger  <franz@ttproducts.de>
+	* better error messages if the file upload fails
+
 2011-05-16 Franz Holzinger  <franz@ttproducts.de>
 	* avoid unnecessary commands when ext_tables.php is included in the FE hook tt_products extendingTCA
 

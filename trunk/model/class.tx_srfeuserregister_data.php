@@ -534,19 +534,20 @@ class tx_srfeuserregister_data {
 										$newFileNameArray = array();
 
 										if ($fileNameArray[0]!='')	{
-											foreach($fileNameArray as $filename) {
+											foreach($fileNameArray as $k => $filename) {
 												if (is_array($filename)) {
 													$filename = $filename['name'];
 												}
 												$bAllowedFilename = $this->checkFilename($filename);
 												$fI = pathinfo($filename);
 												$fileExtension = strtolower($fI['extension']);
+												$fullfilename = PATH_site . $uploadPath . '/' . $filename;
 
 												if (
 													$bAllowedFilename &&
 													(!count($allowedExtArray) || in_array($fileExtension, $allowedExtArray))
 												) {
-													if (@is_file(PATH_site.$uploadPath.'/'.$filename)) {
+													if (@is_file($fullfilename)) {
 														if (!$maxSize || (filesize(PATH_site.$uploadPath.'/'.$filename) < ($maxSize * 1024))) {
 															$newFileNameArray[] = $filename;
 														} else {
@@ -557,14 +558,34 @@ class tx_srfeuserregister_data {
 																@unlink(PATH_site.$uploadPath.'/'.$filename);
 															}
 														}
+													} else {
+														if (
+															isset($_FILES) &&
+															is_array($_FILES) &&
+															isset($_FILES['FE']) &&
+															is_array($_FILES['FE']) &&
+															isset($_FILES['FE']['tmp_name']) &&
+															is_array($_FILES['FE']['tmp_name']) &&
+															isset($_FILES['FE']['tmp_name'][$theTable]) &&
+															is_array($_FILES['FE']['tmp_name'][$theTable]) &&
+															isset($_FILES['FE']['tmp_name'][$theTable][$theField]) &&
+															is_array($_FILES['FE']['tmp_name'][$theTable][$theField]) &&
+															isset($_FILES['FE']['tmp_name'][$theTable][$theField][$k])
+														) {
+															$bWritePermissionError = TRUE;
+														} else {
+															$bWritePermissionError = FALSE;
+														}
+														$this->failureMsg[$theField][] = sprintf($this->getFailureText($theField, 'isfile', ($bWritePermissionError ? 'evalErrors_write_permission' : 'evalErrors_file_upload')), $filename);
+														$failureArray[] = $theField;
 													}
 												} else {
 													$this->failureMsg[$theField][] = sprintf($this->getFailureText($theField, 'allowed', 'evalErrors_file_extension'), $fileExtension);
 													$failureArray[] = $theField;
 													$this->inError[$theField] = TRUE;
-													if ($bAllowedFilename && @is_file(PATH_site.$uploadPath.'/'.$filename)) {
-														@unlink(PATH_site.$uploadPath.'/'.$filename);
-													}
+													if ($bAllowedFilename && @is_file($fullfilename)) {
+														@unlink($fullfilename);
+ 													}
 												}
 											}
 											$dataValue = $newFileNameArray;
@@ -859,7 +880,7 @@ class tx_srfeuserregister_data {
 	* @param string  $theField: the name of the field
 	* @return void
 	*/
-	public function processFiles ($theTable, $theField, &$fieldDataArray) {
+	public function processFiles ($theTable, $theField, $fieldDataArray) {
 
 		if (is_array($this->tca->TCA['columns'][$theField])) {
 			$uploadPath = $this->tca->TCA['columns'][$theField]['config']['uploadfolder'];
@@ -876,7 +897,7 @@ class tx_srfeuserregister_data {
 						$tmpFilename = (($GLOBALS['TSFE']->loginUser)?($GLOBALS['TSFE']->fe_user->user['username'].'_'):'').basename($filename, '.'.$fI['extension']).'_'.t3lib_div::shortmd5(uniqid($filename)).'.'.$fI['extension'];
 						$cleanFilename = $this->fileFunc->cleanFileName($tmpFilename);
 						$theDestFile = $this->fileFunc->getUniqueName($cleanFilename, PATH_site.$uploadPath.'/');
-						t3lib_div::upload_copy_move($_FILES['FE']['tmp_name'][$theTable][$theField][$i], $theDestFile);
+						$result = t3lib_div::upload_copy_move($_FILES['FE']['tmp_name'][$theTable][$theField][$i], $theDestFile);
 						$fI2 = pathinfo($theDestFile);
 						$fileNameArray[] = $fI2['basename'];
 					}

@@ -435,6 +435,8 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 			<label index="evalErrors_existed_already">The value existed already. Enter a new value.</label>
 			<label index="evalErrors_existed_already_informal">The value existed already. Enter a new value.</label>
 			<label index="evalErrors_file_extension">The file extension %s is not allowed.</label>
+			<label index="evalErrors_file_upload">Internal server error in upload of file "%s".</label>
+			<label index="evalErrors_write_permission">Write permission error for file "%s".</label>
 			<label index="evalErrors_max_size_image">The file size should not exceed %s KB.</label>
 			<label index="evalErrors_preg">This value does not fit to the required expression!</label>
 			<label index="evalErrors_preg_internal">Internal error in the regular expression "%s"!</label>
