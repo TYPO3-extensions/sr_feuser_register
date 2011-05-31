@@ -31,6 +31,7 @@
             <label index="fe_users.gender.I.1">Ms</label>
             <label index="fe_users.gender.I.99">  </label>
             <label index="fe_users.status">Status:</label>
+            <label index="fe_users.status.I.0"> </label>
             <label index="fe_users.status.I.1">Student</label>
             <label index="fe_users.status.I.2">Job seeking full time</label>
             <label index="fe_users.status.I.3">Working</label>
