@@ -1,3 +1,7 @@
+2011-09-05 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug with duplicate html tag ids in select box
+	* fix bug with the check for required input fields: the data:<field> feature must not use an array
+
 2011-05-30 Franz Holzinger  <franz@ttproducts.de>
 	* better error messages if the file upload fails
 

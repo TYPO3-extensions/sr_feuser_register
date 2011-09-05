@@ -496,6 +496,7 @@ class tx_srfeuserregister_tca {
 								break;
 						}
 					} else {
+						$itemArray = '';
 						// Configure inputs based on TCA type
 						if (in_array($type, array('check', 'radio', 'select')))	{
 								$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',',$mrow[$colName]);
@@ -541,9 +542,12 @@ class tx_srfeuserregister_tca {
 								$label = $this->langObj->getLL('tooltip_' . $colName);
 								$label = htmlspecialchars($label,ENT_QUOTES,$charset);
 
-								if (is_array($itemArray)) {
+								if (isset($itemArray) && is_array($itemArray)) {
 									$uidText = $this->pibase->pi_getClassName($colName).'-'.$mrow['uid'];
-									$colContent = '<ul id="'. $uidText . ' " class="tx-srfeuserregister-multiple-checkboxes">';
+									if (isset($mrow) && is_array($mrow) && $mrow['uid']) {
+										$uidText .= '-' . $mrow['uid'];
+									}
+									$colContent = '<ul id="'. $uidText . '" class="tx-srfeuserregister-multiple-checkboxes">';
 									if ($this->controlData->getSubmit() || $this->controlData->getDoNotSave() || $cmd=='edit')	{
 										$startVal = $mrow[$colName];
 									} else {
@@ -558,7 +562,7 @@ class tx_srfeuserregister_tca {
 									}
 									$colContent .= '</ul>';
 								} else {
-									$colContent = '<input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . ' id="'. $this->pibase->pi_getClassName($colName) . '" name="FE[' . $theTable . '][' . $colName . ']" title="' . $label . '"' . ($mrow[$colName]?' checked="checked"':'') . ' />';
+									$colContent = '<input type="checkbox"' . $this->pibase->pi_classParam('checkbox') . ' id="' . $this->pibase->pi_getClassName($colName) . '" name="FE[' . $theTable . '][' . $colName . ']" title="' . $label . '"' . ($mrow[$colName] ? ' checked="checked"' : '') . ' />';
 								}
 								break;
 

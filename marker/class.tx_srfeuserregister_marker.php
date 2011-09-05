@@ -234,6 +234,9 @@ class tx_srfeuserregister_marker {
 				}
 			break;
 		}
+		if (is_array($rc)) {
+			$rc = implode(',', $rc);
+		}
 		return $rc;
 	}
 
