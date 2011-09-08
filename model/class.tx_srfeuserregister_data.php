@@ -423,6 +423,8 @@ class tx_srfeuserregister_data {
 				t3lib_div::intval_positive($pid);
 			}
 			$countArray = array();
+			$countArray['hook'] = array();
+			$countArray['preg'] = array();
 
 			foreach($this->conf[$cmdKey.'.']['evalValues.'] as $theField => $theValue) {
 
@@ -637,10 +639,10 @@ class tx_srfeuserregister_data {
 							break;
 							case 'preg':
 								if (trim($dataArray[$theField])) {
-									if (isset($countArray[$theCmd]))	{
-										$countArray[$theCmd]++;
+									if (isset($countArray['preg'][$theCmd]))	{
+										$countArray['preg'][$theCmd]++;
 									} else {
-										$countArray[$theCmd] = 1;
+										$countArray['preg'][$theCmd] = 1;
 									}
 									$pattern = str_replace('preg[','',$cmd);
 									$pattern = substr($pattern, 0, strlen($pattern) - 1);
@@ -650,11 +652,16 @@ class tx_srfeuserregister_data {
 									if ($test === FALSE || $test == 0)	{
 										$failureArray[] = $theField;
 										$this->inError[$theField] = TRUE;
-										$this->failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_' . $theCmd, $countArray[$theCmd], $cmd, ($test === FALSE));
+										$this->failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_' . $theCmd, $countArray['preg'][$theCmd], $cmd, ($test === FALSE));
 									}
 								}
 							case 'hook':
 								if (trim($dataArray[$theField])) {
+									if (isset($countArray['hook'][$theCmd]))	{
+										$countArray['hook'][$theCmd]++;
+									} else {
+										$countArray['hook'][$theCmd] = 1;
+									}
 									$extKey = $this->controlData->getExtKey();
 									$prefixId = $this->controlData->getPrefixId();
 									$hookClassArray = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['model'];
@@ -662,9 +669,27 @@ class tx_srfeuserregister_data {
 										foreach($hookClassArray as $classRef) {
 											$hookObj= &t3lib_div::getUserObj($classRef);
 											if (method_exists($hookObj, 'evalValues')) {
-												$errorField = $hookObj->evalValues($theTable, $dataArray, $origArray, $markContentArray, $cmdKey, $requiredArray, $theField, $cmdParts, $this);
-												if ($errorField!='')	{
+												$test = TRUE;
+												$errorField = $hookObj->evalValues(
+													$theTable,
+													$dataArray,
+													$origArray,
+													$markContentArray,
+													$cmdKey,
+													$requiredArray,
+													$theField,
+													$cmdParts,
+													$test,
+													$this
+												);
+
+												if ($errorField != '') {
 													$failureArray[] = $errorField;
+													if (!$test) {
+														$this->inError[$theField] = TRUE;
+														$this->failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_' . $theCmd, $countArray['hook'][$theCmd], $cmd, ($test === FALSE));
+													}
+													break;
 												}
 											}
 										}
