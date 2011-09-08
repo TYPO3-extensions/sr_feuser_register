@@ -1,3 +1,6 @@
+2011-09-08 Franz Holzinger  <franz@ttproducts.de>
+	* issue #29523 (forge): improve the hook for the validation to use the error message generator
+
 2011-09-05 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug with duplicate html tag ids in select box
 	* fix bug with the check for required input fields: the data:<field> feature must not use an array
