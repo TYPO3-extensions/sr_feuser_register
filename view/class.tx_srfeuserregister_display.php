@@ -735,7 +735,8 @@ class tx_srfeuserregister_display {
 				$markerArray
 			);
 		} else {
-			$errorText = $this->langObj->getLL('internal_no_subtemplate');
+			$langObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lang');
+			$errorText = $langObj->getLL('internal_no_subtemplate');
 			$errorContent = sprintf($errorText, $subpartMarker);
 		}
 		return $errorContent;
