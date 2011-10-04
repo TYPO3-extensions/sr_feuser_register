@@ -13,6 +13,9 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1/file; type=file[pdf,doc,sxw,txt]; label= Attachment file: File to be attached to the confirmation email.
   file.attachmentFile = EXT:sr_feuser_register/pi1/tx_srfeuserregister_pi1_sample.txt
 
+    # cat=plugin.tx_srfeuserregister_pi1/file; type=file[pdf,doc,sxw,txt]; label= Terms file: File to be shown as the terms of usage.
+  file.termsFile = EXT:sr_feuser_register/pi1/tx_srfeuserregister_pi1_terms.txt
+
   # cat=plugin.tx_srfeuserregister_pi1/file; type=file[gif]; label= Icon used for deletion of uploaded files.
   file.icon_delete = EXT:sr_feuser_register/pi1/icon_delete.gif
 
@@ -26,10 +29,10 @@ plugin.tx_srfeuserregister_pi1 {
   siteName = My TYPO3 Site
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Registration form fields: List of fields to be included on the front end user registration form.
-  formFields = username, password, gender, first_name, last_name, status, date_of_birth, email, address, city, zone, static_info_country, zip, telephone, fax, language, title, company, www, module_sys_dmail_html, module_sys_dmail_category, image, comments, disable
+  formFields = username, password, gender, first_name, last_name, status, date_of_birth, email, address, city, zone, static_info_country, zip, telephone, fax, language, title, company, www, module_sys_dmail_html, module_sys_dmail_category, image, comments, disable, terms_acknowledged
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Required fields: List of fields that must be filled in on the front end user registration form.
-  requiredFields = username,password,first_name,last_name,email
+  requiredFields = username, password, first_name, last_name,email, terms_acknowledged
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Use email as username: If set, the user email will be used as the username.
   useEmailAsUsername = 0

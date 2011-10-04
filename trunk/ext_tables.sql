@@ -18,7 +18,8 @@ CREATE TABLE fe_users (
 	date_of_birth int(11) DEFAULT '0' NOT NULL,
 	comments text NOT NULL,
 	by_invitation tinyint(4) unsigned DEFAULT '0' NOT NULL,
-	module_sys_dmail_html tinyint(3) unsigned DEFAULT '0' NOT NULL
+	module_sys_dmail_html tinyint(3) unsigned DEFAULT '0' NOT NULL,
+	terms_acknowledged tinyint(4) unsigned DEFAULT '0' NOT NULL
 );
 
 
