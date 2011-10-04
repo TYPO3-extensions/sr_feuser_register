@@ -79,7 +79,7 @@ if (TYPO3_MODE=='BE')	{
 			),
 			'other' => array(
 				'MENU' => 'm_other',
-				'fList' =>  'username,www,company,status,image,lastlogin,by_invitation,is_online,module_sys_dmail_html',
+				'fList' =>  'username,www,company,status,image,lastlogin,by_invitation,terms_acknowledged,is_online,module_sys_dmail_html',
 				'icon' => TRUE
 			)
 		);

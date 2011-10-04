@@ -50,6 +50,8 @@ plugin.tx_srfeuserregister_pi1 {
 	addAttachment.sFK = APPROVE
 	addAttachment.file = {$plugin.tx_srfeuserregister_pi1.file.attachmentFile}
 
+	terms.file = {$plugin.tx_srfeuserregister_pi1.file.termsFile}
+
 	displayRequired = TEXT
 	displayRequired {
 		value = *
@@ -73,6 +75,7 @@ plugin.tx_srfeuserregister_pi1 {
 			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
 			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
 			by_invitation = 0
+			terms_acknowledged = 0
 		}
 
 		overrideValues {
@@ -105,6 +108,7 @@ plugin.tx_srfeuserregister_pi1 {
 			module_sys_dmail_html =
 			usergroup =
 			by_invitation =
+			terms_acknowledged = required
 			captcha_response =
 		}
 	}
@@ -161,6 +165,7 @@ plugin.tx_srfeuserregister_pi1 {
 			module_sys_dmail_html >
 			module_sys_dmail_category >
 			by_invitation >
+			terms_acknowledged >
 		}
 
 		overrideValues {

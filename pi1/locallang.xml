@@ -217,6 +217,8 @@
 			<label index="confirm_file_delete_informal">Are sure that you want to delete this file?</label>
 			<label index="tooltip_comments">Enter your comments.</label>
 			<label index="tooltip_comments_informal">Enter your comments.</label>
+			<label index="missing_terms_acknowledged">Please acknowledge the terms!</label>
+			<label index="missing_terms_acknowledged_informal">Please acknowledge the terms!</label>
 			<label index="button_register">Create account</label>
 			<label index="button_confirm_register">Create account now!</label>
 			<label index="button_back_to_form">Back to form</label>
@@ -238,6 +240,10 @@
 			<label index="click_here_to_delete_informal">Click here to delete your membership.</label>
 			<label index="tooltip_click_here_to_delete">Opens a dialog to delete your membership.</label>
 			<label index="tooltip_click_here_to_delete_informal">Opens a dialog to delete your membership.</label>
+			<label index="click_here_to_see_terms">Click here to see the terms.</label>
+			<label index="click_here_to_see_terms_informal">Click here to see the terms.</label>
+			<label index="tooltip_click_here_to_see_terms">Opens a page or file which shows the terms.</label>
+			<label index="tooltip_click_here_to_see_terms_informal">Opens a page or file which shows the terms.</label>
 			<label index="enter_account_info">Please fill in the information of your membership.</label>
 			<label index="enter_account_info_informal">Please fill in the information of your membership.</label>
 			<label index="enter_invitation_account_info">Please fill in the information of the account for the invited person.</label>
@@ -473,6 +479,7 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 			<label index="internal_infomail_configuration">Configuration error: infomail option is not available or emailField is not set in TypoScript</label>
 			<label index="internal_token_empty">The form\'s token is empty!</label>
 			<label index="internal_token_short">The form\'s token is too short!</label>
+			<label index="internal_no_text_found">Internal error in the FE user registration. No text replacement has been found for &lt;b&gt;%1$s&lt;/b&gt;.</label>
 		</languageKey>
 	</data>
 </T3locallang>
