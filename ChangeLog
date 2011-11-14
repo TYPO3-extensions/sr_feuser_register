@@ -1,6 +1,11 @@
+
+2011-11-14 Franz Holzinger  <franz@ttproducts.de>
+	* new feature: decide which user groups are selectable: allowedUserGroups, allowedSubgroups, deniedUserGroups and which must kept keepUnselectableUserGroups
+	* fix bug: no requirement for tems_acknowledged by default
+
 2011-10-04 Franz Holzinger  <franz@ttproducts.de>
 	* new feature: add the field terms_acknowledged and a PDF file with the terms
-	* use the text of internal_no_text_found if no error text could be found
+	* fix bug: show an error text if there is not text for missing_<fieldname> found.
 
 2011-09-08 Franz Holzinger  <franz@ttproducts.de>
 	* issue #29523 (forge): improve the hook for the validation to use the error message generator

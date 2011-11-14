@@ -57,7 +57,17 @@ class tx_srfeuserregister_model_field_base  {
 		return $row[$fieldname];
 	}
 
-	public function parseOutgoingData ($fieldname, $dataArray, &$origArray, &$parsedArr) {
+	public function parseOutgoingData (
+		$theTable,
+		$fieldname,
+		$foreignTable,
+		$cmdKey,
+		$pid,
+		$conf,
+		$dataArray,
+		$origArray,
+		&$parsedArr
+	) {
 		$parsedArr[$fieldname] = $dataArray[$fieldname];	// just copied the original value
 	}
 }

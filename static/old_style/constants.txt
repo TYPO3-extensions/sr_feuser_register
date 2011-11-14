@@ -170,6 +170,15 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Allow selection of multiple usergroups: If set, the user may select to adhere to multiple user groups.
   allowMultipleUserGroupSelection = 0
 
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=string; label= Comma separated list of user groups to be selectable. If 'ALL', then all groups are allowed.
+  allowedUserGroups = ALL
+
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=string; label= Comma separated list of subgroups from which all user groups shall be selectable. The user groups from allowedUserGroups shall be added also.
+  allowedSubgroups =
+
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=string; label= Comma separated list of user groups to be never selectable. These usegroups supersede the resulted user grous from allowedUserGroups and allowedSubgroups.
+  deniedUserGroups =
+
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Minimum password length: The minimum number of characters that the password must contain.
   passwordAtLeast = 5
 

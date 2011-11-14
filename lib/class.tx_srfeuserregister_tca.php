@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2010 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2011 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -27,7 +27,7 @@
 /**
  * Part of the sr_feuser_register (Front End User Registration) extension.
  *
- * TCA functions
+ * TCA front end functions
  *
  * $Id$
  *
@@ -85,6 +85,22 @@ class tx_srfeuserregister_tca {
 
 	public function &getTCA ()	{
 		return $this->TCA;
+	}
+
+
+	public function getForeignTable ($colName) {
+
+		$result = FALSE;
+
+		if (isset($this->TCA['columns'][$colName]) && is_array($this->TCA['columns'][$colName])) {
+
+				$colSettings = $this->TCA['columns'][$colName];
+				$colConfig = $colSettings['config'];
+				if ($colConfig['foreign_table']) {
+					$result = $colConfig['foreign_table'];
+				}
+		}
+		return $result;
 	}
 
 
@@ -337,6 +353,10 @@ class tx_srfeuserregister_tca {
 						$listWrap['wrap'] = '<ul class="tx-srfeuserregister-multiple-checked-values">|</ul>';
 					}
 
+					if ($theTable == 'fe_users' && $colName == 'usergroup') {
+						$userGroupObj = $addressObj->getFieldObj('usergroup');
+					}
+
 					if ($mode == MODE_PREVIEW || $viewOnly) {
 						// Configure preview based on input type
 
@@ -449,8 +469,7 @@ class tx_srfeuserregister_tca {
 									if ($colConfig['foreign_table']) {
 										t3lib_div::loadTCA($colConfig['foreign_table']);
 										$reservedValues = array();
-										if ($theTable == 'fe_users' && $colName == 'usergroup') {
-											$userGroupObj = &$addressObj->getFieldObj('usergroup');
+										if (isset($userGroupObj) && is_object($userGroupObj)) {
 											$reservedValues = $userGroupObj->getReservedValues();
 										}
 										$valuesArray = array_diff($valuesArray, $reservedValues);
@@ -464,7 +483,7 @@ class tx_srfeuserregister_tca {
 												'*',
 												$colConfig['foreign_table'],
 												$where
-												);
+											);
 											$i = 0;
 											$languageUid = $this->controlData->getSysLanguageUid('ALL',$colConfig['foreign_table']);
 											while($row2 = $TYPO3_DB->sql_fetch_assoc($res)) {
@@ -543,12 +562,12 @@ class tx_srfeuserregister_tca {
 								$label = htmlspecialchars($label,ENT_QUOTES,$charset);
 
 								if (isset($itemArray) && is_array($itemArray)) {
-									$uidText = $this->pibase->pi_getClassName($colName).'-'.$mrow['uid'];
+									$uidText = $this->pibase->pi_getClassName($colName);
 									if (isset($mrow) && is_array($mrow) && $mrow['uid']) {
 										$uidText .= '-' . $mrow['uid'];
 									}
 									$colContent = '<ul id="'. $uidText . '" class="tx-srfeuserregister-multiple-checkboxes">';
-									if ($this->controlData->getSubmit() || $this->controlData->getDoNotSave() || $cmd=='edit')	{
+									if ($this->controlData->getSubmit() || $this->controlData->getDoNotSave() || $cmd=='edit') {
 										$startVal = $mrow[$colName];
 									} else {
 										$startVal = $colConfig['default'];
@@ -631,12 +650,19 @@ class tx_srfeuserregister_tca {
 								if ($colConfig['foreign_table']) {
 									t3lib_div::loadTCA($colConfig['foreign_table']);
 									$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
-									if ($theTable == 'fe_users' && $colName == 'usergroup') {
-										$userGroupObj = &$addressObj->getFieldObj('usergroup');
+									$reservedValues = array();
+									$whereClause = '1=1';
+
+									if (isset($userGroupObj) && is_object($userGroupObj)) {
 										$reservedValues = $userGroupObj->getReservedValues();
-										$selectedValue = FALSE;
+										$foreignTable = $this->getForeignTable($colName);
+										$whereClause = $userGroupObj->getAllowedWhereClause(
+											$foreignTable,
+											$this->controlData->getPid(),
+											$this->conf,
+											$cmdKey
+										);
 									}
-									$whereClause = ($theTable == 'fe_users' && $colName == 'usergroup') ? ' pid=' . intval($this->controlData->getPid()) . ' ' : ' 1=1';
 
 									if ($this->conf['useLocalization'] && $TCA[$colConfig['foreign_table']] && $TCA[$colConfig['foreign_table']]['ctrl']['languageField'] && $TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField']) {
 										$whereClause .= ' AND ' . $TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField'] . '=0';
@@ -655,8 +681,8 @@ class tx_srfeuserregister_tca {
 									}
 									$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
 									$whereClause = $this->replaceForeignWhereMarker($whereClause, $colConfig);
-
 									$res = $TYPO3_DB->exec_SELECTquery('*', $colConfig['foreign_table'], $whereClause, '', $TCA[$colConfig['foreign_table']]['ctrl']['sortby']);
+
 									if (!in_array($colName, $this->controlData->getRequiredArray())) {
 										if ($colConfig['renderMode'] == 'checkbox' || $colContent)	{
 											// nothing
@@ -665,8 +691,9 @@ class tx_srfeuserregister_tca {
 										}
 									}
 
+									$selectedValue = FALSE;
 									while ($row2 = $TYPO3_DB->sql_fetch_assoc($res)) {
-										if ($theTable == 'fe_users' && $colName == 'usergroup') {
+										if (isset($userGroupObj) && is_object($userGroupObj)) {
 											if (!in_array($row2['uid'], $reservedValues)) {
 												$row2 = $this->getUsergroupOverlay($row2);
 												$titleText = htmlspecialchars($row2[$titleField],ENT_QUOTES,$charset);
@@ -674,7 +701,7 @@ class tx_srfeuserregister_tca {
 												if(!$this->conf['allowMultipleUserGroupSelection'] && $selectedValue) {
 													$selected = '';
 												}
-												$selectedValue = $selected ? TRUE: $selectedValue;
+												$selectedValue = ($selected ? TRUE: $selectedValue);
 												if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
 													$colContent .= '<dt><input  class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row2['uid'].']" value="'.$row2['uid'].'" type="checkbox"' . ($selected ? ' checked="checked"':'') . ' /></dt>
 													<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'">'.$titleText.'</label></dd>';
@@ -710,6 +737,10 @@ class tx_srfeuserregister_tca {
 								$colContent .= $colConfig['type'].':'.$this->langObj->getLL('unsupported');
 								break;
 						}
+					}
+
+					if (isset($userGroupObj)) {
+						unset($userGroupObj);
 					}
 				} else {
 					$colContent = '';

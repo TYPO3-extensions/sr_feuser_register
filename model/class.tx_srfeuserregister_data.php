@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2010 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2011 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -523,7 +523,6 @@ class tx_srfeuserregister_data {
 								}
 							break;
 							case 'upload':
-
 								if ($dataArray[$theField] && is_array($this->tca->TCA['columns'][$theField]['config']) ) {
 									if (
 										$this->tca->TCA['columns'][$theField]['config']['type'] == 'group' &&
@@ -544,7 +543,6 @@ class tx_srfeuserregister_data {
 												$fI = pathinfo($filename);
 												$fileExtension = strtolower($fI['extension']);
 												$fullfilename = PATH_site . $uploadPath . '/' . $filename;
-
 												if (
 													$bAllowedFilename &&
 													(!count($allowedExtArray) || in_array($fileExtension, $allowedExtArray))
@@ -587,7 +585,7 @@ class tx_srfeuserregister_data {
 													$this->inError[$theField] = TRUE;
 													if ($bAllowedFilename && @is_file($fullfilename)) {
 														@unlink($fullfilename);
- 													}
+													}
 												}
 											}
 											$dataValue = $newFileNameArray;
@@ -699,6 +697,7 @@ class tx_srfeuserregister_data {
 						}
 					}
 				}
+
 				if (
 					in_array($theField, $displayFieldArray) ||
 					in_array($theField, $failureArray)
@@ -731,6 +730,7 @@ class tx_srfeuserregister_data {
 				unset($failureArray[$k]);
 			}
 		}
+
 		$failure = implode($failureArray, ',');
 		$this->controlData->setFailure($failure);
 	}	// evalValues
@@ -920,6 +920,7 @@ class tx_srfeuserregister_data {
 
 					if (t3lib_div::verifyFilenameAgainstDenyPattern($fI['name'])) {
 						$tmpFilename = (($GLOBALS['TSFE']->loginUser)?($GLOBALS['TSFE']->fe_user->user['username'].'_'):'').basename($filename, '.'.$fI['extension']).'_'.t3lib_div::shortmd5(uniqid($filename)).'.'.$fI['extension'];
+
 						$cleanFilename = $this->fileFunc->cleanFileName($tmpFilename);
 						$theDestFile = $this->fileFunc->getUniqueName($cleanFilename, PATH_site.$uploadPath.'/');
 						$result = t3lib_div::upload_copy_move($_FILES['FE']['tmp_name'][$theTable][$theField][$i], $theDestFile);
@@ -966,6 +967,7 @@ class tx_srfeuserregister_data {
 		&$newRow,
 		$cmd,
 		$cmdKey,
+		$pid,
 		&$hookClassArray
 	) {
 		$rc = 0;
@@ -999,7 +1001,8 @@ class tx_srfeuserregister_data {
 
 					if ($aCAuth || $this->cObj->DBmayFEUserEdit($theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 
-						$outGoingData = $this->parseOutgoingData($dataArray,$origArray);
+						$outGoingData = $this->parseOutgoingData($theTable, $cmdKey, $pid, $this->conf, $dataArray, $origArray);
+
 						$newFieldList = implode (',', $newFieldArray);
 
 						if ($theTable == 'fe_users')	{
@@ -1035,8 +1038,7 @@ class tx_srfeuserregister_data {
 
 					$newFieldList = implode(',', array_intersect(explode(',', $this->getFieldList()), t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1)));
 					$newFieldList  = implode(',', array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->getAdminFieldList()))));
-					$parsedArray = array();
-					$parsedArray = $this->parseOutgoingData($dataArray, $origArray);
+					$parsedArray = $this->parseOutgoingData($theTable, $cmdKey, $pid, $this->conf, $dataArray, $origArray);
 
 					if ($theTable == 'fe_users')	{
 
@@ -1509,7 +1511,7 @@ class tx_srfeuserregister_data {
 	 *
 	 * @return parsedArray
 	 */
-	public function parseOutgoingData (&$dataArray, $origArray) {
+	public function parseOutgoingData ($theTable, $cmdKey, $pid, $conf, $dataArray, $origArray) {
 		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 		$addressObj = $tablesObj->get('address');
 		$parsedArray = $dataArray;
@@ -1559,8 +1561,21 @@ class tx_srfeuserregister_data {
 
 				$fieldObj = &$addressObj->getFieldObj($colName);
 				if (isset($fieldObj) && is_object($fieldObj))	{
-					$fieldObj->parseOutgoingData($colName, $dataArray, $origArray, $parsedArray);
+
+					$foreignTable = $this->tca->getForeignTable($colName);
+					$fieldObj->parseOutgoingData(
+						$theTable,
+						$colName,
+						$foreignTable,
+						$cmdKey,
+						$pid,
+						$conf,
+						$dataArray,
+						$origArray,
+						$parsedArray
+					);
 				}
+
 				if (is_array ($parsedArray[$colName]))	{
 					if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
 						// set the count instead of the comma separated list
@@ -1575,6 +1590,7 @@ class tx_srfeuserregister_data {
 				}
 			}
 		}
+
 		return $parsedArray;
 	}	// parseOutgoingData
 

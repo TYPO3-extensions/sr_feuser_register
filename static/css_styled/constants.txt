@@ -29,10 +29,10 @@ plugin.tx_srfeuserregister_pi1 {
   siteName = My TYPO3 Site
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Registration form fields: List of fields to be included on the front end user registration form.
-  formFields = username, password, gender, first_name, last_name, status, date_of_birth, email, address, city, zone, static_info_country, zip, telephone, fax, language, title, company, www, module_sys_dmail_html, module_sys_dmail_category, image, comments, disable, terms_acknowledged
+  formFields = username, password, gender, first_name, last_name, status, date_of_birth, email, address, city, zone, static_info_country, zip, telephone, fax, language, title, company, www, module_sys_dmail_html, module_sys_dmail_category, image, comments, disable
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Required fields: List of fields that must be filled in on the front end user registration form.
-  requiredFields = username, password, first_name, last_name,email, terms_acknowledged
+  requiredFields = username, password, first_name, last_name,email
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Use email as username: If set, the user email will be used as the username.
   useEmailAsUsername = 0
@@ -177,6 +177,18 @@ plugin.tx_srfeuserregister_pi1 {
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Allow selection of multiple usergroups: If set, the user may select to adhere to multiple user groups.
   allowMultipleUserGroupSelection = 0
+
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=string; label= Allowed user groups: Comma separated list of user groups to be selectable. If 'ALL', then all groups are allowed.
+  allowedUserGroups = ALL
+
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=string; label= Allowed user subgroups: Comma separated list of subgroups from which all user groups shall be selectable. The user groups from allowedUserGroups shall be added also.
+  allowedSubgroups =
+
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=string; label= Denied user groups: Comma separated list of user groups to be never selectable. These usegroups supersede the resulted user grous from allowedUserGroups and allowedSubgroups.
+  deniedUserGroups =
+
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Keep unselectable user groups: If set then the user groups which the TYPO3 admin has assigned are not removed after editing.
+  keepUnselectableUserGroups = 0
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Minimum password length: The minimum number of characters that the password must contain.
   passwordAtLeast = 5

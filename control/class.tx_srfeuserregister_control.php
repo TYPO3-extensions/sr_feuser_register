@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2010 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2011 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -375,6 +375,7 @@ class tx_srfeuserregister_control {
 					$newDataArray,
 					$cmd,
 					$cmdKey,
+					$this->controlData->getPid(),
 					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess']
 				);
 
@@ -511,7 +512,6 @@ class tx_srfeuserregister_control {
 			} else { // error case
 				$content = $errorContent;
 			}
-
 		} else if ($this->data->getError()) {
 
 				// If there was an error, we return the template-subpart with the error message
