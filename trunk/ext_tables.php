@@ -168,6 +168,8 @@ $addColumnArray = Array(
 	),
 );
 
+
+
 $typoVersion = t3lib_div::int_from_ver(TYPO3_version);
 
 if ($typoVersion < 4004000)	{
@@ -217,7 +219,7 @@ $TCA['fe_users']['types']['0']['showitem'] = str_replace(', country', ', zone, s
 
 $TCA['fe_users']['types']['0']['showitem'] = str_replace(', address', ', status, date_of_birth, address', $TCA['fe_users']['types']['0']['showitem']);
 
-$TCA['fe_users']['types']['0']['showitem'] = str_replace(', www', ', www, comments, by_invitation, ,terms_acknowledged', $TCA['fe_users']['types']['0']['showitem']);
+$TCA['fe_users']['types']['0']['showitem'] = str_replace(', www', ', www, comments, by_invitation, terms_acknowledged', $TCA['fe_users']['types']['0']['showitem']);
 
 $lastPalette = 0;
 for ($i=0; $i<10; $i++)	{

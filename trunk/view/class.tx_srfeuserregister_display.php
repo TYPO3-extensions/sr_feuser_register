@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2010 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2011 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -239,6 +239,7 @@ class tx_srfeuserregister_display {
 			if ($failure == FALSE)	{
 				$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELDS_WARNING###', '');
 			}
+
 			$templateCode = $this->removeRequired($templateCode, $errorFieldArray, $failure);
 			$markerArray = $this->marker->fillInMarkerArray($markerArray, $currentArray, $securedArray, '',TRUE);
 			$this->marker->addStaticInfoMarkers($markerArray, $dataArray);
@@ -559,6 +560,7 @@ class tx_srfeuserregister_display {
 		$cmdKey = $this->controlData->getCmdKey();
 		$requiredArray = $this->controlData->getRequiredArray();
 		$includedFields = t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1);
+
 		if ($this->controlData->getFeUserData('preview') && !in_array('username', $includedFields)) {
 			$includedFields[] = 'username';
 		}

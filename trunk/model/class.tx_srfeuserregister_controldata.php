@@ -123,6 +123,7 @@ class tx_srfeuserregister_controldata {
 			if (isset($feUserData) && is_array($feUserData))	{
 				$regHash = $feUserData['regHash'];
 			}
+
 			if (!$regHash)	{
 				$getData = t3lib_div::_GET($this->getPrefixId());
 
@@ -154,7 +155,6 @@ class tx_srfeuserregister_controldata {
 
 					if ($restoredFeUserData['rU'] > 0 && $restoredFeUserData['rU'] == $feUserData['rU'])	{
 						$feUserData = array_merge($feUserData, $restoredFeUserData);
-
 					} else {
 						$feUserData = $restoredFeUserData;
 					}
@@ -225,6 +225,7 @@ class tx_srfeuserregister_controldata {
 		}
 
 		if ($this->isTokenValid())	{
+
 			$this->setValidRegHash($bValidRegHash);
 			$this->setFeUserData($feUserData);
 			$this->writeSpecialData();

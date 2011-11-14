@@ -41,6 +41,7 @@ plugin.tx_srfeuserregister_pi1 {
 	onChangeCountryAttribute = {$plugin.tx_srfeuserregister_pi1.onChangeCountryAttribute}
 
 	allowMultipleUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowMultipleUserGroupSelection}
+
 	useMd5Password = {$plugin.tx_srfeuserregister_pi1.useMd5Password}
 	salutation = {$plugin.tx_srfeuserregister_pi1.salutation}
 
@@ -67,6 +68,9 @@ plugin.tx_srfeuserregister_pi1 {
 		generateUsername = {$plugin.tx_srfeuserregister_pi1.generateUsername}
 		generatePassword = {$plugin.tx_srfeuserregister_pi1.generatePassword}
 		allowUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowUserGroupSelection}
+		allowedUserGroups = {$plugin.tx_srfeuserregister_pi1.allowedUserGroups}
+		allowedSubgroups = {$plugin.tx_srfeuserregister_pi1.allowedSubgroups}
+		deniedUserGroups = {$plugin.tx_srfeuserregister_pi1.deniedUserGroups}
 		marker {
 		}
 
@@ -75,7 +79,6 @@ plugin.tx_srfeuserregister_pi1 {
 			usergroup = {$plugin.tx_srfeuserregister_pi1.userGroupUponRegistration}
 			disable = {$plugin.tx_srfeuserregister_pi1.enableEmailConfirmation}
 			by_invitation = 0
-			terms_acknowledged = 0
 		}
 
 		overrideValues {
@@ -86,7 +89,7 @@ plugin.tx_srfeuserregister_pi1 {
 
 		evalValues {
 			password = twice, atLeast[{$plugin.tx_srfeuserregister_pi1.passwordAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.passwordAtMost}]
-			username = uniqueLocal, atLeast[{$plugin.tx_srfeuserregister_pi1.usernameAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.usernameAtMost}]
+			username = uniqueLocal, alphanum, atLeast[{$plugin.tx_srfeuserregister_pi1.usernameAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.usernameAtMost}]
 			email = email,atMost[255],uniqueLocal
 			gender =
 			name = atMost[{$plugin.tx_srfeuserregister_pi1.nameAtMost}]
@@ -108,7 +111,6 @@ plugin.tx_srfeuserregister_pi1 {
 			module_sys_dmail_html =
 			usergroup =
 			by_invitation =
-			terms_acknowledged = required
 			captcha_response =
 		}
 	}
@@ -158,6 +160,7 @@ plugin.tx_srfeuserregister_pi1 {
 	edit {
 		preview = {$plugin.tx_srfeuserregister_pi1.enablePreviewEdit}
 		allowUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowUserGroupUpdate}
+		keepUnselectableUserGroups = {$plugin.tx_srfeuserregister_pi1.keepUnselectableUserGroups}
 
 		defaultValues {
 			disable = 0
@@ -165,7 +168,6 @@ plugin.tx_srfeuserregister_pi1 {
 			module_sys_dmail_html >
 			module_sys_dmail_category >
 			by_invitation >
-			terms_acknowledged >
 		}
 
 		overrideValues {
