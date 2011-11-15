@@ -255,7 +255,11 @@ class tx_srfeuserregister_setfixed {
 				if ($sFK == 'EDIT')	{
 					// nothing
 				} else {
-					if ($this->conf['enableAdminReview'] && $sFK == 'APPROVE' && !$row['by_invitation']) {
+					if (
+						$this->conf['enableAdminReview'] &&
+						$sFK == 'APPROVE' &&
+						!$row['by_invitation']
+					) {
 						$setfixedSuffix .= '_REVIEW';
 					}
 					$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX . 'OK_' . $setfixedSuffix . '###';
@@ -459,18 +463,33 @@ class tx_srfeuserregister_setfixed {
 		global $TYPO3_DB;
 
 			// create a unique hash value
-		$regHash_array = t3lib_div::cHashParams(t3lib_div::implodeArrayForUrl('', $vars));
+		$regHash_array =
+			t3lib_div::cHashParams(t3lib_div::implodeArrayForUrl('', $vars));
 		$regHash_calc = t3lib_div::shortMD5(serialize($regHash_array), 20);
 			// and store it with a serialized version of the array in the DB
-		$res = $TYPO3_DB->exec_SELECTquery('md5hash', 'cache_md5params', 'md5hash=' . $TYPO3_DB->fullQuoteStr($regHash_calc, 'cache_md5params'));
-		if (!$TYPO3_DB->sql_num_rows($res))  {
+		$res =
+			$TYPO3_DB->exec_SELECTquery(
+				'md5hash',
+				'cache_md5params',
+				'md5hash=' .
+					$TYPO3_DB->fullQuoteStr(
+						$regHash_calc,
+						'cache_md5params'
+					)
+				);
+
+		if (!$TYPO3_DB->sql_num_rows($res)) {
 			$insertFields = array (
 				'md5hash' => $regHash_calc,
 				'tstamp' => time(),
 				'type' => 99,
 				'params' => serialize($vars)
 			);
-			$TYPO3_DB->exec_INSERTquery('cache_md5params', $insertFields);
+
+			$TYPO3_DB->exec_INSERTquery(
+				'cache_md5params',
+				$insertFields
+			);
 		}
 		$TYPO3_DB->sql_free_result($res);
 		return $regHash_calc;
