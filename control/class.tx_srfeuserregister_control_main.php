@@ -138,7 +138,13 @@ class tx_srfeuserregister_control_main {
 	*
 	* @return void
 	*/
-	public function init (&$conf, $theTable, $adminFieldList,$buttonLabelsList,$otherLabelsList) {
+	public function init (
+		&$conf,
+		$theTable,
+		$adminFieldList,
+		$buttonLabelsList,
+		$otherLabelsList
+	) {
 		global $TSFE, $TCA;
 
 		$this->tca = &t3lib_div::getUserObj('&tx_srfeuserregister_tca');
@@ -146,7 +152,11 @@ class tx_srfeuserregister_control_main {
 			// plugin initialization
 		$this->conf = &$conf;
 
-		if (isset($conf['table.']) && is_array($conf['table.']) && $conf['table.']['name'])	{
+		if (
+			isset($conf['table.']) &&
+			is_array($conf['table.']) &&
+			$conf['table.']['name']
+		) {
 			$theTable  = $conf['table.']['name'];
 		}
 		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_conf');
@@ -220,6 +230,7 @@ class tx_srfeuserregister_control_main {
 				$this->tca,
 				$this->setfixedObj
 			);
+
 			$this->data->init(
 				$this->pibaseObj,
 				$this->conf,
@@ -230,10 +241,20 @@ class tx_srfeuserregister_control_main {
 				$theTable,
 				$this->controlData
 			);
-			$this->control->init2($theTable, $this->controlData, $this->data, $adminFieldList);
+
+			$this->control->init2(
+				$theTable,
+				$this->controlData,
+				$this->data,
+				$adminFieldList
+			);
 
 			$md5Obj = &t3lib_div::getUserObj('&tx_srfeuserregister_passwordmd5');
-			$md5Obj->init($this->marker, $this->data, $this->controlData);
+			$md5Obj->init(
+				$this->marker,
+				$this->data,
+				$this->controlData
+			);
 
 			$uid = $this->data->getRecUid();
 
@@ -253,6 +274,7 @@ class tx_srfeuserregister_control_main {
 			if ($buttonLabelsList != '')	{
 				$this->marker->setButtonLabelsList($buttonLabelsList);
 			}
+
 			if ($otherLabelsList != '')	{
 				$this->marker->addOtherLabelsList($otherLabelsList);
 			}
@@ -266,6 +288,7 @@ class tx_srfeuserregister_control_main {
 				$this->tca,
 				$this->control
 			);
+
 			$this->email->init(
 				$this->langObj,
 				$this->cObj,
@@ -278,6 +301,7 @@ class tx_srfeuserregister_control_main {
 				$this->controlData,
 				$this->setfixedObj
 			);
+
 			$this->setfixedObj->init(
 				$this->cObj,
 				$this->conf,
