@@ -1,3 +1,5 @@
+2011-11-15 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug with TYPO3 4.6: use the getLL method tx_div2007_alpha5::getLL_fh002
 
 2011-11-14 Franz Holzinger  <franz@ttproducts.de>
 	* new feature: decide which user groups are selectable: allowedUserGroups, allowedSubgroups, deniedUserGroups and which must kept keepUnselectableUserGroups

@@ -48,6 +48,8 @@ require_once(PATH_t3lib.'class.t3lib_page.php');
 // require_once (t3lib_extMgm::extPath('lang').'lang.php');
 
 require_once(PATH_BE_div2007.'class.tx_div2007_alpha.php');
+require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha5.php');
+
 require_once(PATH_BE_srfeuserregister.'pi1/class.tx_srfeuserregister_pi1_urlvalidator.php');
 require_once(PATH_BE_srfeuserregister.'control/class.tx_srfeuserregister_control.php');
 require_once(PATH_BE_srfeuserregister.'control/class.tx_srfeuserregister_setfixed.php');
@@ -86,7 +88,7 @@ class tx_srfeuserregister_control_main {
 	public $marker; // object of type tx_srfeuserregister_marker
 	public $pibaseObj;
 	public $extKey;
-	public $LLkey;
+
 
 	public function main (
 		$content,
@@ -101,7 +103,6 @@ class tx_srfeuserregister_control_main {
 
 		$this->pibaseObj = &$pibaseObj;
 		$this->extKey = $this->pibaseObj->extKey;
-		$this->LLkey = $this->pibaseObj->LLkey;
 		$rc = $this->init(
 			$conf,
 			$theTable,
@@ -187,10 +188,17 @@ class tx_srfeuserregister_control_main {
 		$this->setfixedObj = &t3lib_div::getUserObj('&tx_srfeuserregister_setfixed');
 		$this->email = &t3lib_div::getUserObj('&tx_srfeuserregister_email');
 		$this->control = &t3lib_div::getUserObj('&tx_srfeuserregister_control');
-
 		$this->urlObj->init ($this->controlData, $this->cObj);
-		$this->langObj->init($this->pibaseObj, $this->conf, $this->LLkey);
+
+		$this->langObj->init(
+			$this->pibaseObj,
+			$this->cObj,
+			$this->conf,
+			$this->pibaseObj->scriptRelPath,
+			$this->extKey
+		);
 		$rc = $this->langObj->loadLL();
+
 		if ($rc !== FALSE)	{
 			$this->tca->init2($this->pibaseObj, $this->conf, $this->controlData, $this->langObj);
 			$this->control->init(

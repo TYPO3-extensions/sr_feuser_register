@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2008 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2011 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -41,17 +41,37 @@
  */
 
 
-class tx_srfeuserregister_lang {
+require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha_language_base.php');
+
+
+class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 	public $pibase;
-	public $conf = array();
 	public $allowedSuffixes = array('formal', 'informal'); // list of allowed suffixes
-	public $LLkey;
 
 
-	public function init (&$pibase, &$conf, $LLkey)	{
-		$this->pibase = &$pibase;
-		$this->conf = &$conf;
-		$this->LLkey = $LLkey;
+// 	public function init (&$pibase, &$conf, $LLkey)	{
+	public function init (&$pObj, &$cObj, &$conf, $scriptRelPath, $extKey) {
+
+		$this->pibase = $pObj;
+
+		parent::init(
+			$cObj,
+			$extKey,
+			$conf,
+			$scriptRelPath
+		);
+
+		// keep previsous language settings if available
+
+		if (isset($pObj->LOCAL_LANG) && is_array($pObj->LOCAL_LANG)) {
+			$this->LOCAL_LANG = &$pObj->LOCAL_LANG;
+		}
+		if (isset($pObj->LOCAL_LANG_charset) && is_array($pObj->LOCAL_LANG_charset)) {
+			$this->LOCAL_LANG_charset = &$pObj->LOCAL_LANG_charset;
+		}
+		if (isset($pObj->LOCAL_LANG_loaded) && is_array($pObj->LOCAL_LANG_loaded)) {
+			$this->LOCAL_LANG_loaded = &$pObj->LOCAL_LANG_loaded;
+		}
 	}
 
 
@@ -60,6 +80,7 @@ class tx_srfeuserregister_lang {
 
 		$rc = '';
 		$arr = explode(':',$string);
+
 		if($arr[0] == 'LLL' && $arr[1] == 'EXT') {
 			$temp = $this->getLL($arr[3]);
 			if ($temp || !$bForce) {
@@ -121,14 +142,17 @@ class tx_srfeuserregister_lang {
 
 			// If the suffix is allowed and we have a localized string for the desired salutation, we'll take that.
 		$rc = '';
+		$usedLang = '';
+
 		if (isset($this->conf['salutation']) && in_array($this->conf['salutation'], $this->allowedSuffixes, 1)) {
 			$expandedKey = $key.'_'.$this->conf['salutation'];
-			$usedLang = '';
-			$rc = tx_div2007_alpha::getLL_fh001($this->pibase, $usedLang, $expandedKey, $alt, $hsc);
+			$rc = tx_div2007_alpha5::getLL_fh002($this, $expandedKey, $usedLang, $alt, $hsc);
 		}
-		if ($rc == '' || $rc == $alt || $usedLang != $this->pibase->LLkey)	{
-			$rc = tx_div2007_alpha::getLL_fh001($this->pibase, $usedLang, $key, $alt, $hsc);
+
+		if ($rc == '' || $rc == $alt || $usedLang != $this->LLkey)	{
+			$rc = tx_div2007_alpha5::getLL_fh002($this, $key, $usedLang, $alt, $hsc);
 		}
+
 		return $rc;
 	}	// getLL
 
@@ -170,19 +194,20 @@ class tx_srfeuserregister_lang {
 				}
 			}
 		}
-		$locallang = $this->pibase->LOCAL_LANG;
-		$this->pibase->pi_loadLL();
+		$locallang = $this->LOCAL_LANG;
+		tx_div2007_alpha5::loadLL_fh002($this);
 
 		if ($locallang != '')	{
-			foreach ($this->pibase->LOCAL_LANG as $key => $langArray)	{
+			foreach ($this->LOCAL_LANG as $key => $langArray)	{
 				if (isset($locallang[$key]) && is_array($locallang[$key]))	{
-					$this->pibase->LOCAL_LANG[$key] = array_merge($locallang[$key], $langArray);
+					$this->LOCAL_LANG[$key] = array_merge($locallang[$key], $langArray);
 				}
 			}
 		}
 
 		// do a check if the language file works
 		$tmpText = $this->getLL('unsupported');
+
 		if ($tmpText == '')	{
 			$rc = FALSE;
 		}
