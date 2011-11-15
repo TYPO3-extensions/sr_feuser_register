@@ -42,18 +42,18 @@
 class tx_srfeuserregister_model_field_base  {
 	public $bHasBeenInitialised = FALSE;
 
-	public function init ()	{
+	public function init () {
 		$this->bHasBeenInitialised = TRUE;
 	}
 
-	public function needsInit ()	{
+	public function needsInit () {
 		return !$this->bHasBeenInitialised;
 	}
 
-	public function modifyConf (&$conf, $cmdKey)	{
+	public function modifyConf (&$conf, $cmdKey) {
 	}
 
-	public function get ($row, $fieldname)	{
+	public function get ($row, $fieldname) {
 		return $row[$fieldname];
 	}
 

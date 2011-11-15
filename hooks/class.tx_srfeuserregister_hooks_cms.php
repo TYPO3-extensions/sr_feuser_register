@@ -42,7 +42,7 @@
 require_once(PATH_BE_div2007.'hooks/class.tx_div2007_hooks_cms.php');
 
 class tx_srfeuserregister_hooks_cms extends tx_div2007_hooks_cms {
-	public $extKey=SR_FEUSER_REGISTER_EXTkey;
+	public $extKey = SR_FEUSER_REGISTER_EXTkey;
 
 }
 

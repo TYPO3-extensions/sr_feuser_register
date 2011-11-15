@@ -94,8 +94,8 @@ class tx_srfeuserregister_auth {
 
 			foreach($fieldArr as $k => $v) {
 
-				if (isset($r[$v]))	{
-					if (is_array($r[$v]))	{
+				if (isset($r[$v])) {
+					if (is_array($r[$v])) {
 						$recCopy_temp[$k] = implode(',',$r[$v]);
 					} else {
 						$recCopy_temp[$k] = $r[$v];
@@ -103,8 +103,8 @@ class tx_srfeuserregister_auth {
 				}
 			}
 
-			if (isset($recCopy_temp) && is_array($recCopy_temp))	{
-				$preKey = implode('|',$recCopy_temp);
+			if (isset($recCopy_temp) && is_array($recCopy_temp)) {
+				$preKey = implode('|', $recCopy_temp);
 			}
 		}
 		$value .= $preKey . ($extra != '' ? '|' . $extra : '') . '|'  . $this->config['addKey'];
@@ -125,13 +125,13 @@ class tx_srfeuserregister_auth {
 	* @return boolean  true if the record is authenticated
 	*/
 	public function aCAuth ($r, $fields) {
-		$rc = false;
+		$rc = FALSE;
 
 		if ($this->authCode) {
 			$authCode = $this->authCode($r, $fields);
 
-			if (!strcmp($this->authCode, $authCode))	{
-				$rc = true;
+			if (!strcmp($this->authCode, $authCode)) {
+				$rc = TRUE;
 			}
 		}
 		return $rc;
@@ -147,13 +147,13 @@ class tx_srfeuserregister_auth {
 	*/
 	public function setfixedHash ($recCopy, $fields = '') {
 
-		$recCopy_temp=array();
+		$recCopy_temp = array();
 		if ($fields) {
 			$fieldArr = t3lib_div::trimExplode(',', $fields, 1);
 			foreach($fieldArr as $k => $v) {
-				if (isset($recCopy[$v]))	{
-					if (is_array($recCopy[$v]))	{
-						$recCopy_temp[$k] = implode(',',$recCopy[$v]);
+				if (isset($recCopy[$v])) {
+					if (is_array($recCopy[$v])) {
+						$recCopy_temp[$k] = implode(',', $recCopy[$v]);
 					} else {
 						$recCopy_temp[$k] = $recCopy[$v];
 					}
@@ -163,8 +163,8 @@ class tx_srfeuserregister_auth {
 			$recCopy_temp = $recCopy;
 		}
 
-		if (isset($recCopy_temp) && is_array($recCopy_temp))	{
-			$preKey = implode('|',$recCopy_temp);
+		if (isset($recCopy_temp) && is_array($recCopy_temp)) {
+			$preKey = implode('|', $recCopy_temp);
 		}
 		$authCode = $preKey . '|' . $this->config['addKey'];
 
@@ -183,7 +183,7 @@ class tx_srfeuserregister_auth {
 	* @param void
 	* @return string  the token value
 	*/
-	public function generateToken ()	{
+	public function generateToken () {
 		$time = time();
 		$rc = md5($time . getmypid() . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
 

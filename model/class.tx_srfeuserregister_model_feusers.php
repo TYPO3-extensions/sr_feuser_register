@@ -38,11 +38,11 @@
  *
  */
 
-require_once(PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_model_table_base.php');
+require_once(PATH_BE_srfeuserregister . 'model/class.tx_srfeuserregister_model_table_base.php');
 
 
 class tx_srfeuserregister_model_feusers extends tx_srfeuserregister_model_table_base {
-	var $fieldClassArray = array (
+	public $fieldClassArray = array (
 		'usergroup' => 'tx_srfeuserregister_model_field_usergroup',
 	);
 }

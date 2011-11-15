@@ -40,13 +40,14 @@
  */
 
 
-require_once(PATH_BE_srfeuserregister.'pi1/class.tx_srfeuserregister_pi1_base.php');
+require_once(PATH_BE_srfeuserregister . 'pi1/class.tx_srfeuserregister_pi1_base.php');
 
 
 class tx_srfeuserregister_pi1 {
 	public $cObj;
 
 	public function main($content, $conf) {
+
 		$pibaseObj = &t3lib_div::getUserObj('&tx_srfeuserregister_pi1_base');
 		$pibaseObj->cObj = &$this->cObj;
 		$content = &$pibaseObj->main($content, $conf);

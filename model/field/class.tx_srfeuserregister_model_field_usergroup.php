@@ -46,11 +46,11 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 
 	public function modifyConf (&$conf, $cmdKey) {
 
-		if ($conf[$cmdKey.'.']['allowUserGroupSelection']) {
-			$conf[$cmdKey.'.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey.'.']['fields'] . ',usergroup', 1)));
-			$conf[$cmdKey.'.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey.'.']['required'] . ',usergroup', 1)));
+		if ($conf[$cmdKey . '.']['allowUserGroupSelection']) {
+			$conf[$cmdKey . '.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'] . ',usergroup', 1)));
+			$conf[$cmdKey . '.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['required'] . ',usergroup', 1)));
 		} else {
-			$conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey.'.']['fields'], 1), array('usergroup')));
+			$conf[$cmdKey . '.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1), array('usergroup')));
 		}
 	}
 
@@ -158,17 +158,36 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 		$origArray,
 		&$parsedArray
 	) {
-
 		$valuesArray = array();
 
-		if (isset($origArray) && is_array($origArray) && isset($origArray[$fieldname]) && is_array($origArray[$fieldname])) {
-
+		if (
+			isset($origArray) &&
+			is_array($origArray) &&
+			isset($origArray[$fieldname]) &&
+			is_array($origArray[$fieldname])
+		) {
 			$valuesArray = $origArray[$fieldname];
 
 			if ($conf[$cmdKey . '.']['keepUnselectableUserGroups']) {
-				$whereClause = $this->getAllowedWhereClause($foreignTable, $pid, $conf, $cmdKey, FALSE);
-//
-				$rowArray = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid', $foreignTable, $whereClause, '', '', '', 'uid');
+				$whereClause =
+					$this->getAllowedWhereClause(
+						$foreignTable,
+						$pid,
+						$conf,
+						$cmdKey,
+						FALSE
+					);
+
+				$rowArray =
+					$GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+						'uid',
+						$foreignTable,
+						$whereClause,
+						'',
+						'',
+						'',
+						'uid'
+					);
 
 				if ($rowArray && is_array($rowArray) && count($rowArray)) {
 					$keepValues = array_keys($rowArray);
@@ -179,7 +198,12 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 			$valuesArray = array_intersect($valuesArray, $keepValues);
 		}
 
-		if (isset($dataArray) && is_array($dataArray) && isset($dataArray[$fieldname]) && is_array($dataArray[$fieldname])) {
+		if (
+			isset($dataArray) &&
+			is_array($dataArray) &&
+			isset($dataArray[$fieldname]) &&
+			is_array($dataArray[$fieldname])
+		) {
 			$dataArray[$fieldname] = array_unique(array_merge($dataArray[$fieldname], $valuesArray));
 			$parsedArray[$fieldname] = $dataArray[$fieldname];
 		}

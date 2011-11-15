@@ -41,81 +41,86 @@
 
 require_once (PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_model_table_base.php');
 
-class tx_srfeuserregister_lib_tables	{
+class tx_srfeuserregister_lib_tables {
 	public $tableClassArray = array();
 	public $tablename;
 
-	public function init($tablename)	{
+	public function init($tablename) {
 
 		$this->tablename = &$tablename;
-		if ($tablename == 'fe_users')	{
+		if ($tablename == 'fe_users') {
 			$this->tableClassArray['address'] = 'tx_srfeuserregister_model_feusers';
 		} else {
 			$this->tableClassArray['address'] = 'tx_srfeuserregister_model_setfixed';
 		}
 	}	// init
 
-	public function getTableClassArray()	{
+	public function getTableClassArray() {
 		return $this->tableClassArray;
 	}
 
-	public function setTableClassArray($tableClassArray)	{
+	public function setTableClassArray($tableClassArray) {
 		$this->tableClassArray = $tableClassArray;
 	}
 
-	public function getTableClass ($functablename, $bView=FALSE)	{
+	public function getTableClass ($functablename, $bView = FALSE) {
 		$rc = '';
-		if ($functablename)	{
-			$rc = $this->tableClassArray[$functablename].($bView ? '_view': '');
+		if ($functablename) {
+			$rc = $this->tableClassArray[$functablename] . ($bView ? '_view' : '');
 		}
 		return $rc;
 	}
 
-	public function &get($functablename, $bView=FALSE)	{
+	public function &get($functablename, $bView = FALSE) {
 		$classNameArray = array();
 		$tableObjArray = array();
 
-		$classNameArray['model'] = $this->getTableClass ($functablename, FALSE);
-		if ($bView)	{
-			$classNameArray['view'] = $this->getTableClass ($functablename, TRUE);
+		$classNameArray['model'] = $this->getTableClass($functablename, FALSE);
+		if ($bView) {
+			$classNameArray['view'] = $this->getTableClass($functablename, TRUE);
 		}
 
-		if (!$classNameArray['model'] || $bView && !$classNameArray['model'])	{
-			debug('Error in '.SR_FEUSER_REGISTER_EXTkey.'. No class found after calling function tx_srfeuserregister_lib_tables::get with parameters "'.$functablename.'", '.$bView.'.','internal error', __LINE__, __FILE__);
+		if (!$classNameArray['model'] || $bView && !$classNameArray['model']) {
+			debug('Error in ' . SR_FEUSER_REGISTER_EXTkey . '. No class found after calling function tx_srfeuserregister_lib_tables::get with parameters "' . $functablename . '", ' . $bView . '.', 'internal error', __LINE__, __FILE__);
 			return 'ERROR';
 		}
 
 		foreach ($classNameArray as $k => $className)	{
 			if ($className != 'skip')	{
-				if (strpos($className,':') === FALSE)	{
+				if (strpos($className, ':') === FALSE)	{
 					$path = PATH_BE_srfeuserregister;
 				} else {
-					list($extKey,$className) = t3lib_div::trimExplode(':',$className,TRUE);
+					list($extKey, $className) = t3lib_div::trimExplode(':', $className, TRUE);
 
-					if (!t3lib_extMgm::isLoaded($extKey))	{
-						debug('Error in '.SR_FEUSER_REGISTER_EXTkey.'. No extension "'.$extKey.'" has been loaded to use class class.'.$className.'.','internal error', __LINE__, __FILE__);
+					if (!t3lib_extMgm::isLoaded($extKey)) {
+						debug('Error in ' . SR_FEUSER_REGISTER_EXTkey . '. No extension "' . $extKey . '" has been loaded to use class class.' . $className . '.','internal error');
 						continue;
 					}
 					$path = t3lib_extMgm::extPath($extKey);
 				}
-				$classRef = 'class.'.$className;
-				$classRef = $path.$k.'/'.$classRef.'.php:&'.$className;
+				$classRef = 'class.' . $className;
+				$classRef = $path . $k . '/' . $classRef . '.php:&' . $className;
 				$tableObj[$k] = &t3lib_div::getUserObj($classRef);	// fetch and store it as persistent object
 			}
 		}
 
-		if (isset($tableObj['model']) && is_object($tableObj['model']))	{
-			if ($tableObj['model']->needsInit())	{
+		if (isset($tableObj['model']) && is_object($tableObj['model'])) {
+			if ($tableObj['model']->needsInit()) {
 				$tableObj['model']->init(
 					$functablename,
 					$this->tablename
 				);
 			}
 		} else {
-			debug ('Object for \''.$functablename.'\' has not been found.','internal error in '.SR_FEUSER_REGISTER_EXTkey, __LINE__, __FILE__);
+			debug ('Object for \'' . $functablename . '\' has not been found.', 'internal error in ' . SR_FEUSER_REGISTER_EXTkey);
 		}
 
-		if (isset($tableObj['view']) && is_object($tableObj['view']) && isset($tableObj['model']) && is_object($tableObj['model']))	{
+		if (
+			isset($tableObj['view']) &&
+			is_object($tableObj['view']) &&
+			isset($tableObj['model']) &&
+			is_object($tableObj['model'])
+		) {
 			// nothing yet
 		}
 
