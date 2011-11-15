@@ -205,10 +205,10 @@ class tx_srfeuserregister_setfixed {
 
 					$newFieldList =
 						implode(
+							',',
 							array_intersect(
 								t3lib_div::trimExplode(',', $dataObj->fieldList), t3lib_div::trimExplode(',', implode($fieldArr, ','), 1)
-							),
-							','
+							)
 						);
 
 					$res = $this->cObj->DBgetUpdate(
