@@ -1,4 +1,7 @@
 2011-11-15 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug in implode for the field list of DBgetUpdate
+
+2011-11-15 Franz Holzinger  <franz@ttproducts.de>
 	* restructuring and CGL
 
 2011-11-15 Franz Holzinger  <franz@ttproducts.de>
