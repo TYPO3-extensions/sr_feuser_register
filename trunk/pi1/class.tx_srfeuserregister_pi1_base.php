@@ -39,8 +39,8 @@
  *
  */
 
-require_once(PATH_tslib.'class.tslib_pibase.php');
-require_once(PATH_BE_srfeuserregister.'control/class.tx_srfeuserregister_control_main.php');
+require_once(PATH_tslib . 'class.tslib_pibase.php');
+require_once(PATH_BE_srfeuserregister . 'control/class.tx_srfeuserregister_control_main.php');
 
 
 class tx_srfeuserregister_pi1_base extends tslib_pibase {

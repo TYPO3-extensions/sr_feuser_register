@@ -37,81 +37,93 @@
 
 class tx_srfeuserregister_pi1_urlvalidator {
 
-	public function _ValURL($value, $options = array()) {
+	public function _ValURL ($value, $options = array()) {
 		$value = trim($value);
 
 		if (!$value)
 			return array('Result' => array(EW_ERR_URL_EMPTY_STRING), 'Value' => '');
 
 		/* Set up default options */
-		$options = array_merge(array(/**/
-		'AllowedProtocols' => array(), /* array('http', 'https', etc...) always lcase! */
-		'AllowBracks' => false, /* Allow square brackets in the query string ? */
-		'Protocols' => array('http', 'https', 'ftp', 'mailto', 'file', 'news', 'gopher', 'telnet', 'nntp'), /**/
-		'AssumeProtocol' => false, /**/
-		), $options);
+		$options = array_merge(
+			array(
+				'AllowedProtocols' => array(), /* array('http', 'https', etc...) always lcase! */
+				'AllowBracks' => false, /* Allow square brackets in the query string ? */
+				'Protocols' => array('http', 'https', 'ftp', 'mailto', 'file', 'news', 'gopher', 'telnet', 'nntp'),
+				'AssumeProtocol' => false,
+			),
+			$options
+		);
 
 		/* Setup default values for $options['Require]*/
-		@ $options['Require'] = array_merge(array(/**/
-		'Protocol' => false, /**/
-		'User' => false, /**/
-		'Password' => false, /**/
-		'Server' => false, /**/
-		'TLD' => false, /**/
-		'Port' => false, /**/
-		'Resource' => false, /**/
-		'QueryString' => false, /**/
-		'Anchor' => false, /**/
-		), $options['Require']);
+		@ $options['Require'] = array_merge(
+			array(/**/
+				'Protocol' => false, /**/
+				'User' => false, /**/
+				'Password' => false, /**/
+				'Server' => false, /**/
+				'TLD' => false, /**/
+				'Port' => false, /**/
+				'Resource' => false, /**/
+				'QueryString' => false, /**/
+				'Anchor' => false, /**/
+			),
+			$options['Require']
+		);
 
 		/* Setup default values for $options['Forbid]*/
-		@ $options['Forbid'] = array_merge(array(/**/
-		'Protocol' => false, /**/
-		'User' => false, /**/
-		'Password' => false, /**/
-		'Server' => false, /**/
-		'TLD' => false, /**/
-		'Port' => false, /**/
-		'Resource' => false, /**/
-		'QueryString' => false, /**/
-		'Anchor' => false, /**/
-		), $options['Forbid']);
+		@ $options['Forbid'] = array_merge(
+			array(/**/
+				'Protocol' => false, /**/
+				'User' => false, /**/
+				'Password' => false, /**/
+				'Server' => false, /**/
+				'TLD' => false, /**/
+				'Port' => false, /**/
+				'Resource' => false, /**/
+				'QueryString' => false, /**/
+				'Anchor' => false, /**/
+				),
+			$options['Forbid']
+		);
 
 		/* Create a container for the URL parts*/
 		$url = array(/**/
-		'Protocol' => '', /**/
-		'User' => '', /**/
-		'Password' => '', /**/
-		'Server' => '', /**/
-		'Port' => '', /**/
-		'Resource' => '', /**/
-		'TLD' => '', /**/
-		'QueryString' => '', /**/
-		'Anchor' => '');
+			'Protocol' => '', /**/
+			'User' => '', /**/
+			'Password' => '', /**/
+			'Server' => '', /**/
+			'Port' => '', /**/
+			'Resource' => '', /**/
+			'TLD' => '', /**/
+			'QueryString' => '', /**/
+			'Anchor' => ''
+		);
 
 		/* Setup errorcodes for invalid elements */
 		$errCodeInvalid = array(/**/
-		'Protocol' => EW_ERR_URL_INVALID_PROTOCOL, /**/
-		'User' => EW_ERR_URL_INVALID_USER, /**/
-		'Password' => EW_ERR_URL_INVALID_PASSWORD, /**/
-		'Server' => EW_ERR_URL_INVALID_SERVER, /**/
-		'TLD' => EW_ERR_URL_INVALID_TLD, /**/
-		'Port' => EW_ERR_URL_INVALID_PORT, /**/
-		'Resource' => EW_ERR_URL_INVALID_RESOURCE, /**/
-		'QueryString' => EW_ERR_URL_INVALID_QUERYSTRING, /**/
-		'Anchor' => EW_ERR_URL_INVALID_ANCHOR);
+			'Protocol' => EW_ERR_URL_INVALID_PROTOCOL, /**/
+			'User' => EW_ERR_URL_INVALID_USER, /**/
+			'Password' => EW_ERR_URL_INVALID_PASSWORD, /**/
+			'Server' => EW_ERR_URL_INVALID_SERVER, /**/
+			'TLD' => EW_ERR_URL_INVALID_TLD, /**/
+			'Port' => EW_ERR_URL_INVALID_PORT, /**/
+			'Resource' => EW_ERR_URL_INVALID_RESOURCE, /**/
+			'QueryString' => EW_ERR_URL_INVALID_QUERYSTRING, /**/
+			'Anchor' => EW_ERR_URL_INVALID_ANCHOR
+		);
 
 		/* Setup errorcodes for missing elements */
 		$errCodeMissing = array(/**/
-		'Protocol' => EW_ERR_URL_MISSING_PROTOCOL, /**/
-		'User' => EW_ERR_URL_MISSING_USER, /**/
-		'Password' => EW_ERR_URL_MISSING_PASSWORD, /**/
-		'Server' => EW_ERR_URL_MISSING_SERVER, /**/
-		'TLD' => EW_ERR_URL_MISSING_TLD, /**/
-		'Port' => EW_ERR_URL_MISSING_PORT, /**/
-		'Resource' => EW_ERR_URL_MISSING_RESOURCE, /**/
-		'QueryString' => EW_ERR_URL_MISSING_QUERYSTRING, /**/
-		'Anchor' => EW_ERR_URL_MISSING_ANCHOR);
+			'Protocol' => EW_ERR_URL_MISSING_PROTOCOL, /**/
+			'User' => EW_ERR_URL_MISSING_USER, /**/
+			'Password' => EW_ERR_URL_MISSING_PASSWORD, /**/
+			'Server' => EW_ERR_URL_MISSING_SERVER, /**/
+			'TLD' => EW_ERR_URL_MISSING_TLD, /**/
+			'Port' => EW_ERR_URL_MISSING_PORT, /**/
+			'Resource' => EW_ERR_URL_MISSING_RESOURCE, /**/
+			'QueryString' => EW_ERR_URL_MISSING_QUERYSTRING, /**/
+			'Anchor' => EW_ERR_URL_MISSING_ANCHOR
+		);
 
 		/* set up some needed vars */
 		extract($options);
@@ -291,7 +303,7 @@ class tx_srfeuserregister_pi1_urlvalidator {
 			/* url is not an ip */
 			else
 				{
-				$ServerIsIP = false;
+				$ServerIsIP = FALSE;
 
 				$serverParts = explode('.', $url['Server']);
 

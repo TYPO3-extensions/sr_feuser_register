@@ -101,19 +101,19 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 	* @param	string	name of the field
 	* @ return	array	array of selectable items
 	*/
-	public function getItemsLL ($textSchema, $bAll=TRUE, $valuesArray=array()) {
+	public function getItemsLL ($textSchema, $bAll = TRUE, $valuesArray = array()) {
 		$rc = array();
-		if ($bAll)	{
-			for ($i = 0; $i < 999; ++$i)	{
-				$text = $this->getLL($textSchema.$i);
-				if ($text != '')	{
+		if ($bAll) {
+			for ($i = 0; $i < 999; ++$i) {
+				$text = $this->getLL($textSchema . $i);
+				if ($text != '') {
 					$rc[] = array($text, $i);
 				}
 			}
 		} else {
-			foreach ($valuesArray as $k => $i)	{
-				$text = $this->getLL($textSchema.$i);
-				if ($text != '')	{
+			foreach ($valuesArray as $k => $i) {
+				$text = $this->getLL($textSchema . $i);
+				if ($text != '') {
 					$rc[] = array($text, $i);
 				}
 			}
@@ -144,13 +144,30 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 		$rc = '';
 		$usedLang = '';
 
-		if (isset($this->conf['salutation']) && in_array($this->conf['salutation'], $this->allowedSuffixes, 1)) {
-			$expandedKey = $key.'_'.$this->conf['salutation'];
-			$rc = tx_div2007_alpha5::getLL_fh002($this, $expandedKey, $usedLang, $alt, $hsc);
+		if (
+			isset($this->conf['salutation']) &&
+			in_array($this->conf['salutation'], $this->allowedSuffixes, 1)
+		) {
+			$expandedKey = $key . '_' . $this->conf['salutation'];
+			$rc =
+				tx_div2007_alpha5::getLL_fh002(
+					$this,
+					$expandedKey,
+					$usedLang,
+					$alt,
+					$hsc
+				);
 		}
 
-		if ($rc == '' || $rc == $alt || $usedLang != $this->LLkey)	{
-			$rc = tx_div2007_alpha5::getLL_fh002($this, $key, $usedLang, $alt, $hsc);
+		if ($rc == '' || $rc == $alt || $usedLang != $this->LLkey) {
+			$rc =
+				tx_div2007_alpha5::getLL_fh002(
+					$this,
+					$key,
+					$usedLang,
+					$alt,
+					$hsc
+				);
 		}
 
 		return $rc;

@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 1999-2003 Kasper Skårhøj (kasperYYYY@typo3.com)
-*  (c) 2004-2010 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2004-2011 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -42,31 +42,28 @@
  */
 
 	// To get the pid language overlay:
-require_once(PATH_t3lib.'class.t3lib_page.php');
+require_once(PATH_t3lib . 'class.t3lib_page.php');
 
-	// For translating items from other extensions
-// require_once (t3lib_extMgm::extPath('lang').'lang.php');
-
-require_once(PATH_BE_div2007.'class.tx_div2007_alpha.php');
+require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha.php');
 require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha5.php');
 
-require_once(PATH_BE_srfeuserregister.'pi1/class.tx_srfeuserregister_pi1_urlvalidator.php');
-require_once(PATH_BE_srfeuserregister.'control/class.tx_srfeuserregister_control.php');
-require_once(PATH_BE_srfeuserregister.'control/class.tx_srfeuserregister_setfixed.php');
-require_once(PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_controldata.php');
-require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_auth.php');
-require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_email.php');
-require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_lang.php');
-require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_passwordmd5.php');
+require_once(PATH_BE_srfeuserregister . 'pi1/class.tx_srfeuserregister_pi1_urlvalidator.php');
+require_once(PATH_BE_srfeuserregister . 'control/class.tx_srfeuserregister_control.php');
+require_once(PATH_BE_srfeuserregister . 'control/class.tx_srfeuserregister_setfixed.php');
+require_once(PATH_BE_srfeuserregister . 'model/class.tx_srfeuserregister_controldata.php');
+require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_auth.php');
+require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_email.php');
+require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_lang.php');
+require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_passwordmd5.php');
 
-require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_tca.php');
-require_once(PATH_BE_srfeuserregister.'marker/class.tx_srfeuserregister_marker.php');
-require_once(PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_url.php');
-require_once(PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_data.php');
-require_once(PATH_BE_srfeuserregister.'view/class.tx_srfeuserregister_display.php');
+require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_tca.php');
+require_once(PATH_BE_srfeuserregister . 'marker/class.tx_srfeuserregister_marker.php');
+require_once(PATH_BE_srfeuserregister . 'model/class.tx_srfeuserregister_url.php');
+require_once(PATH_BE_srfeuserregister . 'model/class.tx_srfeuserregister_data.php');
+require_once(PATH_BE_srfeuserregister . 'view/class.tx_srfeuserregister_display.php');
 
-require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_lib_tables.php');
-require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_conf.php');
+require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_lib_tables.php');
+require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_conf.php');
 
 
 
@@ -95,9 +92,9 @@ class tx_srfeuserregister_control_main {
 		&$conf,
 		&$pibaseObj,
 		$theTable,
-		$adminFieldList='username,password,name,disable,usergroup,by_invitation',
-		$buttonLabelsList='',
-		$otherLabelsList=''
+		$adminFieldList = 'username,password,name,disable,usergroup,by_invitation',
+		$buttonLabelsList = '',
+		$otherLabelsList = ''
 	) {
 		global $TSFE;
 
@@ -129,7 +126,7 @@ class tx_srfeuserregister_control_main {
 				$error_message
 			);
 		} else {
-			$content = '<em>Internal error in '.$pibaseObj->extKey.'!</em><br /> Maybe you forgot to include the basic template file under statics from extensions.';
+			$content = '<em>Internal error in ' . $pibaseObj->extKey . '!</em><br /> Maybe you forgot to include the basic template file under statics from extensions.';
 		}
 		$rc = $pibaseObj->pi_wrapInBaseClass($content);
 		return $rc;
@@ -162,20 +159,26 @@ class tx_srfeuserregister_control_main {
 		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 		$authObj->init($this->pibaseObj, $this->conf, $this->config);
 		$this->controlData = &t3lib_div::getUserObj('&tx_srfeuserregister_controldata');
-		$this->controlData->init($conf, $this->pibaseObj->prefixId, $this->extKey, $this->pibaseObj->piVars, $theTable);
+		$this->controlData->init(
+			$conf,
+			$this->pibaseObj->prefixId,
+			$this->extKey,
+			$this->pibaseObj->piVars,
+			$theTable
+		);
 
 		if ($this->extKey != SR_FEUSER_REGISTER_EXTkey)	{
 
 					// Static Methods for Extensions for fetching the texts of sr_feuser_register
-				tx_div2007_alpha::loadLL_fh001($this->pibaseObj,'EXT:'.SR_FEUSER_REGISTER_EXTkey.'/pi1/locallang.xml',FALSE);
+				tx_div2007_alpha::loadLL_fh001($this->pibaseObj, 'EXT:' . SR_FEUSER_REGISTER_EXTkey . '/pi1/locallang.xml', FALSE);
 		} // otherwise the labels from sr_feuser_register need not be included, because this has been done in
 
 		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey)) {
-			include_once(PATH_BE_static_info_tables.'pi1/class.tx_staticinfotables_pi1.php');
+			include_once(PATH_BE_static_info_tables . 'pi1/class.tx_staticinfotables_pi1.php');
 
 				// Initialise static info library
 			$staticInfoObj = &t3lib_div::getUserObj('&tx_staticinfotables_pi1');
-			if (!method_exists($staticInfoObj, 'needsInit') || $staticInfoObj->needsInit())	{
+			if (!method_exists($staticInfoObj, 'needsInit') || $staticInfoObj->needsInit()) {
 				$staticInfoObj->init();
 			}
 		}
@@ -199,8 +202,14 @@ class tx_srfeuserregister_control_main {
 		);
 		$rc = $this->langObj->loadLL();
 
-		if ($rc !== FALSE)	{
-			$this->tca->init2($this->pibaseObj, $this->conf, $this->controlData, $this->langObj);
+		if ($rc !== FALSE) {
+			$this->tca->init2(
+				$this->pibaseObj,
+				$this->conf,
+				$this->controlData,
+				$this->langObj
+			);
+
 			$this->control->init(
 				$this->langObj,
 				$this->pibaseObj->cObj,
@@ -226,7 +235,7 @@ class tx_srfeuserregister_control_main {
 			$md5Obj = &t3lib_div::getUserObj('&tx_srfeuserregister_passwordmd5');
 			$md5Obj->init($this->marker, $this->data, $this->controlData);
 
-			$uid=$this->data->getRecUid();
+			$uid = $this->data->getRecUid();
 
 			$this->marker->init(
 				$this->pibaseObj,
@@ -241,16 +250,44 @@ class tx_srfeuserregister_control_main {
 				$this->controlData->readToken()
 			);
 
-			if ($buttonLabelsList!='')	{
+			if ($buttonLabelsList != '')	{
 				$this->marker->setButtonLabelsList($buttonLabelsList);
 			}
 			if ($otherLabelsList != '')	{
 				$this->marker->addOtherLabelsList($otherLabelsList);
 			}
 
-			$this->display->init($this->cObj, $this->conf, $this->config, $this->data, $this->marker, $this->tca, $this->control);
-			$this->email->init($this->langObj, $this->cObj, $this->conf, $this->config, $this->display, $this->data, $this->marker, $this->tca, $this->controlData, $this->setfixedObj);
-			$this->setfixedObj->init($this->cObj, $this->conf, $this->config, $this->controlData, $this->tca, $this->display, $this->email, $this->marker);
+			$this->display->init(
+				$this->cObj,
+				$this->conf,
+				$this->config,
+				$this->data,
+				$this->marker,
+				$this->tca,
+				$this->control
+			);
+			$this->email->init(
+				$this->langObj,
+				$this->cObj,
+				$this->conf,
+				$this->config,
+				$this->display,
+				$this->data,
+				$this->marker,
+				$this->tca,
+				$this->controlData,
+				$this->setfixedObj
+			);
+			$this->setfixedObj->init(
+				$this->cObj,
+				$this->conf,
+				$this->config,
+				$this->controlData,
+				$this->tca,
+				$this->display,
+				$this->email,
+				$this->marker
+			);
 		}
 
 		return $rc;

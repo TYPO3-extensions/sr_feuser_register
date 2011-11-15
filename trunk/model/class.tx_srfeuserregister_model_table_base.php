@@ -40,23 +40,23 @@
 
 
 
-class tx_srfeuserregister_model_table_base	{
+class tx_srfeuserregister_model_table_base {
 	public $functablename;
 	public $tablename;
 	public $fieldClassArray = array(); // must be overridden
 	public $bHasBeenInitialised = FALSE;
 
-	public function init ($functablename, $tablename)	{
+	public function init ($functablename, $tablename) {
 		$this->setFuncTablename($functablename);
 		$this->setTablename($tablename);
 		$this->bHasBeenInitialised = TRUE;
 	}
 
-	public function needsInit()	{
+	public function needsInit() {
 		return !$this->bHasBeenInitialised;
 	}
 
-	public function getFieldClassAndPath ($fieldname)	{
+	public function getFieldClassAndPath ($fieldname) {
 		global $TCA;
 
 
@@ -64,10 +64,13 @@ class tx_srfeuserregister_model_table_base	{
 		$path = '';
 		$tablename = $this->getTablename();
 
-		if ($fieldname && isset($TCA[$tablename]['columns'][$fieldname]) && is_array($TCA[$tablename]['columns'][$fieldname]))	{
-
+		if (
+			$fieldname &&
+			isset($TCA[$tablename]['columns'][$fieldname]) &&
+			is_array($TCA[$tablename]['columns'][$fieldname])
+		) {
 			$class = $this->fieldClassArray[$fieldname];
-			if ($class)	{
+			if ($class) {
 				$path = PATH_BE_srfeuserregister;
 			}
 		}
@@ -76,43 +79,43 @@ class tx_srfeuserregister_model_table_base	{
 		return $rc;
 	}
 
-	public function &getFieldObj ($fieldname)	{
+	public function &getFieldObj ($fieldname) {
 		$classAndPath = $this->getFieldClassAndPath($fieldname);
 
-		if ($classAndPath['class'])	{
+		if ($classAndPath['class']) {
 			$rc = $this->getObj($classAndPath);
 		}
 		return $rc;
 	}
 
-	public function &getObj ($classArray)	{
+	public function &getObj ($classArray) {
 
 		$className = $classArray['class'];
-		$classNameView = $className.'_view';
+		$classNameView = $className . '_view';
 		$path = $classArray['path'];
 
-		include_once ($path.'model/field/class.'.$className.'.php');
-		$fieldObj = &t3lib_div::getUserObj('&'.$className);	// fetch and store it as persistent object
-		if ($fieldObj->needsInit())	{
+		include_once ($path . 'model/field/class.' . $className . '.php');
+		$fieldObj = &t3lib_div::getUserObj('&' . $className);	// fetch and store it as persistent object
+		if ($fieldObj->needsInit()) {
 			$fieldObj->init($this->cObj);
 		}
 
 		return $fieldObj;
 	}
 
-	public function getFuncTablename ()	{
+	public function getFuncTablename () {
 		return $this->functablename;
 	}
 
-	public function setFuncTablename ($tablename)	{
+	public function setFuncTablename ($tablename) {
 		$this->functablename = $tablename;
 	}
 
-	public function getTablename ()	{
+	public function getTablename () {
 		return $this->tablename;
 	}
 
-	public function setTablename ($tablename)	{
+	public function setTablename ($tablename) {
 		$this->tablename = $tablename;
 	}
 }

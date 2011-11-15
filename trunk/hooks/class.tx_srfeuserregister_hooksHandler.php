@@ -40,7 +40,7 @@ class tx_srfeuserregister_hooksHandler {
 			// in this example hook, we generate a username based on the first and last names of the user
 		$cmdKey = $controlDataObj->getCmdKey();
 		$theTable = $controlDataObj->getTable();
-		if ($controlDataObj->getFeUserData('preview') && $controlDataObj->conf[$cmdKey.'.']['generateUsername']) {
+		if ($controlDataObj->getFeUserData('preview') && $controlDataObj->conf[$cmdKey . '.']['generateUsername']) {
 			$firstName = trim($recordArray['first_name']);
 			$lastName = trim($recordArray['last_name']);
 			$name = trim($recordArray['name']);
@@ -49,15 +49,20 @@ class tx_srfeuserregister_hooksHandler {
 				$firstName = ($firstName ? $firstName : $nameArray[0]);
 				$lastName = ($lastName ? $lastName : $nameArray[1]);
 			}
-			$recordArray['username'] = substr(strtolower($firstName),0,5) . substr(strtolower($lastName),0,5);
+			$recordArray['username'] = substr(strtolower($firstName), 0, 5) . substr(strtolower($lastName), 0, 5);
 			$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($theTable, 'username', $recordArray['username'], 'LIMIT 1');
 			$counter = 0;
 			while($DBrows) {
 				$counter = $counter + 1;
-				$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($theTable, 'username', $recordArray['username'].$counter, 'LIMIT 1');
+				$DBrows =
+					$GLOBALS['TSFE']->sys_page->getRecordsByField(
+						$theTable,
+						'username',
+						$recordArray['username'] . $counter, 'LIMIT 1'
+					);
 			}
-			if ($counter)	{
-				$recordArray['username'] = $recordArray['username'].$counter;
+			if ($counter) {
+				$recordArray['username'] = $recordArray['username'] . $counter;
 			}
 		}
 	}
@@ -80,7 +85,7 @@ class tx_srfeuserregister_hooksHandler {
 		// you may not see this echo if the page is redirected to auto-login
 	}
 
-	public function addGlobalMarkers (&$markerArray, &$invokingObj)	{
+	public function addGlobalMarkers (&$markerArray, &$invokingObj) {
 	}
 }
 

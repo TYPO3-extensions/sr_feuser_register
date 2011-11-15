@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2008-2008 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2008-2011 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -44,16 +44,16 @@ class tx_srfeuserregister_conf {
 	public $conf = array();
 	public $config = array();
 
-	public function init (&$conf)	{
+	public function init (&$conf) {
 		$this->conf = &$conf;
 		$this->config = array();
 	}
 
-	public function &getConf ()	{
+	public function &getConf () {
 		return $this->conf;
 	}
 
-	public function &setConf (&$dataArray, $k='')	{
+	public function &setConf (&$dataArray, $k='') {
 		if ($k)	{
 			$this->conf[$k] = $dataArray;
 		} else {
@@ -63,7 +63,7 @@ class tx_srfeuserregister_conf {
 }
 
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_conf.php'])  {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_conf.php']) {
   include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_conf.php']);
 }
 ?>

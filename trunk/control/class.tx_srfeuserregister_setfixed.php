@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2010 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2011 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -59,7 +59,16 @@ class tx_srfeuserregister_setfixed {
 	public $otherLabelsList;
 
 
-	public function init (&$cObj, &$conf, &$config, &$controlData, &$tca, &$display, &$email, &$marker)	{
+	public function init (
+		&$cObj,
+		&$conf,
+		&$config,
+		&$controlData,
+		&$tca,
+		&$display,
+		&$email,
+		&$marker
+	) {
 		global $TSFE;
 
 		$this->cObj = &$cObj;
@@ -121,7 +130,7 @@ class tx_srfeuserregister_setfixed {
 			$fieldList = $row['_FIELDLIST'];
 			$theCode = $authObj->setfixedHash($row, $fieldList);
 
-			if (!strcmp($authObj->getAuthCode(), $theCode) && !($sFK == 'APPROVE' && count($origArray) && $origArray['disable']=='0')) {
+			if (!strcmp($authObj->getAuthCode(), $theCode) && !($sFK == 'APPROVE' && count($origArray) && $origArray['disable'] == '0')) {
 
 				if ($sFK == 'EDIT')	{
 
@@ -138,13 +147,27 @@ class tx_srfeuserregister_setfixed {
 						$dataObj->inError,
 						$token
 					);
-				} else if ($sFK == 'DELETE' || $sFK == 'REFUSE') {
-					if (!$this->tca->TCA['ctrl']['delete'] || $this->conf['forceFileDelete']) {
+				} else if (
+					$sFK == 'DELETE' ||
+					$sFK == 'REFUSE'
+				) {
+					if (
+						!$this->tca->TCA['ctrl']['delete'] ||
+						$this->conf['forceFileDelete']
+					) {
 						// If the record is fully deleted... then remove the image attached.
 						$dataObj->deleteFilesFromRecord($uid);
 					}
-					$res = $this->cObj->DBgetDelete($theTable, $uid, TRUE);
-					$dataObj->deleteMMRelations($theTable, $uid, $row);
+					$res = $this->cObj->DBgetDelete(
+						$theTable,
+						$uid,
+						TRUE
+					);
+					$dataObj->deleteMMRelations(
+						$theTable,
+						$uid,
+						$row
+					);
 				} else {
 					if ($theTable == 'fe_users') {
 						if ($this->conf['create.']['allowUserGroupSelection']) {
@@ -174,22 +197,39 @@ class tx_srfeuserregister_setfixed {
 						}
 					}
 						// Hook: confirmRegistrationClass_preProcess
-					foreach($hookObjectsArr as $hookObj)    {
+					foreach($hookObjectsArr as $hookObj) {
 						if (method_exists($hookObj, 'confirmRegistrationClass_preProcess')) {
 							$hookObj->confirmRegistrationClass_preProcess($row, $this);
 						}
 					}
-					$newFieldList = implode(array_intersect(t3lib_div::trimExplode(',', $dataObj->fieldList), t3lib_div::trimExplode(',', implode($fieldArr, ','), 1)), ',');
 
-					$res = $this->cObj->DBgetUpdate($theTable, $uid, $row, $newFieldList, TRUE);
+					$newFieldList =
+						implode(
+							array_intersect(
+								t3lib_div::trimExplode(',', $dataObj->fieldList), t3lib_div::trimExplode(',', implode($fieldArr, ','), 1)
+							),
+							','
+						);
+
+					$res = $this->cObj->DBgetUpdate(
+						$theTable,
+						$uid,
+						$row,
+						$newFieldList,
+						TRUE
+					);
 					$currArr = $origArray;
 					$modArray = array();
 					$currArr = $this->tca->modifyTcaMMfields($currArr,$modArray);
 					$row = array_merge($row, $modArray);
-					$pObj->userProcess_alt($this->conf['setfixed.']['userFunc_afterSave'],$this->conf['setfixed.']['userFunc_afterSave.'],array('rec'=>$currArr, 'origRec'=>$origArray));
+					$pObj->userProcess_alt(
+						$this->conf['setfixed.']['userFunc_afterSave'],
+						$this->conf['setfixed.']['userFunc_afterSave.'],
+						array('rec' => $currArr, 'origRec' => $origArray)
+					);
 
 						// Hook: confirmRegistrationClass_postProcess
-					foreach($hookObjectsArr as $hookObj)    {
+					foreach($hookObjectsArr as $hookObj) {
 						if (method_exists($hookObj, 'confirmRegistrationClass_postProcess')) {
 							$hookObj->confirmRegistrationClass_postProcess($row, $this);
 						}
@@ -200,9 +240,13 @@ class tx_srfeuserregister_setfixed {
 				if (
 					$theTable == 'fe_users' &&
 					in_array($sFK, array('APPROVE','ENTER','LOGIN'))	// LOGIN is here only for an error case
-				)	{
+				) {
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, 'login', $token);
-					$this->marker->addMd5LoginMarkers($markerArray, $dataArray, $this->controlData->getUseMd5Password());
+					$this->marker->addMd5LoginMarkers(
+						$markerArray,
+						$dataArray,
+						$this->controlData->getUseMd5Password()
+					);
 					$this->marker->setArray($markerArray);
 				} else {
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, 'setfixed', $token);
@@ -280,7 +324,7 @@ class tx_srfeuserregister_setfixed {
 							);
 						}
 
-						if ($errorContent)	{
+						if ($errorContent) {
 							$content = $errorContent;
 								// Auto-login on confirmation
 						} else if (
@@ -343,14 +387,14 @@ class tx_srfeuserregister_setfixed {
 				$fieldList = $data['_FIELDLIST'];
 				$fieldListArray = t3lib_div::trimExplode(',', $fieldList);
 
-				foreach ($fieldListArray as $fieldname)	{
+				foreach ($fieldListArray as $fieldname) {
 
-					if (isset($data[$fieldname]))	{
+					if (isset($data[$fieldname])) {
 						$r[$fieldname] = $data[$fieldname];
 					}
 				}
 
-				if ($noFeusersEdit)	{
+				if ($noFeusersEdit) {
 					$cmd = $pidCmd = 'edit';
 					if( $this->conf['edit.']['setfixed'] ) {
 						$bSetfixedHash = TRUE;
@@ -363,12 +407,12 @@ class tx_srfeuserregister_setfixed {
 					$pidCmd = ($this->controlData->getCmd() == 'invite' ? 'confirmInvitation' : 'confirm');
 					$setfixedpiVars[$prefixId . '%5BsFK%5D'] = $theKey;
 					$bSetfixedHash = TRUE;
-					if (isset($r['chalvalue']))	{
+					if (isset($r['chalvalue'])) {
 						$setfixedpiVars[$prefixId . '%5Bcv%5D'] = $r['chalvalue'];
 					}
 				}
 
-				if ($bSetfixedHash)	{
+				if ($bSetfixedHash) {
 					$setfixedpiVars[$prefixId . '%5BaC%5D'] = $authObj->setfixedHash($r, $fieldList);
 				}
 				$setfixedpiVars[$prefixId . '%5Bcmd%5D'] = $cmd;
@@ -391,9 +435,16 @@ class tx_srfeuserregister_setfixed {
 				$conf = array();
 				$conf['disableGroupAccessCheck'] = TRUE;
 				$confirmType = (t3lib_div::testInt($this->conf['confirmType']) ? intval($this->conf['confirmType']) : $TSFE->type);
-				$url = tx_div2007_alpha::getTypoLink_URL_fh002($this->cObj, $linkPID . ',' . $confirmType, $setfixedpiVars,'',$conf);
-				$bIsAbsoluteURL = ((strncmp($url,'http://',7) == 0) || (strncmp($url,'https://',8) == 0));
-				$markerKey = '###SETFIXED_' . $this->cObj->caseshift($theKey,'upper') . '_URL###';
+				$url =
+					tx_div2007_alpha::getTypoLink_URL_fh002(
+						$this->cObj,
+						$linkPID . ',' . $confirmType,
+						$setfixedpiVars,
+						'',
+						$conf
+					);
+				$bIsAbsoluteURL = ((strncmp($url, 'http://', 7) == 0) || (strncmp($url, 'https://', 8) == 0));
+				$markerKey = '###SETFIXED_' . $this->cObj->caseshift($theKey, 'upper') . '_URL###';
 				$url = ($bIsAbsoluteURL ? '' : $this->controlData->getSiteUrl()) . ltrim($url,'/');
 				$markerArray[$markerKey] = str_replace(array('[',']'), array('%5B', '%5D'), $url);
 			}	// foreach
@@ -408,10 +459,10 @@ class tx_srfeuserregister_setfixed {
 		global $TYPO3_DB;
 
 			// create a unique hash value
-		$regHash_array = t3lib_div::cHashParams(t3lib_div::implodeArrayForUrl('',$vars));
-		$regHash_calc = t3lib_div::shortMD5(serialize($regHash_array),20);
+		$regHash_array = t3lib_div::cHashParams(t3lib_div::implodeArrayForUrl('', $vars));
+		$regHash_calc = t3lib_div::shortMD5(serialize($regHash_array), 20);
 			// and store it with a serialized version of the array in the DB
-		$res = $TYPO3_DB->exec_SELECTquery('md5hash','cache_md5params','md5hash='.$TYPO3_DB->fullQuoteStr($regHash_calc,'cache_md5params'));
+		$res = $TYPO3_DB->exec_SELECTquery('md5hash', 'cache_md5params', 'md5hash=' . $TYPO3_DB->fullQuoteStr($regHash_calc, 'cache_md5params'));
 		if (!$TYPO3_DB->sql_num_rows($res))  {
 			$insertFields = array (
 				'md5hash' => $regHash_calc,
@@ -419,7 +470,7 @@ class tx_srfeuserregister_setfixed {
 				'type' => 99,
 				'params' => serialize($vars)
 			);
-			$TYPO3_DB->exec_INSERTquery('cache_md5params',$insertFields);
+			$TYPO3_DB->exec_INSERTquery('cache_md5params', $insertFields);
 		}
 		$TYPO3_DB->sql_free_result($res);
 		return $regHash_calc;
