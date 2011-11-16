@@ -180,7 +180,7 @@ class tx_srfeuserregister_control_main {
 		if ($this->extKey != SR_FEUSER_REGISTER_EXTkey)	{
 
 					// Static Methods for Extensions for fetching the texts of sr_feuser_register
-				tx_div2007_alpha::loadLL_fh001($this->pibaseObj, 'EXT:' . SR_FEUSER_REGISTER_EXTkey . '/pi1/locallang.xml', FALSE);
+				tx_div2007_alpha5::loadLL_fh002($this->pibaseObj, 'EXT:' . SR_FEUSER_REGISTER_EXTkey . '/pi1/locallang.xml', FALSE);
 		} // otherwise the labels from sr_feuser_register need not be included, because this has been done in
 
 		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey)) {

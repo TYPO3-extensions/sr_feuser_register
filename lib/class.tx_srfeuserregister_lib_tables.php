@@ -39,7 +39,7 @@
  */
 
 
-require_once (PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_model_table_base.php');
+require_once (PATH_BE_srfeuserregister . 'model/class.tx_srfeuserregister_model_table_base.php');
 
 class tx_srfeuserregister_lib_tables {
 	public $tableClassArray = array();
