@@ -1,3 +1,6 @@
+2011-11-16 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug: use the new method getLL_fh002 which supports TYPO3 4.6
+
 2011-11-15 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug in implode for the field list of DBgetUpdate
 
