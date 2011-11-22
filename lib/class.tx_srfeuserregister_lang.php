@@ -79,7 +79,7 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 		global $LOCAL_LANG, $TSFE;
 
 		$rc = '';
-		$arr = explode(':',$string);
+		$arr = explode(':', $string);
 
 		if($arr[0] == 'LLL' && $arr[1] == 'EXT') {
 			$temp = $this->getLL($arr[3]);
@@ -185,12 +185,12 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 				$done = TRUE;
 				foreach($this->conf['_LOCAL_LANG.'] as $k => $lA) {
 					if (is_array($lA)) {
-						foreach($lA as $llK => $llV)    {
-							if (is_array($llV))    {
+						foreach($lA as $llK => $llV) {
+							if (is_array($llV)) {
 								foreach ($llV as $llK2 => $llV2) {
-									if (is_array($llK2))	{
+									if (is_array($llK2)) {
 										foreach ($llV2 as $llK3 => $llV3) {
-											if (is_array($llV3))	{
+											if (is_array($llV3)) {
 												foreach ($llV3 as $llK4 => $llV4) {
 													$this->conf['_LOCAL_LANG.'][$k][$llK . $llK2 . $llK3 . $llK4] = $llV4;
 												}
@@ -214,9 +214,9 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 		$locallang = $this->LOCAL_LANG;
 		tx_div2007_alpha5::loadLL_fh002($this);
 
-		if ($locallang != '')	{
-			foreach ($this->LOCAL_LANG as $key => $langArray)	{
-				if (isset($locallang[$key]) && is_array($locallang[$key]))	{
+		if ($locallang != '') {
+			foreach ($this->LOCAL_LANG as $key => $langArray) {
+				if (isset($locallang[$key]) && is_array($locallang[$key])) {
 					$this->LOCAL_LANG[$key] = array_merge($locallang[$key], $langArray);
 				}
 			}
@@ -225,7 +225,7 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 		// do a check if the language file works
 		$tmpText = $this->getLL('unsupported');
 
-		if ($tmpText == '')	{
+		if ($tmpText == '') {
 			$rc = FALSE;
 		}
 
@@ -234,7 +234,7 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 } // class tx_srfeuserregister_lang
 
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_lang.php'])  {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_lang.php']) {
   include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_lang.php']);
 }
 ?>
