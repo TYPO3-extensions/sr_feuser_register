@@ -1,7 +1,8 @@
 <?php
 if (!defined ('TYPO3_MODE')) die ('Access denied.');
 
-$typoVersion = t3lib_div::int_from_ver($GLOBALS['TYPO_VERSION']);
+$typoVersion = class_exists('t3lib_utility_VersionNumber') ? t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) : t3lib_div::int_from_ver(TYPO3_version);
+
 
 if (!defined ('SR_FEUSER_REGISTER_EXTkey')) {
 	define('SR_FEUSER_REGISTER_EXTkey',$_EXTKEY);
@@ -47,7 +48,7 @@ if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['useFlexforms'] = 0;
 }
 
-if (TYPO3_MODE=='BE')	{
+if (TYPO3_MODE=='BE') {
 
 	if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['useFlexforms'] && defined('PATH_BE_div2007'))	{
 		// replace the output of the former CODE field with the flexform
@@ -57,7 +58,7 @@ if (TYPO3_MODE=='BE')	{
 		// Next step is to make the extension incompatible with sr_feuser_register
 	if (($typoVersion >= 4004000 || t3lib_extMgm::isLoaded('patch1822')) && !defined($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_users']['MENU'])) {
 		$tableArray = array('fe_users', 'fe_groups', 'fe_groups_language_overlay');
-		foreach ($tableArray as $theTable)	{
+		foreach ($tableArray as $theTable) {
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['LLFile'][$theTable] = 'EXT:'.SR_FEUSER_REGISTER_EXTkey.'/locallang.xml';
 		}
 
@@ -116,4 +117,5 @@ if (t3lib_extMgm::isLoaded('static_info_tables')) {
 if (t3lib_extMgm::isLoaded('tt_products') && TYPO3_MODE=='FE') {
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tt_products']['extendingTCA'][] = SR_FEUSER_REGISTER_EXTkey;
 }
+
 ?>

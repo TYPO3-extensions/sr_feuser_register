@@ -169,8 +169,7 @@ $addColumnArray = Array(
 );
 
 
-
-$typoVersion = t3lib_div::int_from_ver(TYPO3_version);
+$typoVersion = class_exists('t3lib_utility_VersionNumber') ? t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) : t3lib_div::int_from_ver(TYPO3_version);
 
 if ($typoVersion < 4004000)	{
 	$addColumnArray['first_name'] = Array (
