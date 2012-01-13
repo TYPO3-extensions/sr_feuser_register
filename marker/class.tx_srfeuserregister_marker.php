@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2011 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2012 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -1127,7 +1127,13 @@ class tx_srfeuserregister_marker {
 		} else {
 			if (is_array($row)) {
 				foreach($row as $field => $value) {
-					if (!t3lib_div::testInt($field)) {
+					$bFieldIsInt = (
+						class_exists('t3lib_utility_Math') ?
+							t3lib_utility_Math::canBeInterpretedAsInteger($field) :
+							t3lib_div::testInt($field)
+					);
+
+					if (!$bFieldIsInt) {
 						if (is_array($value)) {
 							$value = implode(',', $value);
 						}
