@@ -344,12 +344,18 @@ class tx_srfeuserregister_data {
 		) {
 			$count = 0;
 			foreach ($this->conf['evalErrors.'][$theField . '.'][$theRule . '.'] as $k => $v) {
+				$bKIsInt = (
+					class_exists('t3lib_utility_Math') ?
+						t3lib_utility_Math::canBeInterpretedAsInteger($k) :
+						t3lib_div::testInt($k)
+				);
+
 				if ($bInternal) {
 					if ($k=='internal') {
 						$failureLabel = $v;
 						break;
 					}
-				} else if (t3lib_div::testInt($k)) {
+				} else if ($bKIsInt) {
 					$count++;
 					if ($count == $orderNo) {
 						$failureLabel = $v;
@@ -950,7 +956,12 @@ class tx_srfeuserregister_data {
 								if (is_array($dataValue)) {
 									$newDataValue = 0;
 									foreach($dataValue as $kk => $vv) {
-										$kk = t3lib_div::intInRange($kk, 0);
+										$kk = (
+											class_exists('t3lib_utility_Math') ?
+												t3lib_utility_Math::forceIntegerInRange($kk, 0) :
+												t3lib_div::intInRange($kk, 0)
+										);
+
 										if ($kk <= 30) {
 											if ($vv) {
 												$newDataValue|= pow(2, $kk);

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2011 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2007-2012 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -87,7 +87,12 @@ class tx_srfeuserregister_controldata {
 		$this->setTable($theTable);
 		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 
-		$this->sys_language_content = (t3lib_div::testInt($TSFE->config['config']['sys_language_uid']) ? $TSFE->config['config']['sys_language_uid'] : 0);
+		$bSysLanguageUidIsInt = (
+			class_exists('t3lib_utility_Math') ?
+				t3lib_utility_Math::canBeInterpretedAsInteger($TSFE->config['config']['sys_language_uid']) :
+				t3lib_div::testInt($TSFE->config['config']['sys_language_uid'])
+		);
+		$this->sys_language_content = ($bSysLanguageUidIsInt ? $TSFE->config['config']['sys_language_uid'] : 0);
 
 			// set the title language overlay
 		$pidRecord = t3lib_div::makeInstance('t3lib_pageSelect');
@@ -200,6 +205,12 @@ class tx_srfeuserregister_controldata {
 		$this->secureInput($feUserData);
 		$token = $this->readToken(); // fetch latest internal token
 
+		$bRuIsInt = (
+			class_exists('t3lib_utility_Math') ?
+				t3lib_utility_Math::canBeInterpretedAsInteger($feUserData['rU']) :
+				t3lib_div::testInt($feUserData['rU'])
+		);
+
 		if (
 			is_array($feUserData) && (
 				!count($feUserData) ||
@@ -208,7 +219,7 @@ class tx_srfeuserregister_controldata {
 			)
 		)	{
 			$this->setTokenValid(TRUE);
-		} else if (($bValidRegHash || !$this->conf['useShortUrls']) && t3lib_div::testInt($feUserData['rU'])) {
+		} else if (($bValidRegHash || !$this->conf['useShortUrls']) && $bRuIsInt) {
 
 			$theUid = intval($feUserData['rU']);
 			$origArray = $TSFE->sys_page->getRawRecord($theTable, $theUid);
@@ -586,7 +597,11 @@ class tx_srfeuserregister_controldata {
 			is_array($this->conf['conf.'][$theTable . '.']) &&
 			isset($this->conf['conf.'][$theTable . '.'][$theCode . '.']) &&
 			is_array($this->conf['conf.'][$theTable . '.'][$theCode . '.']) &&
-			t3lib_div::testInt($this->conf['conf.'][$theTable . '.'][$theCode . '.']['sys_language_uid'])
+			(
+				class_exists('t3lib_utility_Math') ?
+					t3lib_utility_Math::canBeInterpretedAsInteger($this->conf['conf.'][$theTable . '.'][$theCode . '.']['sys_language_uid']) :
+					t3lib_div::testInt($this->conf['conf.'][$theTable . '.'][$theCode . '.']['sys_language_uid'])
+			)
 		)	{
 			$rc = $this->conf['conf.'][$theTable . '.'][$theCode . '.']['sys_language_uid'];
 		} else {

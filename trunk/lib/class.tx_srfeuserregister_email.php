@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2010 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2012 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -115,8 +115,14 @@ class tx_srfeuserregister_email {
 			if (isset($fetch) && !empty($fetch)) {
 				$pidLock = 'AND pid IN (' . ($this->cObj->data['pages'] ? $this->cObj->data['pages'] . ',' : '') . $this->controlData->getPid() . ')';
 				$enable = $GLOBALS['TSFE']->sys_page->enableFields($theTable);
+				$bFetchIsInt = (
+					class_exists('t3lib_utility_Math') ?
+						t3lib_utility_Math::canBeInterpretedAsInteger($fetch) :
+						t3lib_div::testInt($fetch)
+				);
+
 					// Getting records
-				if ($theTable == 'fe_users' && t3lib_div::testInt($fetch) ) {
+				if ($theTable == 'fe_users' && $bFetchIsInt) {
 					$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField(
 						$theTable,
 						'uid',
@@ -547,7 +553,12 @@ class tx_srfeuserregister_email {
 				);
 		}
 
-		if (t3lib_div::testInt($recipient)) {
+		$bRecipientIsInt = (
+			class_exists('t3lib_utility_Math') ?
+				t3lib_utility_Math::canBeInterpretedAsInteger($recipient) :
+				t3lib_div::testInt($recipient)
+		);
+		if ($bRecipientIsInt) {
 			$fe_userRec = $GLOBALS['TSFE']->sys_page->getRawRecord('fe_users', $recipient);
 			$recipient = $fe_userRec['email'];
 		}

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2011 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2012 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -438,7 +438,13 @@ class tx_srfeuserregister_setfixed {
 				}
 				$conf = array();
 				$conf['disableGroupAccessCheck'] = TRUE;
-				$confirmType = (t3lib_div::testInt($this->conf['confirmType']) ? intval($this->conf['confirmType']) : $TSFE->type);
+				$bconfirmTypeIsInt = (
+					class_exists('t3lib_utility_Math') ?
+						t3lib_utility_Math::canBeInterpretedAsInteger($this->conf['confirmType']) :
+						t3lib_div::testInt($this->conf['confirmType'])
+				);
+
+				$confirmType = ($bconfirmTypeIsInt ? intval($this->conf['confirmType']) : $TSFE->type);
 				$url =
 					tx_div2007_alpha::getTypoLink_URL_fh002(
 						$this->cObj,
