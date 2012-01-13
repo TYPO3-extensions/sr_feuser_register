@@ -1,4 +1,7 @@
 2012-01-13 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug #14416: Missing break in switch after preg
+
+2012-01-13 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug #18343: replace deprecated t3lib_div::intInRange by t3lib_utility_Math::forceIntegerInRange
 	* replace deprecated t3lib_div::testInt by t3lib_utility_Math::canBeInterpretedAsInteger
 
