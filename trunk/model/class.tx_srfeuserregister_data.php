@@ -775,6 +775,7 @@ class tx_srfeuserregister_data {
 											);
 									}
 								}
+							break;
 							case 'hook':
 								if (trim($dataArray[$theField])) {
 									if (isset($countArray['hook'][$theCmd])) {
