@@ -1,4 +1,7 @@
 2012-01-16 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug #18179: Parse error while using GET-Parameters without square brackets
+
+2012-01-16 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug #18364: Initialize $prefixId in method tx_srfeuserregister_display::editForm
 
 2012-01-13 Franz Holzinger  <franz@ttproducts.de>

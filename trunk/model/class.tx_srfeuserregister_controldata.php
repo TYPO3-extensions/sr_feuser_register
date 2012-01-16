@@ -860,6 +860,9 @@ class tx_srfeuserregister_controldata {
 			$search = array('[%5D]', '[%5B]');
 			$replace = array('\']', '\'][\'');
 			$newkey = "['" . preg_replace($search, $replace, $key);
+			if (!preg_match('/' . preg_quote(']') . '$/', $newkey)){
+				$newkey .= "']";
+			}
 			eval("\$retArray" . $newkey . "='$val';");
 		}
 		return $retArray;
