@@ -94,6 +94,8 @@ class tx_srfeuserregister_display {
 	) {
 		global $TSFE;
 
+		$prefixId = $this->controlData->getPrefixId();
+
 		if (isset($dataArray) && is_array($dataArray))	{
 			$currentArray = array_merge($origArray, $dataArray);
 		} else {
