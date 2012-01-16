@@ -1,5 +1,5 @@
 2012-01-16 Franz Holzinger  <franz@ttproducts.de>
-	* fix bug #18179: Parse error while using GET-Parameters without square brackets
+	* fix bug #18083: Parser error on eval() in getShortUrl()
 
 2012-01-16 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug #18364: Initialize $prefixId in method tx_srfeuserregister_display::editForm
