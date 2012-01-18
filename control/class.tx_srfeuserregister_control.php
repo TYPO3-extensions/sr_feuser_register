@@ -773,10 +773,8 @@ class tx_srfeuserregister_control {
 			$loginVars
 		);
 
-		$absUrl = $this->controlData->getSiteUrl() . $relUrl;
-
 		$this->controlData->clearSessionData(FALSE);
-		header('Location: ' . t3lib_div::locationHeaderUrl($absUrl));
+		header('Location: ' . t3lib_div::locationHeaderUrl($relUrl));
 	}
 
 

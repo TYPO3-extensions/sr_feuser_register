@@ -1,3 +1,6 @@
+2012-01-18 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug #18019: Incorrect login URL code
+
 2012-01-16 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug #18083: Parser error on eval() in getShortUrl()
 
