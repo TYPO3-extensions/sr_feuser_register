@@ -1,3 +1,6 @@
+2012-01-19 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug #17137: store the token together with the user data before a setfixed command is executed
+
 2012-01-18 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug #18019: Incorrect login URL code
 

@@ -203,7 +203,6 @@ class tx_srfeuserregister_controldata {
 		}
 		$feUserData = $this->getFeUserData();
 		$this->secureInput($feUserData);
-		$token = $this->readToken(); // fetch latest internal token
 
 		$bRuIsInt = (
 			class_exists('t3lib_utility_Math') ?
@@ -211,19 +210,36 @@ class tx_srfeuserregister_controldata {
 				t3lib_div::testInt($feUserData['rU'])
 		);
 
+		if ($bRuIsInt) {
+			$theUid = intval($feUserData['rU']);                                          // find the uid
+			$origArray = $TSFE->sys_page->getRawRecord($theTable, $theUid);               // Get data
+		}
+
+		$token = '';
+		if (
+			isset($origArray) &&
+			is_array($origArray) &&
+			$cmd == 'setfixed' &&
+			$origArray['token'] != ''
+		) {
+			$token = $origArray['token'];	// use the token from the FE user data
+					// Token has been added to pivars in a mail link URL.
+		} else {
+			$token = $this->readToken(); // fetch latest internal token
+		}
+
 		if (
 			is_array($feUserData) && (
 				!count($feUserData) ||
 				$bSecureStartCmd ||
 				$token != '' && $feUserData['token'] == $token
 			)
-		)	{
+		) {
 			$this->setTokenValid(TRUE);
-		} else if (($bValidRegHash || !$this->conf['useShortUrls']) && $bRuIsInt) {
-
-			$theUid = intval($feUserData['rU']);
-			$origArray = $TSFE->sys_page->getRawRecord($theTable, $theUid);
-
+		} else if (
+			$bRuIsInt &&
+			($bValidRegHash || !$this->conf['useShortUrls'])
+		) {
 			if (
 				isset($getVars) &&
 				is_array($getVars) &&
@@ -235,7 +251,12 @@ class tx_srfeuserregister_controldata {
 				$fdArray = t3lib_div::_GP('fD', 1);
 			}
 
-			if (isset($fdArray) && is_array($fdArray)) {
+			if (
+				isset($fdArray) &&
+				is_array($fdArray) &&
+				isset($origArray) &&
+				is_array($origArray)
+			) {
 				$fieldList = rawurldecode($fdArray['_FIELDLIST']);
 				$setFixedArray = array_merge($origArray, $fdArray);
 				$authCode = $authObj->setfixedHash($setFixedArray, $fieldList);

@@ -988,6 +988,7 @@ class tx_srfeuserregister_marker {
 		} else if (strlen($token) < 10) {
 			$tokenError = $this->langObj->getLL('token_short');
 		}
+
 		if ($tokenError != '') {
 			exit($this->pibase->extKey . ': ' . $tokenError);
 		}

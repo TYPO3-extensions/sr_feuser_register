@@ -62,7 +62,6 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 		);
 
 		// keep previsous language settings if available
-
 		if (isset($pObj->LOCAL_LANG) && is_array($pObj->LOCAL_LANG)) {
 			$this->LOCAL_LANG = &$pObj->LOCAL_LANG;
 		}

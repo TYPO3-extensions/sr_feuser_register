@@ -429,6 +429,7 @@ class tx_srfeuserregister_control {
 					$this->controlData->writePassword($password);
 					$securedArray = $this->controlData->readUnsecuredArray();
 				}
+				$token = $this->controlData->readToken();
 				$prefixId = $this->controlData->getPrefixId();
 				$extKey = $this->controlData->getExtKey();
 
@@ -436,6 +437,7 @@ class tx_srfeuserregister_control {
 					$theTable,
 					$finalDataArray,
 					$origArray,
+					$token,
 					$newDataArray,
 					$cmd,
 					$cmdKey,
@@ -606,7 +608,6 @@ class tx_srfeuserregister_control {
 			if ($cmd == '' && $this->controlData->getFeUserData('preview')) {
 				$cmd = $cmdKey;
 			}
-
 			switch($cmd) {
 				case 'setfixed':
 					if ($this->conf['infomail']) {

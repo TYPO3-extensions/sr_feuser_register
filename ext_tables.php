@@ -166,6 +166,15 @@ $addColumnArray = Array(
 			'readOnly' => '1',
 		)
 	),
+	'token' => Array (
+		'exclude' => 1,
+		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.token',
+		'config' => Array (
+			'type' => 'text',
+			'rows' => '1',
+			'cols' => '32'
+		)
+	)
 );
 
 
