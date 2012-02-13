@@ -407,7 +407,7 @@ class tx_srfeuserregister_data {
 		$requiredArray
 	) {
 		$displayFieldArray = t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1);
-		if($this->controlData->useCaptcha($cmdKey))	{
+		if($this->controlData->useCaptcha($cmdKey)) {
 			$displayFieldArray[] = 'captcha_response';
 		}
 
@@ -1140,6 +1140,7 @@ class tx_srfeuserregister_data {
 		$theTable,
 		$dataArray,
 		$origArray,
+		$token,
 		&$newRow,
 		$cmd,
 		$cmdKey,
@@ -1209,6 +1210,10 @@ class tx_srfeuserregister_data {
 							$outGoingData['password'] = $password;
 						}
 
+						if (isset($GLOBALS['TCA'][$theTable]['ctrl']['token'])) {
+							$outGoingData['token'] = $token; // Save token in record
+							$newFieldList .= ',token';                                                                   // Could be set conditional to adminReview or user confirm
+						}
 						$res =
 							$this->cObj->DBgetUpdate(
 								$theTable,
@@ -1268,6 +1273,12 @@ class tx_srfeuserregister_data {
 						} else {
 							$parsedArray['password'] = $password;
 						}
+					}
+
+					if (isset($GLOBALS['TCA'][$theTable]['ctrl']['token'])) {
+
+						$parsedArray['token'] = $token;
+						$newFieldList  .= ',token';
 					}
 
 					$res =
