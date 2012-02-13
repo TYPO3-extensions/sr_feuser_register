@@ -50,7 +50,7 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 
 
 // 	public function init (&$pibase, &$conf, $LLkey)	{
-	public function init (&$pObj, &$cObj, &$conf, $scriptRelPath, $extKey) {
+	public function init ($pObj, $cObj, $conf, $scriptRelPath, $extKey) {
 
 		$this->pibase = $pObj;
 
