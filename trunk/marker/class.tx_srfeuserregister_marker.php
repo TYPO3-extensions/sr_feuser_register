@@ -351,7 +351,7 @@ class tx_srfeuserregister_marker {
 		}
 
 		foreach($infoFieldArray as $theField) {
-			$markerkey = $this->cObj->caseshift($theField,'upper');
+			$markerkey = $this->cObj->caseshift($theField, 'upper');
 			$bValueChanged = FALSE;
 
 			if (isset($row[$theField]) && isset($origRow[$theField])) {
@@ -411,7 +411,6 @@ class tx_srfeuserregister_marker {
 					$label = sprintf($label, $key);
 				}
 				$markerArray['###MISSING_' . $markerkey . '###'] = $label;
-
 				$markerArray['###MISSING_INVITATION_' . $markerkey . '###'] = $this->langObj->getLL('missing_invitation_' . $theField);
 			} else {
 				$markerArray['###REQUIRED_' . $markerkey . '###'] = '';
@@ -673,6 +672,7 @@ class tx_srfeuserregister_marker {
 					$titleLanguage = $this->langObj->getLL('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'language');
 				}
 				$selected = (is_array($row) && isset($row['static_info_country']) ? $row['static_info_country'] : array());
+				$where = '';
 				if (isset($this->conf['where.']) && is_array($this->conf['where.'])) {
 					$where = $this->conf['where.']['static_countries'];
 				}
@@ -689,6 +689,10 @@ class tx_srfeuserregister_marker {
 					'',
 					$this->conf['useLocalCountry']
 				);
+				$where = '';
+				if (isset($this->conf['where.']) && is_array($this->conf['where.'])) {
+					$where = $this->conf['where.']['static_country_zones'];
+				}
 				$markerArray['###SELECTOR_ZONE###'] =
 					$this->staticInfo->buildStaticInfoSelector(
 						'SUBDIVISIONS',
@@ -698,23 +702,30 @@ class tx_srfeuserregister_marker {
 						is_array($row) ? $row['static_info_country'] : '',
 						'',
 						$idZone,
-						$titleZone
+						$titleZone,
+						$where
 					);
 				if (!$markerArray['###SELECTOR_ZONE###'] ) {
 					$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE[' . $theTable . '][zone]" value="" />';
 				}
 
+				$where = '';
+				if (isset($this->conf['where.']) && is_array($this->conf['where.'])) {
+					$where = $this->conf['where.']['static_languages'];
+				}
+
 				$markerArray['###SELECTOR_LANGUAGE###'] =
 					$this->staticInfo->buildStaticInfoSelector(
-					'LANGUAGES',
-					'FE[' . $theTable . ']' . '[language]',
-					'',
-					is_array($row) ? $row['language'] : '',
-					'',
-					'',
-					$idLanguage,
-					$titleLanguage
-				);
+						'LANGUAGES',
+						'FE[' . $theTable . ']' . '[language]',
+						'',
+						is_array($row) ? $row['language'] : '',
+						'',
+						'',
+						$idLanguage,
+						$titleLanguage,
+						$where
+					);
 			}
 		}
 	}	// addStaticInfoMarkers
