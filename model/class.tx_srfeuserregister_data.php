@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2011 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2012 Stanislas Rolland (stanislas.rolland@sjbr.ca)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -415,11 +415,21 @@ class tx_srfeuserregister_data {
 		$failureArray = array();
 		foreach ($requiredArray as $k => $theField) {
 
-			if (isset($dataArray[$theField]) && !is_array($dataArray[$theField])) {
-				if (!trim($dataArray[$theField]) && trim($dataArray[$theField]) != '0') {
-					$failureArray[] = $theField;
-					$this->missing[$theField] = TRUE;
+			$bIsMissing = FALSE;
+
+			if (isset($dataArray[$theField])) {
+				if (!is_array($dataArray[$theField])) {
+					if (!trim($dataArray[$theField]) && trim($dataArray[$theField]) != '0') {
+						$bIsMissing = TRUE;
+					}
 				}
+			} else {
+				$bIsMissing = TRUE;
+			}
+
+			if ($bIsMissing) {
+				$failureArray[] = $theField;
+				$this->missing[$theField] = TRUE;
 			}
 		}
 		$pid = intval($dataArray['pid']);
