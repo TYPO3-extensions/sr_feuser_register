@@ -803,8 +803,11 @@ class tx_srfeuserregister_data {
 
 									if (is_array($hookClassArray)) {
 										foreach($hookClassArray as $classRef) {
-											$hookObj= &t3lib_div::getUserObj($classRef);
-											if (method_exists($hookObj, 'evalValues')) {
+											$hookObj= t3lib_div::getUserObj($classRef);
+											if (
+												is_object($hookObj) &&
+												method_exists($hookObj, 'evalValues')
+											) {
 												$test = TRUE;
 												$bInternal = FALSE;
 												$errorField = $hookObj->evalValues(
@@ -837,6 +840,8 @@ class tx_srfeuserregister_data {
 													}
 													break;
 												}
+											} else {
+												debug ($classRef, 'error in the class name for the hook "model"'); // keep debug
 											}
 										}
 									}
