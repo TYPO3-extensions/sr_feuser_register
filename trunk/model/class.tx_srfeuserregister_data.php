@@ -343,6 +343,7 @@ class tx_srfeuserregister_data {
 			isset($this->conf['evalErrors.'][$theField . '.'][$theRule . '.'])
 		) {
 			$count = 0;
+
 			foreach ($this->conf['evalErrors.'][$theField . '.'][$theRule . '.'] as $k => $v) {
 				$bKIsInt = (
 					class_exists('t3lib_utility_Math') ?
@@ -351,12 +352,13 @@ class tx_srfeuserregister_data {
 				);
 
 				if ($bInternal) {
-					if ($k=='internal') {
+					if ($k == 'internal') {
 						$failureLabel = $v;
 						break;
 					}
 				} else if ($bKIsInt) {
 					$count++;
+
 					if ($count == $orderNo) {
 						$failureLabel = $v;
 						break;
@@ -364,6 +366,7 @@ class tx_srfeuserregister_data {
 				}
 			}
 		}
+
 		if (!isset($failureLabel)) {
 			if (
 				$theRule &&
@@ -384,6 +387,7 @@ class tx_srfeuserregister_data {
 				}
 			}
 		}
+
 		if ($param != '') {
 			$failureLabel = sprintf($failureLabel,$param);
 		}
@@ -802,6 +806,7 @@ class tx_srfeuserregister_data {
 											$hookObj= &t3lib_div::getUserObj($classRef);
 											if (method_exists($hookObj, 'evalValues')) {
 												$test = TRUE;
+												$bInternal = FALSE;
 												$errorField = $hookObj->evalValues(
 													$theTable,
 													$dataArray,
@@ -811,7 +816,8 @@ class tx_srfeuserregister_data {
 													$requiredArray,
 													$theField,
 													$cmdParts,
-													$test,
+													$bInternal,
+													$test, // must be set to FALSE if it is not a test
 													$this
 												);
 
@@ -826,7 +832,7 @@ class tx_srfeuserregister_data {
 																'evalErrors_' . $theCmd,
 																$countArray['hook'][$theCmd],
 																$cmd,
-																($test === FALSE)
+																$bInternal
 															);
 													}
 													break;
@@ -1249,7 +1255,18 @@ class tx_srfeuserregister_data {
 							foreach($hookClassArray as $classRef) {
 								$hookObj= &t3lib_div::getUserObj($classRef);
 								if (method_exists($hookObj, 'registrationProcess_afterSaveEdit')) {
-									$hookObj->registrationProcess_afterSaveEdit($newRow, $this);
+									$hookObj->registrationProcess_afterSaveEdit(
+										$theTable,
+										$dataArray,
+										$origArray,
+										$token,
+										$newRow,
+										$cmd,
+										$cmdKey,
+										$pid,
+										$newFieldList,
+										$this
+									);
 								}
 							}
 						}
@@ -1353,10 +1370,21 @@ class tx_srfeuserregister_data {
 
 					// Call all afterSaveCreate hooks after the record has been created and saved
 					if (is_array ($hookClassArray)) {
-						foreach  ($hookClassArray as $classRef) {
+						foreach ($hookClassArray as $classRef) {
 							$hookObj= &t3lib_div::getUserObj($classRef);
 							if (method_exists($hookObj, 'registrationProcess_afterSaveCreate')) {
-								$hookObj->registrationProcess_afterSaveCreate($newRow, $this);
+								$hookObj->registrationProcess_afterSaveCreate(
+									$theTable,
+									$dataArray,
+									$origArray,
+									$token,
+									$newRow,
+									$cmd,
+									$cmdKey,
+									$pid,
+									$extraList,
+									$this
+								);
 							}
 						}
 					}
