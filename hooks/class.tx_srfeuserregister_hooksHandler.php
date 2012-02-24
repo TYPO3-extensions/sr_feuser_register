@@ -67,13 +67,35 @@ class tx_srfeuserregister_hooksHandler {
 		}
 	}
 
-	public function registrationProcess_afterSaveEdit ($recordArray, &$invokingObj) {
+	public function registrationProcess_afterSaveEdit (
+		$theTable,
+		$dataArray,
+		$origArray,
+		$token,
+		&$newRow,
+		$cmd,
+		$cmdKey,
+		$pid,
+		$fieldList,
+		$pObj // object of type tx_srfeuserregister_data
+	) {
 	}
 
 	public function registrationProcess_beforeSaveDelete ($recordArray, &$invokingObj) {
 	}
 
-	public function registrationProcess_afterSaveCreate ($recordArray, &$invokingObj) {
+	public function registrationProcess_afterSaveCreate (
+		$theTable,
+		$dataArray,
+		$origArray,
+		$token,
+		&$newRow,
+		$cmd,
+		$cmdKey,
+		$pid,
+		$fieldList,
+		$pObj // object of type tx_srfeuserregister_data
+	) {
 	}
 
 	public function confirmRegistrationClass_preProcess (&$recordArray, &$invokingObj) {

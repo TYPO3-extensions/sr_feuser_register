@@ -1,3 +1,6 @@
+2012-02-24 Franz Holzinger  <franz@ttproducts.de>
+	* add more parameters to the hooks for registrationProcess_afterSaveCreate, registrationProcess_afterSaveCreate and evalValues
+
 2012-01-19 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug #17137: store the token together with the user data before a setfixed command is executed
 
