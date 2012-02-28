@@ -108,19 +108,11 @@ class tx_srfeuserregister_controldata {
 		}
 
 			// Initialise password encryption
-		if (
-			$theTable == 'fe_users' &&
-			$this->conf['useMd5Password']
-		) {
+		if ($theTable == 'fe_users' && $this->conf['useMd5Password']) {
 			$this->setUseMd5Password(TRUE);
-			$this->conf['enableAutoLoginOnCreate'] = FALSE;
 		}
-
-		if (
-			$this->conf['enableEmailConfirmation'] ||
-			$this->conf['enableAdminReview'] ||
-			$this->conf['setfixed']
-		) {
+			// Enable setfixed if needed
+		if ($this->conf['enableEmailConfirmation'] || $this->conf['enableAdminReview'] || $this->conf['setfixed']) {
 			$this->setSetfixedEnabled(1);
 		}
 
@@ -349,11 +341,17 @@ class tx_srfeuserregister_controldata {
 	}
 
 
-	public function readUnsecuredArray () {
+	public function readUnsecuredArray ($bPassword = TRUE) {
 		$rcArray = array();
 		$seData = $this->readSessionData();
 
 		foreach ($this->securedFieldArray as $field) {
+			if (
+				!$bPassword &&
+				($field == 'password' || $field == 'password_again')
+			) {
+				continue;
+			}
 			$v = $seData[$field];
 			if (isset($v)) {
 				$rcArray[$field] = $v;
@@ -567,7 +565,7 @@ class tx_srfeuserregister_controldata {
 
 		if ($bNewSessionData) {
 			$this->writeSessionData($newSessionData);
-		} else if ($row['password'] != '' || $row['password'] != '') {
+		} else if ($row['password'] != '' || $row['password_again'] != '') {
 			$bWriteDummy = TRUE;
 		}
 

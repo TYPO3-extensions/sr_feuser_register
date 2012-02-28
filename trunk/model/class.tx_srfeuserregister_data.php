@@ -465,8 +465,18 @@ class tx_srfeuserregister_data {
 
 				if (isset($dataArray[$theField]) || !count($origArray) || !isset($origArray[$theField])) {
 					$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
+ 
+					$keyUnsetEmpty = array_search('unsetEmpty', $listOfCommands);
+					if ($keyUnsetEmpty !== FALSE) {
+						unset($listOfCommands[$keyUnsetEmpty]);
+						$listOfCommands = array_merge(array('unsetEmpty'), $listOfCommands);
+					}
+					$bSetToEmpty = FALSE;
 
 					foreach ($listOfCommands as $k => $cmd) {
+						if ($bSetToEmpty) {
+							break;
+						}
 						$cmdParts = preg_split('/\[|\]/', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 						$theCmd = trim($cmdParts[0]);
 						switch($theCmd) {
@@ -604,6 +614,8 @@ class tx_srfeuserregister_data {
 									unset($this->inError[$theField]);
 									unset($this->failureMsg[$theField]);
 									unset($dataArray[$theField]); // This should prevent the field from entering the database.
+									unset($dataArray[$theField.'_again']);
+									$bSetToEmpty = TRUE;
 								}
 							break;
 							case 'upload':
@@ -924,6 +936,12 @@ class tx_srfeuserregister_data {
 						$cmdParts = preg_split('/\[|\]/', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 						$theCmd = trim($cmdParts[0]);
 						$bValueAssigned = TRUE;
+						if (
+							$theField == 'password' &&
+							!isset($dataArray[$theField])
+						) {
+							$bValueAssigned = FALSE;
+						}
 						$dataValue = (isset($dataArray[$theField]) ? $dataArray[$theField] : $origArray[$theField]);
 
 						switch($theCmd) {
@@ -1226,8 +1244,7 @@ class tx_srfeuserregister_data {
 
 						$newFieldList = implode (',', $newFieldArray);
 
-						if ($theTable == 'fe_users') {
-
+						if ($theTable == 'fe_users' && $password != '') {
 							$outGoingData['password'] = $password;
 						}
 
@@ -1258,7 +1275,7 @@ class tx_srfeuserregister_data {
 						// Call all afterSaveEdit hooks after the record has been edited and saved
 						if (is_array($hookClassArray)) {
 							foreach($hookClassArray as $classRef) {
-								$hookObj= &t3lib_div::getUserObj($classRef);
+								$hookObj = t3lib_div::getUserObj($classRef);
 								if (method_exists($hookObj, 'registrationProcess_afterSaveEdit')) {
 									$hookObj->registrationProcess_afterSaveEdit(
 										$theTable,
@@ -1376,7 +1393,7 @@ class tx_srfeuserregister_data {
 					// Call all afterSaveCreate hooks after the record has been created and saved
 					if (is_array ($hookClassArray)) {
 						foreach ($hookClassArray as $classRef) {
-							$hookObj= &t3lib_div::getUserObj($classRef);
+							$hookObj = t3lib_div::getUserObj($classRef);
 							if (method_exists($hookObj, 'registrationProcess_afterSaveCreate')) {
 								$hookObj->registrationProcess_afterSaveCreate(
 									$theTable,
@@ -1441,7 +1458,7 @@ class tx_srfeuserregister_data {
 							// Call all beforeSaveDelete hooks BEFORE the record is deleted
 						if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'])) {
 							foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'] as $classRef) {
-								$hookObj= &t3lib_div::getUserObj($classRef);
+								$hookObj = t3lib_div::getUserObj($classRef);
 								if (method_exists($hookObj, 'registrationProcess_beforeSaveDelete')) {
 									$hookObj->registrationProcess_beforeSaveDelete($origArray, $this);
 								}

@@ -161,7 +161,7 @@ plugin.tx_srfeuserregister_pi1 {
 		preview = {$plugin.tx_srfeuserregister_pi1.enablePreviewEdit}
 		allowUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowUserGroupUpdate}
 		keepUnselectableUserGroups = {$plugin.tx_srfeuserregister_pi1.keepUnselectableUserGroups}
-
+		required := removeFromList(password)
 		defaultValues {
 			disable = 0
 			usergroup >
@@ -180,6 +180,7 @@ plugin.tx_srfeuserregister_pi1 {
 		evalValues {
 			username = unsetEmpty
 			usergroup = unsetEmpty
+			password := addToList(unsetEmpty)
 		}
 	}
 

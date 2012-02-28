@@ -1,5 +1,12 @@
+2012-02-25 Stanislas Rolland  <typo3@sjbr.ca>
+	* fix regression on security issue: Information (and password) Disclosure in extension sr_feuser_register (Thanks to Franz Holzinger)
+
 2012-02-24 Franz Holzinger  <franz@ttproducts.de>
 	* add more parameters to the hooks for registrationProcess_afterSaveCreate, registrationProcess_afterSaveCreate and evalValues
+
+2012-02-22 Stanislas Rolland  <typo3@sjbr.ca>
+	* fix security issue: Information (and password) Disclosure in extension sr_feuser_register
+	* fix security issue: sr_feuser_register: "edit account" page contains cleartext password in HTML source
 
 2012-01-19 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug #17137: store the token together with the user data before a setfixed command is executed
