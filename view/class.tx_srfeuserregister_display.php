@@ -134,7 +134,6 @@ class tx_srfeuserregister_display {
 				$errorFieldArray,
 				$failure
 			);
-		$currentArray['password_again'] = $currentArray['password'];
 		$markerArray =
 			$this->marker->fillInMarkerArray(
 				$markerArray,
@@ -143,6 +142,13 @@ class tx_srfeuserregister_display {
 				'',
 				TRUE
 			);
+			// Avoid cleartext password in HTML source
+		if ($markerArray['###FIELD_password###'] != '') {
+			$markerArray['###FIELD_password###'] = '';
+		}
+		if ($markerArray['###FIELD_password_again###'] != '') {
+			$markerArray['###FIELD_password_again###'] = '';
+		}
 
 		$this->marker->addStaticInfoMarkers($markerArray, $currentArray);
 		$this->tca->addTcaMarkers(

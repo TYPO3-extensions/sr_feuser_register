@@ -228,7 +228,8 @@ class tx_srfeuserregister_control_main {
 				$this->marker,
 				$this->email,
 				$this->tca,
-				$this->setfixedObj
+				$this->setfixedObj,
+				$this->urlObj
 			);
 
 			$this->data->init(

@@ -424,6 +424,11 @@ class tx_srfeuserregister_email {
 			}
 
 			$markerArray['###SYS_AUTHCODE###'] = $authObj->authCode($row);
+				// If using md5 password, generate a challenge
+			if ($this->controlData->getUseMd5Password()) {
+				$passwordmd5Obj = &t3lib_div::getUserObj('&tx_srfeuserregister_passwordmd5');
+				$passwordmd5Obj->generateChallenge($currentRow);
+			}
 			$this->setfixedObj->computeUrl(
 				$cmdKey,
 				$markerArray,

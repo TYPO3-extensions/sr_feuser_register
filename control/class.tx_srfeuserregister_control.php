@@ -66,7 +66,8 @@ class tx_srfeuserregister_control {
 		&$marker,
 		&$email,
 		&$tca,
-		&$setfixedObj
+		&$setfixedObj,
+		&$urlObj
 	) {
 		global $TSFE;
 
@@ -81,6 +82,7 @@ class tx_srfeuserregister_control {
 		$this->tca = &$tca;
 		$this->controlData = &$controlData;
 		$this->setfixedObj = &$setfixedObj;
+		$this->urlObj = &$urlObj;
 
 		$extKey = $this->controlData->getExtKey();
 		$cmd = $this->controlData->getCmd();
@@ -345,7 +347,10 @@ class tx_srfeuserregister_control {
 			$this->data->resetDataArray();
 			$finalDataArray = $dataArray;
 		} else if ($this->data->bNewAvailable()) {
-			$securedArray = $this->controlData->readUnsecuredArray();
+			
+				// The password must always be fetched because it is not visible on the preview
+			$bPassword = ($theTable == 'fe_users');
+			$securedArray = $this->controlData->readUnsecuredArray($bPassword);
 
 			if (isset($securedArray) && is_array($securedArray)) {
 				$finalDataArray =
@@ -573,10 +578,22 @@ class tx_srfeuserregister_control {
 
 					// Auto-login on create
 				if ($theTable == 'fe_users' && $cmd == 'create' && !$this->controlData->getSetfixedEnabled() && $this->conf['enableAutoLoginOnCreate']) {
-					$this->login($finalDataArray);
-
-					if ($this->conf['autoLoginRedirect_url']) {
+					$clearPassword = $finalDataArray['password'];
+						// If using md5 password, generate a challenge and get the stored password
+					if ($this->controlData->getUseMd5Password()) {
+						$passwordmd5Obj = &t3lib_div::getUserObj('&tx_srfeuserregister_passwordmd5');
+						$passwordmd5Obj->generateChallenge($finalDataArray);
+						$finalDataArray['password'] = md5($clearPassword);
+					}
+					$success = $this->login($finalDataArray);
+					if ($success) {
+							// Login was successful
 						exit;
+					} else {
+							// Login failed... should not happen...
+							// If it does, a login form will be displayed as if auto-login was not configured
+						$finalDataArray['password'] = $clearPassword;
+						$content = '';
 					}
 				}
 			} else { // error case
@@ -745,39 +762,61 @@ class tx_srfeuserregister_control {
 		return $content;
 	}
 
-
-	public function login ($row)	{
-		global $TSFE;
-
-		$loginVars = array();
-		$loginVars['user'] = $row['username'];
-		$loginVars['pass'] = $row['password'];
-		if ($this->controlData->getUseMd5Password()) {
-			$loginVars['challenge'] =  $this->controlData->getFeUserData('cv');
-			if ($loginVars['challenge']) {
-				$loginVars['pass'] = (string)md5($row['username'] . ':' . $row['password'] . ':' . $loginVars['challenge']);
- 			}
-		}
-		$loginVars['pid'] = $this->controlData->getPid();
-		$loginVars['logintype'] = 'login';
-
-		$redirect_url = $this->controlData->readRedirectUrl();
-
-		if ($redirect_url == '' && $this->conf['autoLoginRedirect_url']) {
-			$redirect_url = htmlspecialchars(trim($this->conf['autoLoginRedirect_url']));
-		}
-		if ($redirect_url != '') {
-			$loginVars['redirect_url'] = $redirect_url;
-		}
-		$relUrl = $this->cObj->getTypoLink_URL(
-			$this->controlData->getPID('login') . ',' . $TSFE->type,
-			$loginVars
+	/**
+	 * Perform user login and redirect to configured url, if any
+	 *
+	 * @param array	$row: incoming setfixed parameters
+	 * @return boolean TRUE, if login was successful, FALSE otherwise
+	 */
+	function login ($row) {
+		$result = TRUE;
+			// Log the user in
+		$loginData = array(
+			'uname' => $row['username'],
+			'uident' => $row['password'],
+			'chalvalue' => $row['chalvalue'],
+			'status' => 'login',
 		);
-
-		$this->controlData->clearSessionData(FALSE);
-		header('Location: ' . t3lib_div::locationHeaderUrl($relUrl));
+			// Get the challenge value
+		if ($this->controlData->getUseMd5Password()) {
+			if (!$loginData['chalvalue']) {
+				$loginData['chalvalue'] =  $this->controlData->getFeUserData('cv');
+			}
+			if ($loginData['chalvalue']) {
+				$loginData['uident'] = (string) md5($row['username'] . ':' . $row['password'] . ':' . $loginData['chalvalue']);
+			}
+		}
+			// Do not use a particular page id
+		$GLOBALS['TSFE']->fe_user->checkPid = 0;
+			// Get authentication info array
+		$authInfo = $GLOBALS['TSFE']->fe_user->getAuthInfoArray();
+			// Get user info
+		$user = $GLOBALS['TSFE']->fe_user->fetchUserRecord($authInfo['db_user'], $loginData['uname']);
+			// Check authentication
+		$ok = $GLOBALS['TSFE']->fe_user->compareUident($user, $loginData);
+		if ($ok) {
+				// Login successfull: create user session
+			$GLOBALS['TSFE']->fe_user->createUserSession($user);
+				// Redirect to configured page, if any
+			$redirectUrl = $this->controlData->readRedirectUrl();
+			if (!$redirectUrl) {
+				$redirectUrl = trim($this->conf['autoLoginRedirect_url']);
+			}
+			if (!$redirectUrl) {
+				if ($this->conf['loginPID']) {
+					$redirectUrl = $this->urlObj->get('', $this->conf['loginPID']);
+				} else {
+					$redirectUrl = $this->controlData->getSiteUrl();
+				}
+			}
+			header('Location: '.t3lib_div::locationHeaderUrl($redirectUrl));
+		} else {
+				// Login failed...
+			$this->controlData->clearSessionData(FALSE);
+			$result = FALSE;
+		}
+		return $result;
 	}
-
 
 	/**
 	* Invokes a user process

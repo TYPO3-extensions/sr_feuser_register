@@ -331,12 +331,22 @@ class tx_srfeuserregister_setfixed {
 						if ($errorContent) {
 							$content = $errorContent;
 								// Auto-login on confirmation
-						} else if (
-							$this->conf['enableAutoLoginOnConfirmation'] &&
-							($sFK == 'APPROVE' || $sFK == 'ENTER')
-						) {
-							$pObj->login($currArr);
-							exit;
+						} else if ($this->conf['enableAutoLoginOnConfirmation'] && ($sFK == 'APPROVE' || $sFK == 'ENTER')) {
+							$success = $pObj->login($currArr);
+							if ($success) {
+									// Login was successful
+								exit;
+							} else {
+									// Login failed
+								$content = $this->display->getPlainTemplate(
+									$templateCode,
+									'###TEMPLATE_SETFIXED_FAILED###',
+									$markerArray,
+									$origArray,
+									'',
+									''
+								);
+							}
 						}
 					}
 				}
@@ -392,7 +402,6 @@ class tx_srfeuserregister_setfixed {
 				$fieldListArray = t3lib_div::trimExplode(',', $fieldList);
 
 				foreach ($fieldListArray as $fieldname) {
-
 					if (isset($data[$fieldname])) {
 						$r[$fieldname] = $data[$fieldname];
 					}
