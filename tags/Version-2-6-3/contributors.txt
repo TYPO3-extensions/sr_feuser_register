@@ -1,0 +1,31 @@
+Franz Holzinger <franz@ttproducts.de>: software development and bug fixes
+Gideon So <gideonso@mcnet.com.hk>: Hongkong Chinese translations
+Thomas Dubach <tom@etown.ch>: German translations
+Dennis S. Hennen <dennis@28studios.com>: generatePassword.
+Ralph Brugger <Ralph.Brugger@linkpool.de>: captcha feature
+Dirk Heitzmann <dirk.heitzmann@c-wd.de>: date formats
+Pieter Verstraelen <pieter.v@gmx.net>: sharing his ideas and code to incorporate an additional hook to generate a username.
+Cornelia Lange http://www.clkm.de/: The extension includes two link icons authored by creator and copyright-owner
+Volker Graubaum <volker.graubaum@e-netconsulting.de>: The email attachment feature
+Helmut Hummel, TYPO3 Security Team
+Oliver Klee <typo3-coding@oliverklee.de>: several bug fixes and code improvements. This extension incorporates a script borrowed from extension Salutation Switcher (salutation switcher) to allow to set informal salutation mode.
+Esben Maaløe <esm@baseclassmodulweb.dk>: Validation of Internet site URLs is based on URL Validator http://baseclass.modulweb.dk/urlvalidator/
+John Lim: In order to support dates before 1970, the field “date of birth” is handled with the ADOdb Date Time Library. http://phplens.com/phpeverywhere/adodb_date_library
+Dylan Kuhn <dkuhn1@yahoo.com>: Sharing his ideas and code for extending this extension with TCA-driven fields.
+Ries van Twisk <ries@vantwisk.nl>: Sharing of his code to support fields with multiple checkboxes and to incorporate additional hooks.
+Bernhard Kraft <kraftb@kraftb.at>: This extension incorporates some code taken from the extension KB MD5 FE Password (kb_md5fepw).
+Steve Webster <steviewebsite@msn.com>: Sharing of his code for the short URL feature.
+David Bocher <david_bocher@yahoo.fr>: Sharing his code for honoring TCA renderMode property.
+Jens Hirschfeld <Jens.Hirschfeld@KeepOut.de>: Sharing of his code for strWrap to overrideValues.
+Martin Kutschker (Masi) http://activesolution.at/ from Austria: Sharing of his code for enhanced label markers 'v_...', changes to label markers
+Pierre Lamoureux: Improvements for security token
+
+
+
+
+
+
+
+
+
+
