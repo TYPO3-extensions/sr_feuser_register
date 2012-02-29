@@ -108,11 +108,19 @@ class tx_srfeuserregister_controldata {
 		}
 
 			// Initialise password encryption
-		if ($theTable == 'fe_users' && $this->conf['useMd5Password']) {
+		if (
+			$theTable == 'fe_users' &&
+			$this->conf['useMd5Password']
+		) {
 			$this->setUseMd5Password(TRUE);
+			$this->conf['enableAutoLoginOnCreate'] = FALSE;
 		}
-			// Enable setfixed if needed
-		if ($this->conf['enableEmailConfirmation'] || $this->conf['enableAdminReview'] || $this->conf['setfixed']) {
+
+		if (
+			$this->conf['enableEmailConfirmation'] ||
+			$this->conf['enableAdminReview'] ||
+			$this->conf['setfixed']
+		) {
 			$this->setSetfixedEnabled(1);
 		}
 
