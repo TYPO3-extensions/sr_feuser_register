@@ -209,7 +209,6 @@ class tx_srfeuserregister_data {
 
 
 	public function setDataArray ($dataArray, $k='', $bOverrride=TRUE) {
-
 		if ($k != '') {
 			if ($bOverrride || !isset($this->dataArray[$k])) {
 				$this->dataArray[$k] = $dataArray;
@@ -436,6 +435,7 @@ class tx_srfeuserregister_data {
 				$this->missing[$theField] = TRUE;
 			}
 		}
+
 		$pid = intval($dataArray['pid']);
 
 		// Evaluate: This evaluates for more advanced things than "required" does. But it returns the same error code, so you must let the required-message tell, if further evaluation has failed!
@@ -465,7 +465,14 @@ class tx_srfeuserregister_data {
 
 				if (isset($dataArray[$theField]) || !count($origArray) || !isset($origArray[$theField])) {
 					$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
- 
+
+					$keyUnsetEmpty = array_search('unsetEmpty', $listOfCommands);
+					if ($keyUnsetEmpty !== FALSE) {
+						unset($listOfCommands[$keyUnsetEmpty]);
+						$listOfCommands = array_merge(array('unsetEmpty'), $listOfCommands);
+					}
+					$bSetToEmpty = FALSE;
+
 					$keyUnsetEmpty = array_search('unsetEmpty', $listOfCommands);
 					if ($keyUnsetEmpty !== FALSE) {
 						unset($listOfCommands[$keyUnsetEmpty]);
@@ -838,6 +845,7 @@ class tx_srfeuserregister_data {
 
 												if ($errorField != '') {
 													$failureArray[] = $errorField;
+
 													if (!$test) {
 														$this->inError[$theField] = TRUE;
 														$this->failureMsg[$theField][] =
@@ -1072,6 +1080,7 @@ class tx_srfeuserregister_data {
 								$bValueAssigned = FALSE;
 							break;
 						}
+
 						if ($bValueAssigned)	{
 							$dataArray[$theField] = $dataValue;
 						}
