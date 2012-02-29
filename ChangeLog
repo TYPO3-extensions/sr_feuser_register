@@ -1,3 +1,6 @@
+2012-02-28 Stanislas Rolland  <typo3@sjbr.ca>
+	* Add feature #34405: Make use of Swift Mailer API
+
 2012-02-25 Stanislas Rolland  <typo3@sjbr.ca>
 	* fix regression on security issue: Information (and password) Disclosure in extension sr_feuser_register (Thanks to Franz Holzinger)
 
