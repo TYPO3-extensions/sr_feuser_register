@@ -540,6 +540,10 @@ class tx_srfeuserregister_controldata {
 	*/
 	public function securePassword (&$row) {
 
+// 		if (isset($row['password_again']) && $row['password_again'] == '') {
+// 			$row['password'] = '';
+// 		}
+
 		$bWriteDummy = FALSE;
 		$bMd5 = $this->getUseMd5Password();
 		$dummyPassword = $this->dummyPassword;
