@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2012 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -32,7 +32,7 @@
  * $Id$
  *
  * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
- * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ * @author	Stanislas Rolland <typo3(arobas)sjbr.ca>
  * @author	Franz Holzinger <franz@ttproducts.de>
  *
  * @package TYPO3
@@ -40,10 +40,7 @@
  *
  *
  */
-
-require_once(PATH_t3lib . 'class.t3lib_htmlmail.php');
 require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha5.php');
-
 
 class tx_srfeuserregister_email {
 	public $langObj;
@@ -699,8 +696,6 @@ class tx_srfeuserregister_email {
 		$replyTo = '',
 		$fileAttachment = ''
 	) {
-		// HTML
-
 		if (
 			trim($recipient) &&
 			(trim($HTMLContent) || trim($PLAINContent))
@@ -711,56 +706,135 @@ class tx_srfeuserregister_email {
 				$parts = preg_split('/<title>|<\\/title>/i', $HTMLContent, 3);
 				$subject = trim($parts[1]) ? strip_tags(trim($parts[1])) : $defaultSubject;
 			} else {
-				$parts = explode(chr(10), $PLAINContent, 2);    // First line is subject
+					// First line is subject
+				$parts = explode(chr(10), $PLAINContent, 2);
 				$subject = trim($parts[0]) ? trim($parts[0]) : $defaultSubject;
 				$PLAINContent = trim($parts[1]);
 			}
 
-			$Typo3_htmlmail = t3lib_div::makeInstance('t3lib_htmlmail');
-			$Typo3_htmlmail->start();
-			$Typo3_htmlmail->mailer = 'TYPO3 HTMLMail';
-			$Typo3_htmlmail->subject = $subject;
-			$Typo3_htmlmail->from_email = $fromEmail;
-			$Typo3_htmlmail->returnPath = $fromEmail;
-			$Typo3_htmlmail->from_name = $fromName;
-			$Typo3_htmlmail->from_name = implode(' ' , t3lib_div::trimExplode(',', $Typo3_htmlmail->from_name));
-			$Typo3_htmlmail->replyto_email = $replyTo ? $replyTo : $fromEmail;
-			$Typo3_htmlmail->replyto_name = $replyTo ? '' : $fromName;
-			$Typo3_htmlmail->replyto_name = implode(' ' , t3lib_div::trimExplode(',', $Typo3_htmlmail->replyto_name));
-			$Typo3_htmlmail->organisation = '';
-			$Typo3_htmlmail->priority = 3;
+			$mail = t3lib_div::makeInstance('t3lib_mail_Message');
+			$mail->setSubject($subject);
+			$mail->setFrom(array($fromEmail => implode(' ' , t3lib_div::trimExplode(',', $fromName))));
+			$mail->setSender($fromEmail);
+			$mail->setReturnPath($fromEmail);
+			$mail->setReplyTo(array(($replyTo ? $replyTo : $fromEmail) => implode(' ' , t3lib_div::trimExplode(',', $replyTo ? '' : $fromName))));
+			$mail->setPriority(3);
 
-			// ATTACHMENT
+				// ATTACHMENT
 			if ($fileAttachment && file_exists($fileAttachment)) {
-				$Typo3_htmlmail->addAttachment($fileAttachment);
+				$mail->attach(Swift_Attachment::fromPath($fileAttachment));
 			}
-
-			// HTML
+				// HTML
 			if (trim($HTMLContent)) {
-				$Typo3_htmlmail->theParts['html']['content'] = $HTMLContent;
-				$Typo3_htmlmail->theParts['html']['path'] = '';
-				$Typo3_htmlmail->extractMediaLinks();
-				$Typo3_htmlmail->extractHyperLinks();
-				$Typo3_htmlmail->fetchHTMLMedia();
-				$Typo3_htmlmail->substMediaNamesInHTML(0); // 0 = relative
-				$Typo3_htmlmail->substHREFsInHTML();
-				$Typo3_htmlmail->setHTML($Typo3_htmlmail->encodeMsg($Typo3_htmlmail->theParts['html']['content']));
+				$HTMLContent = $this->embedMedia($mail, $HTMLContent);
+				$mail->setBody($HTMLContent, 'text/html');
 			}
-
-			// PLAIN
-			$Typo3_htmlmail->addPlain($PLAINContent);
-			// SET Headers and Content
-			$Typo3_htmlmail->setHeaders();
-			$Typo3_htmlmail->setContent();
-			$Typo3_htmlmail->setRecipient($recipient);
-			$Typo3_htmlmail->sendtheMail();
+				// PLAIN
+			$mail->addPart($PLAINContent, 'text/plain');
+				// SET Headers and Content
+			$mail->setTo(array($recipient));
+			$mail->send();
 		}
 	}
+	
+	/**
+	 * Embeds media into the mail message
+	 *
+	 * @param t3lib_mail_Message $mail: mail message
+	 * @param string $htmlContent: the HTML content of the message
+	 * @return string the subtituted HTML content
+	 */
+	public function embedMedia(t3lib_mail_Message $mail, $htmlContent) {
+		$substitutedHtmlContent = $htmlContent;
+		$media = array();
+		$attribRegex = $this->tag_regex(array('img', 'embed', 'audio', 'video'));
+			// Split the document by the beginning of the above tags
+		$codepieces = preg_split($attribRegex, $htmlContent);
+		$len = strlen($codepieces[0]);
+		$pieces = count($codepieces);
+		$reg = array();
+		for ($i = 1; $i < $pieces; $i++) {
+			$tag = strtolower(strtok(substr($htmlContent, $len + 1, 10), ' '));
+			$len += strlen($tag) + strlen($codepieces[$i]) + 2;
+			$dummy = preg_match('/[^>]*/', $codepieces[$i], $reg);
+				// Fetches the attributes for the tag
+			$attributes = $this->get_tag_attributes($reg[0]);
+			if ($attributes['src']) {
+				$media[] = $attributes['src'];
+			}
+		}
+		foreach ($media as $key => $source) {
+			$substitutedHtmlContent = str_replace(
+				'"' . $source . '"',
+				'"' . $mail->embed(Swift_Image::fromPath($source)) . '"',
+				$substitutedHtmlContent);
+		}
+		return $substitutedHtmlContent;
+	}
+
+	/**
+	 * Creates a regular expression out of a list of tags
+	 *
+	 * @param	mixed		$tagArray: the list of tags (either as array or string if it is one tag)
+	 * @return	string		the regular expression
+	 */
+	public function tag_regex($tags) {
+		$tags = (!is_array($tags) ? array($tags) : $tags);
+		$regexp = '/';
+		$c = count($tags);
+		foreach ($tags as $tag) {
+			$c--;
+			$regexp .= '<' . $tag . '[[:space:]]' . (($c) ? '|' : '');
+		}
+		return $regexp . '/i';
+	}
+
+	/**
+	 * This function analyzes a HTML tag
+	 * If an attribute is empty (like OPTION) the value of that key is just empty. Check it with is_set();
+	 *
+	 * @param string $tag: is either like this "<TAG OPTION ATTRIB=VALUE>" or this " OPTION ATTRIB=VALUE>" which means you can omit the tag-name
+	 * @return array array with attributes as keys in lower-case
+	 */
+	public function get_tag_attributes($tag) {
+		$attributes = array();
+		$tag = ltrim(preg_replace('/^<[^ ]*/', '', trim($tag)));
+		$tagLen = strlen($tag);
+		$safetyCounter = 100;
+			// Find attribute
+		while ($tag) {
+			$value = '';
+			$reg = preg_split('/[[:space:]=>]/', $tag, 2);
+			$attrib = $reg[0];
+
+			$tag = ltrim(substr($tag, strlen($attrib), $tagLen));
+			if (substr($tag, 0, 1) == '=') {
+				$tag = ltrim(substr($tag, 1, $tagLen));
+				if (substr($tag, 0, 1) == '"') {
+						// Quotes around the value
+					$reg = explode('"', substr($tag, 1, $tagLen), 2);
+					$tag = ltrim($reg[1]);
+					$value = $reg[0];
+				} else {
+						// No quotes around value
+					preg_match('/^([^[:space:]>]*)(.*)/', $tag, $reg);
+					$value = trim($reg[1]);
+					$tag = ltrim($reg[2]);
+					if (substr($tag, 0, 1) == '>') {
+						$tag = '';
+					}
+				}
+			}
+			$attributes[strtolower($attrib)] = $value;
+			$safetyCounter--;
+			if ($safetyCounter < 0) {
+				break;
+			}
+		}
+		return $attributes;
+	}
 }
-
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_email.php'])  {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_email.php']) {
   include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_email.php']);
 }
-
 ?>
