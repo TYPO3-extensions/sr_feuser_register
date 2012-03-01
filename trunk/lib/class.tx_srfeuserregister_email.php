@@ -747,7 +747,7 @@ class tx_srfeuserregister_email {
 	public function embedMedia(t3lib_mail_Message $mail, $htmlContent) {
 		$substitutedHtmlContent = $htmlContent;
 		$media = array();
-		$attribRegex = $this->tag_regex(array('img', 'embed', 'audio', 'video'));
+		$attribRegex = $this->makeTagRegex(array('img', 'embed', 'audio', 'video'));
 			// Split the document by the beginning of the above tags
 		$codepieces = preg_split($attribRegex, $htmlContent);
 		$len = strlen($codepieces[0]);
@@ -758,7 +758,7 @@ class tx_srfeuserregister_email {
 			$len += strlen($tag) + strlen($codepieces[$i]) + 2;
 			$dummy = preg_match('/[^>]*/', $codepieces[$i], $reg);
 				// Fetches the attributes for the tag
-			$attributes = $this->get_tag_attributes($reg[0]);
+			$attributes = $this->getTagAttributes($reg[0]);
 			if ($attributes['src']) {
 				$media[] = $attributes['src'];
 			}
@@ -773,20 +773,17 @@ class tx_srfeuserregister_email {
 	}
 
 	/**
-	 * Creates a regular expression out of a list of tags
+	 * Creates a regular expression out of an array of tags
 	 *
-	 * @param	mixed		$tagArray: the list of tags (either as array or string if it is one tag)
+	 * @param	array		$tags: the array of tags
 	 * @return	string		the regular expression
 	 */
-	public function tag_regex($tags) {
-		$tags = (!is_array($tags) ? array($tags) : $tags);
-		$regexp = '/';
-		$c = count($tags);
+	public function makeTagRegex(array $tags) {
+		$regexpArray = array();
 		foreach ($tags as $tag) {
-			$c--;
-			$regexp .= '<' . $tag . '[[:space:]]' . (($c) ? '|' : '');
+			$regexpArray[] = '<' . $tag . '[[:space:]]';
 		}
-		return $regexp . '/i';
+		return '/' . implode('|', $regexpArray) . '/i';
 	}
 
 	/**
@@ -796,7 +793,7 @@ class tx_srfeuserregister_email {
 	 * @param string $tag: is either like this "<TAG OPTION ATTRIB=VALUE>" or this " OPTION ATTRIB=VALUE>" which means you can omit the tag-name
 	 * @return array array with attributes as keys in lower-case
 	 */
-	public function get_tag_attributes($tag) {
+	public function getTagAttributes($tag) {
 		$attributes = array();
 		$tag = ltrim(preg_replace('/^<[^ ]*/', '', trim($tag)));
 		$tagLen = strlen($tag);
