@@ -113,7 +113,6 @@ class tx_srfeuserregister_controldata {
 			$this->conf['useMd5Password']
 		) {
 			$this->setUseMd5Password(TRUE);
-			$this->conf['enableAutoLoginOnCreate'] = FALSE;
 		}
 
 		if (
