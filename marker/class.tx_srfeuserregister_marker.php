@@ -218,7 +218,7 @@ class tx_srfeuserregister_marker {
 	}
 
 
-	// enables the usage of {data:<field>}, {tca:<field>} und {meta:<stuff>} in the label markers
+	// enables the usage of {data:<field>}, {tca:<field>} and {meta:<stuff>} in the label markers
 	public function replaceVariables ($matches) {
 		$rc = '';
 		switch ($matches[1]) {
@@ -369,7 +369,7 @@ class tx_srfeuserregister_marker {
 
 			if (!$bChangesOnly || $bValueChanged || in_array($theField, $keepFields)) {
 				$label = $this->langObj->getLL($theTable . '.' . $theField);
-				if (empty($label))	{
+				if (empty($label)) {
 					$label = $this->langObj->getLL($theField);
 				}
 				$label = (empty($label) ? $this->langObj->getLLFromString($tcaColumns[$theField]['label']) : $label);
@@ -384,7 +384,7 @@ class tx_srfeuserregister_marker {
 			$markerArray['###TOOLTIP_INVITATION_' . $markerkey . '###'] = $label;
 			$colConfig = $tcaColumns[$theField]['config'];
 
-			if ($colConfig['type'] == 'select' && $colConfig['items'])	{
+			if ($colConfig['type'] == 'select' && $colConfig['items']) {
 				$colContent = '';
 				$markerArray['###FIELD_' . $markerkey . '_CHECKED###'] = '';
 				$markerArray['###LABEL_' . $markerkey . '_CHECKED###'] = '';
@@ -444,11 +444,11 @@ class tx_srfeuserregister_marker {
 			}
 		}
 
-		if ($this->conf['salutation'] == 'informal' && $row['first_name'] != '')	{
+		if ($this->conf['salutation'] == 'informal' && $row['first_name'] != '') {
 			$name = $row['first_name'];
 		} else {
 			$name = ($row['name'] ? $row['name'] : $row['first_name'] . ($row['middle_name'] != '' ? ' ' . $row['middle_name'] : '' ) . ' ' . $row['last_name']);
-			if ($name == '')	{
+			if ($name == '') {
 				$name = 'id(' . $row['uid'] . ')';
 			}
 		}
@@ -467,15 +467,15 @@ class tx_srfeuserregister_marker {
 
 		$genderLabelArray = array();
 		$vDear = 'v_dear';
-		if ($row['gender'] == '0' || $row['gender'] == 'm')	{
+		if ($row['gender'] == '0' || $row['gender'] == 'm') {
 			$vDear = 'v_dear_male';
-		} else if ($row['gender'] == '1' || $row['gender'] == 'f')	{
+		} else if ($row['gender'] == '1' || $row['gender'] == 'f') {
 			$vDear = 'v_dear_female';
 		}
 		$genderLabelArray['v_dear'] = $vDear;
 
 		foreach($otherLabels as $value) {
-			if (isset($genderLabelArray[$value]))	{
+			if (isset($genderLabelArray[$value])) {
 				$labelName = $genderLabelArray[$value];
 			} else {
 				$labelName = $value;
@@ -497,12 +497,12 @@ class tx_srfeuserregister_marker {
 	}	// addLabelMarkers
 
 
-	public function setRow ($row)	{
+	public function setRow ($row) {
 		$this->row = $row;
 	}
 
 
-	public function getRow ($row)	{
+	public function getRow ($row) {
 		return $this->row;
 	}
 
@@ -531,7 +531,7 @@ class tx_srfeuserregister_marker {
 		$markerArray['###FORM_NAME###'] = $form; // $this->conf['formName'];
 
 		$ac = $this->controlData->getFeUserData('aC');
-		if ($ac)	{
+		if ($ac) {
 			$vars['aC'] = $ac;
 		}
 		$vars['cmd'] = $this->controlData->getCmd();
@@ -765,7 +765,7 @@ class tx_srfeuserregister_marker {
 	*/
 	public function addMd5LoginMarkers (&$markerArray, $dataArray, $useMd5Password) {
 
-		if (!$markerArray)	{
+		if (!$markerArray) {
 			$markerArray = $this->getArray();
 		}
 		$onSubmit = '';
@@ -1027,7 +1027,7 @@ class tx_srfeuserregister_marker {
 		$token,
 		$dataArray = array()
 	) {
-		if (!$markerArray)	{
+		if (!$markerArray) {
 			$markerArray = $this->getArray();
 		}
 		$theTable = $this->controlData->getTable();

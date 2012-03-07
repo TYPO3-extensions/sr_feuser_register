@@ -114,7 +114,7 @@ class tx_srfeuserregister_control_main {
 		$dataArray = $this->data->getDataArray();
 		$templateCode = $this->data->getTemplateCode();
 
-		if ($rc !== FALSE)	{
+		if ($rc !== FALSE) {
 			$error_message = '';
 			$content = $this->control->doProcessing (
 				$theTable,
