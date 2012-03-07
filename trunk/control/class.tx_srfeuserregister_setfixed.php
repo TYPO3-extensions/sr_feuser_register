@@ -132,7 +132,7 @@ class tx_srfeuserregister_setfixed {
 
 			if (!strcmp($authObj->getAuthCode(), $theCode) && !($sFK == 'APPROVE' && count($origArray) && $origArray['disable'] == '0')) {
 
-				if ($sFK == 'EDIT')	{
+				if ($sFK == 'EDIT') {
 
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
 					$content = $this->display->editScreen(
