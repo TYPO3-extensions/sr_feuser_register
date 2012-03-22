@@ -743,19 +743,23 @@ class tx_srfeuserregister_controldata {
 
 
 	public function getPid ($type = '') {
-		global $TSFE;
-
 		if ($type) {
 			if (isset($this->pid[$type])) {
-				$rc = $this->pid[$type];
+				$result = $this->pid[$type];
 			}
 		}
 
-		if (!$rc) {
-			$rc = (t3lib_div::testInt($this->conf['pid']) ? intval($this->conf['pid']) : $TSFE->id);
+		if (!$result) {
+			$bPidIsInt =
+				(
+					class_exists('t3lib_utility_Math') ?
+						t3lib_utility_Math::canBeInterpretedAsInteger($this->conf['pid']) :
+						t3lib_div::testInt($this->conf['pid'])
+				);
+			$result = ($bPidIsInt ? intval($this->conf['pid']) : $GLOBALS['TSFE']->id);
 		}
 
-		return $rc;
+		return $result;
 	}
 
 
