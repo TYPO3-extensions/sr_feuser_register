@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2011 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -32,7 +32,7 @@
  * $Id$
  *
  * @author	Kasper Skaarhoj <kasper2007@typo3.com>
- * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ * @author	Stanislas Rolland <typo3(arobas)sjbr.ca>
  * @author	Franz Holzinger <franz@ttproducts.de>
  *
  * @package TYPO3
@@ -654,7 +654,7 @@ class tx_srfeuserregister_tca {
 									$multiple = '';
 								}
 
-								if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled') {
+								if ($colConfig['renderMode'] === 'checkbox') {
 									$colContent .= '
 										<input id="' . $this->pibase->pi_getClassName($colName) . '" name="FE[' . $theTable . '][' . $colName . ']" value="" type="hidden" />';
 									$colContent .= '
@@ -669,7 +669,7 @@ class tx_srfeuserregister_tca {
 									foreach ($itemArray as $k => $item)	{
 										$label = $this->langObj->getLLFromString($item[0], TRUE);
 										$label = htmlspecialchars($label, ENT_QUOTES, $charset);
-										if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
+										if ($colConfig['renderMode'] === 'checkbox') {
 
 											$colContent .= '<dt><input class="' . $this->pibase->pi_getClassName('checkbox') . '" id="' . $this->pibase->pi_getClassName($colName) . '-' . $i . '" name="FE[' . $theTable . '][' . $colName . '][' . $k . ']" value="' . $k . '" type="checkbox"  ' . (in_array($k, $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
 												<dd><label for="' . $this->pibase->pi_getClassName($colName) . '-' . $i . '">' . $label . '</label></dd>';
@@ -752,7 +752,7 @@ class tx_srfeuserregister_tca {
 													$selected = '';
 												}
 												$selectedValue = ($selected ? TRUE: $selectedValue);
-												if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled') {
+												if ($colConfig['renderMode'] === 'checkbox') {
 													$colContent .= '<dt><input  class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] . '" name="FE[' . $theTable . '][' . $colName . '][' . $row2['uid'] . ']" value="'.$row2['uid'] . '" type="checkbox"' . ($selected ? ' checked="checked"':'') . ' /></dt>
 													<dd><label for="' . $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] . '">' . $titleText . '</label></dd>';
 												} else {
@@ -766,7 +766,7 @@ class tx_srfeuserregister_tca {
 											}
 											$titleText = htmlspecialchars($row2[$titleField], ENT_QUOTES, $charset);
 
-											if ($colConfig['renderMode']=='checkbox' && $this->conf['templateStyle'] == 'css-styled') {
+											if ($colConfig['renderMode'] === 'checkbox') {
 												$colContent .= '<dt><input class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] . '" name="FE[' . $theTable . '][' . $colName . '][' . $row2['uid'] . ']" value="' . $row2['uid'] . '" type="checkbox"' . (in_array($row2['uid'],  $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
 												<dd><label for="' . $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] . '">' . $titleText . '</label></dd>';
 
@@ -777,10 +777,7 @@ class tx_srfeuserregister_tca {
 									}
 								}
 
-								if (
-									$colConfig['renderMode'] == 'checkbox' &&
-									$this->conf['templateStyle'] == 'css-styled'
-								) {
+								if ($colConfig['renderMode'] === 'checkbox') {
 									$colContent .= '</dl>';
 								} else {
 									$colContent .= '</select>';

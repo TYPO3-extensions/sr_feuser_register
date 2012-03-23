@@ -7,6 +7,7 @@
 	* Fix bug #31152: Can't eval password on edit
 	* Fix bug #31140: Dummy password "Joh 3,16" is used in the registration
 	* Fix bug #26952: Missing declaration of pw_change in javascript
+	* Add feature #34907: Remove Old-style template
 
 2012-03-01 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up to feature #34405: Fix CGL in tx_srfeuserregister_email (Thanks to Franz Holzinger)
