@@ -616,7 +616,11 @@ class tx_srfeuserregister_tca {
 								break;
 
 							case 'radio':
-								$startVal = $colConfig['default'];
+								if ($this->controlData->getSubmit() || $this->controlData->getDoNotSave() || $cmd=='edit') {
+									$startVal = $mrow[$colName];
+								} else {
+									$startVal = $colConfig['default'];
+								}
 								if (!isset($startVal)) {
 									reset($colConfig['items']);
 									list($startConf) = $colConfig['items'];
