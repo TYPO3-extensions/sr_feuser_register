@@ -655,16 +655,11 @@ class tx_srfeuserregister_email {
 	* @return void
 	*/
 	public function addCSSStyleMarkers (&$markerArray) {
-
-		if ($this->conf['templateStyle'] == 'css-styled') {
-			$markerArray['###CSS_STYLES###'] = '	/*<![CDATA[*/
+		$markerArray['###CSS_STYLES###'] = '	/*<![CDATA[*/
 ';
-			$markerArray['###CSS_STYLES###'] .= $this->cObj->fileResource($this->conf['email.']['HTMLMailCSS']);
-			$markerArray['###CSS_STYLES###'] .= '
+		$markerArray['###CSS_STYLES###'] .= $this->cObj->fileResource($this->conf['email.']['HTMLMailCSS']);
+		$markerArray['###CSS_STYLES###'] .= '
 /*]]>*/';
-		} else {
-			$markerArray['###CSS_STYLES###'] = $this->cObj->fileResource($this->conf['email.']['HTMLMailCSS']);
-		}
 		return $markerArray;
 	}	// addCSSStyleMarkers
 

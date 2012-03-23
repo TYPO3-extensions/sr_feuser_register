@@ -9,7 +9,6 @@ plugin.tx_srfeuserregister_pi1 {
 
 	table.name = {$plugin.tx_srfeuserregister_pi1.tableName}
 
-	templateStyle = css-styled
 	templateFile = {$plugin.tx_srfeuserregister_pi1.file.templateFile}
 // Remember that the icon is in a fixed dimension and will not grow if the text is getting
 // larger.

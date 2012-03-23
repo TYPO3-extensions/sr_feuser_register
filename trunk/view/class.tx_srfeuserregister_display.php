@@ -204,9 +204,6 @@ class tx_srfeuserregister_display {
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="' . $prefixId . '[aC]" value="' . $authObj->authCode($origArray, $this->conf['setfixed.']['EDIT.']['_FIELDLIST']) . '" />';
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="' . $prefixId . '[cmd]" value="edit" />';
-		} elseif ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $this->conf['templateStyle'] != 'css-styled') {
-			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $theTable . '][username]" value="' . $currentArray['username'] . '" />';
-			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $theTable . '][email]" value="' . $currentArray['email'] . '" />';
 		}
 
 		$this->marker->addHiddenFieldsMarkers(
@@ -229,10 +226,7 @@ class tx_srfeuserregister_display {
 				$deleteUnusedMarkers
 			);
 
-		if (
-			$this->conf['templateStyle'] != 'css-styled' ||
-			$mode != MODE_PREVIEW
-		) {
+		if ($mode != MODE_PREVIEW) {
 			$form =
 				tx_div2007_alpha::getClassName(
 					$theTable . '_form',

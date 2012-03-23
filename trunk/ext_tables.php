@@ -5,8 +5,6 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 if (TYPO3_MODE=="BE" && !$loadTcaAdditions) {
 
 	t3lib_extMgm::addStaticFile(SR_FEUSER_REGISTER_EXTkey, 'static/css_styled/', 'FE User Registration CSS-styled');
-	t3lib_extMgm::addStaticFile(SR_FEUSER_REGISTER_EXTkey, 'static/old_style/', '(deprecated) FE User Registration Old Style');
-
 
 	t3lib_div::loadTCA('tt_content');
 
