@@ -33,12 +33,7 @@ if (TYPO3_MODE=="BE" && !$loadTcaAdditions) {
 t3lib_div::loadTCA('fe_users');
 
 $TCA['fe_users']['columns']['username']['config']['eval'] = 'nospace,uniqueInPid,required';
-
-if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['useMd5Password'] && strstr($TCA['fe_users']['columns']['password']['config']['eval'], 'md5')) {
-	$TCA['fe_users']['columns']['password']['config']['eval'] = 'nospace,required,md5,password';
-} else {
-	$TCA['fe_users']['columns']['password']['config']['eval'] = 'nospace,required';
-}
+$TCA['fe_users']['columns']['password']['config']['eval'] = 'nospace,required';
 
 $TCA['fe_users']['columns']['name']['config']['max'] = '100';
 $TCA['fe_users']['columns']['company']['config']['max'] = '50';
@@ -174,9 +169,15 @@ $addColumnArray = Array(
 			'rows' => '1',
 			'cols' => '32'
 		)
-	)
+	),
+	'tx_srfeuserregister_password' => array (
+		'exclude' => 1,
+		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.tx_srfeuserregister_password',
+		'config' => array (
+			'type' => 'passthrough',
+		)
+	),
 );
-
 
 $typoVersion = class_exists('t3lib_utility_VersionNumber') ? t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) : t3lib_div::int_from_ver(TYPO3_version);
 
@@ -221,7 +222,7 @@ if (strpos($TCA['fe_users']['feInterface']['fe_admin_fieldList'],'first_name') =
 }
 
 $TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace(',title', ',gender,' . $additionalFields . 'cnum,status,title', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
-$TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',image,disable,date_of_birth,by_invitation,terms_acknowledged';
+$TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',image,disable,date_of_birth,by_invitation,terms_acknowledged,tx_srfeuserregister_password';
 
 $TCA['fe_users']['types']['0']['showitem'] = str_replace(', country', ', zone, static_info_country, country,language', $TCA['fe_users']['types']['0']['showitem']);
 

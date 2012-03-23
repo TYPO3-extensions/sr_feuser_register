@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2012 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -32,7 +32,7 @@
  * $Id$
  *
  * @author	Kasper Skaarhoj <kasperXXXX@typo3.com>
- * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ * @author	Stanislas Rolland <typo3(arobas)sjbr.ca>
  * @author	Franz Holzinger <franz@ttproducts.de>
  *
  * @package TYPO3
@@ -116,11 +116,16 @@ class tx_srfeuserregister_setfixed {
 			if (is_array($fD)) {
 				foreach($fD as $field => $value) {
 					$row[$field] = rawurldecode($value);
-					if($field == 'usergroup') {
+					if ($field == 'usergroup') {
 						$setfixedUsergroup = rawurldecode($value);
 					}
 					$fieldArr[] = $field;
 				}
+			}
+				// Get private key for auto-login password decryption
+			if (isset($feuData['key'])) {
+				$autoLoginKey = $feuData['key'];
+				$row['auto_login_key'] = $autoLoginKey;
 			}
 
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
@@ -131,9 +136,7 @@ class tx_srfeuserregister_setfixed {
 			$theCode = $authObj->setfixedHash($row, $fieldList);
 
 			if (!strcmp($authObj->getAuthCode(), $theCode) && !($sFK == 'APPROVE' && count($origArray) && $origArray['disable'] == '0')) {
-
 				if ($sFK == 'EDIT') {
-
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
 					$content = $this->display->editScreen(
 						$markerArray,
@@ -219,8 +222,11 @@ class tx_srfeuserregister_setfixed {
 						TRUE
 					);
 					$currArr = $origArray;
+					if (isset($autoLoginKey)) {
+						$this->controlData->decryptPasswordForAutoLogin($currArr, $autoLoginKey);
+					}
 					$modArray = array();
-					$currArr = $this->tca->modifyTcaMMfields($currArr,$modArray);
+					$currArr = $this->tca->modifyTcaMMfields($currArr, $modArray);
 					$row = array_merge($row, $modArray);
 					$pObj->userProcess_alt(
 						$this->conf['setfixed.']['userFunc_afterSave'],
@@ -236,42 +242,73 @@ class tx_srfeuserregister_setfixed {
 					}
 				}
 
-				// Outputting template
+					// Outputting template
 				if (
 					$theTable == 'fe_users' &&
-					in_array($sFK, array('APPROVE','ENTER','LOGIN'))	// LOGIN is here only for an error case
+						// LOGIN is here only for an error case
+					in_array($sFK, array('APPROVE','ENTER','LOGIN'))
 				) {
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, 'login', $token);
-					$this->marker->addMd5LoginMarkers(
-						$markerArray,
-						$dataArray,
-						$this->controlData->getUseMd5Password()
-					);
-					$this->marker->setArray($markerArray);
+					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $row['by_invitation'] ? 'password' : 'login', $token);
+					if (!$row['by_invitation']) {
+						$this->marker->addPasswordTransmissionMarkers($markerArray);
+						$this->marker->setArray($markerArray);
+					}
 				} else {
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, 'setfixed', $token);
 				}
-
-				if ($sFK == 'EDIT')	{
-					// nothing
+				if ($sFK == 'EDIT') {
+					// Nothing to do
 				} else {
 					if (
+						$theTable === 'fe_users' &&
+						($sFK === 'APPROVE' || $sFK === 'ENTER') &&
+						$row['by_invitation']
+					) {
+							// Auto-login
+						$loginSuccess = $pObj->login($currArr, FALSE);
+						if ($loginSuccess) {
+							$content = $this->display->editScreen(
+								$markerArray,
+								$theTable,
+								$dataArray,
+								$origArray,
+								$securedArray,
+								'password',
+								'password',
+								$this->controlData->getMode(),
+								$dataObj->inError,
+								$token
+							);
+						} else {
+								// Login failed
+							$content = $this->display->getPlainTemplate(
+								$templateCode,
+								'###TEMPLATE_SETFIXED_FAILED###',
+								$markerArray,
+								$origArray,
+								'',
+								''
+							);
+						}
+					}
+					if (
 						$this->conf['enableAdminReview'] &&
-						$sFK == 'APPROVE' &&
-						!$row['by_invitation']
+						$sFK === 'APPROVE'
 					) {
 						$setfixedSuffix .= '_REVIEW';
 					}
-					$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX . 'OK_' . $setfixedSuffix . '###';
-					$content = $this->display->getPlainTemplate(
-						$templateCode,
-						$subpartMarker,
-						$markerArray,
-						$origArray,
-						$row,
-						$securedArray,
-						FALSE
-					);
+					if (!$content) {
+						$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX . 'OK_' . $setfixedSuffix . '###';
+						$content = $this->display->getPlainTemplate(
+							$templateCode,
+							$subpartMarker,
+							$markerArray,
+							$origArray,
+							$row,
+							$securedArray,
+							FALSE
+						);
+					}
 
 					if (!$content) {
 						$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX .'OK###';
@@ -305,13 +342,11 @@ class tx_srfeuserregister_setfixed {
 						);
 					}
 
-					if ($errorContent)	{
+					if ($errorContent) {
 						$content = $errorContent;
 					} else if ($theTable == 'fe_users') {
-
 							// If applicable, send admin a request to review the registration request
 						if ($this->conf['enableAdminReview'] && $sFK == 'APPROVE' && !$row['by_invitation']) {
-
 							$errorContent = $this->email->compile(
 								SETFIXED_PREFIX . 'REVIEW',
 								$theTable,
@@ -327,13 +362,17 @@ class tx_srfeuserregister_setfixed {
 								$this->conf['setfixed.']
 							);
 						}
-
 						if ($errorContent) {
 							$content = $errorContent;
+						} else if (
 								// Auto-login on confirmation
-						} else if ($this->conf['enableAutoLoginOnConfirmation'] && ($sFK == 'APPROVE' || $sFK == 'ENTER')) {
-							$success = $pObj->login($currArr);
-							if ($success) {
+							$this->conf['enableAutoLoginOnConfirmation'] &&
+							!$row['by_invitation'] &&
+							($sFK == 'APPROVE' || $sFK == 'ENTER') &&
+							isset($autoLoginKey)
+						) {
+							$loginSuccess = $pObj->login($currArr);
+							if ($loginSuccess) {
 									// Login was successful
 								exit;
 							} else {
@@ -420,8 +459,8 @@ class tx_srfeuserregister_setfixed {
 					$pidCmd = ($this->controlData->getCmd() == 'invite' ? 'confirmInvitation' : 'confirm');
 					$setfixedpiVars[$prefixId . '%5BsFK%5D'] = $theKey;
 					$bSetfixedHash = TRUE;
-					if (isset($r['chalvalue'])) {
-						$setfixedpiVars[$prefixId . '%5Bcv%5D'] = $r['chalvalue'];
+					if (isset($r['auto_login_key'])) {
+						$setfixedpiVars[$prefixId . '%5Bkey%5D'] = $r['auto_login_key'];
 					}
 				}
 

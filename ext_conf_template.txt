@@ -10,6 +10,3 @@ imageMaxSize = 500
 
   # cat=basic/enable; type=boolean; label=Use Flexforms: Enable the use of Flexforms in the backend. Extension div2007 version 0.1.2+ must be installed. Default is 1.
 useFlexforms = 1
-
-  # cat=basic/enable; type=boolean; label=Use MD5 password: Enable the use of MD5 encrypted passwords in the backend.
-useMd5Password = 0

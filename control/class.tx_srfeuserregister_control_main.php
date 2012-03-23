@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 1999-2003 Kasper Skårhøj (kasperYYYY@typo3.com)
-*  (c) 2004-2011 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2004-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -34,7 +34,7 @@
  * $Id$
  *
  * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
- * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ * @author	Stanislas Rolland <typo3(arobas)sjbr.ca>
  * @author	Franz Holzinger <franz@ttproducts.de>
  * @maintainer	Franz Holzinger <franz@ttproducts.de>
  *
@@ -54,7 +54,6 @@ require_once(PATH_BE_srfeuserregister . 'model/class.tx_srfeuserregister_control
 require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_auth.php');
 require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_email.php');
 require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_lang.php');
-require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_passwordmd5.php');
 
 require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_tca.php');
 require_once(PATH_BE_srfeuserregister . 'marker/class.tx_srfeuserregister_marker.php');
@@ -64,8 +63,6 @@ require_once(PATH_BE_srfeuserregister . 'view/class.tx_srfeuserregister_display.
 
 require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_lib_tables.php');
 require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_conf.php');
-
-
 
 class tx_srfeuserregister_control_main {
 	public $config = array();
@@ -92,7 +89,7 @@ class tx_srfeuserregister_control_main {
 		&$conf,
 		&$pibaseObj,
 		$theTable,
-		$adminFieldList = 'username,password,name,disable,usergroup,by_invitation',
+		$adminFieldList = 'username,password,name,disable,usergroup,by_invitation,tx_srfeuserregister_password',
 		$buttonLabelsList = '',
 		$otherLabelsList = ''
 	) {
@@ -114,7 +111,7 @@ class tx_srfeuserregister_control_main {
 		$dataArray = $this->data->getDataArray();
 		$templateCode = $this->data->getTemplateCode();
 
-		if ($rc !== FALSE) {
+		if ($rc !== FALSE)	{
 			$error_message = '';
 			$content = $this->control->doProcessing (
 				$theTable,
@@ -248,13 +245,6 @@ class tx_srfeuserregister_control_main {
 				$this->controlData,
 				$this->data,
 				$adminFieldList
-			);
-
-			$md5Obj = &t3lib_div::getUserObj('&tx_srfeuserregister_passwordmd5');
-			$md5Obj->init(
-				$this->marker,
-				$this->data,
-				$this->controlData
 			);
 
 			$uid = $this->data->getRecUid();

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2012 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -32,7 +32,7 @@
  * $Id$
  *
  * @author	Kasper Skaarhoj <kasper2007@typo3.com>
- * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ * @author	Stanislas Rolland <typo3(arobas)sjbr.ca>
  * @author	Franz Holzinger <franz@ttproducts.de>
  *
  * @package TYPO3
@@ -138,14 +138,14 @@ class tx_srfeuserregister_marker {
 			',tooltip_login_username,tooltip_login_password,'.
 			',registration_problem,registration_sorry,registration_clicked_twice,registration_help,kind_regards,kind_regards_cre,kind_regards_del,kind_regards_ini,kind_regards_inv,kind_regards_upd'.
 			',v_dear,v_verify_before_create,v_verify_invitation_before_create,v_verify_before_update,v_really_wish_to_delete,v_edit_your_account'.
-			',v_email_lost_password,v_infomail_dear,v_infomail_lost_password_confirm,v_infomail_lost_password_subject,v_now_enter_your_username,v_notification'.
+			',v_now_enter_your_username,v_now_choose_password,v_notification'.
 			',v_registration_created,v_registration_created_subject,v_registration_created_message1,v_registration_created_message2,v_registration_created_message3'.
 			',v_to_the_administrator'.
 			',v_registration_review_subject,v_registration_review_message1,v_registration_review_message2,v_registration_review_message3'.
 			',v_please_confirm,v_your_account_was_created,v_your_account_was_created_nomail,v_follow_instructions1,v_follow_instructions2,v_follow_instructions_review1,v_follow_instructions_review2'.
 			',v_invitation_confirm,v_invitation_account_was_created,v_invitation_instructions1'.
 			',v_registration_initiated,v_registration_initiated_subject,v_registration_initiated_message1,v_registration_initiated_message2,v_registration_initiated_message3,v_registration_initiated_review1,v_registration_initiated_review2'.
-			',v_registration_invited,v_registration_invited_subject,v_registration_invited_message1,v_registration_invited_message2'.
+			',v_registration_invited,v_registration_invited_subject,v_registration_invited_message1,v_registration_invited_message1a,v_registration_invited_message2'.
 			',v_registration_infomail_message1'.
 			',v_registration_confirmed,v_registration_confirmed_subject,v_registration_confirmed_message1,v_registration_confirmed_message2,v_registration_confirmed_review1,v_registration_confirmed_review2'.
 			',v_registration_cancelled,v_registration_cancelled_subject,v_registration_cancelled_message1,v_registration_cancelled_message2'.
@@ -487,7 +487,8 @@ class tx_srfeuserregister_marker {
 				htmlspecialchars($username),
 				htmlspecialchars($name),
 				htmlspecialchars($row['email']),
-				$row['password']
+					// No clear-text password
+				''
 			);
 
 			$label = preg_replace_callback('/{([a-z_]+):([a-z_]+)}/', array(&$this, 'replaceVariables'), $label);
@@ -639,14 +640,13 @@ class tx_srfeuserregister_marker {
 		$markerArray = array_merge($markerArray, $localMarkerArray);
 	}
 
-
 	/**
-		* Adds Static Info markers to a marker array
-		*
-		* @param array  $markerArray: the input marker array
-		* @param array  $row: the table record
-		* @return void
-		*/
+	* Adds Static Info markers to a marker array
+	*
+	* @param array  $markerArray: the input marker array
+	* @param array  $row: the table record
+	* @return void
+	*/
 	public function addStaticInfoMarkers (&$markerArray, $row = '', $viewOnly = FALSE) {
 		if (!$markerArray) {
 			$markerArray = $this->getArray();
@@ -730,140 +730,41 @@ class tx_srfeuserregister_marker {
 		}
 	}	// addStaticInfoMarkers
 
-
 	/**
-	* Adds md5 password create/edit form markers to a marker array
+	* Adds password transmission markers
 	*
 	* @param array  $markerArray: the input marker array
 	* @return void
 	*/
-	public function addMd5EventsMarkers (&$markerArray, $bEncryptMd5, $useMd5Password) {
-
-		if (!$markerArray) {
-			$markerArray = $this->getArray();
-		}
-		if ($useMd5Password) {
-			if (!$this->controlData->getJSmd5Added()) {
-				$GLOBALS['TSFE']->additionalHeaderData['MD5_script'] = '<script type="text/javascript" src="typo3/md5.js"></script>';
-				$GLOBALS['TSFE']->JSCode .= $this->getMD5Submit($bEncryptMd5);
-				$this->controlData->setJSmd5Added(TRUE);
-			}
-			$markerArray['###FORM_ONSUBMIT###'] = 'onsubmit="return enc_form(this);"';
-			$markerArray['###PASSWORD_ONCHANGE###'] = ($bEncryptMd5 ? 'onchange="pw_change=1; return true;"' : '');
-		} else {
-			$markerArray['###FORM_ONSUBMIT###'] = '';
-			$markerArray['###PASSWORD_ONCHANGE###'] = '';
-		}
-	}	// addMd5EventsMarkers
-
-
-	/**
-	* Adds md5 password login form markers to a marker array
-	*
-	* @param array  $markerArray: the input marker array
-	* @return void
-	*/
-	public function addMd5LoginMarkers (&$markerArray, $dataArray, $useMd5Password) {
-
-		if (!$markerArray) {
-			$markerArray = $this->getArray();
-		}
-		$onSubmit = '';
-		$extraHidden = '';
-		if ($useMd5Password) {
-				// Hook used by kb_md5fepw extension by Kraft Bernhard <kraftb@gmx.net>
-				// This hook allows to call User JS functions.
-				// The methods should also set the required JS functions to get included
-
-			list($onSub, $hid) = $this->loginFormOnSubmit($dataArray);
-			$onSubmitArray = array();
-			$extraHiddenArray = array();
-			$onSubmitArray[] = $onSub;
-			$extraHiddenArray[] = $hid;
-			if (count($onSubmitArray)) {
-				$onSubmit = implode('; ', $onSubmitArray).'; return true;';
-				$onSubmit = strlen($onSubmit) ? ' onsubmit="'.$onSubmit.'"' : '';
-				$extraHidden = implode(chr(10), $extraHiddenArray);
-			}
-		}
-		$markerArray['###FORM_ONSUBMIT###'] = $onSubmit;
-		$prefixId = $this->controlData->getPrefixId();
-
-		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $prefixId . '[sFK]" value="LOGIN" />';
-		$markerArray['###HIDDENFIELDS###'] .= $extraHidden;
-		if (!$this->controlData->getJSmd5Added()) {
-			$GLOBALS['TSFE']->additionalHeaderData['MD5_script'] = '<script type="text/javascript" src="typo3/md5.js"></script>';
-			$GLOBALS['TSFE']->JSCode .= $this->getMD5Submit(TRUE);
-			$this->controlData->setJSmd5Added(TRUE);
-		}
-		$markerArray['###PASSWORD_ONCHANGE###'] = '';
-	}	// addMd5LoginMarkers
-
-
-	/**
-	* From the 'KB MD5 FE Password (kb_md5fepw)' extension.
-	*
-	* @author	Kraft Bernhard <kraftb@gmx.net>
-	**/
-	public function loginFormOnSubmit ($dataArray) {
-
-		$js = '
-	function superchallenge_passwd(form) {
-		var pass = form.pass.value;
-		if (pass) {
-			var enc_pass = pass;
-			var str = form.user.value+":"+enc_pass+":"+form.challenge.value;
-			form.pass.value = MD5(str);
-			return true;
-		} else {
-			return false;
-		}
-	}
-';
-		$GLOBALS['TSFE']->JSCode .= $js;
-		$GLOBALS['TSFE']->additionalHeaderData['tx_kbmd5fepw_felogin'] = '<script language="JavaScript" type="text/javascript" src="typo3/md5.js"></script>';
-
-		$md5Obj = &t3lib_div::getUserObj('&tx_srfeuserregister_passwordmd5');
-		$md5Obj->generateChallenge($dataArray);
-		$chal_val = $md5Obj->getChallenge();
-		$onSubmit =	'superchallenge_passwd(this)';
-		$hidden = '<input type="hidden" name="challenge" value="'.$chal_val.'">';
-		return array($onSubmit, $hidden);
-	}
-
-
-	/**
-	* From the 'KB MD5 FE Password (kb_md5fepw)' extension.
-	*
-	* @author	Kraft Bernhard <kraftb@gmx.net>
-	**/
-	public function getMD5Submit ($bEncryptMd5) {
-
-		$theTable = $this->controlData->getTable();
-		$JSPart = '
-			function enc_form(form) {
-				var pass = form[\'FE[' . $theTable . '][password]\'].value;
-				var pass_again = form[\'FE[' . $theTable . '][password_again]\'].value;
-				if (pass == \'\') {
-					return true;
+	public function addPasswordTransmissionMarkers (&$markerArray) {
+		 if (!$markerArray) {
+ 			$markerArray = $this->getArray();
+ 		}
+ 		switch ($this->controlData->getTransmissionSecurityLevel()) {
+			case 'rsa':
+				$extraHiddenFieldsArray = array();
+				if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['felogin']['loginFormOnSubmitFuncs'])) {
+					$_params = array();
+					foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['felogin']['loginFormOnSubmitFuncs'] as $funcRef) {
+						list($onSubmit, $hiddenFields) = t3lib_div::callUserFunction($funcRef, $_params, $this);
+						$extraHiddenFieldsArray[] = $hiddenFields;
+					}
 				}
-				if (pass != pass_again) {
-					alert(\'' . $this->langObj->getLL('evalErrors_twice_password') . '\');
-					form[\'FE[' . $theTable . '][password]\'].select();
-					form[\'FE[' . $theTable . '][password]\'].focus();
-					return false;
-				}' .
-				($bEncryptMd5 ? '
-				if (pw_change) {
-					var enc_pass = MD5(pass);
-					form[\'FE[' . $theTable . '][password]\'].value = enc_pass;
-					form[\'FE[' . $theTable . '][password_again]\'].value = enc_pass;
-				}' : '') .
-				'return true;
-			}';
-		return $JSPart;
-	}	// getMD5Submit
-
+				if (count($extraHiddenFieldsArray)) {
+					$extraHiddenFields = implode(LF, $extraHiddenFieldsArray);
+				}
+				$extraHiddenFields .= LF . '<script type="text/javascript" src="' .
+					t3lib_div::getIndpEnv('TYPO3_SITE_URL') .
+					t3lib_extMgm::siteRelPath('sr_feuser_register') . 'scripts/rsaauth.js"></script>';
+				$markerArray['###FORM_ONSUBMIT###'] = ' onsubmit="tx_srfeuserregister_encrypt(this); return true;"';
+				$markerArray['###HIDDENFIELDS###'] .= $extraHiddenFields;
+				break;
+			case 'normal':
+			default:
+				$markerArray['###FORM_ONSUBMIT###'] = '';
+				break;
+		}
+	}
 
 	/**
 	* Builds a file uploader
