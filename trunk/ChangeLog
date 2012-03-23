@@ -9,6 +9,7 @@
 	* Fix bug #26952: Missing declaration of pw_change in javascript
 	* Add feature #34907: Remove Old-style template
 	* Fix bug #34217: Radio buttons do not respect db values in edit view (Thanks to Jan Loderhose)
+	* Fix bug #13349: Checkbox is set to "0" if not checked (Thanks to Oliver Hader)
 
 2012-03-01 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up to feature #34405: Fix CGL in tx_srfeuserregister_email (Thanks to Franz Holzinger)

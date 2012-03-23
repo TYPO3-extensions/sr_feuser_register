@@ -210,11 +210,12 @@ class tx_srfeuserregister_tca {
 									$dataArray[$colName] |= (1 << $dec);
 								}
 							}
-						} else if (isset($dataArray[$colName]) && $dataArray[$colName] != '0') {
-							$dataArray[$colName] = '1';
-						} else {
-							$dataArray[$colName] = '0';
-						}
+						} else if (isset($dataArray[$colName])) {
+							if ($dataArray[$colName] != '0') {
+								$dataArray[$colName] = '1';
+							} else {
+								$dataArray[$colName] = '0';
+							}
 						break;
 					default:
 						// nothing
