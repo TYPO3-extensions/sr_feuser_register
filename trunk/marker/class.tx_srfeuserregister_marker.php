@@ -473,7 +473,6 @@ class tx_srfeuserregister_marker {
 			$vDear = 'v_dear_female';
 		}
 		$genderLabelArray['v_dear'] = $vDear;
-
 		foreach($otherLabels as $value) {
 			if (isset($genderLabelArray[$value])) {
 				$labelName = $genderLabelArray[$value];
@@ -490,8 +489,7 @@ class tx_srfeuserregister_marker {
 					// No clear-text password
 				''
 			);
-
-			$label = preg_replace_callback('/{([a-z_]+):([a-z_]+)}/', array(&$this, 'replaceVariables'), $label);
+			$label = preg_replace_callback('/{([a-z_]+):([a-zA-Z0-9_]+)}/', array(&$this, 'replaceVariables'), $label);
 			$markerkey = $this->cObj->caseshift($value, 'upper');
 			$markerArray['###LABEL_' . $markerkey . '###'] = $label;
 		}
