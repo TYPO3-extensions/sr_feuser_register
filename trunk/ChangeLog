@@ -1,3 +1,13 @@
+2012-03-23 Stanislas Rolland  <typo3@sjbr.ca>
+	* Add feature #34447: Add support for saltedpasswords and rsaauth
+	* Fix bug #26708: Autologin does not work with rsa and saltedpasswords
+	* Fix bug #34417: Does not work with srfeuserregister_t3secsaltedpw anymore
+	* Fix bug #34792: Edit profile sets password to dummyPassword if useMd5Password is used
+	* Fix bug #34453: "password repeat" field has the value ###FIELD_password_again###
+	* Fix bug #31152: Can't eval password on edit
+	* Fix bug #31140: Dummy password "Joh 3,16" is used in the registration
+	* Fix bug #26952: Missing declaration of pw_change in javascript
+
 2012-03-01 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up to feature #34405: Fix CGL in tx_srfeuserregister_email (Thanks to Franz Holzinger)
 

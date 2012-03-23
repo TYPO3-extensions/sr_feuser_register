@@ -40,13 +40,10 @@ plugin.tx_srfeuserregister_pi1 {
       # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Generate the username: If set, the username is assumed to be generated. Appropriate hook must be configured.
   generateUsername = 0
 
-      # cat=plugin.tx_srfeuserregister_pi1/enable; type=int+; label= Generate the password: If non-zero, a random password is generated. The number of characters in the password is given by this parameter.
-  generatePassword = 0
-
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Authentication code length: Length of the authentication codes. Direct Mail uses 8.
   codeLength = 12
 
-    # cat=plugin.tx_sremailsubscribe//; type=string; label= Name of the table: The name is used for the records in the frontend.
+    # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Name of the table: The name is used for the records in the frontend.
   tableName = fe_users
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Country onchange attribute: Javascript to execute when the selected country is changed in the country selector box.
@@ -210,9 +207,6 @@ plugin.tx_srfeuserregister_pi1 {
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=options[,formal,informal]; label= Salutation mode to use: Possible value are 'formal' or 'informal'.
   salutation =
-
-    # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable md5-hashed password: If set, password will be md5-hashed.
-  useMd5Password = 0
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= PID list for Direct Mail categories: The Direct mail categories used by the plugin will be restricted to those found in these PID's.
   module_sys_dmail_category_PIDLIST =

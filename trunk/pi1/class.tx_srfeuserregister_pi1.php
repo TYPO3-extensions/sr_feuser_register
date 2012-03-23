@@ -46,7 +46,7 @@ require_once(PATH_BE_srfeuserregister . 'pi1/class.tx_srfeuserregister_pi1_base.
 class tx_srfeuserregister_pi1 {
 	public $cObj;
 
-	public function main ($content, $conf) {
+	public function main($content, $conf) {
 
 		$pibaseObj = &t3lib_div::getUserObj('&tx_srfeuserregister_pi1_base');
 		$pibaseObj->cObj = &$this->cObj;

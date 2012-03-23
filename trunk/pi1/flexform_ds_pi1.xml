@@ -35,12 +35,8 @@
 						    <numindex index="0">LLL:EXT:sr_feuser_register/locallang_db.xml:tt_content.pi1_flexform.display_mode.8</numindex>
 						    <numindex index="1">setfixed</numindex>
 					    </numindex>
-					    <numindex index="7">
-						    <numindex index="0">LLL:EXT:sr_feuser_register/locallang_db.xml:tt_content.pi1_flexform.display_mode.9</numindex>
-						    <numindex index="1">infomail</numindex>
-					    </numindex>
 					</items>
-					<size>7</size>
+					<size>6</size>
 					<minitems>0</minitems>
 					<maxitems>1</maxitems>
 				</config>

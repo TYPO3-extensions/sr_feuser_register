@@ -360,8 +360,24 @@ We have created an account for you with username &lt;b&gt;%2$s&lt;/b&gt; and pas
 We are sending you this message so that you may confirm that you wish to register with &lt;b&gt;%1$s&lt;/b&gt;. You will be able to access the section reserved to &lt;b&gt;%1$s&lt;/b&gt; only after confirming your registration. You will also be able to change your password and account profile.&lt;br /&gt;&lt;br /&gt;
 
 If you wish to accept our invitation and confirm your registration in &lt;b&gt;%1$s&lt;/b&gt;, please follow this link</label>
+			<label index="v_registration_invited_message1a">We thought you might be interested in registering with &lt;b&gt;%1$s&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;
+
+We have created an account for you with username &lt;b&gt;%2$s&lt;/b&gt;.&lt;br /&gt;&lt;br /&gt;
+
+We are sending you this message so that you may confirm that you wish to register with &lt;b&gt;%1$s&lt;/b&gt;. You will be able to access the section reserved to &lt;b&gt;%1$s&lt;/b&gt; only after confirming your registration. You will also be able to change your password and account profile.&lt;br /&gt;&lt;br /&gt;
+
+If you wish to accept our invitation and confirm your registration in &lt;b&gt;%1$s&lt;/b&gt;, please follow this link</label>
+			<label index="v_registration_invited_message1a_informal">We thought you might be interested in registering with &lt;b&gt;%1$s&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;
+
+We have created an account for you with username &lt;b&gt;%2$s&lt;/b&gt;.&lt;br /&gt;&lt;br /&gt;
+
+We are sending you this message so that you may confirm that you wish to register with &lt;b&gt;%1$s&lt;/b&gt;. You will be able to access the section reserved to &lt;b&gt;%1$s&lt;/b&gt; only after confirming your registration. You will also be able to change your password and account profile.&lt;br /&gt;&lt;br /&gt;
+
+If you wish to accept our invitation and confirm your registration in &lt;b&gt;%1$s&lt;/b&gt;, please follow this link</label>
 			<label index="v_registration_invited_message2">You will not receive this message twice. If you wish to decline our invitation and do not wish to register in &lt;b&gt;%1$s&lt;/b&gt;, please follow this link or just ignore this message</label>
 			<label index="v_registration_invited_message2_informal">You will not receive this message twice. If you wish to decline our invitation and do not wish to register in &lt;b&gt;%1$s&lt;/b&gt;, please follow this link or just ignore this message</label>
+			<label index="v_now_choose_password">Please choose a password now and enter it twice.</label>
+			<label index="v_now_choose_password_informal">Please choose a password now and enter it twice.</label>
 			<label index="v_registration_invited">An invitation to register in %1$s was sent to %3$s.</label>
 			<label index="v_registration_infomail_message1">Your account data are username &lt;b&gt;%2$s&lt;/b&gt; and password &lt;b&gt;%5$s&lt;/b&gt;.&lt;br /&gt;&lt;br /&gt;</label>
 			<label index="v_registration_infomail_message1_informal">Your account data are username &lt;b&gt;%2$s&lt;/b&gt; and password &lt;b&gt;%5$s&lt;/b&gt;.&lt;br /&gt;&lt;br /&gt;</label>

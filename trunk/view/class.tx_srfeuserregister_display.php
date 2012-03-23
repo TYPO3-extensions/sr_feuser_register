@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2011 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -32,7 +32,7 @@
  * $Id$
  *
  * @author	Kasper Skaarhoj <kasper2010@typo3.com>
- * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ * @author	Stanislas Rolland <typo3(arobas)sjbr.ca>
  * @author	Franz Holzinger <franz@ttproducts.de>
  *
  * @package TYPO3
@@ -101,11 +101,14 @@ class tx_srfeuserregister_display {
 		} else {
 			$currentArray = $origArray;
 		}
-
-		$subpart = '###TEMPLATE_EDIT' . $this->marker->getPreviewLabel() . '###';
+		if ($cmdKey === 'password') {
+			$subpart = '###TEMPLATE_SETFIXED_OK_APPROVE_INVITE###';
+		} else {
+			$subpart = '###TEMPLATE_EDIT' . $this->marker->getPreviewLabel() . '###';
+		}
 		$templateCode = $this->cObj->getSubpart($this->data->getTemplateCode(), $subpart);
 
-		if (!$this->conf['linkToPID'] || !$this->conf['linkToPIDAddButton'] || !($mode == MODE_PREVIEW || !$this->conf['edit.']['preview'])) {
+		if (!$this->conf['linkToPID'] || !$this->conf['linkToPIDAddButton'] || !($mode == MODE_PREVIEW || !$this->conf[$cmd . '.']['preview'])) {
 			$templateCode =
 				$this->cObj->substituteSubpart(
 					$templateCode,
@@ -123,11 +126,7 @@ class tx_srfeuserregister_display {
 					''
 				);
 		}
-		$this->marker->addMd5EventsMarkers(
-			$markerArray,
-			TRUE,
-			$this->controlData->getUseMd5Password()
-		);
+		$this->marker->addPasswordTransmissionMarkers($markerArray);
 		$templateCode =
 			$this->removeRequired(
 				$templateCode,
@@ -142,14 +141,6 @@ class tx_srfeuserregister_display {
 				'',
 				TRUE
 			);
-			// Avoid cleartext password in HTML source
-		if ($markerArray['###FIELD_password###'] != '') {
-			$markerArray['###FIELD_password###'] = '';
-		}
-		if ($markerArray['###FIELD_password_again###'] != '') {
-			$markerArray['###FIELD_password_again###'] = '';
-		}
-
 		$this->marker->addStaticInfoMarkers($markerArray, $currentArray);
 		$this->tca->addTcaMarkers(
 			$markerArray,
@@ -225,10 +216,17 @@ class tx_srfeuserregister_display {
 			$token,
 			$currentArray
 		);
+			// Avoid cleartext password in HTML source
+		$markerArray['###FIELD_password###'] = '';
+		$markerArray['###FIELD_password_again###'] = '';
+		$deleteUnusedMarkers = TRUE;
 		$content =
 			$this->cObj->substituteMarkerArray(
 				$templateCode,
-				$markerArray
+				$markerArray,
+				'',
+				FALSE,
+				$deleteUnusedMarkers
 			);
 
 		if (
@@ -304,11 +302,6 @@ class tx_srfeuserregister_display {
 				}
 			}
 			$key = ($cmd == 'invite') ? 'INVITE': 'CREATE';
-			$this->marker->addMd5EventsMarkers(
-				$markerArray,
-				FALSE,
-				$this->controlData->getUseMd5Password()
-			);
 
 			$bNeedUpdateJS = TRUE;
 			if ($cmd == 'create' || $cmd == 'invite') {
@@ -320,6 +313,10 @@ class tx_srfeuserregister_display {
 				} else {
 					$subpartKey = '###TEMPLATE_AUTH###';
 				}
+			}
+			
+			if ($needUpdateJS) {
+				$this->marker->addPasswordTransmissionMarkers($markerArray);
 			}
 
 			$templateCode = $this->cObj->getSubpart($templateCode, $subpartKey);
@@ -402,12 +399,18 @@ class tx_srfeuserregister_display {
 				$token,
 				$dataArray
 			);
+				// Avoid cleartext password in HTML source
+			$markerArray['###FIELD_password###'] = '';
+			$markerArray['###FIELD_password_again###'] = '';
+			$deleteUnusedMarkers = TRUE;
 			$content =
 				$this->cObj->substituteMarkerArray(
 					$templateCode,
-					$markerArray
+					$markerArray,
+					'',
+					FALSE,
+					$deleteUnusedMarkers
 				);
-
 			if ($mode != MODE_PREVIEW && $bNeedUpdateJS) {
 				$fields = $this->data->fieldList . $this->data->additionalUpdateFields;
 				$fields = $this->controlData->getOpenFields($fields);
@@ -479,24 +482,18 @@ class tx_srfeuserregister_display {
 					);
 			}
 
-			if (is_array($origArray))	{
+			if (is_array($origArray)) {
 				$origArray = $this->data->parseIncomingData($origArray);
 			}
-			$aCAuth = $authObj->aCAuth($origArray,$this->conf['setfixed.']['EDIT.']['_FIELDLIST']);
-
+			$aCAuth = $authObj->aCAuth($origArray, $this->conf['setfixed.']['EDIT.']['_FIELDLIST']);
 			if (
 				is_array($origArray) &&
 				(
-					($theTable == 'fe_users' && $TSFE->loginUser) ||
+					($theTable === 'fe_users' && $GLOBALS['TSFE']->loginUser) ||
 					$aCAuth ||
 					$theCode && !strcmp($authObj->authCode, $theCode)
 				)
 			) {
-				$this->marker->addMd5EventsMarkers(
-					$markerArray,
-					TRUE,
-					$this->controlData->getUseMd5Password()
-				);
 				$this->marker->setArray($markerArray);
 				// Must be logged in OR be authenticated by the aC code in order to edit
 				// If the recUid selects a record.... (no check here)
@@ -722,10 +719,17 @@ class tx_srfeuserregister_display {
 					$templateCode,
 					$markerArray
 				);
+				// Avoid cleartext password in HTML source
+			$markerArray['###FIELD_password###'] = '';
+			$markerArray['###FIELD_password_again###'] = '';
+			$deleteUnusedMarkers = TRUE;
 			$rc =
 				$this->cObj->substituteMarkerArray(
 					$templateCode,
-					$markerArray
+					$markerArray,
+					'',
+					FALSE,
+					$deleteUnusedMarkers
 				);
 		} else if ($bCheckEmpty) {
 			$langObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lang');
@@ -850,6 +854,7 @@ class tx_srfeuserregister_display {
 				$result = 'DELETE' . SAVED_SUFFIX;
 				break;
 			case 'edit':
+			case 'password':
 				$result = 'EDIT' . SAVED_SUFFIX;
 				break;
 			case 'invite':
@@ -943,12 +948,8 @@ class tx_srfeuserregister_display {
 				FALSE
 			);
 
-			if ($cmdKey == 'create') {
-				$this->marker->addMd5LoginMarkers(
-					$markerArray,
-					$dataArray,
-					$this->controlData->getUseMd5Password()
-				);
+			if ($cmdKey === 'create' && !$this->conf['enableEmailConfirmation'] && !$this->conf['enableAutoLoginOnCreate']) {
+				$this->marker->addPasswordTransmissionMarkers($markerArray);
 			}
 
 			if (isset($this->conf[$cmdKey . '.']['marker.'])) {

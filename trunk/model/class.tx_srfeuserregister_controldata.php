@@ -3,6 +3,7 @@
 *  Copyright notice
 *
 *  (c) 2007-2012 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -54,31 +55,33 @@ class tx_srfeuserregister_controldata {
 	public $cmd='';
 	public $cmdKey;
 	public $pid = array();
-	public $useMd5Password = FALSE;
 	public $setfixedEnabled = 0;
 	public $bSubmit = FALSE;
 	public $bDoNotSave = FALSE;
 	public $failure = FALSE; // is set if data did not have the required fields set.
 	public $sys_language_content;
 	public $feUserData = array();
-	public $jsMd5Added; // If the JavaScript for MD5 encoding has already been added
-	public $securedFieldArray = array('password', 'password_again');
-	public $bTokenValid = FALSE;
-	public $dummyPassword = 'Joh 3,16';
+		// Names of secured fields
+	protected $securedFieldArray = array('password', 'password_again');
 	public $bValidRegHash;
 	public $regHash;
+		// Whether the token was found valid
+	protected $isTokenValid = FALSE;
+		// The transmission security level: normal or rsa
+	protected $transmissionSecurityLevel = 'normal';
+		// The storage security level: normal or salted
+	protected $storageSecurityLevel = 'normal';
 
 
 	public function init (&$conf, $prefixId, $extKey, $piVars, $theTable) {
-		global $TSFE;
 
 		$this->conf = &$conf;
 		$this->site_url = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
-		if ($TSFE->absRefPrefix) {
-			if(strpos($TSFE->absRefPrefix, 'http://') === 0 || strpos($TSFE->absRefPrefix, 'https://') === 0) {
-				$this->site_url = $TSFE->absRefPrefix;
+		if ($GLOBALS['TSFE']->absRefPrefix) {
+			if(strpos($GLOBALS['TSFE']->absRefPrefix, 'http://') === 0 || strpos($GLOBALS['TSFE']->absRefPrefix, 'https://') === 0) {
+				$this->site_url = $GLOBALS['TSFE']->absRefPrefix;
 			} else {
-				$this->site_url = $this->site_url . ltrim($TSFE->absRefPrefix, '/');
+				$this->site_url = $this->site_url . ltrim($GLOBALS['TSFE']->absRefPrefix, '/');
 			}
 		}
 		$this->prefixId = $prefixId;
@@ -87,12 +90,15 @@ class tx_srfeuserregister_controldata {
 		$this->setTable($theTable);
 		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 
+		$this->setTransmissionSecurityLevel();
+		$this->setStorageSecurityLevel();
+
 		$bSysLanguageUidIsInt = (
 			class_exists('t3lib_utility_Math') ?
-				t3lib_utility_Math::canBeInterpretedAsInteger($TSFE->config['config']['sys_language_uid']) :
-				t3lib_div::testInt($TSFE->config['config']['sys_language_uid'])
+				t3lib_utility_Math::canBeInterpretedAsInteger($GLOBALS['TSFE']->config['config']['sys_language_uid']) :
+				t3lib_div::testInt($GLOBALS['TSFE']->config['config']['sys_language_uid'])
 		);
-		$this->sys_language_content = ($bSysLanguageUidIsInt ? $TSFE->config['config']['sys_language_uid'] : 0);
+		$this->sys_language_content = ($bSysLanguageUidIsInt ? $GLOBALS['TSFE']->config['config']['sys_language_uid'] : 0);
 
 			// set the title language overlay
 		$pidRecord = t3lib_div::makeInstance('t3lib_pageSelect');
@@ -100,19 +106,12 @@ class tx_srfeuserregister_controldata {
 		$pidRecord->sys_language_uid = $this->sys_language_content;
 		$row = $pidRecord->getPage($this->getPid());
 		$this->thePidTitle = trim($this->conf['pidTitleOverride']) ? trim($this->conf['pidTitleOverride']) : $row['title'];
+
 		$pidTypeArray = array('login', 'register', 'edit', 'infomail', 'confirm', 'confirmInvitation');
 		// set the pid's
 
 		foreach ($pidTypeArray as $k => $type) {
 			$this->setPid($type, $this->conf[$type.'PID']);
-		}
-
-			// Initialise password encryption
-		if (
-			$theTable == 'fe_users' &&
-			$this->conf['useMd5Password']
-		) {
-			$this->setUseMd5Password(TRUE);
 		}
 
 		if (
@@ -122,7 +121,6 @@ class tx_srfeuserregister_controldata {
 		) {
 			$this->setSetfixedEnabled(1);
 		}
-
 			// Get hash variable if provided and if short url feature is enabled
 		$feUserData = t3lib_div::_GP($this->getPrefixId());
 		$bSecureStartCmd = (count($feUserData) == 1 && in_array($feUserData['cmd'], array('create', 'edit')));
@@ -211,7 +209,7 @@ class tx_srfeuserregister_controldata {
 
 		if ($bRuIsInt) {
 			$theUid = intval($feUserData['rU']);                                          // find the uid
-			$origArray = $TSFE->sys_page->getRawRecord($theTable, $theUid);               // Get data
+			$origArray = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $theUid);               // Get data
 		}
 
 		$token = '';
@@ -267,10 +265,9 @@ class tx_srfeuserregister_controldata {
 		}
 
 		if ($this->isTokenValid()) {
-
 			$this->setValidRegHash($bValidRegHash);
 			$this->setFeUserData($feUserData);
-			$this->writeSpecialData();
+			$this->writeRedirectUrl();
 
 			// generate a new token for the next created forms
 			$token = $authObj->generateToken();
@@ -301,17 +298,6 @@ class tx_srfeuserregister_controldata {
 		return $this->bValidRegHash;
 	}
 
-
-	public function getSecuredFieldArray () {
-		return $this->securedFieldArray;
-	}
-
-
-	public function getDummyPassword () {
-		return $this->dummyPassword;
-	}
-
-
 	/* reduces to the field list which are allowed to be shown */
 	public function getOpenFields ($fields) {
 		$securedFieldArray = $this->getSecuredFieldArray();
@@ -329,163 +315,478 @@ class tx_srfeuserregister_controldata {
 		return $fields;
 	}
 
+	/*************************************
+	* PASSWORD TRANSMISSION SECURITY
+	*************************************/
+	/**
+	* Sets the transmission security level
+	*
+	* @return	void
+	*/
+	protected function setTransmissionSecurityLevel () {
+		$supportedTransmissionSecurityLevels = array('normal', 'rsa');
+		if (in_array($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'], $supportedTransmissionSecurityLevels)) {
+			if (t3lib_extMgm::isLoaded('rsaauth')) {
+					// rsaauth in TYPO3 4.5 misses autoload
+				if (!class_exists('tx_rsaauth_backendfactory')) {
+					require_once(t3lib_extMgm::extPath('rsaauth') . 'sv1/backends/class.tx_rsaauth_backendfactory.php');
+					require_once(t3lib_extMgm::extPath('rsaauth') . 'sv1/storage/class.tx_rsaauth_storagefactory.php');
+				}
+				if (tx_rsaauth_backendfactory::getBackend() !== NULL) {
+					$this->transmissionSecurityLevel = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
+				}
+			}
+		}
+	}
+	/**
+	* Gets the transmission security level
+	*
+	* @return	string	the transmission security level
+	*/
+	public function getTransmissionSecurityLevel () {
+		return $this->transmissionSecurityLevel;
+	}
+	/**
+	* Decrypts the password that was encrypted for transmission
+	*
+	* @param array $row: data array that may contain passwords
+	* @return boolean TRUE if decryption was successful
+	*/
+	protected function decryptPassword (array &$row) {
+		$success = TRUE;
+		$fields = array('password', 'password_again');
+		switch ($this->getTransmissionSecurityLevel()) {
+			case 'rsa':
+					// Get services from rsaauth
+					// Can't simply use the authentication service because we have two fields to decrypt
+				if (t3lib_extMgm::isLoaded('rsaauth')) {
+					$backend = tx_rsaauth_backendfactory::getBackend();
+					$storage = tx_rsaauth_storagefactory::getStorage();
+					/* @var $storage tx_rsaauth_abstract_storage */
+					if (is_object($backend) && is_object($storage)) {
+						$key = $storage->get();
+						if ($key != NULL) {
+							foreach ($fields as $field) {
+								if (isset($row[$field]) && $row[$field] !== '') {
+									if (substr($row[$field], 0, 4) === 'rsa:') {
+											// Decode password
+										$result = $backend->decrypt($key, substr($row[$field], 4));
+										if ($result) {
+											$row[$field] = $result;
+										} else {
+											$success = FALSE;
+											t3lib_div::devLog('RSA auth service failed to process incoming password', 'sr_feuser_register', 3);
+										}
+									}
+								}
+							}
+								// Remove the key
+							$storage->put(NULL);
+						} else {
+							$success = FALSE;
+							t3lib_div::devLog('RSA auth service failed to retrieve private key', 'sr_feuser_register', 3);
+						}
+					} else {
+						$success = FALSE;
+						t3lib_div::devLog('Required RSA auth backend not available', 'sr_feuser_register', 3);
+					}
+				} else {
+					$success = FALSE;
+				}
+				break;
+			case 'normal':
+			default:
+					// Nothing to decrypt
+				break;	
+		}
+		return $success;
+	}
 
-	public function readSecuredArray () {
-		$rcArray = array();
-
-		foreach ($this->securedFieldArray as $field) {
-			switch ($field) {
-				case 'password':
-				case 'password_again':
-					$v = $this->getDummyPassword();
-					$rcArray[$field] = $v;
+	/*************************************
+	* PASSWORD STORAGE SECURITY
+	*************************************/
+	/**
+	* Sets the storage security level
+	*
+	* @return	void
+	*/
+	protected function setStorageSecurityLevel () {
+		$supportedStorageSecurityLevels = array('normal', 'salted');
+		if (t3lib_extMgm::isLoaded('saltedpasswords')) {
+			if (tx_saltedpasswords_div::isUsageEnabled('FE')) {
+				$this->storageSecurityLevel = 'salted';
+			}
+		}
+	}
+	/**
+	* Gets the storage security level
+	*
+	* @return	string	the storage security level
+	*/
+	public function getStorageSecurityLevel () {
+		return $this->storageSecurityLevel;
+	}
+	/**
+	* Encrypts the password for secure storage
+	*
+	* @param	string	$password: password to encrypt
+	* @return	string	encrypted password
+	*/
+	protected function encryptPasswordForStorage ($password) {
+		$encryptedPassword = $password;
+		if ($password !== '') {
+			switch ($this->getStorageSecurityLevel()) {
+				case 'salted':
+					if (tx_saltedpasswords_div::isUsageEnabled('FE')) {
+						$objSalt = tx_saltedpasswords_salts_factory::getSaltingInstance(NULL);
+						if (is_object($objSalt)) {
+							$encryptedPassword = $objSalt->getHashedPassword($password);
+						} else {
+							t3lib_div::devLog('Could not get a salting instance from saltedpasswords', 'sr_feuser_register', 3);
+						}
+					} else {
+						t3lib_div::devLog('Salted passwords not enabled in frontend', 'sr_feuser_register', 3);
+					}
 					break;
+				case 'normal':
 				default:
+						// No encryption!
 					break;
 			}
 		}
-		return $rcArray;
+		return $encryptedPassword;
 	}
 
+	/**
+	* Initializes the password for auto-login on confirmation
+	*
+	* @param	array	$dataArray
+	* @return	void
+	*/
+	public function initializeAutoLoginPassword (array &$dataArray) {
+		$dataArray['tx_srfeuserregister_password'] = '';
+		unset($dataArray['auto_login_key']);
+	}
 
-	public function readUnsecuredArray ($bPassword = TRUE) {
-		$rcArray = array();
-		$seData = $this->readSessionData();
-
-		foreach ($this->securedFieldArray as $field) {
-			if (
-				!$bPassword &&
-				($field == 'password' || $field == 'password_again')
-			) {
-				continue;
-			}
-			$v = $seData[$field];
-			if (isset($v)) {
-				$rcArray[$field] = $v;
+	/**
+	* Encrypts the password for auto-login on confirmation
+	*
+	* @param	array	$dataArray: array containing the password to be encrypted
+	* @return	void
+	*/
+	public function encryptPasswordForAutoLogin (array &$dataArray) {
+		$password = $dataArray['password'];
+		$privateKey = '';
+		$cryptedPassword = '';
+		if ($password !== '') {
+				// Make sure openssl is available
+			if (t3lib_extMgm::isLoaded('rsaauth')) {
+					// Create the keypair
+				$keyPair = openssl_pkey_new();
+					// Get private key
+				openssl_pkey_export($keyPair, $privateKey);
+					// Get public key
+				$keyDetails = openssl_pkey_get_details($keyPair);
+				$publicKey = $keyDetails['key'];
+				if (@openssl_public_encrypt($password, $cryptedPassword, $publicKey)) {
+					$dataArray['tx_srfeuserregister_password'] = base64_encode($cryptedPassword);
+					$dataArray['auto_login_key'] = $privateKey;
+				}
+			} else {
+				t3lib_div::devLog('Required rsaauth extension not available', 'sr_feuser_register', 3);
 			}
 		}
-
-		return $rcArray;
 	}
 
-
-	public function readPassword () {
-		global $TSFE;
-
-		$securedArray = $this->readUnsecuredArray();
-
-		if (isset($securedArray) && is_array($securedArray)) {
-			$rc = $securedArray['password'];
+	/**
+	* Decrypts the password for auto-login on confirmation
+	*
+	* @param	array	$dataArray: array containing the password to be decrypted
+	* @param	string	$privateKey: the private key to decrypt the password
+	* @return	void
+	*/
+	public function decryptPasswordForAutoLogin (&$dataArray, $privateKey) {
+		$password = $dataArray['tx_srfeuserregister_password'];
+		if ($password !== '') {
+			if (t3lib_extMgm::isLoaded('rsaauth')) {
+				$backend = tx_rsaauth_backendfactory::getBackend();
+				if (is_object($backend) && $backend->isAvailable()) {
+					$decryptedPassword = $backend->decrypt($privateKey, $password);
+					if ($decryptedPassword) {
+						$dataArray['password'] = $decryptedPassword;
+					} else {
+						t3lib_div::devLog('Failed to decrypt auto login password', 'sr_feuser_register', 3);
+					}
+				} else {
+					t3lib_div::devLog('Required RSA auth backend not available', 'sr_feuser_register', 3);
+				}
+			} else {
+				t3lib_div::devLog('Required rsaauth extension not available', 'sr_feuser_register', 3);
+			}
 		}
-
-		return $rc;
+	}
+	/*************************************
+	* SECURED ARRAY HANDLING
+	*************************************/
+	/**
+	* Retrieves values of secured fields from FE user session data
+	*
+	* @return	array	secured FE user session data 
+	*/
+	public function readSecuredArray () {
+		$securedArray = array();
+		$sessionData = $this->readSessionData();
+		$securedFieldArray = $this->getSecuredFieldArray();
+		foreach ($securedFieldArray as $securedField) {
+			if (isset($sessionData[$securedField])) {
+				$securedArray[$securedField] = $sessionData[$securedField];
+			}
+		}
+		return $securedArray;
+	}
+	/**
+	* Gets the array of names of secured fields
+	*
+	* @return	array	names of secured fields
+	*/
+	public function getSecuredFieldArray () {
+		return $this->securedFieldArray;
+	}
+	/**
+	* Sets the array of names of secured fields
+	*
+	* @param	array	array of names of secured fields
+	* @return	void
+	*/
+	public function setSecuredFieldArray (array $securedFieldArray) {
+		$this->securedFieldArray = array_merge($securedFieldArray, array('password', 'password_again'));
+		
 	}
 
-
-	public function writePassword ($password) {
-		global $TSFE;
-
-		$seData = $this->readSessionData();
-		$seData['password'] = $password;
-		$this->writeSessionData($seData);
+	/*************************************
+	* PASSWORD HANDLING
+	*************************************/
+	/**
+	* Retreieves the password from session data and encrypt it for storage
+	*
+	* @return	string	the encrypted password
+	*/
+	public function readPasswordForStorage () {
+		$password = $this->readPassword();
+		return $this->encryptPasswordForStorage($password);
+	}
+	/**
+	* Retrieves the password from session data
+	*
+	* @return	string	the password
+	*/
+	protected function readPassword () {
+		$password = '';
+		$securedArray = $this->readSecuredArray();
+		if ($securedArray['password']) {
+			$password = $securedArray['password'];
+		}
+		return $password;
+	}
+	/**
+	* Writes the password to FE user session data
+	*
+	* @param	array	$row: data array that may contain password values
+	*
+	* @return void
+	*/
+	public function securePassword (array &$row) {
+		$data = array();
+			// Decrypt incoming password
+		$passwordDecrypted = $this->decryptPassword($row);
+			// Collect secured fields
+		$securedFieldArray = $this->getSecuredFieldArray();
+		foreach ($securedFieldArray as $securedField) {
+			if (isset($row[$securedField]) && !empty($row[$securedField])) {
+				$data[$securedField] = $row[$securedField];
+			}
+		}
+			// Update FE user session data if required
+		if (!empty($data)) {
+			$this->writeSessionData($data);
+		}
+	}
+	/**
+	* Generates a value for the password and stores it the FE user session data
+	*
+	* @param	array	$dataArray: incoming array
+	* @return	void
+	*/
+	public function generatePassword (array &$dataArray) {
+		$generatedPassword = substr(md5(uniqid(microtime(), 1)), 0, 32);
+		$dataArray['password'] = $generatedPassword;
+		$dataArray['password_again'] = $generatedPassword;
+		$this->securePassword($dataArray);
+	}
+	/**
+	* Writes the password to session data
+	*
+	* @param	string	$password: the password
+	* @return	void
+	*/
+	protected function writePassword ($password) {
+		$sessionData = $this->readSessionData();
+		if ($password === '') {
+			unset($sessionData['password']);
+			unset($sessionData['password_again']);
+		} else {
+			$sessionData['password'] = $password;
+		}
+		$this->writeSessionData($sessionData);
 	}
 
-
-	public function setTokenValid ($valid) {
-		$this->bTokenValid = $valid;
-	}
-
-
+	/*************************************
+	* TOKEN HANDLING
+	*************************************/
+	/**
+	* Whether the token was found valid
+	*
+	* @return	boolean	whether the token was found valid
+	*/
 	public function isTokenValid () {
-		return $this->bTokenValid;
+		return $this->isTokenValid;
 	}
-
-
+	/**
+	* Sets whether the token was found valid
+	*
+	* @return	boolean	$valid: whether the token was found valid
+	* @return	void
+	*/
+	protected function setTokenValid ($valid) {
+		$this->isTokenValid = $valid;
+	}
+	/**
+	* Retrieves the token from FE user session data
+	*
+	* @return	string	token
+	*/
 	public function readToken () {
-		global $TSFE;
-
-		$seData = $this->readSessionData();
-		$rc = $seData['token'];
-
-		return $rc;
+		$token = '';
+		$sessionData = $this->readSessionData();
+		if (isset($sessionData['token'])) {
+			$token = $sessionData['token'];
+		}
+		return $token;
 	}
-
-
+	/**
+	* Writes the token to FE user session data
+	*
+	* @param	string	token
+	* @return void
+	*/
 	public function writeToken ($token) {
-		global $TSFE;
-
-		$seData = $this->readSessionData();
-		$seData['token'] = $token;
-		$this->writeSessionData($seData, FALSE);
-	}
-
-
-	public function readSessionData ($bReadAll = FALSE)	{
-		global $TSFE;
-
-		$extKey = $this->getExtKey();
-		$session = $TSFE->fe_user->getKey('ses', 'feuser');
-
-		if ($bReadAll) {
-			$rc = $session;
-		} else if (isset($session) && is_array($session)) {
-			$rc = $session[$extKey];
+		$sessionData = $this->readSessionData();
+		if ($token === '') {
+			unset($sessionData['token']);
+		} else {
+			$sessionData['token'] = $token;
 		}
-		return $rc;
+		$this->writeSessionData($sessionData, FALSE);
 	}
-
-
-	public function writeSessionData (
-		$data,
-		$bKeepToken = TRUE,
-		$bRedirectUrl = TRUE
-	) {
-		global $TSFE;
-
-		$extKey = $this->getExtKey();
-		$session = $this->readSessionData(TRUE);
-		if ($bKeepToken && !isset($data['token'])) {
-			$data['token'] = $this->readToken();
+	/**
+	* Retrieves the redirectUrl from FE user session data
+	*
+	* @return	string	redirectUrl
+	*/
+	public function readRedirectUrl () {
+		$redirectUrl = '';
+		$sessionData = $this->readSessionData();
+		if (isset($sessionData['redirect_url'])) {
+			$redirectUrl = $sessionData['redirect_url'];
 		}
-		if ($bRedirectUrl && !isset($data['redirect_url'])) {
-			$redirect_url = $this->readRedirectUrl();
-			if ($redirect_url != '') {
-				$data['redirect_url'] = $redirect_url;
-			}
-		}
-		$session[$extKey] = $data;
-		$TSFE->fe_user->setKey('ses','feuser',$session);
-		$TSFE->fe_user->storeSessionData(); // The feuser session data shall not get lost when coming back from external scripts
+		return $redirectUrl;
 	}
-
-
-	// delete all session data except of the token
-	public function clearSessionData ($bRedirectUrl = TRUE) {
-		$seData = array();
-
-		$this->writeSessionData($seData, TRUE, $bRedirectUrl);
-	}
-
-
-	public function writeSpecialData () {
-		$redirect_url = t3lib_div::_GET('redirect_url');
-
-		if ($redirect_url != '') {
+	/**
+	* Writes the redirectUrl to FE user session data
+	*
+	* @return void
+	*/
+	protected function writeRedirectUrl () {
+		$redirectUrl = t3lib_div::_GET('redirect_url');
+		if ($redirectUrl !== '') {
 			$data = array();
-			$data['redirect_url'] = $redirect_url;
+			$data['redirect_url'] = $redirectUrl;
 			$this->writeSessionData($data);
 		}
 	}
 
-
-	public function readRedirectUrl () {
-		$data = $this->readSessionData();
-		if (isset($data) && is_array($data)) {
-			$rc = $data['redirect_url'];
+	/*************************************
+	* FE USER SESSION DATA HANDLING
+	*************************************/
+	/**
+	* Retrieves session data
+	*
+	* @param	boolean	$readAll: whether to retrieve all session data or only data for this extension key
+	* @return	array	session data
+	*/
+	public function readSessionData ($readAll = FALSE) {
+		$sessionData = array();
+		$extKey = $this->getExtKey();
+		$allSessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', 'feuser');
+		if (isset($allSessionData) && is_array($allSessionData)) {
+			if ($readAll) {
+				$sessionData = $allSessionData;
+			} else if (isset($allSessionData[$extKey])) {
+				$sessionData = $allSessionData[$extKey];
+			}
 		}
-		return $rc;
+		return $sessionData;
 	}
-
+	/**
+	* Writes data to FE user session data
+	*
+	* @param	array	$data: the data to be written to FE user session data
+	* @param	boolean	$keepToken: whether to keep any token
+	* @param	boolean	$keepRedirectUrl: whether to keep any redirectUrl
+	* @return	array	session data
+	*/
+	public function writeSessionData (array $data, $keepToken = TRUE, $keepRedirectUrl = TRUE) {
+		$clearSession = empty($data);
+		if ($keepToken && !isset($data['token'])) {
+			$token = $this->readToken();
+			if ($token !== '') {
+				$data['token'] = $token;
+			}
+		}
+		if ($keepRedirectUrl && !isset($data['redirect_url'])) {
+			$redirect_url = $this->readRedirectUrl();
+			if ($redirect_url !== '') {
+				$data['redirect_url'] = $redirect_url;
+			}
+		}
+		$extKey = $this->getExtKey();
+			// Read all session data
+		$allSessionData = $this->readSessionData(TRUE);
+		if (is_array($allSessionData[$extKey])) {
+			if ($clearSession) {
+				$keys = array_keys($allSessionData[$extKey]);
+				foreach ($keys as $key) {
+					unset($allSessionData[$extKey][$key]);
+				}
+			}
+			$allSessionData[$extKey] = t3lib_div::array_merge_recursive_overrule($allSessionData[$extKey], $data);
+		} else {
+			$allSessionData[$extKey] = $data;
+		}
+		$GLOBALS['TSFE']->fe_user->setKey('ses', 'feuser', $allSessionData);
+			// The feuser session data shall not get lost when coming back from external scripts
+		$GLOBALS['TSFE']->fe_user->storeSessionData();
+	}
+	/**
+	* Deletes all session data except the token and possibly the redirectUrl
+	*
+	* @param	boolean	$keepRedirectUrl: whether to keep any redirectUrl
+	* @return	void
+	*/
+	public function clearSessionData ($keepRedirectUrl = TRUE) {
+		$data = array();
+		$this->writeSessionData($data, TRUE, $keepRedirectUrl);
+	}
 
 	/**
 	* Changes potential malicious script code of the input to harmless HTML
@@ -538,58 +839,6 @@ class tx_srfeuserregister_controldata {
 			}
 		}
 	}
-
-
-	/**
-	* Stores the password and changes it to the default value
-	*
-	* @return void
-	*/
-	public function securePassword (&$row) {
-
-// 		if (isset($row['password_again']) && $row['password_again'] == '') {
-// 			$row['password'] = '';
-// 		}
-
-		$bWriteDummy = FALSE;
-		$bMd5 = $this->getUseMd5Password();
-		$dummyPassword = $this->dummyPassword;
-		if ($bMd5) {
-			$dummyPassword = md5($dummyPassword);
-		}
-
-		$securedFieldArray = $this->getSecuredFieldArray();
-		$newSessionData = array();
-		$bNewSessionData = FALSE;
-
-		foreach ($securedFieldArray as $securedField) {
-
-			$value = $row[$securedField];
-
-			if ($value != '' && $value != $dummyPassword) {
-
-				$newSessionData[$securedField] = $value;
-				$bWriteDummy = TRUE;
-				$bNewSessionData = TRUE;
-			}
-		}
-
-		if ($bNewSessionData) {
-			$this->writeSessionData($newSessionData);
-		} else if ($row['password'] != '' || $row['password_again'] != '') {
-			$bWriteDummy = TRUE;
-		}
-
-		if ($bWriteDummy) {
-			if ($row['password'] != '') {
-				$row['password'] = $dummyPassword;
-			}
-			if ($row['password_again'] != '') {
-				$row['password_again'] = $dummyPassword;
-			}
-		}
-	}
-
 
 	public function bFieldsAreFilled ($row) {
 		if (is_array($row)) {
@@ -748,7 +997,6 @@ class tx_srfeuserregister_controldata {
 				$result = $this->pid[$type];
 			}
 		}
-
 		if (!$result) {
 			$bPidIsInt =
 				(
@@ -764,7 +1012,6 @@ class tx_srfeuserregister_controldata {
 
 
 	public function setPid ($type, $pid)	{
-		global $TSFE;
 
 		if (!intval($pid)) {
 			switch ($type) {
@@ -776,7 +1023,7 @@ class tx_srfeuserregister_controldata {
 					$pid = $this->getPid('confirm');
 					break;
 				default:
-					$pid = $TSFE->id;
+					$pid = $GLOBALS['TSFE']->id;
 					break;
 			}
 		}
@@ -793,31 +1040,9 @@ class tx_srfeuserregister_controldata {
 		$this->mode = $mode;
 	}
 
-
-	public function setUseMd5Password ($useMd5Password) {
-		$this->useMd5Password = $useMd5Password;
-	}
-
-
-	public function getUseMd5Password() {
-		return $this->useMd5Password;
-	}
-
-
-	public function getJSmd5Added () {
-		return ($this->jsMd5Added);
-	}
-
-
-	public function setJSmd5Added ($var) {
-		$this->jsMd5Added = TRUE;
-	}
-
-
 	public function getTable () {
 		return $this->theTable;
 	}
-
 
 	public function setTable ($theTable) {
 		$this->theTable = $theTable;
@@ -863,29 +1088,30 @@ class tx_srfeuserregister_controldata {
 		return $rc;
 	}	// isPreview
 
-
+	/*************************************
+	* SHORT URL HANDLING
+	*************************************/
 	/**
 	*  Get the stored variables using the hash value to access the database
 	*/
 	public function getShortUrl ($regHash) {
-		global $TYPO3_DB;
 
 			// get the serialised array from the DB based on the passed hash value
 		$varArray = array();
 		$res =
-			$TYPO3_DB->exec_SELECTquery(
+			$GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'params',
 				'cache_md5params',
-				'md5hash=' . $TYPO3_DB->fullQuoteStr(
+				'md5hash=' . $GLOBALS['TYPO3_DB']->fullQuoteStr(
 					$regHash,
 					'cache_md5params'
 				)
 			);
 
-		while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$varArray = unserialize($row['params']);
 		}
-		$TYPO3_DB->sql_free_result($res);
+		$GLOBALS['TYPO3_DB']->sql_free_result($res);
 
 			// convert the array to one that will be properly incorporated into the GET global array.
 		$retArray = array();
@@ -907,11 +1133,10 @@ class tx_srfeuserregister_controldata {
 	*  Get the stored variables using the hash value to access the database
 	*/
 	public function deleteShortUrl ($regHash) {
-		global $TYPO3_DB;
 
 		if ($regHash != '')	{
 			// get the serialised array from the DB based on the passed hash value
-			$TYPO3_DB->exec_DELETEquery('cache_md5params', 'md5hash=' . $TYPO3_DB->fullQuoteStr($regHash, 'cache_md5params'));
+			$GLOBALS['TYPO3_DB']->exec_DELETEquery('cache_md5params', 'md5hash=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($regHash, 'cache_md5params'));
 		}
 	}
 
@@ -920,11 +1145,10 @@ class tx_srfeuserregister_controldata {
 	*  Clears obsolete hashes used for short url's
 	*/
 	public function cleanShortUrlCache () {
-		global $TYPO3_DB;
 
 		$shortUrlLife = intval($this->conf['shortUrlLife']) ? strval(intval($this->conf['shortUrlLife'])) : '30';
 		$max_life = time() - (86400 * intval($shortUrlLife));
-		$res = $TYPO3_DB->exec_DELETEquery('cache_md5params', 'tstamp<' . $max_life . ' AND type=99');
+		$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery('cache_md5params', 'tstamp<' . $max_life . ' AND type=99');
 	}	// cleanShortUrlCache
 }
 

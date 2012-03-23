@@ -45,9 +45,9 @@
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="40" title="###TOOLTIP_PASSWORD###" name="###NAME_PASSWORD###" value="###FIELD_password###" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
+		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="40" title="###TOOLTIP_PASSWORD###" name="###NAME_PASSWORD###" value="" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
 		<label for="tx-srfeuserregister-pi1-password_again" class="tx-srfeuserregister-pi1-password-again">###LABEL_PASSWORD_AGAIN###</label>
-		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="40" title="###LABEL_TOOLTIP_PASSWORD_AGAIN###" name="###NAME_PASSWORD_AGAIN###" value="###FIELD_password_again###" class="tx-srfeuserregister-pi1-password" />
+		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="40" title="###LABEL_TOOLTIP_PASSWORD_AGAIN###" name="###NAME_PASSWORD_AGAIN###" value="" class="tx-srfeuserregister-pi1-password" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_password### -->
 
@@ -607,7 +607,7 @@
 	<dd><input type="text" class="tx-srfeuserregister-pi1-text" name="user" value="###FIELD_username###"  size="40" maxlength="50" /></dd>
 
 	<dt>###LABEL_PASSWORD###</dt>
-	<dd><input type="password" name="pass" value="###FIELD_password###" size="10" maxlength="40" ###PASSWORD_ONCHANGE### /></dd>
+	<dd><input type="password" name="pass" value="" size="10" maxlength="40" ###PASSWORD_ONCHANGE### /></dd>
 
 	<dt>&nbsp;</dt>
 	<dd>
@@ -673,23 +673,6 @@ The user is informed that a message has been sent to his email address and that 
 		<input id="tx-srfeuserregister-pi1-username" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_INVITATION_USERNAME###" name="###NAME_USERNAME###" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_username### -->
-
-	<!-- ###SUB_INCLUDED_FIELD_password### -->
-	<dt>
-		<label for="tx-srfeuserregister-pi1-password">###LABEL_PASSWORD### ###REQUIRED_PASSWORD###</label>
-	</dt>
-	<dd>
-		<!-- ###SUB_ERROR_FIELD_password### -->
-		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_password###</p>
-		<!-- ###SUB_ERROR_FIELD_password### -->
-		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
-		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="40" title="###TOOLTIP_INVITATION_PASSWORD###" name="###NAME_PASSWORD###" value="###FIELD_password###" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
-		<label for="tx-srfeuserregister-pi1-password_again" class="tx-srfeuserregister-pi1-password-again">###LABEL_PASSWORD_AGAIN###</label>
-		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="40" title="###LABEL_TOOLTIP_INVITATION_PASSWORD_AGAIN###" name="###NAME_PASSWORD_AGAIN###" value="###FIELD_password_again###" class="tx-srfeuserregister-pi1-password" />
-	</dd>
-	<!-- ###SUB_INCLUDED_FIELD_password### -->
 
 	<!-- ###SUB_INCLUDED_FIELD_gender### -->
 	<dt>
@@ -1835,7 +1818,7 @@ The user is informed that a message has been sent to the email address and that 
 	<dd> <input type="text" class="tx-srfeuserregister-pi1-text" id="tx-srfeuserregister-pi1-username" size="40" maxlength="50" title="###LABEL_TOOLTIP_LOGIN_USERNAME###" name="user" value="###FIELD_username###" /> </dd>
 
 	<dt><label for="tx-srfeuserregister-pi1-pass">###LABEL_PASSWORD###</label></dt>
-	<dd> <input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="pass" value="###FIELD_password###" size="10" maxlength="40" ###PASSWORD_ONCHANGE### /> </dd>
+	<dd> <input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="pass" value="" size="10" maxlength="40" ###PASSWORD_ONCHANGE### /> </dd>
 
 	<dt>&nbsp;</dt>
 	<dd>
@@ -1888,7 +1871,7 @@ The user is informed that a message has been sent to the email address and that 
 	<dd><input type="text" class="tx-srfeuserregister-pi1-text" id="tx-srfeuserregister-pi1-username" size="40" maxlength="50" title="###LABEL_TOOLTIP_LOGIN_USERNAME###" name="user" value="###FIELD_username###" /></dd>
 
 	<dt><label for="tx-srfeuserregister-pi1-pass">###LABEL_PASSWORD###</label></dt>
-	<dd><input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="pass" value="###FIELD_password###" size="10" maxlength="40" ###PASSWORD_ONCHANGE### /></dd>
+	<dd><input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="pass" value="" size="10" maxlength="40" ###PASSWORD_ONCHANGE### /></dd>
 
 	<dt>&nbsp;</dt>
 	<dd>
@@ -1902,6 +1885,42 @@ The user is informed that a message has been sent to the email address and that 
 </form>
 <!-- ###TEMPLATE_SETFIXED_OK_ENTER### end-->
 
+<p style="margin-top: 20px"><em>This template is the response page when the invited person clicks on the link in the acceptation email.</em></p>
+<!-- ###TEMPLATE_SETFIXED_OK_APPROVE_INVITE### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_ENTERED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE2###</p>
+<p>###LABEL_V_NOW_CHOOSE_PASSWORD###</p>
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<fieldset>
+<dl>
+	<!-- ###SUB_INCLUDED_FIELD_password### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-password">###LABEL_PASSWORD###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_password### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_password###</p>
+		<!-- ###SUB_ERROR_FIELD_password### -->
+		<!-- ###SUB_REQUIRED_FIELD_password### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
+		<!-- ###SUB_REQUIRED_FIELD_password### -->
+		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="40" title="###TOOLTIP_PASSWORD###" name="###NAME_PASSWORD###" value="" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
+		<label for="tx-srfeuserregister-pi1-password_again" class="tx-srfeuserregister-pi1-password-again">###LABEL_PASSWORD_AGAIN###</label>
+		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="40" title="###LABEL_TOOLTIP_PASSWORD_AGAIN###" name="###NAME_PASSWORD_AGAIN###" value="" class="tx-srfeuserregister-pi1-password" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_password### -->
+
+	<dt>&nbsp;</dt>
+	<dd>
+		###HIDDENFIELDS###
+		<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_UPDATE###" />
+	</dd>
+</dl>
+</fieldset>
+</form>
+<!-- ###TEMPLATE_SETFIXED_OK_APPROVE_INVITE### end-->
 
 
 <p style="margin-top: 20px"><em>This template is the response page when the administrator refuses the account registration.</em></p>
@@ -1959,54 +1978,6 @@ The user is informed that a message has been sent to the email address and that 
 <p>###LABEL_KIND_REGARDS###</p>
 <h4>###SITE_NAME###</h4>
 <!-- ###TEMPLATE_NO_PERMISSIONS### end-->
-
-
-
-<p style="margin-top: 20px"><em>No permission template</em></p>
-<!-- ###TEMPLATE_INFOMAIL### begin-->
-<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
-<fieldset>
-<legend>###LABEL_V_INFOMAIL_LOST_PASSWORD###<br /></legend>
-<dl>
-	<!-- ###SUB_INCLUDED_FIELD_email### -->
-	<dt>
-		<label for="tx-srfeuserregister-pi1-email">###LABEL_EMAIL###</label>
-	</dt>
-	<dd>
-		<!-- ###SUB_ERROR_FIELD_email### -->
-		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_email###</p>
-		<!-- ###SUB_ERROR_FIELD_email### -->
-		<!-- ###SUB_REQUIRED_FIELD_email### -->
-		<p class="tx-srfeuserregister-pi1-error">###MISSING_EMAIL###</p>
-		<!-- ###SUB_REQUIRED_FIELD_email### -->
-		<input id="tx-srfeuserregister-pi1-email" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="255" title="###TOOLTIP_EMAIL###" name="###FIELD_email###" />
-	</dd>
-	<!-- ###SUB_INCLUDED_FIELD_email### -->
-	<dd>
-		###HIDDENFIELDS###
-		<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_PASSWORD_FORGOTTEN###" />
-	</dd>
-</dl>
-</fieldset>
-</form>
-<!-- ###TEMPLATE_INFOMAIL### end-->
-
-
-
-
-<p style="margin-top: 20px"><em>This template is used to inform that the forgotten password has been sent.</em></p>
-<!-- ###TEMPLATE_INFOMAIL_SENT### begin -->
-<!-- ###SUB_RECORD### -->
-
-###LABEL_V_INFOMAIL_DEAR###
-
-###LABEL_V_INFOMAIL_LOST_PASSWORD_CONFIRM###
-
-
-<!-- ###SUB_RECORD### -->
-<!-- ###TEMPLATE_INFOMAIL_SENT### end-->
-
-
 
 
 <h1>EMAIL TEMPLATES:</h1>
@@ -2171,20 +2142,6 @@ The user is informed that a message has been sent to the email address and that 
 ###SITE_NAME###
 <!-- ###SUB_RECORD### -->
 <!-- ###EMAIL_TEMPLATE_EDIT_SAVED_ADMIN### end-->
-
-
-<p style="margin-top: 20px"><em>This template is used that someone can retrieve his forgotten password and account name.</em></p>
-<!-- ###EMAIL_TEMPLATE_INFOMAIL### begin -->
-###LABEL_V_INFOMAIL_LOST_PASSWORD_SUBJECT###
-
-<!-- ###SUB_RECORD### -->
-###LABEL_V_DEAR###
-
-###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1###
-
-###FIELD_name### ###FIELD_address### ###FIELD_zip### ###FIELD_city###
-<!-- ###SUB_RECORD### -->
-<!-- ###EMAIL_TEMPLATE_INFOMAIL### end-->
 
 
 

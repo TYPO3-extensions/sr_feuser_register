@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2012 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -32,7 +32,7 @@
  * $Id$
  *
  * @author	Kasper Skaarhoj <kasper2008@typo3.com>
- * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ * @author	Stanislas Rolland <typo3(arobas)sjbr.ca>
  * @author	Franz Holzinger <franz@ttproducts.de>
  *
  * @package TYPO3
@@ -70,7 +70,6 @@ class tx_srfeuserregister_data {
 	public $missing = array(); // array of required missing fields
 	public $inError = array(); // array of fields with eval errors other than absence
 	public $templateCode;
-	public $password = '';
 
 
 	public function init (
@@ -107,8 +106,7 @@ class tx_srfeuserregister_data {
 			$feDataArray = $fe[$theTable];
 			$this->controlData->secureInput($feDataArray, FALSE);
 			$this->tca->modifyRow($feDataArray, FALSE);
-
-			if ($theTable == 'fe_users') {
+			if ($theTable === 'fe_users') {
 				$this->controlData->securePassword($feDataArray);
 			}
 			$this->setDataArray($feDataArray);
@@ -143,6 +141,14 @@ class tx_srfeuserregister_data {
 
 	public function setTemplateCode (&$templateCode) {
 		$this->templateCode = $templateCode;
+			// Version 3: no clear-text passwords in templates
+			// Remove any ###FIELD_password###, ###FIELD_password_again### markers
+		$this->templateCode = str_replace('###FIELD_password###', '' , $this->templateCode);
+		$this->templateCode = str_replace('###FIELD_password_again###', '' , $this->templateCode);
+			// Version 3: No clear-text password in invitation mail
+			// Replace ###LABEL_V_REGISTRATION_INVITED_MESSAGE1### with ###LABEL_V_REGISTRATION_INVITED_MESSAGE1A###
+		$this->templateCode = str_replace('###LABEL_V_REGISTRATION_INVITED_MESSAGE1###', '###LABEL_V_REGISTRATION_INVITED_MESSAGE1A###' , $this->templateCode);
+		$this->templateCode = str_replace('###LABEL_V_REGISTRATION_INVITED_MESSAGE1_INFORMAL###', '###LABEL_V_REGISTRATION_INVITED_MESSAGE1A_INFORMAL###' , $this->templateCode);
 	}
 
 
@@ -243,24 +249,11 @@ class tx_srfeuserregister_data {
 		return $this->origArr;
 	}
 
-
-	public function setPassword ($password) {
-		$this->password = $password;
-	}
-
-
-	public function getPassword (&$dataArray) {
-		$rc = ($this->password != '' ? $this->password : $dataArray['password']);
-		return $rc;
-	}
-
-
 	public function bNewAvailable () {
 		$dataArray = $this->getDataArray();
 		$rc = ($dataArray['username'] != '' || $dataArray['email'] != '');
 		return $rc;
 	}
-
 
 	/**
 	* Overrides field values as specified by TS setup
@@ -410,7 +403,7 @@ class tx_srfeuserregister_data {
 		$requiredArray
 	) {
 		$displayFieldArray = t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1);
-		if($this->controlData->useCaptcha($cmdKey)) {
+		if ($this->controlData->useCaptcha($cmdKey)) {
 			$displayFieldArray[] = 'captcha_response';
 		}
 
@@ -461,29 +454,28 @@ class tx_srfeuserregister_data {
 			$countArray['hook'] = array();
 			$countArray['preg'] = array();
 
-			foreach($this->conf[$cmdKey.'.']['evalValues.'] as $theField => $theValue) {
-
-				if (isset($dataArray[$theField]) || !count($origArray) || !isset($origArray[$theField])) {
-					$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
-
-					$keyUnsetEmpty = array_search('unsetEmpty', $listOfCommands);
-					if ($keyUnsetEmpty !== FALSE) {
-						unset($listOfCommands[$keyUnsetEmpty]);
-						$listOfCommands = array_merge(array('unsetEmpty'), $listOfCommands);
+			foreach ($this->conf[$cmdKey.'.']['evalValues.'] as $theField => $theValue) {
+				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
+					// Unset the incoming value is empty and unsetEmpty is specified
+				if (array_search('unsetEmpty', $listOfCommands) !== FALSE) {
+					if (
+						isset($dataArray[$theField]) &&
+						empty($dataArray[$theField]) &&
+						trim($dataArray[$theField]) !== '0'
+					) {
+						unset($dataArray[$theField]);
 					}
-					$bSetToEmpty = FALSE;
-
-					$keyUnsetEmpty = array_search('unsetEmpty', $listOfCommands);
-					if ($keyUnsetEmpty !== FALSE) {
-						unset($listOfCommands[$keyUnsetEmpty]);
-						$listOfCommands = array_merge(array('unsetEmpty'), $listOfCommands);
+					if (
+						isset($dataArray[$theField . '_again']) &&
+						empty($dataArray[$theField . '_again']) &&
+						trim($dataArray[$theField . '_again']) !== '0'
+					) {
+						unset($dataArray[$theField . '_again']);
 					}
-					$bSetToEmpty = FALSE;
+				}
 
+				if (isset($dataArray[$theField]) || isset($dataArray[$theField . '_again']) || !count($origArray) || !isset($origArray[$theField])) {
 					foreach ($listOfCommands as $k => $cmd) {
-						if ($bSetToEmpty) {
-							break;
-						}
 						$cmdParts = preg_split('/\[|\]/', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 						$theCmd = trim($cmdParts[0]);
 						switch($theCmd) {
@@ -522,7 +514,15 @@ class tx_srfeuserregister_data {
 								}
 							break;
 							case 'twice':
-								if (strcmp($dataArray[$theField], $dataArray[$theField.'_again'])) {
+								if (
+									(!isset($dataArray[$theField]) && isset($dataArray[$theField.'_again'])) ||
+									(isset($dataArray[$theField]) && !isset($dataArray[$theField.'_again'])) ||
+									(
+										isset($dataArray[$theField]) &&
+										isset($dataArray[$theField.'_again']) &&
+										strcmp($dataArray[$theField], $dataArray[$theField.'_again'])
+									)
+								) {
 									$failureArray[] = $theField;
 									$this->inError[$theField] = TRUE;
 									$this->failureMsg[$theField][] =
@@ -531,6 +531,7 @@ class tx_srfeuserregister_data {
 											$theCmd,
 											'evalErrors_same_twice'
 										);
+									$this->controlData->clearSessionData();
 								}
 							break;
 							case 'email':
@@ -611,18 +612,6 @@ class tx_srfeuserregister_data {
 													$pid_list
 												);
 									}
-								}
-							break;
-							case 'unsetEmpty':
-								if (!$dataArray[$theField]) {
-									$hash = array_flip($failureArray);
-									unset($hash[$theField]);
-									$failureArray = array_keys($hash);
-									unset($this->inError[$theField]);
-									unset($this->failureMsg[$theField]);
-									unset($dataArray[$theField]); // This should prevent the field from entering the database.
-									unset($dataArray[$theField.'_again']);
-									$bSetToEmpty = TRUE;
 								}
 							break;
 							case 'upload':
@@ -945,7 +934,7 @@ class tx_srfeuserregister_data {
 						$theCmd = trim($cmdParts[0]);
 						$bValueAssigned = TRUE;
 						if (
-							$theField == 'password' &&
+							$theField === 'password' &&
 							!isset($dataArray[$theField])
 						) {
 							$bValueAssigned = FALSE;
@@ -1197,12 +1186,13 @@ class tx_srfeuserregister_data {
 	) {
 		$rc = 0;
 
-		if ($theTable == 'fe_users') {
-			$password = $this->controlData->readPassword();
+		if ($theTable === 'fe_users') {
+			$password = $this->controlData->readPasswordForStorage();
 		}
 
 		switch($cmdKey) {
 			case 'edit':
+			case 'password':
 				$theUid = $dataArray['uid'];
 				$rc = $theUid;
 				$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
@@ -1250,16 +1240,17 @@ class tx_srfeuserregister_data {
 								$dataArray,
 								$origArray
 							);
-
-						$newFieldList = implode (',', $newFieldArray);
-
-						if ($theTable == 'fe_users' && $password != '') {
+ 
+ 						if ($theTable === 'fe_users' && isset($dataArray['password'])) {
+ 								// Do not set the outgoing password if the incoming password was unset
 							$outGoingData['password'] = $password;
-						}
-
+ 						}						
+						$newFieldList = implode (',', $newFieldArray);
 						if (isset($GLOBALS['TCA'][$theTable]['ctrl']['token'])) {
-							$outGoingData['token'] = $token; // Save token in record
-							$newFieldList .= ',token';                                                                   // Could be set conditional to adminReview or user confirm
+								// Save token in record
+							$outGoingData['token'] = $token;
+								// Could be set conditional to adminReview or user confirm
+							$newFieldList .= ',token';
 						}
 						$res =
 							$this->cObj->DBgetUpdate(
@@ -1321,24 +1312,14 @@ class tx_srfeuserregister_data {
 							$origArray
 						);
 
-					if ($theTable == 'fe_users') {
-
-						if (
-							($cmdKey == 'invite' || $cmdKey == 'create') &&
-							$this->controlData->getUseMd5Password()
-						) {
-							$parsedArray['password'] = md5($password);
-						} else {
-							$parsedArray['password'] = $password;
-						}
+					if ($theTable === 'fe_users') {
+						$parsedArray['password'] = $password;
 					}
-
 					if (isset($GLOBALS['TCA'][$theTable]['ctrl']['token'])) {
 
 						$parsedArray['token'] = $token;
 						$newFieldList  .= ',token';
 					}
-
 					$res =
 						$this->cObj->DBgetInsert(
 							$theTable,
@@ -1419,7 +1400,6 @@ class tx_srfeuserregister_data {
 							}
 						}
 					}
-					$newRow['password'] = $password; // restore password before MD5 encryption
 				}
 			break;
 		}
@@ -1757,7 +1737,6 @@ class tx_srfeuserregister_data {
 		}
 	}	// setName
 
-
 	/**
 	* Moves email into username if useEmailAsUsername is set
 	*
@@ -1765,45 +1744,10 @@ class tx_srfeuserregister_data {
 	*/
 	public function setUsername ($theTable, &$dataArray, $cmdKey) {
 
-		if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $theTable == "fe_users" && t3lib_div::inList($this->getFieldList(), 'username') && !$this->failureMsg['email']) {
+		if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $theTable === 'fe_users' && t3lib_div::inList($this->getFieldList(), 'username') && !$this->failureMsg['email']) {
 			$dataArray['username'] = trim($dataArray['email']);
 		}
 	}	// setUsername
-
-
-	/**
-	* Assigns a value to the password if this is an invitation and md5 password encryption if kb_md5fepw is enabled
-	* or if we are creating and generatePassword is set.
-	*
-	* @return void  done directly on array $this->dataArray
-	*/
-	public function generatePassword (&$dataArray, $cmdKey) {
-
-		if (
-			($cmdKey == 'invite' && ($this->controlData->getUseMd5Password() || $this->conf[$cmdKey.'.']['generatePassword'])) ||
-
-			($cmdKey == 'create' && $this->conf[$cmdKey.'.']['generatePassword'])
-		)	{
-			$genLength = intval($this->conf[$cmdKey.'.']['generatePassword']);
-
-			if ($this->controlData->getUseMd5Password()) {
-				if (t3lib_extMgm::isLoaded('kb_md5fepw')) {
-					$length = intval($GLOBALS['TSFE']->config['plugin.']['tx_felogin_pi1.']['defaultPasswordLength']);
-					if (!$length) {
-						$length = ($genLength ? $genLength : 32);
-					}
-					include_once(t3lib_extMgm::extPath('kb_md5fepw') . 'class.tx_kbmd5fepw_funcs.php');
-					$genPassword = tx_kbmd5fepw_funcs::generatePassword($length );
-				}
-			}
-			if (!isset($genPassword)) {
-				$genPassword = substr(md5(uniqid(microtime(), 1)), 0, $genLength);
-			}
-			$dataArray['password'] = $genPassword;
-			$this->setPassword($genPassword);
-		}
-	}	// generatePassword
-
 
 	/**
 	* Transforms incoming timestamps into dates
