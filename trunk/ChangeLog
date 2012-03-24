@@ -1,3 +1,6 @@
+2012-03-24 Stanislas Rolland  <typo3@sjbr.ca>
+	* Follow-up to bug #13349: Checkbox is set to "0" if not checked (Thanks to Oliver Hader)
+
 2012-03-23 Stanislas Rolland  <typo3@sjbr.ca>
 	* Add feature #34447: Add support for saltedpasswords and rsaauth
 	* Fix bug #26708: Autologin does not work with rsa and saltedpasswords
@@ -20,7 +23,7 @@
 	* Fix #7932 (old bug tracker): Confirmation displays in the login form the password MD5 hash
 	* Fix #9274 (old bug tracker): MD5 Hash inserted in password field of create form
 	* Fix #6731 (old bug tracker): Suboptimal way to tell user his pw if generatepassword & md5 is used
-	* Add feature #35209: Make extension conflict with extension patch1822	
+	* Add feature #35209: Make extension conflict with extension patch1822
 
 2012-03-01 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up to feature #34405: Fix CGL in tx_srfeuserregister_email (Thanks to Franz Holzinger)
