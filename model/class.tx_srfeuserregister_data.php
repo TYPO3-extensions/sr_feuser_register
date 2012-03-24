@@ -1341,6 +1341,7 @@ class tx_srfeuserregister_data {
 						if ($GLOBALS['TCA'][$theTable]['ctrl']['fe_cruser_id']) {
 							$field = $GLOBALS['TCA'][$theTable]['ctrl']['fe_cruser_id'];
 							$dataArray[$field] = $newId;
+							$tmpDataArray[$field] = $newId;
 							$extraList .= ',' . $field;
 						}
 
