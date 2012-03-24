@@ -208,9 +208,12 @@ class tx_srfeuserregister_control {
 
 		$theTable = $controlData->getTable();
 		if ($theTable === 'fe_users') {
-			if ($cmdKey !== 'edit' && $cmdKey !== 'password') {
-				$this->conf[$cmdKey . '.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'] . ',username', 1)));
-				$this->conf[$cmdKey . '.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['required'] . ',username', 1)));
+				// When not in edit mode, add username to lists of fields and required fields unless explicitly disabled
+			if (empty($this->conf[$cmdKey.'.']['doNotEnforceUsername'])) {
+				if ($cmdKey !== 'edit' && $cmdKey !== 'password') {
+					$this->conf[$cmdKey . '.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'] . ',username', 1)));
+					$this->conf[$cmdKey . '.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['required'] . ',username', 1)));
+				}
 			}
 			if ($this->conf[$cmdKey . '.']['generateUsername'] || $cmdKey === 'password') {
 				$this->conf[$cmdKey . '.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), array('username')));
