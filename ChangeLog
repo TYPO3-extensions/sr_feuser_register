@@ -13,6 +13,8 @@
 	* Fix #15813 (old bug tracker): Labels with variables do not get processed if fieldname contains numbers (Thanks to Joerg Winter)
 	* Add feature #6646 (old bug tracker): Possibility to disable enforcing of username field (Thanks to François Suter)
 	* Fix #15659 (old bug tracker): Field fe_cruser_id is never set (Thanks to Jens Herden)
+	* Fix #17686 (old bug tracker): Password change does not execute any validation
+	* Fix #6308 (old bug tracker): Wrong marker in template (Thanks to Bjorn T. Hallberg)
 
 2012-03-01 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up to feature #34405: Fix CGL in tx_srfeuserregister_email (Thanks to Franz Holzinger)
