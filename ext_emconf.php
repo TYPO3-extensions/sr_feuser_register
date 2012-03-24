@@ -51,6 +51,7 @@ $EM_CONF[$_EXTKEY] = array(
 			'newloginbox' => '',
 			'kb_md5fepw' => '',
 			'srfeuserregister_t3secsaltedpw' => '',
+			'patch1822' => '',
 		),
 		'suggests' => array(
 		),

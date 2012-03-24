@@ -15,6 +15,12 @@
 	* Fix #15659 (old bug tracker): Field fe_cruser_id is never set (Thanks to Jens Herden)
 	* Fix #17686 (old bug tracker): Password change does not execute any validation
 	* Fix #6308 (old bug tracker): Wrong marker in template (Thanks to Bjorn T. Hallberg)
+	* Fix #10858 (old bug tracker): Password not md5 hashed with firefox because onchange is not triggered when the form is automatically filled
+	* Fix #7786 (old bug tracker): PasswordAtLeast has no effect when useMd5Password is set
+	* Fix #7932 (old bug tracker): Confirmation displays in the login form the password MD5 hash
+	* Fix #9274 (old bug tracker): MD5 Hash inserted in password field of create form
+	* Fix #6731 (old bug tracker): Suboptimal way to tell user his pw if generatepassword & md5 is used
+	* Add feature #35209: Make extension conflict with extension patch1822	
 
 2012-03-01 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up to feature #34405: Fix CGL in tx_srfeuserregister_email (Thanks to Franz Holzinger)
