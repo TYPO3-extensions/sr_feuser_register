@@ -54,9 +54,8 @@ if (TYPO3_MODE=='BE') {
 		// replace the output of the former CODE field with the flexform
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][SR_FEUSER_REGISTER_EXTkey.'_pi1'][] = 'EXT:'.SR_FEUSER_REGISTER_EXTkey.'/hooks/class.tx_srfeuserregister_hooks_cms.php:&tx_srfeuserregister_hooks_cms->pmDrawItem';
 	}
-		// For backward compatibility, test on extension patch1822 (obsolete as of TYPO3 4.4)
-		// Next step is to make the extension incompatible with sr_feuser_register
-	if (($typoVersion >= 4004000 || t3lib_extMgm::isLoaded('patch1822')) && !defined($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_users']['MENU'])) {
+
+	if (!defined($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_users']['MENU'])) {
 		$tableArray = array('fe_users', 'fe_groups', 'fe_groups_language_overlay');
 		foreach ($tableArray as $theTable) {
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['LLFile'][$theTable] = 'EXT:'.SR_FEUSER_REGISTER_EXTkey.'/locallang.xml';
