@@ -252,7 +252,9 @@ class tx_srfeuserregister_email {
 		global $TSFE;
 
 		$missingSubpartArray = array();
-		$subpartsFound = 0;
+		$userSubpartsFound = 0;
+		$adminSubpartsFound = 0;
+
 		if (!isset($DBrows[0]) || !is_array($DBrows[0])) {
 			$DBrows = $origRows;
 		}
@@ -299,7 +301,7 @@ class tx_srfeuserregister_email {
 				$missingSubpartArray[] = $subpartMarker;
 			} else {
 				$content['user']['all'] = $this->display->removeRequired($content['user']['all'], $errorFieldArray);
-				$subpartsFound++;
+				$userSubpartsFound++;
 			}
 
 			if ($this->HTMLMailEnabled && $bHTMLallowed) {
@@ -310,7 +312,7 @@ class tx_srfeuserregister_email {
 					$missingSubpartArray[] = $subpartMarker;
 				} else {
 					$content['userhtml']['all'] = $this->display->removeRequired($content['userhtml']['all'], $errorFieldArray);
-					$subpartsFound++;
+					$userSubpartsFound++;
 				}
 			}
 		}
@@ -324,7 +326,7 @@ class tx_srfeuserregister_email {
 				$missingSubpartArray[] = $subpartMarker;
 			} else {
 				$content['admin']['all'] = $this->display->removeRequired($content['admin']['all'], $errorFieldArray);
-				$subpartsFound++;
+				$adminSubpartsFound++;
 			}
 
 			if ($this->HTMLMailEnabled)	{
@@ -335,7 +337,7 @@ class tx_srfeuserregister_email {
 					$missingSubpartArray[] = $subpartMarker;
 				} else {
 					$content['adminhtml']['all'] = $this->display->removeRequired($content['adminhtml']['all'], $errorFieldArray);
-					$subpartsFound++;
+					$adminSubpartsFound++;
 				}
 			}
 		}
@@ -565,9 +567,11 @@ class tx_srfeuserregister_email {
 		if ($this->conf['addAttachment'] && $this->conf['addAttachment.']['cmd'] == $cmd && $this->conf['addAttachment.']['sFK'] == $this->controlData->getFeUserData('sFK')) {
 			$file = ($this->conf['addAttachment.']['file'] ? $TSFE->tmpl->getFileName($this->conf['addAttachment.']['file']) : '');
 		}
-
-		if ($subpartsFound >= 1) {
-
+			// SETFIXED_REVIEW will be sent to user only id the admin part is present
+		if (
+			($userSubpartsFound + $adminSubpartsFound >= 1) &&
+			($adminSubpartsFound >= 1 || $key !== 'SETFIXED_REVIEW')
+		) {
 			$this->send(
 				$recipient,
 				$this->conf['email.']['admin'],
