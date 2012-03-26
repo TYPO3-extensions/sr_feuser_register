@@ -1,5 +1,6 @@
 2012-03-26 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #33279: Evaluation of arrays returns always false
+	* Follow-up to feature #34447: Add support for saltedpasswords and rsaauth
 
 2012-03-25 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #32066: Security bug in admin confirmation
