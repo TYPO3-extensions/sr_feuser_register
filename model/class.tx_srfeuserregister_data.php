@@ -494,7 +494,8 @@ class tx_srfeuserregister_data {
 								$DBrows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid,' . $theField, $theTable, $where, '', '', '1');
 
 								if (
-									trim($dataArray[$theField])!='' &&
+									!is_array($dataArray[$theField]) &&
+									trim($dataArray[$theField]) != '' &&
 									isset($DBrows) &&
 									is_array($DBrows) &&
 									isset($DBrows[0]) &&
@@ -535,7 +536,7 @@ class tx_srfeuserregister_data {
 								}
 							break;
 							case 'email':
-								if (trim($dataArray[$theField]) && !t3lib_div::validEmail($dataArray[$theField])) {
+								if (!is_array($dataArray[$theField]) && trim($dataArray[$theField]) && !t3lib_div::validEmail($dataArray[$theField])) {
 									$failureArray[] = $theField;
 									$this->inError[$theField] = TRUE;
 									$this->failureMsg[$theField][] =
@@ -547,7 +548,7 @@ class tx_srfeuserregister_data {
 								}
 							break;
 							case 'required':
-								if (!trim($dataArray[$theField])) {
+								if (empty($dataArray[$theField]) && $dataArray[$theField] !== '0') {
 									$failureArray[] = $theField;
 									$this->inError[$theField] = TRUE;
 									$this->failureMsg[$theField][] =
@@ -560,7 +561,7 @@ class tx_srfeuserregister_data {
 							break;
 							case 'atLeast':
 								$chars = intval($cmdParts[1]);
-								if (strlen($dataArray[$theField]) < $chars) {
+								if (!is_array($dataArray[$theField]) && strlen($dataArray[$theField]) < $chars) {
 									$failureArray[] = $theField;
 									$this->inError[$theField] = TRUE;
 									$this->failureMsg[$theField][] =
@@ -576,8 +577,7 @@ class tx_srfeuserregister_data {
 							break;
 							case 'atMost':
 								$chars = intval($cmdParts[1]);
-
-								if (strlen($dataArray[$theField]) > $chars) {
+								if (!is_array($dataArray[$theField]) && strlen($dataArray[$theField]) > $chars) {
 									$failureArray[] = $theField;
 									$this->inError[$theField] = TRUE;
 									$this->failureMsg[$theField][] =
@@ -725,6 +725,7 @@ class tx_srfeuserregister_data {
 							break;
 							case 'date':
 								if (
+									!is_array($dataArray[$theField]) &&
 									$dataArray[$theField] &&
 									!$this->evalDate(
 										$dataArray[$theField],
@@ -772,7 +773,7 @@ class tx_srfeuserregister_data {
 								}
 							break;
 							case 'preg':
-								if (trim($dataArray[$theField])) {
+								if (!is_array($dataArray[$theField]) && trim($dataArray[$theField])) {
 									if (isset($countArray['preg'][$theCmd])) {
 										$countArray['preg'][$theCmd]++;
 									} else {
@@ -799,7 +800,7 @@ class tx_srfeuserregister_data {
 								}
 							break;
 							case 'hook':
-								if (trim($dataArray[$theField])) {
+								if (!empty($dataArray[$theField]) || $dataArray[$theField] === '0') {
 									if (isset($countArray['hook'][$theCmd])) {
 										$countArray['hook'][$theCmd]++;
 									} else {
