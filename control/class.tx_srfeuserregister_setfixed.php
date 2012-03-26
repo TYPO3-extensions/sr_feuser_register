@@ -245,7 +245,7 @@ class tx_srfeuserregister_setfixed {
 					// Outputting template
 				if (
 					$theTable == 'fe_users' &&
-						// LOGIN is here only for an error case
+						// LOGIN is here only for an error case  ???
 					in_array($sFK, array('APPROVE','ENTER','LOGIN'))
 				) {
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $row['by_invitation'] ? 'password' : 'login', $token);
@@ -324,8 +324,8 @@ class tx_srfeuserregister_setfixed {
 
 					if (
 						($this->conf['email.']['SETFIXED_REFUSE'] || $this->conf['enableEmailConfirmation'] || $this->conf['infomail'])
-					)	{
-						// Compiling email
+					) {
+							// Compiling email
 						$errorContent = $this->email->compile(
 							SETFIXED_PREFIX . $setfixedSuffix,
 							$theTable,
@@ -368,7 +368,7 @@ class tx_srfeuserregister_setfixed {
 								// Auto-login on confirmation
 							$this->conf['enableAutoLoginOnConfirmation'] &&
 							!$row['by_invitation'] &&
-							($sFK == 'APPROVE' || $sFK == 'ENTER') &&
+							(($sFK === 'APPROVE' && !$this->conf['enableAdminReview']) || $sFK === 'ENTER') &&
 							isset($autoLoginKey)
 						) {
 							$loginSuccess = $pObj->login($currArr);
