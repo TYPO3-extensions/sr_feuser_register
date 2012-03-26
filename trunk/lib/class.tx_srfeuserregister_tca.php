@@ -567,6 +567,7 @@ class tx_srfeuserregister_tca {
 
 							case 'input':
 								$colContent = '<input type="input" name="FE[' . $theTable . '][' . $colName . ']"' .
+									' title="###TOOLTIP_' . (($cmd == 'invite') ? 'INVITATION_' : '') . $this->cObj->caseshift($colName, 'upper') . '###"' .
 									' size="' . ($colConfig['size'] ? $colConfig['size'] : 30) . '"';
 								if ($colConfig['max']) {
 									$colContent .= ' maxlength="' . $colConfig['max'] . '"';
