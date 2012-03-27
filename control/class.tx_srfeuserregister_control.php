@@ -365,7 +365,7 @@ class tx_srfeuserregister_control {
 			// Evaluate incoming data
 		if (count($finalDataArray) && !in_array($cmd, $noSaveCommands)) {
 			$this->data->setName($finalDataArray, $cmdKey);
-			$this->data->parseValues($theTable, $finalDataArray, $origArray);
+			$this->data->parseValues($theTable, $finalDataArray, $origArray, $cmdKey);
 			$this->data->overrideValues($finalDataArray, $cmdKey);
 			if (
 				$bSubmit ||

@@ -808,7 +808,7 @@ class tx_srfeuserregister_marker {
 		} else {
 			for($i = 0; $i < sizeof($filenameArray); $i++) {
 				$HTMLContent .= $filenameArray[$i] . '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="' . $prefix . '[' . $theField . '][' . $i . '][submit_delete]" value="1" title="' . $this->langObj->getLL('icon_delete') . '" alt="' . $this->langObj->getLL('icon_delete') . '"' . $this->pibase->pi_classParam('delete-icon') . ' onclick=\'if(confirm("' . $this->langObj->getLL('confirm_file_delete') . '")) return true; else return false;\' />'
-					. '<a href="' . $dir . '/' . $filenameArray[$i] . '"' . $this->pibase->pi_classParam('file-view') . 'target="_blank" title="' . $this->langObj->getLL('file_view') . '">' . $this->langObj->getLL('file_view') . '</a><br />';
+					. '<a href="' . $dir . '/' . $filenameArray[$i] . '" ' . $this->pibase->pi_classParam('file-view') . ' target="_blank" title="' . $this->langObj->getLL('file_view') . '">' . $this->langObj->getLL('file_view') . '</a><br />';
 				$HTMLContent .= '<input type="hidden" name="' . $prefix . '[' . $theField . '][' . $i . '][name]' . '" value="' . $filenameArray[$i] . '" />';
 			}
 			for ($i = sizeof($filenameArray); $i < $number + sizeof($filenameArray); $i++) {
