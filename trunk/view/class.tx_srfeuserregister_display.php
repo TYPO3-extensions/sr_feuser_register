@@ -843,7 +843,7 @@ class tx_srfeuserregister_display {
 	public function getKeyAfterSave ($cmd, $cmdKey, $bCustomerConfirmsMode)	{
 
 		$result = FALSE;
-		switch($cmd) {
+		switch ($cmd) {
 			case 'delete':
 				$result = 'DELETE' . SAVED_SUFFIX;
 				break;
@@ -863,6 +863,9 @@ class tx_srfeuserregister_display {
 
 					if ($bCustomerConfirmsMode) {
 						$result .= '_REVIEW';
+					}
+					if ($this->conf['enableAdminReview']) {
+						$result = 'CREATE' . SAVED_SUFFIX . '_REVIEW';
 					}
 				} else {
 					$result = 'CREATE' . SAVED_SUFFIX;
