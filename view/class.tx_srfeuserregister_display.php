@@ -864,7 +864,7 @@ class tx_srfeuserregister_display {
 					if ($bCustomerConfirmsMode) {
 						$result .= '_REVIEW';
 					}
-					if ($this->conf['enableAdminReview']) {
+					if (!$this->conf['enableEmailConfirmation'] && $this->conf['enableAdminReview']) {
 						$result = 'CREATE' . SAVED_SUFFIX . '_REVIEW';
 					}
 				} else {

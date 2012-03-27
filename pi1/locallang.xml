@@ -381,6 +381,8 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 			<label index="v_registration_invited">An invitation to register in %1$s was sent to %3$s.</label>
 			<label index="v_registration_infomail_message1">Your account data are username &lt;b&gt;%2$s&lt;/b&gt; and password &lt;b&gt;%5$s&lt;/b&gt;.&lt;br /&gt;&lt;br /&gt;</label>
 			<label index="v_registration_infomail_message1_informal">Your account data are username &lt;b&gt;%2$s&lt;/b&gt; and password &lt;b&gt;%5$s&lt;/b&gt;.&lt;br /&gt;&lt;br /&gt;</label>
+			<label index="v_registration_infomail_message1a">Your account username is &lt;b&gt;%2$s&lt;/b&gt;.&lt;br /&gt;</label>
+			<label index="v_registration_infomail_message1a_informal">Your account username is &lt;b&gt;%2$s&lt;/b&gt;.&lt;br /&gt;</label>
 			<label index="v_registration_confirmed_subject">Thank you for registering with &lt;b&gt;%1$s&lt;/b&gt;.</label>
 			<label index="v_registration_confirmed_subject_informal">Thank you for registering with &lt;b&gt;%1$s&lt;/b&gt;.</label>
 			<label index="v_registration_confirmed_message1">Your membership &lt;b&gt;%2$s&lt;/b&gt; has been confirmed.</label>
