@@ -6,6 +6,7 @@
 	* Fix bug #11533 (old bug tracker): Documentation is incorrect for tx_srfeuserregister_tca::addTcaMarkers
 	* Fix bug #13643 (old bug tracker): Unnecessary disclosure of username in filename (Thanks to Steffen Müller)
 	* Follow-up to feature #34447: Add support for saltedpasswords and rsaauth
+	* Cleanup #35292: Cleanup in ext_tables.php
 
 2012-03-26 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #33279: Evaluation of arrays returns always false

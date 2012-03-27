@@ -178,24 +178,23 @@ $addColumnArray = Array(
 );
 t3lib_extMgm::addTCAcolumns('fe_users', $addColumnArray);
 
-$TCA['fe_users']['interface']['showRecordFieldList'] = str_replace(',country', ',zone,static_info_country,country,language', $TCA['fe_users']['interface']['showRecordFieldList']);
-$TCA['fe_users']['interface']['showRecordFieldList'] = str_replace('title,', 'gender,status,date_of_birth,title,', $TCA['fe_users']['interface']['showRecordFieldList']);
-
-$TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace(',country', ',zone,static_info_country,country,language,comments', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
+$TCA['fe_users']['interface']['showRecordFieldList'] = preg_replace('/,\s*country/', ',zone,static_info_country,country,language', $TCA['fe_users']['interface']['showRecordFieldList']);
+$TCA['fe_users']['interface']['showRecordFieldList'] = preg_replace('/,\s*title/', ',gender,status,date_of_birth,title', $TCA['fe_users']['interface']['showRecordFieldList']);
 
 $additionalFields = '';
 if (strpos($TCA['fe_users']['feInterface']['fe_admin_fieldList'],'first_name') === FALSE) {
 	$additionalFields = 'first_name,last_name,';
 }
 
-$TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace(',title', ',gender,' . $additionalFields . 'cnum,status,title', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
+$TCA['fe_users']['feInterface']['fe_admin_fieldList'] = preg_replace('/,\s*title/', ',gender,' . $additionalFields . 'cnum,status,title', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
 $TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',image,disable,date_of_birth,by_invitation,terms_acknowledged,tx_srfeuserregister_password';
+$TCA['fe_users']['feInterface']['fe_admin_fieldList'] = preg_replace('/,\s*country/', ',zone,static_info_country,country,language,comments', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
 
-$TCA['fe_users']['types']['0']['showitem'] = str_replace(', country', ', zone, static_info_country, country,language', $TCA['fe_users']['types']['0']['showitem']);
-$TCA['fe_users']['types']['0']['showitem'] = str_replace(', address', ', status, date_of_birth, address', $TCA['fe_users']['types']['0']['showitem']);
-$TCA['fe_users']['types']['0']['showitem'] = str_replace(', www', ', www, comments, by_invitation, terms_acknowledged', $TCA['fe_users']['types']['0']['showitem']);
+$TCA['fe_users']['types']['0']['showitem'] = preg_replace('/,\s*country/', ', zone, static_info_country, country, language', $TCA['fe_users']['types']['0']['showitem']);
+$TCA['fe_users']['types']['0']['showitem'] = preg_replace('/,\s*address/', ', status, date_of_birth, address', $TCA['fe_users']['types']['0']['showitem']);
+$TCA['fe_users']['types']['0']['showitem'] = preg_replace('/,\s*www/', ', www, comments, by_invitation, terms_acknowledged', $TCA['fe_users']['types']['0']['showitem']);
 
-$TCA['fe_users']['palettes']['2']['showitem'] = 'gender,' . $TCA['fe_users']['palettes']['2']['showitem'];
+$TCA['fe_users']['palettes']['2']['showitem'] = 'gender,--linebreak--,' . $TCA['fe_users']['palettes']['2']['showitem'];
 
 
 $TCA['fe_users']['ctrl']['thumbnail'] = 'image';
