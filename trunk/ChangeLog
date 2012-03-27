@@ -4,7 +4,8 @@
 	* Add feature #34676: Add support for title attribute on input fields for TCA markers (Thanks to Carlos Meyer)
 	* Fix bug #14699 (old bug tracker): Cannot remove "username" field in EDIT view
 	* Fix bug #31012: Images lost on profile editing
-	* Fix bug #27521: Deleting images in EDIT mode leads to broken references	
+	* Fix bug #27521: Deleting images in EDIT mode leads to broken references
+	* Fix bug #13882: Gender is not shown in backend	
 
 2012-03-25 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #32066: Security bug in admin confirmation

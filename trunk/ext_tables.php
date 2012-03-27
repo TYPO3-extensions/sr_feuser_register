@@ -176,46 +176,15 @@ $addColumnArray = Array(
 		)
 	),
 );
-
-$typoVersion = class_exists('t3lib_utility_VersionNumber') ? t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) : t3lib_div::int_from_ver(TYPO3_version);
-
-if ($typoVersion < 4004000)	{
-	$addColumnArray['first_name'] = Array (
-		'exclude' => 0,
-		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.first_name',
-		'config' => Array (
-			'type' => 'input',
-			'size' => '20',
-			'max' => '50',
-			'eval' => 'trim',
-			'default' => ''
-		)
-	);
-
-	$addColumnArray['last_name'] = Array (
-		'exclude' => 0,
-		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.last_name',
-		'config' => Array (
-			'type' => 'input',
-			'size' => '20',
-			'max' => '50',
-			'eval' => 'trim',
-			'default' => ''
-		)
-	);
-}
-
 t3lib_extMgm::addTCAcolumns('fe_users', $addColumnArray);
 
 $TCA['fe_users']['interface']['showRecordFieldList'] = str_replace(',country', ',zone,static_info_country,country,language', $TCA['fe_users']['interface']['showRecordFieldList']);
-
-
 $TCA['fe_users']['interface']['showRecordFieldList'] = str_replace('title,', 'gender,status,date_of_birth,title,', $TCA['fe_users']['interface']['showRecordFieldList']);
 
 $TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace(',country', ',zone,static_info_country,country,language,comments', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
 
 $additionalFields = '';
-if (strpos($TCA['fe_users']['feInterface']['fe_admin_fieldList'],'first_name') === FALSE)	{
+if (strpos($TCA['fe_users']['feInterface']['fe_admin_fieldList'],'first_name') === FALSE) {
 	$additionalFields = 'first_name,last_name,';
 }
 
@@ -223,27 +192,10 @@ $TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace(',title', ',
 $TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',image,disable,date_of_birth,by_invitation,terms_acknowledged,tx_srfeuserregister_password';
 
 $TCA['fe_users']['types']['0']['showitem'] = str_replace(', country', ', zone, static_info_country, country,language', $TCA['fe_users']['types']['0']['showitem']);
-
 $TCA['fe_users']['types']['0']['showitem'] = str_replace(', address', ', status, date_of_birth, address', $TCA['fe_users']['types']['0']['showitem']);
-
 $TCA['fe_users']['types']['0']['showitem'] = str_replace(', www', ', www, comments, by_invitation, terms_acknowledged', $TCA['fe_users']['types']['0']['showitem']);
 
-$lastPalette = 0;
-for ($i=0; $i<10; $i++)	{
-	if (isset($TCA['fe_users']['palettes'][$i]) && is_array($TCA['fe_users']['palettes'][$i]))	{
-		$lastPalette = $i;
-	}
-}
-
-if (isset($addColumnArray['first_name']))	{
-	$addPaletteFirstName = ',first_name';
-}
-if (isset($addColumnArray['last_name']))	{
-	$addTypesLastName = 'last_name;;' . ($lastPalette+1) . ';;1-1-1,';
-}
-
-$TCA['fe_users']['palettes'][$lastPalette+1]['showitem'] = 'gender' . $addPaletteFirstName;
-$TCA['fe_users']['types']['0']['showitem'] = str_replace(', name', ',cnum,' . $addTypesLastName . ' name', $TCA['fe_users']['types']['0']['showitem']);
+$TCA['fe_users']['palettes']['2']['showitem'] = 'gender,' . $TCA['fe_users']['palettes']['2']['showitem'];
 
 
 $TCA['fe_users']['ctrl']['thumbnail'] = 'image';
