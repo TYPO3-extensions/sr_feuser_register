@@ -1,3 +1,6 @@
+2012-03-27 Stanislas Rolland  <typo3@sjbr.ca>
+	* Fix bug #33122: User confirmation with multiple usergroups (Thanks to Tomita Militaru)
+
 2012-03-26 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #33279: Evaluation of arrays returns always false
 	* Follow-up to feature #34447: Add support for saltedpasswords and rsaauth
