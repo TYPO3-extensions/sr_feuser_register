@@ -679,7 +679,7 @@ class tx_srfeuserregister_controldata {
 	* @param	string	token
 	* @return void
 	*/
-	public function writeToken ($token) {
+	protected function writeToken ($token) {
 		$sessionData = $this->readSessionData();
 		if ($token === '') {
 			unset($sessionData['token']);
