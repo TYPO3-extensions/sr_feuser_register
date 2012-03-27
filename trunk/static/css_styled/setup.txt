@@ -220,6 +220,7 @@ plugin.tx_srfeuserregister_pi1 {
 	}
 	parseToDBValues {
 		date_of_birth = adodb_date
+		image = deleteUnreferencedFiles
 	}
 
 	email.from = {$plugin.tx_srfeuserregister_pi1.email}

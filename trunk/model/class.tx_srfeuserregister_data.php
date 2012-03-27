@@ -913,7 +913,7 @@ class tx_srfeuserregister_data {
 	*
 	* @return void  all parsing done directly on input array $dataArray
 	*/
-	public function parseValues ($theTable, &$dataArray, &$origArray) {
+	public function parseValues ($theTable, &$dataArray, &$origArray, $cmdKey) {
 
 		if (is_array($this->conf['parseValues.'])) {
 
@@ -972,16 +972,18 @@ class tx_srfeuserregister_data {
 								$dataValue = substr(md5(uniqid(microtime(), 1)), 0, intval($cmdParts[1]));
 							break;
 							case 'files':
-								if (is_array($dataValue))	{
+								$fieldDataArray = array();
+								if (is_array($dataValue)) {
 									$fieldDataArray = $dataValue;
-								} else if(is_string($dataValue) && $dataValue) {
-									$fieldDataArray = explode(',', $dataValue);
+								} else if (is_string($dataValue) && $dataValue) {
+									$fieldDataArray = t3lib_div::trimExplode(',', $dataValue, 1);
 								}
 								$dataValue =
 									$this->processFiles(
 										$theTable,
 										$theField,
-										$fieldDataArray
+										$fieldDataArray,
+										$cmdKey
 									);
 							break;
 							case 'multiple':
@@ -1109,64 +1111,64 @@ class tx_srfeuserregister_data {
 	/**
 	* Processes uploaded files
 	*
+	* @param string $theTable: the name of the table being edited
 	* @param string  $theField: the name of the field
 	* @return void
 	*/
-	public function processFiles ($theTable, $theField, $fieldDataArray) {
+	public function processFiles ($theTable, $theField, array $fieldDataArray, $cmdKey) {
 
 		if (is_array($this->tca->TCA['columns'][$theField])) {
 			$uploadPath = $this->tca->TCA['columns'][$theField]['config']['uploadfolder'];
 		}
 		$fileNameArray = array();
 
-		if (
-			$uploadPath &&
-			is_array($_FILES['FE']['name'][$theTable][$theField])
-		) {
-			foreach($_FILES['FE']['name'][$theTable][$theField] as $i => $filename) {
-
-				if (
-					$filename &&
-					$this->checkFilename($filename) &&
-					$this->evalFileError($_FILES['FE']['error'][$theTable][$theField][$i])
-				) {
-					$fI = pathinfo($filename);
-
-					if (t3lib_div::verifyFilenameAgainstDenyPattern($fI['name'])) {
-						$tmpFilename = (($GLOBALS['TSFE']->loginUser)?($GLOBALS['TSFE']->fe_user->user['username'] . '_') : '') . basename($filename, '.' . $fI['extension']) . '_' . t3lib_div::shortmd5(uniqid($filename)) . '.' . $fI['extension'];
-
-						$cleanFilename = $this->fileFunc->cleanFileName($tmpFilename);
-						$theDestFile = $this->fileFunc->getUniqueName($cleanFilename, PATH_site . $uploadPath . '/');
-						$result = t3lib_div::upload_copy_move($_FILES['FE']['tmp_name'][$theTable][$theField][$i], $theDestFile);
-						$fI2 = pathinfo($theDestFile);
-						$fileNameArray[] = $fI2['basename'];
+		if ($uploadPath) {
+			if (count($fieldDataArray)) {
+				foreach ($fieldDataArray as $file) {
+					if (is_array($file)) {
+						if ($this->checkFilename($file['name'])) {
+							if ($file['submit_delete']) {
+								if ($cmdKey !== 'edit') {
+									if(@is_file(PATH_site . $uploadPath . '/' . $file['name'])) {
+										@unlink(PATH_site . $uploadPath . '/' . $file['name']);
+									}
+								}
+							} else {
+								$fileNameArray[] = $file['name'];
+							}
+						}
+					} else {
+						if ($this->checkFilename($file)) {
+							$fileNameArray[] = $file;
+						}
 					}
 				}
 			}
-		} else if (is_array($fieldDataArray) && count($fieldDataArray)) {
-			foreach($fieldDataArray as $i => $file) {
-				if (is_array($file)) {
-					if ($this->checkFilename($file['name']) == FALSE) {
-						continue; // no php files are allowed here
-					}
-					if ($uploadPath && $file['submit_delete']) {
-						if(@is_file(PATH_site.$uploadPath . '/' . $file['name'])) {
-							@unlink(PATH_site.$uploadPath . '/' . $file['name']);
+			if (is_array($_FILES['FE']['name'][$theTable][$theField])) {
+				foreach($_FILES['FE']['name'][$theTable][$theField] as $i => $filename) {
+	
+					if (
+						$filename &&
+						$this->checkFilename($filename) &&
+						$this->evalFileError($_FILES['FE']['error'][$theTable][$theField][$i])
+					) {
+						$fI = pathinfo($filename);
+	
+						if (t3lib_div::verifyFilenameAgainstDenyPattern($fI['name'])) {
+							$tmpFilename = (($GLOBALS['TSFE']->loginUser)?($GLOBALS['TSFE']->fe_user->user['username'] . '_') : '') . basename($filename, '.' . $fI['extension']) . '_' . t3lib_div::shortmd5(uniqid($filename)) . '.' . $fI['extension'];
+	
+							$cleanFilename = $this->fileFunc->cleanFileName($tmpFilename);
+							$theDestFile = $this->fileFunc->getUniqueName($cleanFilename, PATH_site . $uploadPath . '/');
+							$result = t3lib_div::upload_copy_move($_FILES['FE']['tmp_name'][$theTable][$theField][$i], $theDestFile);
+							$fI2 = pathinfo($theDestFile);
+							$fileNameArray[] = $fI2['basename'];
 						}
-					} else {
-						$fileNameArray[] = $file['name'];
-					}
-				} else {
-					if ($this->checkFilename($file)) {
-						$fileNameArray[] = $file;
 					}
 				}
 			}
 		}
-
-		$dataValue = $fileNameArray;
-		return $dataValue;
-	}	// processFiles
+		return $fileNameArray;
+	}
 
 
 	/**
@@ -1812,9 +1814,10 @@ class tx_srfeuserregister_data {
 
 
 	/**
-	 * Transforms outgoing dates into timestamps
-	 * and modifies the select fields into the count
-	 * if mm tables are used.
+	 * Processes data before entering the database
+	 * 1. Transforms outgoing dates into timestamps
+	 * 2. Modifies the select fields into the count if mm tables are used.
+	 * 3. Deletes de-referenced files
 	 *
 	 * @return parsedArray
 	 */
@@ -1832,7 +1835,7 @@ class tx_srfeuserregister_data {
 
 		if (is_array($this->conf['parseToDBValues.'])) {
 
-			foreach($this->conf['parseToDBValues.'] as $theField => $theValue) {
+			foreach ($this->conf['parseToDBValues.'] as $theField => $theValue) {
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
 				foreach($listOfCommands as $k2 => $cmd) {
 					$cmdParts = preg_split('/\[|\]/', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
@@ -1846,14 +1849,14 @@ class tx_srfeuserregister_data {
 						$dateArray = $this->fetchDate($parsedArray[$theField], $this->conf['dateFormat']);
 					}
 
-					switch($theCmd) {
+					switch ($theCmd) {
 						case 'date':
-							if($dataArray[$theField]) {
+							if ($dataArray[$theField]) {
 								$parsedArray[$theField] = mktime(0, 0, 0, $dateArray['m'], $dateArray['d'], $dateArray['y']);
 							}
-						break;
+							break;
 						case 'adodb_date':
-							if($dataArray[$theField]) {
+							if ($dataArray[$theField]) {
 								if (!is_object($adodbTime)) {
 									include_once(PATH_BE_srfeuserregister . 'pi1/class.tx_srfeuserregister_pi1_adodb_time.php');
 
@@ -1870,7 +1873,36 @@ class tx_srfeuserregister_data {
 										$dateArray['y']
 									);
 							}
-						break;
+							break;
+						case 'deleteUnreferencedFiles':
+							$fieldConfig = $this->tca->TCA['columns'][$theField]['config'];
+							if (
+								is_array($fieldConfig) && 
+								$fieldConfig['type'] === 'group' && 
+								$fieldConfig['internal_type'] === 'file' &&
+								$fieldConfig['uploadfolder']
+							) {
+								$uploadPath = $fieldConfig['uploadfolder'];
+								$origFiles = array();
+								if (is_array($origArray[$theField])) {
+									$origFiles = $origArray[$theField];
+								} else if ($origArray[$theField]) {
+									$origFiles = t3lib_div::trimExplode(',', $origArray[$theField], 1);
+								}
+								$updatedFiles = array();
+								if (is_array($dataArray[$theField])) {
+									$updatedFiles = $dataArray[$theField];
+								} else if ($dataArray[$theField]) {
+									$updatedFiles = t3lib_div::trimExplode(',', $dataArray[$theField], 1);
+								}
+								$unReferencedFiles = array_diff($origFiles, $updatedFiles);
+								foreach ($unReferencedFiles as $file) {
+									if(@is_file(PATH_site . $uploadPath . '/' . $file)) {
+										@unlink(PATH_site . $uploadPath . '/' . $file);
+									}
+								}
+							}
+							break;	
 					}
 				}
 			}
