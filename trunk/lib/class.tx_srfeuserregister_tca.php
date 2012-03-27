@@ -290,8 +290,16 @@ class tx_srfeuserregister_tca {
 	/**
 	* Adds form element markers from the Table Configuration Array to a marker array
 	*
-	* @param array  $markerArray: the input marker array
-	* @param array  $row: the record
+	* @param array $markerArray: the input marker array
+	* @param array $row: the updated record
+	* @param array $origRow: the original record as before the updates
+	* @param string $cmd: the command CODE
+	* @param string $cmdKey: the command key
+	* @param string $theTable: the table in use
+	* @param boolean $viewOnly: whether the fields are presented for view only or for input/update
+	* @param string $activity: 'preview', 'input' or 'email': parameter of stdWrap configuration
+	* @param boolean $bChangesOnly: whether only updated fields should be presented
+	* @param boolean $HSC: whether content should be htmlspecialchar'ed or not
 	* @return void
 	*/
 	public function addTcaMarkers (
