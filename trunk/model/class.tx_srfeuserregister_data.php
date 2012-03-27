@@ -1155,8 +1155,7 @@ class tx_srfeuserregister_data {
 						$fI = pathinfo($filename);
 	
 						if (t3lib_div::verifyFilenameAgainstDenyPattern($fI['name'])) {
-							$tmpFilename = (($GLOBALS['TSFE']->loginUser)?($GLOBALS['TSFE']->fe_user->user['username'] . '_') : '') . basename($filename, '.' . $fI['extension']) . '_' . t3lib_div::shortmd5(uniqid($filename)) . '.' . $fI['extension'];
-	
+							$tmpFilename = basename($filename, '.' . $fI['extension']) . '_' . t3lib_div::shortmd5(uniqid($filename)) . '.' . $fI['extension'];	
 							$cleanFilename = $this->fileFunc->cleanFileName($tmpFilename);
 							$theDestFile = $this->fileFunc->getUniqueName($cleanFilename, PATH_site . $uploadPath . '/');
 							$result = t3lib_div::upload_copy_move($_FILES['FE']['tmp_name'][$theTable][$theField][$i], $theDestFile);

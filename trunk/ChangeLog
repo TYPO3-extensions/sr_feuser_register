@@ -4,6 +4,7 @@
 	* Fix bug #11191: enableAdminReview do not work without enableEmailConfirmation
 	* Fix bug #18169 (old bug tracker): Combination: no user confirmation, adminReview + user notification not possible
 	* Fix bug #11533 (old bug tracker): Documentation is incorrect for tx_srfeuserregister_tca::addTcaMarkers
+	* Fix bug #13643 (old bug tracker): Unnecessary disclosure of username in filename (Thanks to Steffen Müller)
 
 2012-03-26 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #33279: Evaluation of arrays returns always false
