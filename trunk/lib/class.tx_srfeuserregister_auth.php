@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2009 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -32,7 +32,7 @@
  * $Id$
  *
  * @author	Kasper Skaarhoj <kasper2007@typo3.com>
- * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ * @author	Stanislas Rolland <typo3(arobas)sjbr.ca>
  * @author	Franz Holzinger <franz@ttproducts.de>
  *
  * @package TYPO3
@@ -153,9 +153,9 @@ class tx_srfeuserregister_auth {
 			foreach($fieldArr as $k => $v) {
 				if (isset($recCopy[$v])) {
 					if (is_array($recCopy[$v])) {
-						$recCopy_temp[$k] = implode(',', $recCopy[$v]);
+						$recCopy_temp[$k] = implode(',', rawurldecode($recCopy[$v]));
 					} else {
-						$recCopy_temp[$k] = $recCopy[$v];
+						$recCopy_temp[$k] = rawurldecode($recCopy[$v]);
 					}
 				}
 			}
