@@ -239,7 +239,7 @@ class tx_srfeuserregister_control {
 				$userGroupObj->modifyConf($this->conf, $cmdKey);
 			}
 
-			if ($cmdKey == 'invite') {
+			if ($cmdKey === 'invite') {
 				if ($this->conf['enableAdminReview']) {
 					if (
 						$controlData->getSetfixedEnabled() &&
@@ -248,6 +248,12 @@ class tx_srfeuserregister_control {
 					) {
 						$this->conf['setfixed.']['APPROVE.'] = $this->conf['setfixed.']['ACCEPT.'];
 					}
+				}
+			}
+			if ($cmdKey === 'create') {
+				if ($this->conf['enableAdminReview'] && !$this->conf['enableEmailConfirmation']) {
+					$this->conf['create.']['defaultValues.']['disable'] = '1';
+					$this->conf['create.']['overrideValues.']['disable'] = '1';
 				}
 			}
 				// Infomail does not apply to fe_users
@@ -506,8 +512,8 @@ class tx_srfeuserregister_control {
 				$markerArray = $this->marker->getArray(); // uses its own markerArray
 
 				if ($this->conf['enableAdminReview'] && $bDefaultMode && !$bCustomerConfirmsMode) {
-					// send admin the confirmation email
-					// the customer will not confirm in this mode
+						// Send admin the confirmation email
+						// The user will not confirm in this mode
 					$errorContent = $this->email->compile(
 						SETFIXED_PREFIX . 'REVIEW',
 						$theTable,

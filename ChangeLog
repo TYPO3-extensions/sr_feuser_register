@@ -1,5 +1,7 @@
 2012-03-27 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #33122: User confirmation with multiple usergroups (Thanks to Tomita Militaru)
+	* Fix bug #14930 (old bug tracker): Admin confirmation not working
+	* Fix bug #11191: enableAdminReview do not work without enableEmailConfirmation
 
 2012-03-26 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #33279: Evaluation of arrays returns always false
@@ -8,10 +10,14 @@
 	* Fix bug #14699 (old bug tracker): Cannot remove "username" field in EDIT view
 	* Fix bug #31012: Images lost on profile editing
 	* Fix bug #27521: Deleting images in EDIT mode leads to broken references
-	* Fix bug #13882: Gender is not shown in backend	
+	* Fix bug #5932 (old bug tracker): Update profile and delete image
+	* Fix bug #14509 (old bug tracker): Deleting images still buggy
+	* Fix bug #13882: Gender is not shown in backend
 
 2012-03-25 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #32066: Security bug in admin confirmation
+	* Fix bug #15081 (old bug tracker): Admin review email is not sent to the admin but to the user
+	* Fix bug #15182 (old bug tracker): Very very big problem with administrative review
 
 2012-03-24 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up to bug #13349: Checkbox is set to "0" if not checked (Thanks to Oliver Hader)
