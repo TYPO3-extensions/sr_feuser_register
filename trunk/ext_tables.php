@@ -183,7 +183,7 @@ $TCA['fe_users']['interface']['showRecordFieldList'] = preg_replace('/,\s*title/
 
 $additionalFields = '';
 if (strpos($TCA['fe_users']['feInterface']['fe_admin_fieldList'],'first_name') === FALSE) {
-	$additionalFields = 'first_name,last_name,';
+	$additionalFields = 'first_name,middle_name,last_name,';
 }
 
 $TCA['fe_users']['feInterface']['fe_admin_fieldList'] = preg_replace('/,\s*title/', ',gender,' . $additionalFields . 'cnum,status,title', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
