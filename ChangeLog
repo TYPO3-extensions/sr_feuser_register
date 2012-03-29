@@ -2,6 +2,7 @@
 	* Follow-up to feature #34405: Make use of Swift Mailer API
 	* Fix bug #17506 (old bug tracker): Error in registration process since TYPO3 4.5
 	* Fix bug #18475 (old bug tracker): Backslashes added to Name in E-Mail
+	* Require div2007 version 8.2
 
 2012-03-27 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #33122: User confirmation with multiple usergroups (Thanks to Tomita Militaru)
