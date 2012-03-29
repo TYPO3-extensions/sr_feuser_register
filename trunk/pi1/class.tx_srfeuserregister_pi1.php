@@ -38,11 +38,6 @@
  *
  *
  */
-
-
-require_once(PATH_BE_srfeuserregister . 'pi1/class.tx_srfeuserregister_pi1_base.php');
-
-
 class tx_srfeuserregister_pi1 {
 	public $cObj;
 
@@ -54,10 +49,7 @@ class tx_srfeuserregister_pi1 {
 		return $content;
 	}
 }
-
-
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php']) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1.php']);
 }
-
 ?>

@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 1999-2003 Kasper Skårhøj (kasperYYYY@typo3.com)
-*  (c) 2004-2010 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2004-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -32,17 +32,12 @@
  * $Id$
  *
  * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
- * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ * @author	Stanislas Rolland <typo3(arobas)sjbr.ca>
  * @author	Franz Holzinger <franz@ttproducts.de>
  * @maintainer	Franz Holzinger <franz@ttproducts.de>
  *
  *
  */
-
-require_once(PATH_tslib . 'class.tslib_pibase.php');
-require_once(PATH_BE_srfeuserregister . 'control/class.tx_srfeuserregister_control_main.php');
-
-
 class tx_srfeuserregister_pi1_base extends tslib_pibase {
 
 		// Plugin initialization variables
@@ -62,10 +57,7 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 		return $content;
 	}
 }
-
-
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_base.php']) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_base.php']);
 }
-
 ?>

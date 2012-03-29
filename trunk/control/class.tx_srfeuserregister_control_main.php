@@ -40,29 +40,8 @@
  *
  *
  */
-
-	// To get the pid language overlay:
-require_once(PATH_t3lib . 'class.t3lib_page.php');
-
 require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha.php');
 require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha5.php');
-
-require_once(PATH_BE_srfeuserregister . 'pi1/class.tx_srfeuserregister_pi1_urlvalidator.php');
-require_once(PATH_BE_srfeuserregister . 'control/class.tx_srfeuserregister_control.php');
-require_once(PATH_BE_srfeuserregister . 'control/class.tx_srfeuserregister_setfixed.php');
-require_once(PATH_BE_srfeuserregister . 'model/class.tx_srfeuserregister_controldata.php');
-require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_auth.php');
-require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_email.php');
-require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_lang.php');
-
-require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_tca.php');
-require_once(PATH_BE_srfeuserregister . 'marker/class.tx_srfeuserregister_marker.php');
-require_once(PATH_BE_srfeuserregister . 'model/class.tx_srfeuserregister_url.php');
-require_once(PATH_BE_srfeuserregister . 'model/class.tx_srfeuserregister_data.php');
-require_once(PATH_BE_srfeuserregister . 'view/class.tx_srfeuserregister_display.php');
-
-require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_lib_tables.php');
-require_once(PATH_BE_srfeuserregister . 'lib/class.tx_srfeuserregister_conf.php');
 
 class tx_srfeuserregister_control_main {
 	public $config = array();

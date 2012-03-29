@@ -37,10 +37,6 @@
  * @subpackage sr_feuser_register
  *
  */
-
-
-require_once (PATH_BE_srfeuserregister . 'model/class.tx_srfeuserregister_model_table_base.php');
-
 class tx_srfeuserregister_lib_tables {
 	public $tableClassArray = array();
 	public $tablename;
@@ -127,11 +123,7 @@ class tx_srfeuserregister_lib_tables {
 		return ($bView ? $tableObj['view'] : $tableObj['model']);
 	}
 }
-
-
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_lib_tables.php']) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_lib_tables.php']);
 }
-
-
 ?>
