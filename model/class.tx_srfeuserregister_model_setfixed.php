@@ -37,16 +37,10 @@
  * @subpackage sr_feuser_register
  *
  */
-
-require_once(PATH_BE_srfeuserregister . 'model/class.tx_srfeuserregister_model_table_base.php');
-
-
 class tx_srfeuserregister_model_setfixed extends tx_srfeuserregister_model_table_base {
 
 }
-
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_model_setfixed.php']) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_model_setfixed.php']);
 }
-
 ?>

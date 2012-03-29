@@ -40,11 +40,6 @@
  *
  *
  */
-
-
-	// For use with images:
-require_once (PATH_t3lib.'class.t3lib_basicfilefunc.php');
-
 class tx_srfeuserregister_data {
 	public $pibase;
 	public $conf = array();

@@ -37,11 +37,6 @@
  * @subpackage sr_feuser_register
  *
  */
-
-require_once(PATH_BE_srfeuserregister . 'model/field/class.tx_srfeuserregister_model_field_base.php');
-
-
-
 class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_model_field_base {
 
 	public function modifyConf (&$conf, $cmdKey) {
