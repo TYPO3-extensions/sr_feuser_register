@@ -20,6 +20,7 @@ plugin.tx_srfeuserregister_pi1 {
 
 	pid = {$plugin.tx_srfeuserregister_pi1.pid}
 	pidTitleOverride = {$plugin.tx_srfeuserregister_pi1.pidTitleOverride}
+	userGroupsPidList = {$plugin.tx_srfeuserregister_pi1.userGroupsPidList}
 	registerPID = {$plugin.tx_srfeuserregister_pi1.registerPID}
 	editPID = {$plugin.tx_srfeuserregister_pi1.editPID}
 	confirmPID = {$plugin.tx_srfeuserregister_pi1.confirmPID}

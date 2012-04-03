@@ -1,3 +1,9 @@
+2012-04-03 Stanislas Rolland  <typo3@sjbr.ca>
+	* Add feature #27504: Add userGroupsPidList TS constant and TS setup property (Thanks to Georg Schönweger).
+
+2012-03-29 Stanislas Rolland  <typo3@sjbr.ca>
+	* Fix bug #14271 (old bug tracker): Password constant not respected 
+
 2012-03-28 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up to feature #34405: Make use of Swift Mailer API
 	* Fix bug #17506 (old bug tracker): Error in registration process since TYPO3 4.5
