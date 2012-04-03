@@ -98,10 +98,28 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 
 
 	public function getAllowedWhereClause ($theTable, $pid, $conf, $cmdKey, $bAllow = TRUE) {
-
+		$whereClause = '';
 		$subgroupWhereClauseArray = array();
+		$pidArray = array();		
+		$tmpArray = t3lib_div::trimExplode(',', $conf['userGroupsPidList'], 1);
+		if (count($tmpArray)) {
+			foreach ($tmpArray as $value) {
+				$valueIsInt = (
+					class_exists('t3lib_utility_Math') ?
+					t3lib_utility_Math::canBeInterpretedAsInteger($value) :
+					t3lib_div::testInt($value)
+				);
+				if ($valueIsInt) {
+					$pidArray[] = intval($value);
+				}
+			}
+		}
+		if (count($pidArray) > 0) {
+			$whereClause = ' pid IN (' . implode(',', $pidArray) . ') ';
+		} else {
+			$whereClause = ' pid=' . intval($pid) . ' ';
+		}
 
-		$whereClause = 'pid=' . intval($pid);
 		$whereClausePart2 = '';
 		$whereClausePart2Array = array();
 
