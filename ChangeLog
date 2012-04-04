@@ -1,5 +1,6 @@
 2012-04-04 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up to cleanup #35292: Cleanup in ext_tables.php
+	* Follow-up 3 to feature #34447: Add support for saltedpasswords and rsaauth
 
 2012-04-03 Stanislas Rolland  <typo3@sjbr.ca>
 	* Add feature #27504: Add userGroupsPidList TS constant and TS setup property (Thanks to Georg Schönweger).
@@ -22,13 +23,13 @@
 	* Fix bug #18169 (old bug tracker): Combination: no user confirmation, adminReview + user notification not possible
 	* Fix bug #11533 (old bug tracker): Documentation is incorrect for tx_srfeuserregister_tca::addTcaMarkers
 	* Fix bug #13643 (old bug tracker): Unnecessary disclosure of username in filename (Thanks to Steffen Müller)
-	* Follow-up to feature #34447: Add support for saltedpasswords and rsaauth
+	* Follow-up 2 to feature #34447: Add support for saltedpasswords and rsaauth
 	* Cleanup #35292: Cleanup in ext_tables.php
 	* Fix bug #35293: Protect method tx_srfeuserregister_controldata::writeToken
 
 2012-03-26 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #33279: Evaluation of arrays returns always false
-	* Follow-up to feature #34447: Add support for saltedpasswords and rsaauth
+	* Follow-up 1 to feature #34447: Add support for saltedpasswords and rsaauth
 	* Add feature #34676: Add support for title attribute on input fields for TCA markers (Thanks to Carlos Meyer)
 	* Fix bug #14699 (old bug tracker): Cannot remove "username" field in EDIT view
 	* Fix bug #31012: Images lost on profile editing

@@ -132,21 +132,15 @@ class tx_srfeuserregister_data {
 	public function &getTemplateCode () {
 		return $this->templateCode;
 	}
-
-
+	/*
+	 * Sets the source code of the HTML template
+	 *
+	 * @param string $templateCode: the source code
+	 * @return void
+	 */
 	public function setTemplateCode (&$templateCode) {
-		$this->templateCode = $templateCode;
-			// Version 3: no clear-text passwords in templates
-			// Remove any ###FIELD_password###, ###FIELD_password_again### markers
-		$this->templateCode = str_replace('###FIELD_password###', '' , $this->templateCode);
-		$this->templateCode = str_replace('###FIELD_password_again###', '' , $this->templateCode);
-			// Version 3: No clear-text password in email
-			// Replace ###LABEL_V_REGISTRATION_INVITED_MESSAGE1### with ###LABEL_V_REGISTRATION_INVITED_MESSAGE1A###
-		$this->templateCode = str_replace('###LABEL_V_REGISTRATION_INVITED_MESSAGE1###', '###LABEL_V_REGISTRATION_INVITED_MESSAGE1A###' , $this->templateCode);
-		$this->templateCode = str_replace('###LABEL_V_REGISTRATION_INVITED_MESSAGE1_INFORMAL###', '###LABEL_V_REGISTRATION_INVITED_MESSAGE1A_INFORMAL###' , $this->templateCode);
-			// Replace ###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1### with ###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A###
-		$this->templateCode = str_replace('###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1###', '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A###' , $this->templateCode);
-		$this->templateCode = str_replace('###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1_INFORMAL###', '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A_INFORMAL###' , $this->templateCode);		
+			// Replace some deprecated markers
+		$this->templateCode = $this->control->marker->upgradeTemplateCode($templateCode);		
 	}
 
 

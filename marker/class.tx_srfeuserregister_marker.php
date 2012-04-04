@@ -1047,9 +1047,28 @@ class tx_srfeuserregister_marker {
 		}
 		return $markerArray;
 	}
+	/*
+	 * Replaces some deprecated markers in the source code of the HTML template
+	 *
+	 * @param string $templateCode: the template source code
+	 * @return string $the modified template source code
+	 */
+	public function upgradeTemplateCode ($templateCode) {
+		$upgradedTemplateCode = $templateCode;
+			// Version 3: no clear-text passwords in templates
+			// Remove any ###FIELD_password###, ###FIELD_password_again### markers
+		$upgradedTemplateCode = str_replace('###FIELD_password###', '' , $upgradedTemplateCode);
+		$upgradedTemplateCode = str_replace('###FIELD_password_again###', '' , $upgradedTemplateCode);
+			// Version 3: No clear-text password in email
+			// Replace ###LABEL_V_REGISTRATION_INVITED_MESSAGE1### with ###LABEL_V_REGISTRATION_INVITED_MESSAGE1A###
+		$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INVITED_MESSAGE1###', '###LABEL_V_REGISTRATION_INVITED_MESSAGE1A###' , $upgradedTemplateCode);
+		$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INVITED_MESSAGE1_INFORMAL###', '###LABEL_V_REGISTRATION_INVITED_MESSAGE1A_INFORMAL###' , $upgradedTemplateCode);
+			// Replace ###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1### with ###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A###
+		$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1###', '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A###' , $upgradedTemplateCode);
+		$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1_INFORMAL###', '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A_INFORMAL###' , $upgradedTemplateCode);
+		return $upgradedTemplateCode;
+	}
 }
-
-
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/marker/class.tx_srfeuserregister_marker.php']) {
   include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/marker/class.tx_srfeuserregister_marker.php']);
 }
