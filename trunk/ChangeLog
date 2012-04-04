@@ -1,3 +1,6 @@
+2012-04-04 Stanislas Rolland  <typo3@sjbr.ca>
+	* Follow-up to cleanup #35292: Cleanup in ext_tables.php
+
 2012-04-03 Stanislas Rolland  <typo3@sjbr.ca>
 	* Add feature #27504: Add userGroupsPidList TS constant and TS setup property (Thanks to Georg Schönweger).
 
