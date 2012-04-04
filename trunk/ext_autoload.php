@@ -22,6 +22,7 @@ return array(
 	'tx_srfeuserregister_controldata' => $sr_feuser_registerExtensionPath . 'model/class.tx_srfeuserregister_controldata.php',
 	'tx_srfeuserregister_data' => $sr_feuser_registerExtensionPath . 'model/class.tx_srfeuserregister_data.php',
 	'tx_srfeuserregister_model_table_base' => $sr_feuser_registerExtensionPath . 'model/class.tx_srfeuserregister_model_table_base.php',
+	'tx_srfeuserregister_storage_security' => $sr_feuser_registerExtensionPath . 'model/class.tx_srfeuserregister_storage_security.php',
 	'tx_srfeuserregister_url' => $sr_feuser_registerExtensionPath . 'model/class.tx_srfeuserregister_url.php',
 	'tx_srfeuserregister_model_field_base' => $sr_feuser_registerExtensionPath . 'model/field/class.tx_srfeuserregister_model_field_base.php',
 	'tx_srfeuserregister_model_field_usergroup' => $sr_feuser_registerExtensionPath . 'model/field/class.tx_srfeuserregister_model_field_usergroup.php',

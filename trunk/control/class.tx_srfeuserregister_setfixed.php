@@ -122,11 +122,8 @@ class tx_srfeuserregister_setfixed {
 					$fieldArr[] = $field;
 				}
 			}
-				// Get private key for auto-login password decryption
-			if (isset($feuData['key'])) {
-				$autoLoginKey = $feuData['key'];
-				$row['auto_login_key'] = $autoLoginKey;
-			}
+				// Determine if auto-login is requested
+			$autoLoginIsRequested = $this->controlData->storageSecurity->getAutoLoginIsRequested($feuData, $row);
 
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 			$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
@@ -222,9 +219,7 @@ class tx_srfeuserregister_setfixed {
 						TRUE
 					);
 					$currArr = $origArray;
-					if (isset($autoLoginKey)) {
-						$this->controlData->decryptPasswordForAutoLogin($currArr, $autoLoginKey);
-					}
+					$this->controlData->storageSecurity->decryptPasswordForAutoLogin($currArr, $row);
 					$modArray = array();
 					$currArr = $this->tca->modifyTcaMMfields($currArr, $modArray);
 					$row = array_merge($row, $modArray);
@@ -369,7 +364,7 @@ class tx_srfeuserregister_setfixed {
 							$this->conf['enableAutoLoginOnConfirmation'] &&
 							!$row['by_invitation'] &&
 							(($sFK === 'APPROVE' && !$this->conf['enableAdminReview']) || $sFK === 'ENTER') &&
-							isset($autoLoginKey)
+							$autoLoginIsRequested
 						) {
 							$loginSuccess = $pObj->login($currArr);
 							if ($loginSuccess) {
