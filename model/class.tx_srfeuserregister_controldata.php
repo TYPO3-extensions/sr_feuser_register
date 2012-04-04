@@ -69,8 +69,8 @@ class tx_srfeuserregister_controldata {
 	protected $isTokenValid = FALSE;
 		// The transmission security level: normal or rsa
 	protected $transmissionSecurityLevel = 'normal';
-		// The storage security level: normal or salted
-	protected $storageSecurityLevel = 'normal';
+		// The storage object
+	public $storageSecurity;
 
 
 	public function init (&$conf, $prefixId, $extKey, $piVars, $theTable) {
@@ -91,7 +91,7 @@ class tx_srfeuserregister_controldata {
 		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 
 		$this->setTransmissionSecurityLevel();
-		$this->setStorageSecurityLevel();
+		$this->storageSecurity = &t3lib_div::getUserObj('&tx_srfeuserregister_storage_security');
 
 		$bSysLanguageUidIsInt = (
 			class_exists('t3lib_utility_Math') ?
@@ -316,7 +316,7 @@ class tx_srfeuserregister_controldata {
 	}
 
 	/*************************************
-	* PASSWORD TRANSMISSION SECURITY
+	* TRANSMISSION SECURITY
 	*************************************/
 	/**
 	* Sets the transmission security level
@@ -347,12 +347,12 @@ class tx_srfeuserregister_controldata {
 		return $this->transmissionSecurityLevel;
 	}
 	/**
-	* Decrypts the password that was encrypted for transmission
+	* Decrypts fields that were encrypted for transmission
 	*
-	* @param array $row: data array that may contain passwords
+	* @param array $row: incoming data array that may contain encrypted fields
 	* @return boolean TRUE if decryption was successful
 	*/
-	protected function decryptPassword (array &$row) {
+	protected function decryptIncomingFields (array &$row) {
 		$success = TRUE;
 		$fields = array('password', 'password_again');
 		switch ($this->getTransmissionSecurityLevel()) {
@@ -403,129 +403,6 @@ class tx_srfeuserregister_controldata {
 	}
 
 	/*************************************
-	* PASSWORD STORAGE SECURITY
-	*************************************/
-	/**
-	* Sets the storage security level
-	*
-	* @return	void
-	*/
-	protected function setStorageSecurityLevel () {
-		$supportedStorageSecurityLevels = array('normal', 'salted');
-		if (t3lib_extMgm::isLoaded('saltedpasswords')) {
-			if (tx_saltedpasswords_div::isUsageEnabled('FE')) {
-				$this->storageSecurityLevel = 'salted';
-			}
-		}
-	}
-	/**
-	* Gets the storage security level
-	*
-	* @return	string	the storage security level
-	*/
-	public function getStorageSecurityLevel () {
-		return $this->storageSecurityLevel;
-	}
-	/**
-	* Encrypts the password for secure storage
-	*
-	* @param	string	$password: password to encrypt
-	* @return	string	encrypted password
-	*/
-	protected function encryptPasswordForStorage ($password) {
-		$encryptedPassword = $password;
-		if ($password !== '') {
-			switch ($this->getStorageSecurityLevel()) {
-				case 'salted':
-					if (tx_saltedpasswords_div::isUsageEnabled('FE')) {
-						$objSalt = tx_saltedpasswords_salts_factory::getSaltingInstance(NULL);
-						if (is_object($objSalt)) {
-							$encryptedPassword = $objSalt->getHashedPassword($password);
-						} else {
-							t3lib_div::devLog('Could not get a salting instance from saltedpasswords', 'sr_feuser_register', 3);
-						}
-					} else {
-						t3lib_div::devLog('Salted passwords not enabled in frontend', 'sr_feuser_register', 3);
-					}
-					break;
-				case 'normal':
-				default:
-						// No encryption!
-					break;
-			}
-		}
-		return $encryptedPassword;
-	}
-
-	/**
-	* Initializes the password for auto-login on confirmation
-	*
-	* @param	array	$dataArray
-	* @return	void
-	*/
-	public function initializeAutoLoginPassword (array &$dataArray) {
-		$dataArray['tx_srfeuserregister_password'] = '';
-		unset($dataArray['auto_login_key']);
-	}
-
-	/**
-	* Encrypts the password for auto-login on confirmation
-	*
-	* @param	array	$dataArray: array containing the password to be encrypted
-	* @return	void
-	*/
-	public function encryptPasswordForAutoLogin (array &$dataArray) {
-		$password = $dataArray['password'];
-		$privateKey = '';
-		$cryptedPassword = '';
-		if ($password !== '') {
-				// Make sure openssl is available
-			if (t3lib_extMgm::isLoaded('rsaauth')) {
-					// Create the keypair
-				$keyPair = openssl_pkey_new();
-					// Get private key
-				openssl_pkey_export($keyPair, $privateKey);
-					// Get public key
-				$keyDetails = openssl_pkey_get_details($keyPair);
-				$publicKey = $keyDetails['key'];
-				if (@openssl_public_encrypt($password, $cryptedPassword, $publicKey)) {
-					$dataArray['tx_srfeuserregister_password'] = base64_encode($cryptedPassword);
-					$dataArray['auto_login_key'] = $privateKey;
-				}
-			} else {
-				t3lib_div::devLog('Required rsaauth extension not available', 'sr_feuser_register', 3);
-			}
-		}
-	}
-
-	/**
-	* Decrypts the password for auto-login on confirmation
-	*
-	* @param	array	$dataArray: array containing the password to be decrypted
-	* @param	string	$privateKey: the private key to decrypt the password
-	* @return	void
-	*/
-	public function decryptPasswordForAutoLogin (&$dataArray, $privateKey) {
-		$password = $dataArray['tx_srfeuserregister_password'];
-		if ($password !== '') {
-			if (t3lib_extMgm::isLoaded('rsaauth')) {
-				$backend = tx_rsaauth_backendfactory::getBackend();
-				if (is_object($backend) && $backend->isAvailable()) {
-					$decryptedPassword = $backend->decrypt($privateKey, $password);
-					if ($decryptedPassword) {
-						$dataArray['password'] = $decryptedPassword;
-					} else {
-						t3lib_div::devLog('Failed to decrypt auto login password', 'sr_feuser_register', 3);
-					}
-				} else {
-					t3lib_div::devLog('Required RSA auth backend not available', 'sr_feuser_register', 3);
-				}
-			} else {
-				t3lib_div::devLog('Required rsaauth extension not available', 'sr_feuser_register', 3);
-			}
-		}
-	}
-	/*************************************
 	* SECURED ARRAY HANDLING
 	*************************************/
 	/**
@@ -573,7 +450,7 @@ class tx_srfeuserregister_controldata {
 	*/
 	public function readPasswordForStorage () {
 		$password = $this->readPassword();
-		return $this->encryptPasswordForStorage($password);
+		return $this->storageSecurity->encryptPasswordForStorage($password);
 	}
 	/**
 	* Retrieves the password from session data
@@ -597,8 +474,8 @@ class tx_srfeuserregister_controldata {
 	*/
 	public function securePassword (array &$row) {
 		$data = array();
-			// Decrypt incoming password
-		$passwordDecrypted = $this->decryptPassword($row);
+			// Decrypt incoming password (and eventually other encrypted fields)
+		$passwordDecrypted = $this->decryptIncomingFields($row);
 			// Collect secured fields
 		$securedFieldArray = $this->getSecuredFieldArray();
 		foreach ($securedFieldArray as $securedField) {
