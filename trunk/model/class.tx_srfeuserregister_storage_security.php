@@ -29,7 +29,7 @@
  *
  * Storage security functions
  *
- * $Id: class.tx_srfeuserregister_controldata.php 59896 2012-03-27 22:00:20Z stan $
+ * $Id: class.tx_srfeuserregister_storage_security.php$
  *
  * @author	Stanislas Rolland <typo3(arobas)sjbr.ca>
  *

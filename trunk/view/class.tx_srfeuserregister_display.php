@@ -309,7 +309,7 @@ class tx_srfeuserregister_display {
 				}
 			}
 			
-			if ($needUpdateJS) {
+			if ($bNeedUpdateJS) {
 				$this->marker->addPasswordTransmissionMarkers($markerArray);
 			}
 
