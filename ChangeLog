@@ -1,5 +1,6 @@
 2012-04-05 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up 5 to feature #34447: Move transmission security to own class
+	* Cleanup: Initialize the command key
 
 2012-04-04 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up to cleanup #35292: Cleanup in ext_tables.php
