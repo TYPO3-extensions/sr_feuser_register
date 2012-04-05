@@ -145,7 +145,8 @@ class tx_srfeuserregister_control {
 				$origArray = $newOrigArray;
 			}
 		}
-
+			// Set the command key
+		$cmdKey = '';
 		if ($cmd == 'edit' || $cmd == 'invite' || $cmd === 'password') {
 			$cmdKey = $cmd;
 		} else {

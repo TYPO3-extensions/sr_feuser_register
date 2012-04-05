@@ -52,8 +52,8 @@ class tx_srfeuserregister_controldata {
 	public $prefixId;
 	public $piVars;
 	public $extKey;
-	public $cmd='';
-	public $cmdKey;
+	public $cmd = '';
+	public $cmdKey = '';
 	public $pid = array();
 	public $setfixedEnabled = 0;
 	public $bSubmit = FALSE;
