@@ -1,6 +1,7 @@
 2012-04-05 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up 5 to feature #34447: Move transmission security to own class
 	* Cleanup: Initialize the command key
+	* Follow-up 2 to feature #34405: Allow old mailer API for TYPO3 4.5-4.6
 
 2012-04-04 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up to cleanup #35292: Cleanup in ext_tables.php
@@ -14,7 +15,7 @@
 	* Fix bug #14271 (old bug tracker): Password constant not respected 
 
 2012-03-28 Stanislas Rolland  <typo3@sjbr.ca>
-	* Follow-up to feature #34405: Make use of Swift Mailer API
+	* Follow-up 1 to feature #34405: Make use of Swift Mailer API
 	* Fix bug #17506 (old bug tracker): Error in registration process since TYPO3 4.5
 	* Fix bug #18475 (old bug tracker): Backslashes added to Name in E-Mail
 	* Require div2007 version 8.2

@@ -695,7 +695,17 @@ class tx_srfeuserregister_email {
 			(trim($HTMLContent) || trim($PLAINContent))
 		) {
 			$typo3Version = class_exists('t3lib_utility_VersionNumber') ? t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) : t3lib_div::int_from_ver(TYPO3_version);
-			if ($typo3Version >= 4005000) {
+			if (
+				$typo3Version >= 4007000 ||
+				(
+					$typo3Version >= 4005000 &&
+					isset($TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']) &&
+					is_array($TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']) &&
+					isset($TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']['substituteMailDelivery']) &&
+					is_array($TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']['substituteMailDelivery']) &&
+					array_search('t3lib_mail_SwiftMailerAdapter', $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']['substituteMailDelivery']) !== FALSE
+				)
+			) {
 				$fromName = str_replace('"', '\'', $fromName);
 				if (preg_match('#[/\(\)\\<>,;:@\.\]\[\s]#', $fromName)) {
 					$fromName = '"' . $fromName . '"';
