@@ -67,9 +67,9 @@ class tx_srfeuserregister_controldata {
 	public $regHash;
 		// Whether the token was found valid
 	protected $isTokenValid = FALSE;
-		// The transmission security level: normal or rsa
-	protected $transmissionSecurityLevel = 'normal';
-		// The storage object
+		// Transmission security object
+	public $transmissionSecurity;
+		// Storage security object
 	public $storageSecurity;
 
 
@@ -90,7 +90,7 @@ class tx_srfeuserregister_controldata {
 		$this->setTable($theTable);
 		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 
-		$this->setTransmissionSecurityLevel();
+		$this->transmissionSecurity = &t3lib_div::getUserObj('&tx_srfeuserregister_transmission_security');
 		$this->storageSecurity = &t3lib_div::getUserObj('&tx_srfeuserregister_storage_security');
 
 		$bSysLanguageUidIsInt = (
@@ -316,93 +316,6 @@ class tx_srfeuserregister_controldata {
 	}
 
 	/*************************************
-	* TRANSMISSION SECURITY
-	*************************************/
-	/**
-	* Sets the transmission security level
-	*
-	* @return	void
-	*/
-	protected function setTransmissionSecurityLevel () {
-		$supportedTransmissionSecurityLevels = array('normal', 'rsa');
-		if (in_array($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'], $supportedTransmissionSecurityLevels)) {
-			if (t3lib_extMgm::isLoaded('rsaauth')) {
-					// rsaauth in TYPO3 4.5 misses autoload
-				if (!class_exists('tx_rsaauth_backendfactory')) {
-					require_once(t3lib_extMgm::extPath('rsaauth') . 'sv1/backends/class.tx_rsaauth_backendfactory.php');
-					require_once(t3lib_extMgm::extPath('rsaauth') . 'sv1/storage/class.tx_rsaauth_storagefactory.php');
-				}
-				if (tx_rsaauth_backendfactory::getBackend() !== NULL) {
-					$this->transmissionSecurityLevel = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
-				}
-			}
-		}
-	}
-	/**
-	* Gets the transmission security level
-	*
-	* @return	string	the transmission security level
-	*/
-	public function getTransmissionSecurityLevel () {
-		return $this->transmissionSecurityLevel;
-	}
-	/**
-	* Decrypts fields that were encrypted for transmission
-	*
-	* @param array $row: incoming data array that may contain encrypted fields
-	* @return boolean TRUE if decryption was successful
-	*/
-	protected function decryptIncomingFields (array &$row) {
-		$success = TRUE;
-		$fields = array('password', 'password_again');
-		switch ($this->getTransmissionSecurityLevel()) {
-			case 'rsa':
-					// Get services from rsaauth
-					// Can't simply use the authentication service because we have two fields to decrypt
-				if (t3lib_extMgm::isLoaded('rsaauth')) {
-					$backend = tx_rsaauth_backendfactory::getBackend();
-					$storage = tx_rsaauth_storagefactory::getStorage();
-					/* @var $storage tx_rsaauth_abstract_storage */
-					if (is_object($backend) && is_object($storage)) {
-						$key = $storage->get();
-						if ($key != NULL) {
-							foreach ($fields as $field) {
-								if (isset($row[$field]) && $row[$field] !== '') {
-									if (substr($row[$field], 0, 4) === 'rsa:') {
-											// Decode password
-										$result = $backend->decrypt($key, substr($row[$field], 4));
-										if ($result) {
-											$row[$field] = $result;
-										} else {
-											$success = FALSE;
-											t3lib_div::devLog('RSA auth service failed to process incoming password', 'sr_feuser_register', 3);
-										}
-									}
-								}
-							}
-								// Remove the key
-							$storage->put(NULL);
-						} else {
-							$success = FALSE;
-							t3lib_div::devLog('RSA auth service failed to retrieve private key', 'sr_feuser_register', 3);
-						}
-					} else {
-						$success = FALSE;
-						t3lib_div::devLog('Required RSA auth backend not available', 'sr_feuser_register', 3);
-					}
-				} else {
-					$success = FALSE;
-				}
-				break;
-			case 'normal':
-			default:
-					// Nothing to decrypt
-				break;	
-		}
-		return $success;
-	}
-
-	/*************************************
 	* SECURED ARRAY HANDLING
 	*************************************/
 	/**
@@ -475,7 +388,7 @@ class tx_srfeuserregister_controldata {
 	public function securePassword (array &$row) {
 		$data = array();
 			// Decrypt incoming password (and eventually other encrypted fields)
-		$passwordDecrypted = $this->decryptIncomingFields($row);
+		$passwordDecrypted = $this->transmissionSecurity->decryptIncomingFields($row);
 			// Collect secured fields
 		$securedFieldArray = $this->getSecuredFieldArray();
 		foreach ($securedFieldArray as $securedField) {

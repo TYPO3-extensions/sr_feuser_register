@@ -1,0 +1,177 @@
+<?php
+/***************************************************************
+*  Copyright notice
+*
+*  (c) 2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  All rights reserved
+*
+*  This script is part of the Typo3 project. The Typo3 project is
+*  free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License or
+*  (at your option) any later version.
+*
+*  The GNU General Public License can be found at
+*  http://www.gnu.org/copyleft/gpl.html.
+*  A copy is found in the textfile GPL.txt and important notices to the license
+*  from the author is found in LICENSE.txt distributed with these scripts.
+*
+*
+*  This script is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  This copyright notice MUST APPEAR in all copies of the script!
+***************************************************************/
+/**
+ * Part of the sr_feuser_register (Front End User Registration) extension.
+ *
+ * Storage security functions
+ *
+ * $Id: class.tx_srfeuserregister_transmission_security.php$
+ *
+ * @author	Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *
+ * @package TYPO3
+ * @subpackage sr_feuser_register
+ *
+ *
+ */
+class tx_srfeuserregister_transmission_security {
+		// The storage security level: normal or rsa
+	protected $transmissionSecurityLevel = 'normal';
+
+	/**
+	* Constructor
+	*
+	* @return	void
+	*/
+	public function __construct () {
+		$this->setTransmissionSecurityLevel();
+	}
+
+	/**
+	* Sets the transmission security level
+	*
+	* @return	void
+	*/
+	protected function setTransmissionSecurityLevel () {
+		$supportedTransmissionSecurityLevels = array('normal', 'rsa');
+		if (in_array($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'], $supportedTransmissionSecurityLevels)) {
+			if (t3lib_extMgm::isLoaded('rsaauth')) {
+					// rsaauth in TYPO3 4.5 misses autoload
+				if (!class_exists('tx_rsaauth_backendfactory')) {
+					require_once(t3lib_extMgm::extPath('rsaauth') . 'sv1/backends/class.tx_rsaauth_backendfactory.php');
+					require_once(t3lib_extMgm::extPath('rsaauth') . 'sv1/storage/class.tx_rsaauth_storagefactory.php');
+				}
+				if (tx_rsaauth_backendfactory::getBackend() !== NULL) {
+					$this->transmissionSecurityLevel = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
+				}
+			}
+		}
+	}
+
+	/**
+	* Gets the transmission security level
+	*
+	* @return	string	the storage security level
+	*/
+	public function getTransmissionSecurityLevel () {
+		return $this->transmissionSecurityLevel;
+	}
+
+	/**
+	* Decrypts fields that were encrypted for transmission
+	*
+	* @param array $row: incoming data array that may contain encrypted fields
+	* @return boolean TRUE if decryption was successful
+	*/
+	public function decryptIncomingFields (array &$row) {
+		$success = TRUE;
+		$fields = array('password', 'password_again');
+		switch ($this->getTransmissionSecurityLevel()) {
+			case 'rsa':
+					// Get services from rsaauth
+					// Can't simply use the authentication service because we have two fields to decrypt
+				if (t3lib_extMgm::isLoaded('rsaauth')) {
+					$backend = tx_rsaauth_backendfactory::getBackend();
+					$storage = tx_rsaauth_storagefactory::getStorage();
+					/* @var $storage tx_rsaauth_abstract_storage */
+					if (is_object($backend) && is_object($storage)) {
+						$key = $storage->get();
+						if ($key != NULL) {
+							foreach ($fields as $field) {
+								if (isset($row[$field]) && $row[$field] !== '') {
+									if (substr($row[$field], 0, 4) === 'rsa:') {
+											// Decode password
+										$result = $backend->decrypt($key, substr($row[$field], 4));
+										if ($result) {
+											$row[$field] = $result;
+										} else {
+											$success = FALSE;
+											t3lib_div::devLog('RSA auth service failed to process incoming password', 'sr_feuser_register', 3);
+										}
+									}
+								}
+							}
+								// Remove the key
+							$storage->put(NULL);
+						} else {
+							$success = FALSE;
+							t3lib_div::devLog('RSA auth service failed to retrieve private key', 'sr_feuser_register', 3);
+						}
+					} else {
+						$success = FALSE;
+						t3lib_div::devLog('Required RSA auth backend not available', 'sr_feuser_register', 3);
+					}
+				} else {
+					$success = FALSE;
+				}
+				break;
+			case 'normal':
+			default:
+					// Nothing to decrypt
+				break;	
+		}
+		return $success;
+	}
+
+	/**
+	* Gets value for ###FORM_ONSUBMIT### and ###HIDDENFIELDS### markers
+	*
+	* @param array $markerArray: marker array
+	* @return void
+	*/
+	public function getMarkers (array &$markerArray) {
+ 		switch ($this->getTransmissionSecurityLevel()) {
+			case 'rsa':
+				$extraHiddenFieldsArray = array();
+				if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['felogin']['loginFormOnSubmitFuncs'])) {
+					$_params = array();
+					foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['felogin']['loginFormOnSubmitFuncs'] as $funcRef) {
+						list($onSubmit, $hiddenFields) = t3lib_div::callUserFunction($funcRef, $_params, $this);
+						$extraHiddenFieldsArray[] = $hiddenFields;
+					}
+				}
+				if (count($extraHiddenFieldsArray)) {
+					$extraHiddenFields = implode(LF, $extraHiddenFieldsArray);
+				}
+				$extraHiddenFields .= LF . '<script type="text/javascript" src="' .
+					t3lib_div::getIndpEnv('TYPO3_SITE_URL') .
+					t3lib_extMgm::siteRelPath('sr_feuser_register') . 'scripts/rsaauth.js"></script>';
+				$markerArray['###FORM_ONSUBMIT###'] = ' onsubmit="tx_srfeuserregister_encrypt(this); return true;"';
+				$markerArray['###HIDDENFIELDS###'] .= $extraHiddenFields;
+				break;
+			case 'normal':
+			default:
+				$markerArray['###FORM_ONSUBMIT###'] = '';
+				break;
+		}
+	}
+}
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_transmission_security.php']) {
+  include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_transmission_security.php']);
+}
+?>

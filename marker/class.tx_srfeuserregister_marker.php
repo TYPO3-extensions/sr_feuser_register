@@ -733,33 +733,10 @@ class tx_srfeuserregister_marker {
 	* @return void
 	*/
 	public function addPasswordTransmissionMarkers (&$markerArray) {
-		 if (!$markerArray) {
+		if (!$markerArray) {
  			$markerArray = $this->getArray();
  		}
- 		switch ($this->controlData->getTransmissionSecurityLevel()) {
-			case 'rsa':
-				$extraHiddenFieldsArray = array();
-				if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['felogin']['loginFormOnSubmitFuncs'])) {
-					$_params = array();
-					foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['felogin']['loginFormOnSubmitFuncs'] as $funcRef) {
-						list($onSubmit, $hiddenFields) = t3lib_div::callUserFunction($funcRef, $_params, $this);
-						$extraHiddenFieldsArray[] = $hiddenFields;
-					}
-				}
-				if (count($extraHiddenFieldsArray)) {
-					$extraHiddenFields = implode(LF, $extraHiddenFieldsArray);
-				}
-				$extraHiddenFields .= LF . '<script type="text/javascript" src="' .
-					t3lib_div::getIndpEnv('TYPO3_SITE_URL') .
-					t3lib_extMgm::siteRelPath('sr_feuser_register') . 'scripts/rsaauth.js"></script>';
-				$markerArray['###FORM_ONSUBMIT###'] = ' onsubmit="tx_srfeuserregister_encrypt(this); return true;"';
-				$markerArray['###HIDDENFIELDS###'] .= $extraHiddenFields;
-				break;
-			case 'normal':
-			default:
-				$markerArray['###FORM_ONSUBMIT###'] = '';
-				break;
-		}
+ 		$this->controlData->transmissionSecurity->getMarkers($markerArray);
 	}
 
 	/**
