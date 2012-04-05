@@ -3,6 +3,7 @@
 	* Cleanup: Initialize the command key
 	* Follow-up 2 to feature #34405: Allow old mailer API for TYPO3 4.5-4.6
 	* Fix bug #35730: enableEmailOnDelete not honoured
+	* Fix bug #35732: Error due to username being required in edit mode	
 
 2012-04-04 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up to cleanup #35292: Cleanup in ext_tables.php
