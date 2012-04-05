@@ -529,9 +529,9 @@ class tx_srfeuserregister_control {
 						$errorFieldArray,
 						$this->conf['setfixed.']
 					);
-				} else if ($cmdKey == 'create' || $cmdKey == 'invite' || $this->conf['email.']['EDIT_SAVED']) {
+				} else if ($cmdKey == 'create' || $cmdKey == 'invite' || $this->conf['email.']['EDIT_SAVED'] || $this->conf['email.']['DELETE_SAVED']) {
 					$emailField = $this->conf['email.']['field'];
-					$recipient = (isset($finalDataArray) && is_array($finalDataArray) ? $finalDataArray[$emailField] : $origArray[$emailField]);
+					$recipient = (isset($finalDataArray) && is_array($finalDataArray) && $finalDataArray[$emailField]) ? $finalDataArray[$emailField] : $origArray[$emailField];
 					// Send email message(s)
 					$errorContent = $this->email->compile(
 						$key,
