@@ -387,8 +387,7 @@ class tx_srfeuserregister_control {
 					$markerArray,
 					$cmdKey,
 					$this->controlData->getRequiredArray()
-				);				
-
+				);
 				if ($this->conf['evalFunc'] ) {
 					$this->marker->setArray($markerArray);
 					$finalDataArray = $this->userProcess('evalFunc', $finalDataArray);
@@ -425,7 +424,7 @@ class tx_srfeuserregister_control {
 				}
 				$prefixId = $this->controlData->getPrefixId();
 				$extKey = $this->controlData->getExtKey();
-//
+
 				$theUid = $this->data->save(
 					$theTable,
 					$finalDataArray,
