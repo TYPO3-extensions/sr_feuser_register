@@ -412,14 +412,14 @@ class tx_srfeuserregister_control {
 
 			if ($this->controlData->getFailure() == '' && !$this->controlData->getFeUserData('preview') && !$bDoNotSave) {
 				if ($theTable === 'fe_users') {
-					$this->controlData->storageSecurity->initializeAutoLoginPassword($finalDataArray);
+					$this->controlData->getStorageSecurity()->initializeAutoLoginPassword($finalDataArray);
 						// We generate an interim password in the case of an invitation
 					if ($cmdKey === 'invite') {
 						$this->controlData->generatePassword($finalDataArray);
 					}
 						// If inviting or if auto-login will be required on confirmation, we store an encrypted version of the password
 					if ($cmdKey === 'invite' || ($cmdKey === 'create' && $this->conf['enableAutoLoginOnConfirmation'] && !$this->conf['enableAutoLoginOnCreate'])) {
-						$this->controlData->storageSecurity->encryptPasswordForAutoLogin($finalDataArray);
+						$this->controlData->getStorageSecurity()->encryptPasswordForAutoLogin($finalDataArray);
 					}
 				}
 				$prefixId = $this->controlData->getPrefixId();

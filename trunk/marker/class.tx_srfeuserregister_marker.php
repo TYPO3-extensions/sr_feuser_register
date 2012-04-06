@@ -736,7 +736,7 @@ class tx_srfeuserregister_marker {
 		if (!$markerArray) {
  			$markerArray = $this->getArray();
  		}
- 		$this->controlData->transmissionSecurity->getMarkers($markerArray);
+ 		$this->controlData->getTransmissionSecurity()->getMarkers($markerArray);
 	}
 
 	/**

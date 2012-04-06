@@ -68,9 +68,9 @@ class tx_srfeuserregister_controldata {
 		// Whether the token was found valid
 	protected $isTokenValid = FALSE;
 		// Transmission security object
-	public $transmissionSecurity;
+	protected $transmissionSecurity;
 		// Storage security object
-	public $storageSecurity;
+	protected $storageSecurity;
 
 
 	public function init (&$conf, $prefixId, $extKey, $piVars, $theTable) {
@@ -89,9 +89,6 @@ class tx_srfeuserregister_controldata {
 		$this->piVars = $piVars;
 		$this->setTable($theTable);
 		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
-
-		$this->transmissionSecurity = &t3lib_div::getUserObj('&tx_srfeuserregister_transmission_security');
-		$this->storageSecurity = &t3lib_div::getUserObj('&tx_srfeuserregister_storage_security');
 
 		$bSysLanguageUidIsInt = (
 			class_exists('t3lib_utility_Math') ?
@@ -298,6 +295,32 @@ class tx_srfeuserregister_controldata {
 		return $this->bValidRegHash;
 	}
 
+	/*
+	 * Gets the transmission security object
+	 *
+	 * @return tx_srfeuserregister_transmission_security the transmission security object
+	 */
+	public function getTransmissionSecurity () {
+		if (!is_object($this->transmissionSecurity)) {
+			/* tx_srfeuserregister_transmission_security */
+			$this->transmissionSecurity = &t3lib_div::getUserObj('&tx_srfeuserregister_transmission_security');
+		}
+		return $this->transmissionSecurity;
+	}
+
+	/*
+	 * Gets the storage security object
+	 *
+	 * @return tx_srfeuserregister_transmission_security the storage security object
+	 */
+	public function getStorageSecurity () {
+		if (!is_object($this->storageSecurity)) {
+			/* tx_srfeuserregister_storage_security */
+			$this->storageSecurity = &t3lib_div::getUserObj('&tx_srfeuserregister_storage_security');
+		}
+		return $this->storageSecurity;
+	}
+
 	/* reduces to the field list which are allowed to be shown */
 	public function getOpenFields ($fields) {
 		$securedFieldArray = $this->getSecuredFieldArray();
@@ -363,7 +386,7 @@ class tx_srfeuserregister_controldata {
 	*/
 	public function readPasswordForStorage () {
 		$password = $this->readPassword();
-		return $this->storageSecurity->encryptPasswordForStorage($password);
+		return $this->getStorageSecurity()->encryptPasswordForStorage($password);
 	}
 	/**
 	* Retrieves the password from session data
@@ -388,7 +411,7 @@ class tx_srfeuserregister_controldata {
 	public function securePassword (array &$row) {
 		$data = array();
 			// Decrypt incoming password (and eventually other encrypted fields)
-		$passwordDecrypted = $this->transmissionSecurity->decryptIncomingFields($row);
+		$passwordDecrypted = $this->getTransmissionSecurity()->decryptIncomingFields($row);
 			// Collect secured fields
 		$securedFieldArray = $this->getSecuredFieldArray();
 		foreach ($securedFieldArray as $securedField) {
