@@ -618,8 +618,8 @@ class tx_srfeuserregister_data {
 										$fileNameArray = $dataArray[$theField];
 										$newFileNameArray = array();
 
-										if ($fileNameArray[0]!='') {
-											foreach($fileNameArray as $k => $filename) {
+										if (is_array($fileNameArray) && $fileNameArray[0] != '') {
+											foreach ($fileNameArray as $k => $filename) {
 												if (is_array($filename)) {
 													$filename = $filename['name'];
 												}
@@ -965,10 +965,12 @@ class tx_srfeuserregister_data {
 							break;
 							case 'files':
 								$fieldDataArray = array();
-								if (is_array($dataValue)) {
-									$fieldDataArray = $dataValue;
-								} else if (is_string($dataValue) && $dataValue) {
-									$fieldDataArray = t3lib_div::trimExplode(',', $dataValue, 1);
+								if ($dataArray[$theField]) {
+									if (is_array($dataValue)) {
+										$fieldDataArray = $dataValue;
+									} else if (is_string($dataValue) && $dataValue) {
+										$fieldDataArray = t3lib_div::trimExplode(',', $dataValue, 1);
+									}
 								}
 								$dataValue =
 									$this->processFiles(
@@ -1105,7 +1107,7 @@ class tx_srfeuserregister_data {
 	*
 	* @param string $theTable: the name of the table being edited
 	* @param string  $theField: the name of the field
-	* @return void
+	* @return array file names
 	*/
 	public function processFiles ($theTable, $theField, array $fieldDataArray, $cmdKey) {
 
@@ -1121,7 +1123,7 @@ class tx_srfeuserregister_data {
 						if ($this->checkFilename($file['name'])) {
 							if ($file['submit_delete']) {
 								if ($cmdKey !== 'edit') {
-									if(@is_file(PATH_site . $uploadPath . '/' . $file['name'])) {
+									if (@is_file(PATH_site . $uploadPath . '/' . $file['name'])) {
 										@unlink(PATH_site . $uploadPath . '/' . $file['name']);
 									}
 								}
