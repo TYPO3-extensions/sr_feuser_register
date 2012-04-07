@@ -1,3 +1,6 @@
+2012-04-07 Stanislas Rolland  <typo3@sjbr.ca>
+	* Follow-up 7 to feature #34447: ###HIDDENFIELDS### not always replaced
+
 2012-04-06 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up to bug #27521: Deleting images in EDIT mode leads to broken references
 	* Follow-up 6 to feature #34447: Add getters for transmission security and storage security
