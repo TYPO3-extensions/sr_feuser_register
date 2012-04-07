@@ -166,6 +166,7 @@ class tx_srfeuserregister_transmission_security {
 			case 'normal':
 			default:
 				$markerArray['###FORM_ONSUBMIT###'] = '';
+				$markerArray['###HIDDENFIELDS###'] .= LF;
 				break;
 		}
 	}
