@@ -199,7 +199,7 @@ plugin.tx_srfeuserregister_pi1 {
 
 	parseValues {
 		username = nospace,trim,alphanum_x
-		email = lower,nospace,trim
+		email = trim
 		password = trim
 		name = trim
 		first_name = trim
