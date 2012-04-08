@@ -644,7 +644,7 @@ class tx_srfeuserregister_email {
 				'',
 				$this->conf['email.']['from'],
 				$this->conf['email.']['fromName'],
-				'',
+				$this->conf['email.']['replyToAdmin'] ? $this->conf['email.']['replyToAdmin'] : '',
 				$fileAttachment
 			);
 		}
