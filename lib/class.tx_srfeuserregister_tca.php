@@ -458,7 +458,10 @@ class tx_srfeuserregister_tca {
 									$textSchema = $theTable . '.' . $colName . '.I.';
 									$itemArray = $this->langObj->getItemsLL($textSchema, TRUE);
 
-									if (!count ($itemArray)) {
+									if (!count($itemArray)) {
+										if ($colConfig['itemsProcFunc']) {
+											$itemArray = t3lib_div::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this, '');
+										}
 										$itemArray = $colConfig['items'];
 									}
 
@@ -485,7 +488,10 @@ class tx_srfeuserregister_tca {
 									$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',', $mrow[$colName]);
 									$textSchema = $theTable . '.' . $colName . '.I.';
 									$itemArray = $this->langObj->getItemsLL($textSchema, TRUE);
-									if (!count ($itemArray)) {
+									if (!count($itemArray)) {
+										if ($colConfig['itemsProcFunc']) {
+											$itemArray = t3lib_div::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this, '');
+										}
 										$itemArray = $colConfig['items'];
 									}
 									if (!$bStdWrap) {
@@ -567,6 +573,9 @@ class tx_srfeuserregister_tca {
 								$itemArray = $this->langObj->getItemsLL($textSchema, TRUE);
 								$bUseTCA = FALSE;
 								if (!count($itemArray))	{
+									if (in_array($type, array('radio', 'select')) && $colConfig['itemsProcFunc']) {
+										$itemArray = t3lib_div::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this, '');
+									}
 									$itemArray = $colConfig['items'];
 									$bUseTCA = TRUE;
 								}
