@@ -20,6 +20,7 @@
 			<label index="missing_username">Enter a username!</label>
 			<label index="missing_username_informal">Enter a username!</label>
 			<label index="password">Password</label>
+			<label index="new_password">New password, if desired</label>
 			<label index="tooltip_password">Enter the password you want to use to login.</label>
 			<label index="tooltip_password_informal">Enter the password you want to use to login.</label>
 			<label index="tooltip_invitation_password">Enter a password for the invited person.</label>
