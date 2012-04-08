@@ -10,8 +10,7 @@ plugin.tx_srfeuserregister_pi1 {
 	table.name = {$plugin.tx_srfeuserregister_pi1.tableName}
 
 	templateFile = {$plugin.tx_srfeuserregister_pi1.file.templateFile}
-// Remember that the icon is in a fixed dimension and will not grow if the text is getting
-// larger.
+		## The icon is in a fixed dimension and will not grow if the text gets larger
 	icon_delete = {$plugin.tx_srfeuserregister_pi1.file.icon_delete}
 
 	fe_userOwnSelf = 1
@@ -228,7 +227,10 @@ plugin.tx_srfeuserregister_pi1 {
 	email.from = {$plugin.tx_srfeuserregister_pi1.email}
 	email.fromName = {$plugin.tx_srfeuserregister_pi1.siteName}
 	email.admin = {$plugin.tx_srfeuserregister_pi1.email}
+		## replyTo email for messages sent to user
+	email.replyToAdmin = {$plugin.tx_srfeuserregister_pi1.email}
 	email.field = email
+		## replyTo email for messages sent to admin
 	email.replyTo = user
 	email.HTMLMail = {$plugin.tx_srfeuserregister_pi1.enableHTMLMail}
 	email.HTMLMailCSS = {$plugin.tx_srfeuserregister_pi1.HTMLMailCSS}
