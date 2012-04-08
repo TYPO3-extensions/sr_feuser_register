@@ -133,7 +133,7 @@ class tx_srfeuserregister_marker {
 
 		$this->setButtonLabelsList($buttonLabelsList);
 
-		$otherLabelsList = 'yes,no,password_again,tooltip_password_again,tooltip_invitation_password_again,click_here_to_register,tooltip_click_here_to_register,click_here_to_edit,tooltip_click_here_to_edit,click_here_to_delete,tooltip_click_here_to_delete,click_here_to_see_terms,tooltip_click_here_to_see_terms'.
+		$otherLabelsList = 'yes,no,new_password,password_again,tooltip_password_again,tooltip_invitation_password_again,click_here_to_register,tooltip_click_here_to_register,click_here_to_edit,tooltip_click_here_to_edit,click_here_to_delete,tooltip_click_here_to_delete,click_here_to_see_terms,tooltip_click_here_to_see_terms'.
 		',copy_paste_link,enter_account_info,enter_invitation_account_info,required_info_notice,excuse_us,'.
 			',tooltip_login_username,tooltip_login_password,'.
 			',registration_problem,registration_sorry,registration_clicked_twice,registration_help,kind_regards,kind_regards_cre,kind_regards_del,kind_regards_ini,kind_regards_inv,kind_regards_upd'.
