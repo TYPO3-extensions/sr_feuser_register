@@ -467,7 +467,7 @@ class tx_srfeuserregister_email {
 				$bChangesOnly
 			);
 
-			foreach ($contentIndexArray as $emailType => $indexArray)	{
+			foreach ($contentIndexArray as $emailType => $indexArray) {
 				$fieldMarkerArray = array();
 				$fieldMarkerArray = $this->marker->fillInMarkerArray(
 					$fieldMarkerArray,
@@ -505,6 +505,9 @@ class tx_srfeuserregister_email {
 							$content[$index]['rec'],
 							$markerArray
 						);
+					if ($emailType === 'text') {
+						$content[$index]['accum'] = htmlSpecialChars_decode($content[$index]['accum'], ENT_QUOTES);
+					}
 				}
 			}
 		}
@@ -514,7 +517,7 @@ class tx_srfeuserregister_email {
 			$content['user']['final'] .= $this->cObj->substituteSubpart($content['user']['all'], '###SUB_RECORD###', $content['user']['accum']);
 			$tmp = str_replace('<http', '###http', $content['user']['final']);
 			$tmp = strip_tags($tmp);
-			$content['user']['final'] = str_replace('###http', '<http', strip_tags($tmp));
+			$content['user']['final'] = str_replace('###http', '<http', $tmp);
 			$content['user']['final'] = $this->display->removeHTMLComments($content['user']['final']);
 			$content['user']['final'] = $this->display->replaceHTMLBr($content['user']['final']);
 		}
