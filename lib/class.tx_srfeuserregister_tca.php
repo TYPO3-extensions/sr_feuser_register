@@ -767,12 +767,13 @@ class tx_srfeuserregister_tca {
 
 									$selectedValue = FALSE;
 									while ($row2 = $TYPO3_DB->sql_fetch_assoc($res)) {
-										if (isset($userGroupObj) && is_object($userGroupObj)) {
+											// Handle usergroup case
+										if ($colName === 'usergroup' && isset($userGroupObj) && is_object($userGroupObj)) {
 											if (!in_array($row2['uid'], $reservedValues)) {
 												$row2 = $this->getUsergroupOverlay($row2);
 												$titleText = htmlspecialchars($row2[$titleField], ENT_QUOTES, $charset);
-												$selected = (in_array($row2['uid'], $valuesArray) ? 'selected="selected"' : '');
-												if(!$this->conf['allowMultipleUserGroupSelection'] && $selectedValue) {
+												$selected = (in_array($row2['uid'], $valuesArray) ? ' selected="selected"' : '');
+												if (!$this->conf['allowMultipleUserGroupSelection'] && $selectedValue) {
 													$selected = '';
 												}
 												$selectedValue = ($selected ? TRUE: $selectedValue);

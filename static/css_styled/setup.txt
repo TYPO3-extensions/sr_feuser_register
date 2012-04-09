@@ -177,7 +177,6 @@ plugin.tx_srfeuserregister_pi1 {
 
 		evalValues {
 			username = unsetEmpty
-			usergroup = unsetEmpty
 			password := addToList(unsetEmpty)
 		}
 	}
