@@ -257,16 +257,14 @@ class tx_srfeuserregister_data {
 		// Addition of overriding values
 		if (is_array($this->conf[$cmdKey . '.']['overrideValues.'])) {
 			foreach ($this->conf[$cmdKey . '.']['overrideValues.'] as $theField => $theValue) {
-
 				if ($theField == 'usergroup' && $this->controlData->getTable() == 'fe_users' && $this->conf[$cmdKey.'.']['allowUserGroupSelection']) {
 					$overrideArray = t3lib_div::trimExplode(',', $theValue, 1);
-
-					if (isset($dataArray[$theField])) {
-						$dataDiff = array_diff($dataArray[$theField], $overrideArray);
-						$dataValue = implode(',', array_merge($dataDiff, $overrideArray));
+					if (is_array($dataArray[$theField])) {
+						$dataValue = array_merge($dataArray[$theField], $overrideArray);
 					} else {
 						$dataValue = $overrideArray;
 					}
+					$dataValue = array_unique($dataValue);
 				} else {
 					$stdWrap = $this->conf[$cmdKey . '.']['overrideValues.'][$theField.'.'];
 					if ($stdWrap) {
@@ -406,10 +404,8 @@ class tx_srfeuserregister_data {
 			$bIsMissing = FALSE;
 
 			if (isset($dataArray[$theField])) {
-				if (!is_array($dataArray[$theField])) {
-					if (!trim($dataArray[$theField]) && trim($dataArray[$theField]) != '0') {
-						$bIsMissing = TRUE;
-					}
+				if (empty($dataArray[$theField]) && trim($dataArray[$theField]) != '0') {
+					$bIsMissing = TRUE;
 				}
 			} else {
 				$bIsMissing = TRUE;
@@ -981,10 +977,15 @@ class tx_srfeuserregister_data {
 									);
 							break;
 							case 'multiple':
-								if (!is_array($dataValue)) {
-									$fieldDataArray = t3lib_div::trimExplode(',', $dataValue);
-									$dataValue = $fieldDataArray;
+								$fieldDataArray = array();
+								if (!empty($dataArray[$theField])) {
+									if (is_array($dataArray[$theField])) {
+										$fieldDataArray = $dataArray[$theField];
+									} else if (is_string($dataArray[$theField]) && $dataArray[$theField]) {
+										$fieldDataArray = t3lib_div::trimExplode(',', $dataArray[$theField], 1);
+									}
 								}
+								$dataValue = $fieldDataArray;
 							break;
 							case 'checkArray':
 								if (is_array($dataValue)) {
