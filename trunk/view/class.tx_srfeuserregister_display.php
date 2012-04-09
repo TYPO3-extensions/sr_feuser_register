@@ -244,7 +244,7 @@ class tx_srfeuserregister_display {
 				);
 
 			$content .= $updateJS;
-			$TSFE->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $TSFE->absRefPrefix . t3lib_extMgm::siteRelPath('sr_feuser_register')  . 'scripts/jsfunc.updateform.js"></script>';
+			$GLOBALS['TSFE']->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $GLOBALS['TSFE']->absRefPrefix . t3lib_div::createVersionNumberedFilename(t3lib_extMgm::siteRelPath('sr_feuser_register')  . 'scripts/jsfunc.updateform.js') . '"></script>';
 		}
 		return $content;
 	}	// editForm
@@ -422,10 +422,7 @@ class tx_srfeuserregister_display {
 						$fields
 					);
 				$content .= $updateJS;
-				$TSFE->additionalHeaderData['JSincludeFormupdate'] =
-					'<script type="text/javascript" src="' . $TSFE->absRefPrefix .
-					t3lib_extMgm::siteRelPath('sr_feuser_register') .
-					'scripts/jsfunc.updateform.js"></script>';
+				$GLOBALS['TSFE']->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . $GLOBALS['TSFE']->absRefPrefix . t3lib_div::createVersionNumberedFilename(t3lib_extMgm::siteRelPath('sr_feuser_register')  . 'scripts/jsfunc.updateform.js') . '"></script>';
 			}
 		}
 
