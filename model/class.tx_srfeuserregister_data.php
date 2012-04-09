@@ -93,13 +93,13 @@ class tx_srfeuserregister_data {
 			$this->setSpecialFieldList('captcha_response');
 		}
 
-		$bHtmlSpecial = FALSE;
 			// Get POST parameters
 		$fe = t3lib_div::_GP('FE');
 
 		if (isset($fe) && is_array($fe) && $this->controlData->isTokenValid()) {
 			$feDataArray = $fe[$theTable];
-			$this->controlData->secureInput($feDataArray, FALSE);
+			$bHtmlSpecialChars = FALSE;
+			$this->controlData->secureInput($feDataArray, $bHtmlSpecialChars);
 			$this->tca->modifyRow($feDataArray, FALSE);
 			if ($theTable === 'fe_users') {
 				$this->controlData->securePassword($feDataArray);

@@ -25,6 +25,13 @@
 
 
 function updateForm(formId,fieldname,value)	{
+	function htmlSpecialChars_decode (str) {
+		return str.replace(/&lt;/g, '<')
+			.replace(/&gt;/g, '>')
+			.replace(/&amp;/g, '&')
+			.replace(/&quot;/g, '"');
+	}
+
 	var formObj = document.getElementById(formId);
 	if (formObj && formObj[fieldname]) {
 		var fObj = formObj[fieldname];
@@ -36,9 +43,11 @@ function updateForm(formId,fieldname,value)	{
 			case "text":
 			case "textarea":
 			case "hidden":
+				fObj.value = htmlSpecialChars_decode(value);
+				break;
 			case "password":
 				fObj.value = value;
-			break;
+				break;
 			case "checkbox":
 				fObj.checked = ((value && value!=0) ? "on":"");
 			break;

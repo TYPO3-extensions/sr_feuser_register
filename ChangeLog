@@ -5,6 +5,8 @@
 	* Fix bug #13765 (old bug tracker): Attachment file is attached to the administrative review email
 	* Follow-up 8 to feature #34447: Add ###LABEL_NEW_PASSWORD### on ###TEMPLATE_EDIT###
 	* Fix bug #35786: JavaScript files are not versioned
+	* Fix bug #16658 (old bug tracker): amp htmlspecialchars_decode doesn't work in 2.6.1
+	* Fix bug #14739 (old bug tracker): htmlspecialchars_decode doesn't work
 
 2012-04-07 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up 7 to feature #34447: ###HIDDENFIELDS### not always replaced
