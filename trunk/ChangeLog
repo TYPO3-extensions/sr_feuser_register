@@ -1,6 +1,7 @@
 2012-04-10 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up to feature #35805: Require system extension adodb
 	* Follow-up 9 to feature #34447: Do not show tx_srfeuserregister_password in HTML source
+	* Follow-up to #15174 (old bug tracker): Incorrect test of absence of required value
 	
 2012-04-09 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #15174 (old bug tracker): Doesn't allow update of user group
