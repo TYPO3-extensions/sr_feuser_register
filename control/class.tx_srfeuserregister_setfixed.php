@@ -210,14 +210,15 @@ class tx_srfeuserregister_setfixed {
 								t3lib_div::trimExplode(',', $dataObj->fieldList), t3lib_div::trimExplode(',', implode($fieldArr, ','), 1)
 							)
 						);
-
-					$res = $this->cObj->DBgetUpdate(
-						$theTable,
-						$uid,
-						$row,
-						$newFieldList,
-						TRUE
-					);
+					if ($theTable !== 'fe_users' || $sFK !== 'ENTER') {
+						$res = $this->cObj->DBgetUpdate(
+							$theTable,
+							$uid,
+							$row,
+							$newFieldList,
+							TRUE
+						);
+					}
 					$currArr = $origArray;
 					$this->controlData->getStorageSecurity()->decryptPasswordForAutoLogin($currArr, $row);
 					$modArray = array();
