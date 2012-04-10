@@ -1,3 +1,6 @@
+2012-04-10 Stanislas Rolland  <typo3@sjbr.ca>
+	* Follow-up to feature #35805: Require system extension adodb
+	
 2012-04-09 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #15174 (old bug tracker): Doesn't allow update of user group
 	* Fix bug #10435 (old bug tracker): Error messages when country is changed while no user group is selected in frontend
