@@ -1778,9 +1778,7 @@ class tx_srfeuserregister_data {
 							break;
 							case 'adodb_date':
 								if (!is_object($adodbTime)) {
-									include_once(PATH_BE_srfeuserregister.'pi1/class.tx_srfeuserregister_pi1_adodb_time.php');
-
-									// prepare for handling dates before 1970
+										// prepare for handling dates before 1970
 									$adodbTime = &t3lib_div::getUserObj('&tx_srfeuserregister_pi1_adodb_time');
 								}
 
@@ -1852,9 +1850,7 @@ class tx_srfeuserregister_data {
 						case 'adodb_date':
 							if ($dataArray[$theField]) {
 								if (!is_object($adodbTime)) {
-									include_once(PATH_BE_srfeuserregister . 'pi1/class.tx_srfeuserregister_pi1_adodb_time.php');
-
-									// prepare for handling dates before 1970
+										// prepare for handling dates before 1970
 									$adodbTime = &t3lib_div::getUserObj('&tx_srfeuserregister_pi1_adodb_time');
 								}
 								$parsedArray[$theField] =
