@@ -44,6 +44,8 @@ if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
 } else {
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['useFlexforms'] = 0;
 }
+	// Include the abodb library for date calculations	
+include_once(t3lib_extMgm::extPath('adodb') . 'adodb/adodb-time.inc.php');
 
 if (TYPO3_MODE=='BE') {
 

@@ -1777,13 +1777,8 @@ class tx_srfeuserregister_data {
 								}
 							break;
 							case 'adodb_date':
-								if (!is_object($adodbTime)) {
-										// prepare for handling dates before 1970
-									$adodbTime = &t3lib_div::getUserObj('&tx_srfeuserregister_pi1_adodb_time');
-								}
-
-								if($origArray[$theField]) {
-									$parsedArray[$theField] = $adodbTime->adodb_date(
+								if ($origArray[$theField]) {
+									$parsedArray[$theField] = adodb_date(
 										$this->conf['dateFormat'],
 										$origArray[$theField]
 									);
@@ -1849,12 +1844,8 @@ class tx_srfeuserregister_data {
 							break;
 						case 'adodb_date':
 							if ($dataArray[$theField]) {
-								if (!is_object($adodbTime)) {
-										// prepare for handling dates before 1970
-									$adodbTime = &t3lib_div::getUserObj('&tx_srfeuserregister_pi1_adodb_time');
-								}
 								$parsedArray[$theField] =
-									$adodbTime->adodb_mktime(
+									adodb_mktime(
 										0,
 										0,
 										0,

@@ -5,6 +5,7 @@
 	* Fix bug #14020 (old bug tracker): user groups from userGroupAfterConfirmation are visible in the invitation form
 	* Fix bug #13913 (old bug tracker): Login through email-link overwrites usergroup settings
 	* Cleanup: Add tx_srfeuserregister_pi1_adodb_time to ext_autoload
+	* Add feature #35805: Use ADOdb Date Library from system extension adodb
 
 2012-04-08 Stanislas Rolland  <typo3@sjbr.ca>
 	* Add feature #28370: replyTo feature for mails sent to user
