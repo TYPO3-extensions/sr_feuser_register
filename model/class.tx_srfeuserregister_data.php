@@ -404,7 +404,7 @@ class tx_srfeuserregister_data {
 			$bIsMissing = FALSE;
 
 			if (isset($dataArray[$theField])) {
-				if (empty($dataArray[$theField]) && trim($dataArray[$theField]) != '0') {
+				if (empty($dataArray[$theField]) && $dataArray[$theField] !== '0') {
 					$bIsMissing = TRUE;
 				}
 			} else {
