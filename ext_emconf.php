@@ -42,6 +42,7 @@ $EM_CONF[$_EXTKEY] = array(
 			'felogin' => '',
 			'saltedpasswords' => '',
 			'rsaauth' => '',
+			'adodb' => '',
 			'static_info_tables' => '2.0.5-',
 			'div2007' => '0.8.2-',
 		),
