@@ -62,7 +62,7 @@ class tx_srfeuserregister_controldata {
 	public $sys_language_content;
 	public $feUserData = array();
 		// Names of secured fields
-	protected $securedFieldArray = array('password', 'password_again');
+	protected $securedFieldArray = array('password', 'password_again', 'tx_srfeuserregister_password');
 	public $bValidRegHash;
 	public $regHash;
 		// Whether the token was found valid
@@ -372,7 +372,7 @@ class tx_srfeuserregister_controldata {
 	* @return	void
 	*/
 	public function setSecuredFieldArray (array $securedFieldArray) {
-		$this->securedFieldArray = array_merge($securedFieldArray, array('password', 'password_again'));
+		$this->securedFieldArray = array_merge($securedFieldArray, array('password', 'password_again', 'tx_srfeuserregister_password'));
 		
 	}
 
