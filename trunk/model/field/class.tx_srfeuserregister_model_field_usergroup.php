@@ -39,36 +39,71 @@
  */
 class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_model_field_base {
 
-	public function modifyConf (&$conf, $cmdKey) {
+	protected $savedReservedValues = array();
 
+	/*
+	 * Modifies the form fields configuration depending on the $cmdKey
+	 *
+	 * @param array $conf: the configuration array
+	 * @param string $cmdKey: the command key
+	 * @return void
+	 */
+	public function modifyConf (&$conf, $cmdKey) {
+			// Add usergroup to the list of fields and required fields if the user is allowed to select user groups
 		if ($conf[$cmdKey . '.']['allowUserGroupSelection']) {
 			$conf[$cmdKey . '.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'] . ',usergroup', 1)));
 			$conf[$cmdKey . '.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['required'] . ',usergroup', 1)));
 		} else {
+				// Remove usergroup from the list of fields and required fields if the user is not allowed to select user groups
 			$conf[$cmdKey . '.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1), array('usergroup')));
+			$conf[$cmdKey . '.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['required'], 1), array('usergroup')));
+		}
+			// If inviting and administrative review is enabled, save original reserved user groups
+		if ($cmdKey === 'invite' && $conf['enableAdminReview']) {
+			$this->savedReservedValues = $this->getReservedValues();
 		}
 	}
 
+	/*
+	 * Gets allowed values for user groups
+	 *
+	 * @param array $conf: the configuration array
+	 * @param string $cmdKey: the command key
+	 * @return void
+	 */
 	public function getAllowedValues ($conf, $cmdKey, &$allowedUserGroupArray, &$allowedSubgroupArray, &$deniedUserGroupArray) {
-
 		$allowedUserGroupArray = t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['allowedUserGroups'], 1);
 		$allowedSubgroupArray = t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['allowedSubgroups'], 1);
 		$deniedUserGroupArray = t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['deniedUserGroups'], 1);
-		// allowedUserGroups, allowedSubgroups, deniedUserGroups
 	}
 
+	/*
+	 * Gets the array of user groups reserved for control of the registration process
+	 *
+	 * @return array the reserved user groups
+	 */
 	public function getReservedValues () {
 		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_conf');
 		$conf = &$confObj->getConf();
-		$rc = array_merge(t3lib_div::trimExplode(',', $conf['create.']['overrideValues.']['usergroup'], 1), t3lib_div::trimExplode(',', $conf['setfixed.']['APPROVE.']['usergroup'], 1), t3lib_div::trimExplode(',', $conf['setfixed.']['ACCEPT.']['usergroup'], 1));
+		$rc = array_merge(
+			t3lib_div::trimExplode(',', $conf['create.']['overrideValues.']['usergroup'], 1),
+			t3lib_div::trimExplode(',', $conf['invite.']['overrideValues.']['usergroup'], 1),
+			t3lib_div::trimExplode(',', $conf['setfixed.']['APPROVE.']['usergroup'], 1),
+			t3lib_div::trimExplode(',', $conf['setfixed.']['ACCEPT.']['usergroup'], 1),
+			$this->savedReservedValues
+		);
 		$rc = array_unique($rc);
 		return $rc;
 	}
 
+	/*
+	 * Removes reserved user groups from the usergroup field of an array
+	 *
+	 * @param array $row: array
+	 * @return void
+	 */
 	public function removeReservedValues (&$row) {
-
 		if (isset($row['usergroup'])) {
-
 			$reservedValues = $this->getReservedValues();
 			if (is_array($row['usergroup'])) {
 				$userGroupArray = $row['usergroup'];
