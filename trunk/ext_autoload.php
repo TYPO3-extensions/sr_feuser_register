@@ -6,6 +6,7 @@
  */
 $sr_feuser_registerExtensionPath = t3lib_extMgm::extPath('sr_feuser_register');
 return array(
+	'tx_srfeuserregister_statusreport' => $sr_feuser_registerExtensionPath . 'hooks/statusreport/class.tx_srfeuserregister_statusReport.php',
 	'tx_srfeuserregister_pi1' => $sr_feuser_registerExtensionPath . 'pi1/class.tx_srfeuserregister_pi1.php',
 	'tx_srfeuserregister_pi1_base' => $sr_feuser_registerExtensionPath . 'pi1/class.tx_srfeuserregister_pi1_base.php',
 	'tx_srfeuserregister_pi1_urlvalidator' => $sr_feuser_registerExtensionPath . 'pi1/class.tx_srfeuserregister_pi1_urlvalidator.php',
