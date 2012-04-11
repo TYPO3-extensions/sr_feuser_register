@@ -21,6 +21,13 @@ if (!defined ('PATH_FE_srfeuserregister_rel')) {
 	define('PATH_FE_srfeuserregister_rel', t3lib_extMgm::siteRelPath(SR_FEUSER_REGISTER_EXTkey));
 }
 
+	// Add Status Report
+$typo3Version = class_exists('t3lib_utility_VersionNumber') ? t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) : t3lib_div::int_from_ver(TYPO3_version);
+if ($typo3Version >= 4006000) {
+	require_once(PATH_BE_srfeuserregister . 'hooks/statusreport/ext_localconf.php');
+}
+unset($typo3Version);
+
 t3lib_extMgm::addPItoST43(SR_FEUSER_REGISTER_EXTkey, 'pi1/class.tx_srfeuserregister_pi1.php', '_pi1', 'list_type', 0);
 
 $_EXTCONF = unserialize($_EXTCONF);    // unserializing the configuration so we can use it here:
