@@ -50,13 +50,16 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 	 */
 	public function modifyConf (&$conf, $cmdKey) {
 			// Add usergroup to the list of fields and required fields if the user is allowed to select user groups
-		if ($conf[$cmdKey . '.']['allowUserGroupSelection']) {
-			$conf[$cmdKey . '.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'] . ',usergroup', 1)));
-			$conf[$cmdKey . '.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['required'] . ',usergroup', 1)));
-		} else {
-				// Remove usergroup from the list of fields and required fields if the user is not allowed to select user groups
-			$conf[$cmdKey . '.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1), array('usergroup')));
-			$conf[$cmdKey . '.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['required'], 1), array('usergroup')));
+			// Except when only updating password
+		if ($cmdKey !== 'password') {
+			if ($conf[$cmdKey . '.']['allowUserGroupSelection']) {
+				$conf[$cmdKey . '.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'] . ',usergroup', 1)));
+				$conf[$cmdKey . '.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['required'] . ',usergroup', 1)));
+			} else {
+					// Remove usergroup from the list of fields and required fields if the user is not allowed to select user groups
+				$conf[$cmdKey . '.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1), array('usergroup')));
+				$conf[$cmdKey . '.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['required'], 1), array('usergroup')));
+			}
 		}
 			// If inviting and administrative review is enabled, save original reserved user groups
 		if ($cmdKey === 'invite' && $conf['enableAdminReview']) {
