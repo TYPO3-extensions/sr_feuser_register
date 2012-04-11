@@ -1765,17 +1765,6 @@ class tx_srfeuserregister_data {
 						$theCmd = trim($cmdParts[0]);
 						switch($theCmd) {
 							case 'date':
-								if($origArray[$theField]) {
-									$parsedArray[$theField] = date($this->conf['dateFormat'],  $origArray[$theField]);
-								}
-								if (!$parsedArray[$theField]) {
-									if ($bUnsetZero) {
-										unset($parsedArray[$theField]);
-									} else {
-										$parsedArray[$theField] = '';
-									}
-								}
-							break;
 							case 'adodb_date':
 								if ($origArray[$theField]) {
 									$parsedArray[$theField] = adodb_date(
@@ -1827,7 +1816,7 @@ class tx_srfeuserregister_data {
 				foreach($listOfCommands as $k2 => $cmd) {
 					$cmdParts = preg_split('/\[|\]/', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 					$theCmd = trim($cmdParts[0]);
-					if (($theCmd == 'date' || $theCmd == 'adodb_date') && $dataArray[$theField])	{
+					if (($theCmd == 'date' || $theCmd == 'adodb_date') && $dataArray[$theField]) {
 						if(strlen($dataArray[$theField]) == 8) {
 							$parsedArray[$theField] = substr($dataArray[$theField], 0, 4) . '-' . substr($dataArray[$theField], 4, 2) . '-' . substr($dataArray[$theField], 6, 2);
 						} else {
@@ -1838,10 +1827,6 @@ class tx_srfeuserregister_data {
 
 					switch ($theCmd) {
 						case 'date':
-							if ($dataArray[$theField]) {
-								$parsedArray[$theField] = mktime(0, 0, 0, $dateArray['m'], $dateArray['d'], $dateArray['y']);
-							}
-							break;
 						case 'adodb_date':
 							if ($dataArray[$theField]) {
 								$parsedArray[$theField] =

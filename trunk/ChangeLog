@@ -4,6 +4,7 @@
 	* Follow-up to #15174 (old bug tracker): Incorrect test of absence of required value
 	* Fix bug #35833: Password update on accepting invitation may not work
 	* Follow-up 2 to feature #35805: Write error to syslog if required extension is not loaded
+	* Follow-up 3 to feature #35805: Always use adodb Date library for timestamp conversion
 	
 2012-04-09 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #15174 (old bug tracker): Doesn't allow update of user group
