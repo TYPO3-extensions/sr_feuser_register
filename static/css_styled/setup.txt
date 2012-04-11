@@ -216,10 +216,10 @@ plugin.tx_srfeuserregister_pi1 {
 	}
 
 	parseFromDBValues {
-		date_of_birth = adodb_date
+		date_of_birth = date
 	}
 	parseToDBValues {
-		date_of_birth = adodb_date
+		date_of_birth = date
 		image = deleteUnreferencedFiles
 	}
 
