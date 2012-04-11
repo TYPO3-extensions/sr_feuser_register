@@ -74,6 +74,17 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 				}
 			}
 		}
+		$supportedTransmissionSecurityLevels = array('normal', 'rsa');
+		if (!in_array($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'], $supportedTransmissionSecurityLevels)) {
+			t3lib_div::sysLog('Frontend login security level must be set to "normal" or to "rsa"', $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
+			$content .= '<p><big><b>Frontend login security level must be set to "normal" or to "rsa".</b></big></p>';
+		}
+		if (t3lib_extMgm::isLoaded('saltedpasswords')) {
+			if (!tx_saltedpasswords_div::isUsageEnabled('FE')) {
+				t3lib_div::sysLog('Salted passwords not enabled in frontend', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
+				$content .= '<p><big><b>Salted passwords must be enabled in frontend.</b></big></p>';
+			}
+		}
 		return $content;
 	}
 }

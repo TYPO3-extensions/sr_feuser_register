@@ -69,6 +69,8 @@ class tx_srfeuserregister_transmission_security {
 					$this->transmissionSecurityLevel = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
 				}
 			}
+		} else {
+			t3lib_div::sysLog('Frontend login security level must be set to "normal" or to "rsa"', $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 		}
 	}
 
@@ -110,7 +112,7 @@ class tx_srfeuserregister_transmission_security {
 											$row[$field] = $result;
 										} else {
 											$success = FALSE;
-											t3lib_div::devLog('RSA auth service failed to process incoming password', 'sr_feuser_register', 3);
+											t3lib_div::sysLog('RSA auth service failed to process incoming password', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
 										}
 									}
 								}
@@ -119,14 +121,15 @@ class tx_srfeuserregister_transmission_security {
 							$storage->put(NULL);
 						} else {
 							$success = FALSE;
-							t3lib_div::devLog('RSA auth service failed to retrieve private key', 'sr_feuser_register', 3);
+							t3lib_div::sysLog('RSA auth service failed to retrieve private key', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
 						}
 					} else {
 						$success = FALSE;
-						t3lib_div::devLog('Required RSA auth backend not available', 'sr_feuser_register', 3);
+						t3lib_div::sysLog('Required RSA auth backend not available', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
 					}
 				} else {
 					$success = FALSE;
+					t3lib_div::sysLog('Required extension "rsaauth" is not available and must be installed', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
 				}
 				break;
 			case 'normal':
@@ -153,6 +156,8 @@ class tx_srfeuserregister_transmission_security {
 						list($onSubmit, $hiddenFields) = t3lib_div::callUserFunction($funcRef, $_params, $this);
 						$extraHiddenFieldsArray[] = $hiddenFields;
 					}
+				} else {
+					t3lib_div::sysLog('Required extension "felogin" or "rsaauth" is not available and must be installed', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
 				}
 				if (count($extraHiddenFieldsArray)) {
 					$extraHiddenFields = implode(LF, $extraHiddenFieldsArray);
