@@ -61,7 +61,11 @@ class tx_srfeuserregister_storage_security {
 		if (t3lib_extMgm::isLoaded('saltedpasswords')) {
 			if (tx_saltedpasswords_div::isUsageEnabled('FE')) {
 				$this->storageSecurityLevel = 'salted';
+			} else {
+				t3lib_div::sysLog('Salted passwords not enabled in frontend', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
 			}
+		} else {
+			t3lib_div::sysLog('Required extension "saltedpasswords" is not available and must be installed', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
 		}
 	}
 
@@ -90,10 +94,10 @@ class tx_srfeuserregister_storage_security {
 						if (is_object($objSalt)) {
 							$encryptedPassword = $objSalt->getHashedPassword($password);
 						} else {
-							t3lib_div::devLog('Could not get a salting instance from saltedpasswords', 'sr_feuser_register', 3);
+							t3lib_div::sysLog('Could not get a salting instance from saltedpasswords', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
 						}
 					} else {
-						t3lib_div::devLog('Salted passwords not enabled in frontend', 'sr_feuser_register', 3);
+						t3lib_div::sysLog('Salted passwords not enabled in frontend', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
 					}
 					break;
 				case 'normal':
@@ -157,7 +161,7 @@ class tx_srfeuserregister_storage_security {
 					$dataArray['auto_login_key'] = $privateKey;
 				}
 			} else {
-				t3lib_div::devLog('Required rsaauth extension not available', 'sr_feuser_register', 3);
+				t3lib_div::sysLog('Required extension "rsaauth" is not available', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
 			}
 		}
 	}
@@ -182,13 +186,13 @@ class tx_srfeuserregister_storage_security {
 							if ($decryptedPassword) {
 								$dataArray['password'] = $decryptedPassword;
 							} else {
-								t3lib_div::devLog('Failed to decrypt auto login password', 'sr_feuser_register', 3);
+								t3lib_div::sysLog('Failed to decrypt auto login password', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
 							}
 						} else {
-							t3lib_div::devLog('Required RSA auth backend not available', 'sr_feuser_register', 3);
+							t3lib_div::sysLog('Required RSA auth backend not available', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
 						}
 					} else {
-						t3lib_div::devLog('Required rsaauth extension not available', 'sr_feuser_register', 3);
+						t3lib_div::sysLog('Required extension "rsaauth" is not available', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
 					}
 				}
 			}
