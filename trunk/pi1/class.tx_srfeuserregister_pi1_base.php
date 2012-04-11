@@ -46,14 +46,34 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 	public $extKey = SR_FEUSER_REGISTER_EXTkey;		// Extension key.
 
 	public function main ($content, $conf) {
-		global $TSFE;
 
 		$this->pi_setPiVarDefaults();
 		$this->conf = &$conf;
 		$mainObj = &t3lib_div::getUserObj('&tx_srfeuserregister_control_main');
 		$mainObj->cObj = &$this->cObj;
 
-		$content = &$mainObj->main($content, $conf, $this, 'fe_users');
+		$content = $this->checkRequirements();
+		if (!$content) {
+			$content = &$mainObj->main($content, $conf, $this, 'fe_users');
+		}
+		return $content;
+	}
+
+	/* Checks requirements for this plugin
+	 *
+	 * @return string Error message, if error found, empty string otherwise
+	 */
+	protected function checkRequirements() {
+		$content = '';
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['constraints']['depends'])) {
+			$requiredExtensions = array_diff(array_keys($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['constraints']['depends']), array('php', 'typo3'));
+			foreach ($requiredExtensions as $requiredExtension) {
+				if (!t3lib_extMgm::isLoaded($requiredExtension)) {
+					t3lib_div::sysLog('Required extension "' . $requiredExtension . '" is not available and must be installed', $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
+					$content .= '<p><big><b>Extension "' . $requiredExtension . '", required by extension "' . $this->extKey . '", is not available and must be installed.</b></big></p>';
+				}
+			}
+		}
 		return $content;
 	}
 }

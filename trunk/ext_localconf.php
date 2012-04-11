@@ -37,40 +37,28 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['tx_srfeuserregiste
 
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess'][] = 'EXT:sr_feuser_register/hooks/class.tx_srfeuserregister_hooksHandler.php:&tx_srfeuserregister_hooksHandler';
 
-	// Require extension saltedpassword
-if (!t3lib_extMgm::isLoaded('saltedpassword')) {
-	t3lib_div::sysLog('Required extension Salted user password hashes (saltedpasswords) is not available', SR_FEUSER_REGISTER_EXTkey, t3lib_div::SYSLOG_SEVERITY_ERROR);
-}
-	// Require extension rsaauth
-if (!t3lib_extMgm::isLoaded('rsaauth')) {
-	t3lib_div::sysLog('Required extension RSA authentication for TYPO3 (rsaauth) is not available', SR_FEUSER_REGISTER_EXTkey, t3lib_div::SYSLOG_SEVERITY_ERROR);
-}
-	// Require extension felogin
-if (!t3lib_extMgm::isLoaded('felogin')) {
-	t3lib_div::sysLog('Required extension Frontend Login for Website Users (felogin) is not available', SR_FEUSER_REGISTER_EXTkey, t3lib_div::SYSLOG_SEVERITY_ERROR);
-}
+	// Save extension version and constraints
+require_once(t3lib_extMgm::extPath($_EXTKEY) . 'ext_emconf.php');
+$TYPO3_CONF_VARS['EXTCONF'][$_EXTKEY]['version'] = $EM_CONF[$_EXTKEY]['version'];
+$TYPO3_CONF_VARS['EXTCONF'][$_EXTKEY]['constraints'] = $EM_CONF[$_EXTKEY]['constraints'];
+
 	// Include the abodb library for date calculations
 if (t3lib_extMgm::isLoaded('adodb')) {
 	include_once(t3lib_extMgm::extPath('adodb') . 'adodb/adodb-time.inc.php');
-} else {
-	t3lib_div::sysLog('Required extension ADOdb (adodb) is not available', SR_FEUSER_REGISTER_EXTkey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 }
-	// Require extension static_info_tables
+	// Set path to extension static_info_tables
 if (t3lib_extMgm::isLoaded('static_info_tables')) {
 	if (!defined ('PATH_BE_static_info_tables')) {
 		define('PATH_BE_static_info_tables', t3lib_extMgm::extPath('static_info_tables'));
 	}
-} else {
-	t3lib_div::sysLog('Required extension Static Info Tables (static_info_tables) is not available', SR_FEUSER_REGISTER_EXTkey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 }
-	// Require extension div2007
+	// Set path to extension div2007
 if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
 	if (!defined ('PATH_BE_div2007')) {
 		define('PATH_BE_div2007', t3lib_extMgm::extPath(DIV2007_EXTkey));
 	}
 } else {
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['useFlexforms'] = 0;
-	t3lib_div::sysLog('Required extension Static Methods for Extensions since 2007 (div2007) is not available', SR_FEUSER_REGISTER_EXTkey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 }
 
 if (TYPO3_MODE=='BE') {

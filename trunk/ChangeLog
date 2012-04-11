@@ -1,3 +1,6 @@
+2012-04-11 Stanislas Rolland  <typo3@sjbr.ca>
+	* Follow-up 4 to feature #35805: Display message in frontend if required extension is not loaded
+
 2012-04-10 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up 1 to feature #35805: Require system extension adodb
 	* Follow-up 9 to feature #34447: Do not show tx_srfeuserregister_password in HTML source
