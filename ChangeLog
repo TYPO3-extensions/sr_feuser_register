@@ -1,6 +1,7 @@
 2012-04-12 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #35910: Messages regarding installation problems are not localized
 	* Follow-up to bug #35910: Messages regarding installation problems are not localized
+	* Cleanup: Remove unnecessary check for div2007 in tx_srfeuserregister_email
 
 2012-04-11 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up 4 to feature #35805: Display message in frontend if required extension is not loaded

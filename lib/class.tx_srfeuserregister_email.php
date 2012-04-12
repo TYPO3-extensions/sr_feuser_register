@@ -746,7 +746,7 @@ class tx_srfeuserregister_email {
 					// SET Headers and Content
 				$mail->setTo(array($recipient));
 				$mail->send();
-			} else if (t3lib_extMgm::isLoaded('div2007')) {
+			} else {
 				require_once(PATH_BE_div2007 . 'class.tx_div2007_email.php');
 				tx_div2007_email::sendMail(
 					$recipient,
