@@ -88,27 +88,16 @@ class tx_srfeuserregister_control {
 		$cmd = $this->controlData->getCmd();
 
 		if ($cmd=='') {
-
-			if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['useFlexforms']) {
-					// Static Methods for Extensions for flexform functions
-				require_once(PATH_BE_div2007.'class.tx_div2007_alpha.php');
-					// check the flexform
-				$this->cObj->data['pi_flexform'] = t3lib_div::xml2array($this->cObj->data['pi_flexform']);
-				$cmd = tx_div2007_alpha::getSetupOrFFvalue_fh002(
-					$this->langObj,
-					'',
-					'',
-					$this->conf['defaultCODE'],
-					$this->cObj->data['pi_flexform'],
-					'display_mode',
-					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['useFlexforms']
-				);
-			} else {
-				if (!$cmd) {
-					$cmd = $this->cObj->data['select_key'];
-				}
-				$cmd = ($cmd ? $cmd : $this->conf['defaultCODE']);
-			}
+				// Check the flexform
+			$this->cObj->data['pi_flexform'] = t3lib_div::xml2array($this->cObj->data['pi_flexform']);
+			$cmd = tx_div2007_alpha::getSetupOrFFvalue_fh002(
+				$this->langObj,
+				'',
+				'',
+				$this->conf['defaultCODE'],
+				$this->cObj->data['pi_flexform'],
+				'display_mode'
+			);
 			$cmd = $this->cObj->caseshift($cmd, 'lower');
 		}
 		$this->controlData->setCmd($cmd);
