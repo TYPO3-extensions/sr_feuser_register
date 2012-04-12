@@ -780,11 +780,15 @@ class tx_srfeuserregister_control {
 					$result = FALSE;
 				}
 			} else {
-				t3lib_div::devLog('Required authentication service not available', 'sr_feuser_register', 3);
+					// Required authentication service not available
+				$message = $this->langObj->getLL('internal_required_authentication_service_not_available');
+				t3lib_div::sysLog($message, $this->controlData->getExtKey(), t3lib_div::SYSLOG_SEVERITY_ERROR);
+				$this->controlData->clearSessionData(FALSE);
 				$result = FALSE;
 			}
 		} else {
-			t3lib_div::devLog('No enabled user of the given name', 'sr_feuser_register', 3);
+				// No enabled user of the given name
+			$this->controlData->clearSessionData(FALSE);
 			$result = FALSE;
 		}
 		return $result;
