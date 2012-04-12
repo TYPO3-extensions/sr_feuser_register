@@ -49,10 +49,6 @@ require_once(t3lib_extMgm::extPath($_EXTKEY) . 'ext_emconf.php');
 $TYPO3_CONF_VARS['EXTCONF'][$_EXTKEY]['version'] = $EM_CONF[$_EXTKEY]['version'];
 $TYPO3_CONF_VARS['EXTCONF'][$_EXTKEY]['constraints'] = $EM_CONF[$_EXTKEY]['constraints'];
 
-	// Include the abodb library for date calculations
-if (t3lib_extMgm::isLoaded('adodb')) {
-	include_once(t3lib_extMgm::extPath('adodb') . 'adodb/adodb-time.inc.php');
-}
 	// Set path to extension static_info_tables
 if (t3lib_extMgm::isLoaded('static_info_tables')) {
 	if (!defined ('PATH_BE_static_info_tables')) {

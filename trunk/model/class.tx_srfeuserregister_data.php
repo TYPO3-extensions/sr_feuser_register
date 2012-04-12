@@ -1767,7 +1767,7 @@ class tx_srfeuserregister_data {
 							case 'date':
 							case 'adodb_date':
 								if ($origArray[$theField]) {
-									$parsedArray[$theField] = adodb_date(
+									$parsedArray[$theField] = date(
 										$this->conf['dateFormat'],
 										$origArray[$theField]
 									);
@@ -1830,7 +1830,7 @@ class tx_srfeuserregister_data {
 						case 'adodb_date':
 							if ($dataArray[$theField]) {
 								$parsedArray[$theField] =
-									adodb_mktime(
+									mktime(
 										0,
 										0,
 										0,
