@@ -39,6 +39,8 @@
  *
  */
 class tx_srfeuserregister_storage_security {
+		// Extension key
+	protected $extKey = SR_FEUSER_REGISTER_EXTkey;
 		// The storage security level: normal or salted
 	protected $storageSecurityLevel = 'normal';
 
@@ -58,14 +60,8 @@ class tx_srfeuserregister_storage_security {
 	*/
 	protected function setStorageSecurityLevel () {
 		$this->storageSecurityLevel = 'normal';
-		if (t3lib_extMgm::isLoaded('saltedpasswords')) {
-			if (tx_saltedpasswords_div::isUsageEnabled('FE')) {
-				$this->storageSecurityLevel = 'salted';
-			} else {
-				t3lib_div::sysLog('Salted passwords not enabled in frontend', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
-			}
-		} else {
-			t3lib_div::sysLog('Required extension "saltedpasswords" is not available and must be installed', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
+		if (tx_saltedpasswords_div::isUsageEnabled('FE')) {
+			$this->storageSecurityLevel = 'salted';
 		}
 	}
 
@@ -89,15 +85,12 @@ class tx_srfeuserregister_storage_security {
 		if ($password !== '') {
 			switch ($this->getStorageSecurityLevel()) {
 				case 'salted':
-					if (tx_saltedpasswords_div::isUsageEnabled('FE')) {
-						$objSalt = tx_saltedpasswords_salts_factory::getSaltingInstance(NULL);
-						if (is_object($objSalt)) {
-							$encryptedPassword = $objSalt->getHashedPassword($password);
-						} else {
-							t3lib_div::sysLog('Could not get a salting instance from saltedpasswords', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
-						}
+					$objSalt = tx_saltedpasswords_salts_factory::getSaltingInstance(NULL);
+					if (is_object($objSalt)) {
+						$encryptedPassword = $objSalt->getHashedPassword($password);
 					} else {
-						t3lib_div::sysLog('Salted passwords not enabled in frontend', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
+						// Could not get a salting instance from saltedpasswords
+						// Should not happen: checked in tx_srfeuserregister_pi1_base::checkRequirements
 					}
 					break;
 				case 'normal':
@@ -147,21 +140,16 @@ class tx_srfeuserregister_storage_security {
 		$privateKey = '';
 		$cryptedPassword = '';
 		if ($password !== '') {
-				// Make sure openssl is available
-			if (t3lib_extMgm::isLoaded('rsaauth')) {
-					// Create the keypair
-				$keyPair = openssl_pkey_new();
-					// Get private key
-				openssl_pkey_export($keyPair, $privateKey);
-					// Get public key
-				$keyDetails = openssl_pkey_get_details($keyPair);
-				$publicKey = $keyDetails['key'];
-				if (@openssl_public_encrypt($password, $cryptedPassword, $publicKey)) {
-					$dataArray['tx_srfeuserregister_password'] = base64_encode($cryptedPassword);
-					$dataArray['auto_login_key'] = $privateKey;
-				}
-			} else {
-				t3lib_div::sysLog('Required extension "rsaauth" is not available', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
+				// Create the keypair
+			$keyPair = openssl_pkey_new();
+				// Get private key
+			openssl_pkey_export($keyPair, $privateKey);
+				// Get public key
+			$keyDetails = openssl_pkey_get_details($keyPair);
+			$publicKey = $keyDetails['key'];
+			if (@openssl_public_encrypt($password, $cryptedPassword, $publicKey)) {
+				$dataArray['tx_srfeuserregister_password'] = base64_encode($cryptedPassword);
+				$dataArray['auto_login_key'] = $privateKey;
 			}
 		}
 	}
@@ -179,20 +167,19 @@ class tx_srfeuserregister_storage_security {
 			if ($privateKey !== '') {
 				$password = $dataArray['tx_srfeuserregister_password'];
 				if ($password !== '') {
-					if (t3lib_extMgm::isLoaded('rsaauth')) {
-						$backend = tx_rsaauth_backendfactory::getBackend();
-						if (is_object($backend) && $backend->isAvailable()) {
-							$decryptedPassword = $backend->decrypt($privateKey, $password);
-							if ($decryptedPassword) {
-								$dataArray['password'] = $decryptedPassword;
-							} else {
-								t3lib_div::sysLog('Failed to decrypt auto login password', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
-							}
+					$backend = tx_rsaauth_backendfactory::getBackend();
+					if (is_object($backend) && $backend->isAvailable()) {
+						$decryptedPassword = $backend->decrypt($privateKey, $password);
+						if ($decryptedPassword) {
+							$dataArray['password'] = $decryptedPassword;
 						} else {
-							t3lib_div::sysLog('Required RSA auth backend not available', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
+								// Failed to decrypt auto login password
+							$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_decrypt_auto_login_failed');
+							t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 						}
 					} else {
-						t3lib_div::sysLog('Required extension "rsaauth" is not available', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
+						// Required RSA auth backend not available
+						// Should not happen: checked in tx_srfeuserregister_pi1_base::checkRequirements
 					}
 				}
 			}

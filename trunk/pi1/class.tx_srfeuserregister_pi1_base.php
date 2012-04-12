@@ -49,11 +49,12 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 
 		$this->pi_setPiVarDefaults();
 		$this->conf = &$conf;
-		$mainObj = &t3lib_div::getUserObj('&tx_srfeuserregister_control_main');
-		$mainObj->cObj = &$this->cObj;
 
 		$content = $this->checkRequirements();
+
 		if (!$content) {
+			$mainObj = &t3lib_div::getUserObj('&tx_srfeuserregister_control_main');
+			$mainObj->cObj = &$this->cObj;
 			$content = &$mainObj->main($content, $conf, $this, 'fe_users');
 		}
 		return $content;
@@ -65,24 +66,56 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 	 */
 	protected function checkRequirements() {
 		$content = '';
+			// Check if all required extensions are available
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['constraints']['depends'])) {
 			$requiredExtensions = array_diff(array_keys($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['constraints']['depends']), array('php', 'typo3'));
 			foreach ($requiredExtensions as $requiredExtension) {
 				if (!t3lib_extMgm::isLoaded($requiredExtension)) {
-					t3lib_div::sysLog('Required extension "' . $requiredExtension . '" is not available and must be installed', $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
-					$content .= '<p><big><b>Extension "' . $requiredExtension . '", required by extension "' . $this->extKey . '", is not available and must be installed.</b></big></p>';
+					$message = sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_required_extension_missing'), $requiredExtension);
+					t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
+					$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_check_requirements_frontend'), $message);
 				}
 			}
 		}
+			// Check if front end login security level is correctly set
 		$supportedTransmissionSecurityLevels = array('normal', 'rsa');
 		if (!in_array($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'], $supportedTransmissionSecurityLevels)) {
-			t3lib_div::sysLog('Frontend login security level must be set to "normal" or to "rsa"', $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
-			$content .= '<p><big><b>Frontend login security level must be set to "normal" or to "rsa".</b></big></p>';
-		}
-		if (t3lib_extMgm::isLoaded('saltedpasswords')) {
-			if (!tx_saltedpasswords_div::isUsageEnabled('FE')) {
-				t3lib_div::sysLog('Salted passwords not enabled in frontend', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
-				$content .= '<p><big><b>Salted passwords must be enabled in frontend.</b></big></p>';
+			$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_login_security_level');
+			t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
+			$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_check_requirements_frontend'), $message);
+		} else {
+				// Check if salted passwords are enabled in front end
+			if (t3lib_extMgm::isLoaded('saltedpasswords')) {
+				if (!tx_saltedpasswords_div::isUsageEnabled('FE')) {
+					$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_salted_passwords_disabled');
+					t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
+					$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_check_requirements_frontend'), $message);
+				} else {
+						// Check if we can get a salting instance
+					$objSalt = tx_saltedpasswords_salts_factory::getSaltingInstance(NULL);
+					if (!is_object($objSalt)) {
+							// Could not get a salting instance from saltedpasswords
+						$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_salted_passwords_no_instance');
+						t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
+						$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_check_requirements_frontend'), $message);
+					}
+				}
+			}
+				// Check if we can get a backend from rsaauth
+			if (t3lib_extMgm::isLoaded('rsaauth')) {
+					// rsaauth in TYPO3 4.5 misses autoload
+				if (!class_exists('tx_rsaauth_backendfactory')) {
+					require_once(t3lib_extMgm::extPath('rsaauth') . 'sv1/backends/class.tx_rsaauth_backendfactory.php');
+					require_once(t3lib_extMgm::extPath('rsaauth') . 'sv1/storage/class.tx_rsaauth_storagefactory.php');
+				}
+				$backend = tx_rsaauth_backendfactory::getBackend();
+				$storage = tx_rsaauth_storagefactory::getStorage();
+				if (!is_object($backend) || !$backend->isAvailable() || !is_object($storage)) {
+						// Required RSA auth backend not available
+					$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_rsaauth_backend_not_available');
+					t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
+					$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_check_requirements_frontend'), $message);
+				}
 			}
 		}
 		return $content;

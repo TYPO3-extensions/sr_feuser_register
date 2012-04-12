@@ -510,6 +510,15 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 			<label index="internal_token_empty">The form\'s token is empty!</label>
 			<label index="internal_token_short">The form\'s token is too short!</label>
 			<label index="internal_no_text_found">Internal error in the FE user registration. No text replacement has been found for &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="internal_login_security_level">Frontend login security level must be set to "normal" or to "rsa"</label>
+			<label index="internal_rsaauth_backend_not_available">Required RSA auth backend not available</label>
+			<label index="internal_decrypt_auto_login_failed">Failed to decrypt auto login password</label>
+			<label index="internal_rsaauth_retrieve_private_key_failed">RSA auth service failed to retrieve private key</label>
+			<label index="internal_rsaauth_process_incoming_password_failed">RSA auth service failed to process incoming password</label>
+			<label index="internal_salted_passwords_disabled">Salted passwords must be enabled in frontend</label>
+			<label index="internal_salted_passwords_no_instance">Could not get a salting instance from saltedpasswords</label>
+			<label index="internal_required_extension_missing">Required extension "%1$s" is not available and must be installed</label>
+			<label index="internal_check_requirements_frontend">&lt;p&gt;&lt;big&gt;&lt;b&gt;Front End User Registration (sr_feuser_register): %1$s.&lt;/b&gt;&lt;/big&gt;&lt;/p&gt;</label>
 		</languageKey>
 	</data>
 </T3locallang>

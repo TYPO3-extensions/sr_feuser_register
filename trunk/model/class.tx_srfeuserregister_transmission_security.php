@@ -39,6 +39,8 @@
  *
  */
 class tx_srfeuserregister_transmission_security {
+		// Extension key
+	protected $extKey = SR_FEUSER_REGISTER_EXTkey;
 		// The storage security level: normal or rsa
 	protected $transmissionSecurityLevel = 'normal';
 
@@ -57,21 +59,7 @@ class tx_srfeuserregister_transmission_security {
 	* @return	void
 	*/
 	protected function setTransmissionSecurityLevel () {
-		$supportedTransmissionSecurityLevels = array('normal', 'rsa');
-		if (in_array($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'], $supportedTransmissionSecurityLevels)) {
-			if (t3lib_extMgm::isLoaded('rsaauth')) {
-					// rsaauth in TYPO3 4.5 misses autoload
-				if (!class_exists('tx_rsaauth_backendfactory')) {
-					require_once(t3lib_extMgm::extPath('rsaauth') . 'sv1/backends/class.tx_rsaauth_backendfactory.php');
-					require_once(t3lib_extMgm::extPath('rsaauth') . 'sv1/storage/class.tx_rsaauth_storagefactory.php');
-				}
-				if (tx_rsaauth_backendfactory::getBackend() !== NULL) {
-					$this->transmissionSecurityLevel = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
-				}
-			}
-		} else {
-			t3lib_div::sysLog('Frontend login security level must be set to "normal" or to "rsa"', $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
-		}
+		$this->transmissionSecurityLevel = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
 	}
 
 	/**
@@ -96,40 +84,45 @@ class tx_srfeuserregister_transmission_security {
 			case 'rsa':
 					// Get services from rsaauth
 					// Can't simply use the authentication service because we have two fields to decrypt
-				if (t3lib_extMgm::isLoaded('rsaauth')) {
-					$backend = tx_rsaauth_backendfactory::getBackend();
-					$storage = tx_rsaauth_storagefactory::getStorage();
-					/* @var $storage tx_rsaauth_abstract_storage */
-					if (is_object($backend) && is_object($storage)) {
-						$key = $storage->get();
-						if ($key != NULL) {
-							foreach ($fields as $field) {
-								if (isset($row[$field]) && $row[$field] !== '') {
-									if (substr($row[$field], 0, 4) === 'rsa:') {
-											// Decode password
-										$result = $backend->decrypt($key, substr($row[$field], 4));
-										if ($result) {
-											$row[$field] = $result;
-										} else {
-											$success = FALSE;
-											t3lib_div::sysLog('RSA auth service failed to process incoming password', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
-										}
+				$backend = tx_rsaauth_backendfactory::getBackend();
+				$storage = tx_rsaauth_storagefactory::getStorage();
+				/* @var $storage tx_rsaauth_abstract_storage */
+				if (is_object($backend) && is_object($storage)) {
+					$key = $storage->get();
+					if ($key != NULL) {
+						foreach ($fields as $field) {
+							if (isset($row[$field]) && $row[$field] !== '') {
+								if (substr($row[$field], 0, 4) === 'rsa:') {
+										// Decode password
+									$result = $backend->decrypt($key, substr($row[$field], 4));
+									if ($result) {
+										$row[$field] = $result;
+									} else {
+											// RSA auth service failed to process incoming password
+											// May happen if the key is wrong
+											// May happen if multiple instance of rsaauth on same page
+										$success = FALSE;
+										$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_rsaauth_process_incoming_password_failed');
+										t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 									}
 								}
 							}
-								// Remove the key
-							$storage->put(NULL);
-						} else {
-							$success = FALSE;
-							t3lib_div::sysLog('RSA auth service failed to retrieve private key', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
 						}
+							// Remove the key
+						$storage->put(NULL);
 					} else {
+							// RSA auth service failed to retrieve private key
+							// May happen if the key was already removed
 						$success = FALSE;
-						t3lib_div::sysLog('Required RSA auth backend not available', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
+						$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_rsaauth_retrieve_private_key_failed');
+						t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 					}
 				} else {
+						// Required RSA auth backend not available
+						// Should not happen: checked in tx_srfeuserregister_pi1_base::checkRequirements
 					$success = FALSE;
-					t3lib_div::sysLog('Required extension "rsaauth" is not available and must be installed', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
+					$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_rsaauth_backend_not_available');
+					t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 				}
 				break;
 			case 'normal':
@@ -157,7 +150,10 @@ class tx_srfeuserregister_transmission_security {
 						$extraHiddenFieldsArray[] = $hiddenFields;
 					}
 				} else {
-					t3lib_div::sysLog('Required extension "felogin" or "rsaauth" is not available and must be installed', 'sr_feuser_register', t3lib_div::SYSLOG_SEVERITY_ERROR);
+						// Extension rsaauth not installed
+						// Should not happen: checked in tx_srfeuserregister_pi1_base::checkRequirements
+					$message = sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_required_extension_missing'), 'rsaauth');
+					t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 				}
 				if (count($extraHiddenFieldsArray)) {
 					$extraHiddenFields = implode(LF, $extraHiddenFieldsArray);
