@@ -82,7 +82,7 @@ if (TYPO3_MODE=='BE') {
 			),
 			'ext' => array (
 				'MENU' => 'm_ext',
-				'fList' =>  'username,first_name,last_name,title,date_of_birth,comments',
+				'fList' =>  'username,first_name,middle_name,last_name,title,date_of_birth,comments',
 				'icon' => TRUE
 			),
 			'country' => array(

@@ -6,6 +6,7 @@
 	* Follow-up to feature #35881: Add a status report about the installation of the extension (TYPO3 4.6+ only)
 	* Follow-up 5 to feature #35805: Drop requirement for ADOdb Date Library
 	* Add feature #35883: Always use flexforms
+	* Add feature #35884: Add support for middle name
 
 2012-04-10 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up 1 to feature #35805: Require system extension adodb

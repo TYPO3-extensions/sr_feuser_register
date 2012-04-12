@@ -1719,7 +1719,7 @@ class tx_srfeuserregister_data {
 
 
 	/**
-	* Moves first and last name into name
+	* Moves first, middle and last name into name
 	*
 	* @return void  done directly on array $this->dataArray
 	*/
@@ -1731,7 +1731,9 @@ class tx_srfeuserregister_data {
 			in_array('first_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1)) &&
 			in_array('last_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1))
 		) {
-			$dataArray['name'] = trim(trim($dataArray['first_name']) . ' ' . trim($dataArray['last_name']));
+			$dataArray['name'] = trim(trim($dataArray['first_name'])
+				. ((in_array('middle_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1)) && trim($dataArray['middle_name']) != '') ? ' ' . trim($dataArray['middle_name']) : '' ) 
+				. ' ' . trim($dataArray['last_name']));
 		}
 	}	// setName
 
