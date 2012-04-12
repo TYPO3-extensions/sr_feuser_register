@@ -2,6 +2,7 @@
 	* Follow-up 4 to feature #35805: Display message in frontend if required extension is not loaded
 	* Add feature #35878: Issue error message if FE login security level is not set to "normal" or to "rsa"
 	* Add feature #35881: Add a status report about the installation of the extension (TYPO3 4.6+ only)
+	* Fix bug #35882: Corrections to template subpart for "terms acknowledged"
 
 2012-04-10 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up 1 to feature #35805: Require system extension adodb
