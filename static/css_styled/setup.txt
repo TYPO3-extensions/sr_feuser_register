@@ -91,6 +91,7 @@ plugin.tx_srfeuserregister_pi1 {
 			gender =
 			name = atMost[{$plugin.tx_srfeuserregister_pi1.nameAtMost}]
 			first_name = atMost[50]
+			middle_name = atMost[50]
 			last_name = atMost[50]
 			date_of_birth = date
 			company = atMost[50]
@@ -202,6 +203,7 @@ plugin.tx_srfeuserregister_pi1 {
 		password = trim
 		name = trim
 		first_name = trim
+		middle_name = trim
 		last_name = trim
 		date_of_birth = date
 		title = trim

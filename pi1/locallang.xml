@@ -61,6 +61,15 @@
 			<label index="missing_first_name_informal">Please enter your first name!</label>
 			<label index="missing_invitation_first_name">Please enter a first name!</label>
 			<label index="missing_invitation_first_name_informal">Please enter a first name!</label>
+			<label index="middle_name">Middle name</label>
+			<label index="tooltip_middle_name">Enter your middle name.</label>
+			<label index="tooltip_middle_name_informal">Enter your middle name.</label>
+			<label index="tooltip_invitation_middle_name">Enter the middle name of the invited person.</label>
+			<label index="tooltip_invitation_middle_name_informal">Enter the middle name of the invited person.</label>
+			<label index="missing_middle_name">Please enter your middle name!</label>
+			<label index="missing_middle_name_informal">Please enter your middle name!</label>
+			<label index="missing_invitation_middle_name">Please enter a middle name!</label>
+			<label index="missing_invitation_middle_name_informal">Please enter a middle name!</label>
 			<label index="last_name">Last name</label>
 			<label index="tooltip_last_name">Enter your surname.</label>
 			<label index="tooltip_last_name_informal">Enter your surname.</label>
