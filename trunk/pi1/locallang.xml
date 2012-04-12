@@ -469,6 +469,8 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 			<label index="evalErrors_required_informal">Please enter a value!</label>
 			<label index="evalErrors_required">You must enter a value!</label>
 			<label index="evalErrors_required_informal">You must enter a value!</label>
+			<label index="evalErrors_required_terms_acknowledged">Please acknowledge the terms!</label>
+			<label index="evalErrors_required_terms_acknowledged_informal">Please acknowledge the terms!</label>
 			<label index="evalErrors_same_twice">You must enter the same value twice.</label>
 			<label index="evalErrors_same_twice_informal">You must enter the same value twice.</label>
 			<label index="evalErrors_size_too_large">The file is larger than %s KB.</label>
