@@ -908,8 +908,9 @@ class tx_srfeuserregister_data {
 			foreach($this->conf['parseValues.'] as $theField => $theValue) {
 
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
+					// setEmptyIfAbsent is required for any checkbox
 				if (in_array('setEmptyIfAbsent', $listOfCommands) && !isset($dataArray[$theField])) {
-					$dataArray[$theField] = '';
+					$dataArray[$theField] = 0;
 				}
 				$internalType = $this->tca->TCA['columns'][$theField]['config']['internal_type'];
 

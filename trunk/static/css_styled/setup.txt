@@ -211,7 +211,9 @@ plugin.tx_srfeuserregister_pi1 {
 		city = trim
 		zip = trim
 		image = files
+			## setEmptyIfAbsent is required for any checkbox
 		module_sys_dmail_html = setEmptyIfAbsent
+		terms_acknowledged = setEmptyIfAbsent
 		module_sys_dmail_category = multiple
 		www = wwwURL
 		usergroup = multiple
