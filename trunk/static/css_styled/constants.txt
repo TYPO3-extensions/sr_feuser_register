@@ -16,6 +16,9 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1/file; type=file[pdf,doc,sxw,txt]; label= Terms file: File to be shown as the terms of usage.
   file.termsFile = EXT:sr_feuser_register/pi1/tx_srfeuserregister_pi1_terms.txt
 
+    # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Terms url: Page (id or id,type) or url where the terms of usage are shown. If set, overrides terms file.
+  termsUrl =
+
   # cat=plugin.tx_srfeuserregister_pi1/file; type=file[gif]; label= Icon used for deletion of uploaded files.
   file.icon_delete = EXT:sr_feuser_register/pi1/icon_delete.gif
 

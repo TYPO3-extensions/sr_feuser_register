@@ -5,6 +5,8 @@
 	* Fix bug #35926: Checkbox cannot be unset when preview is used
 	* Fix bug #9542 (old bug tracker): Required for checkbox doesn't work
 	* Fix bug #8432 (old bug tracker): Required checkbox of extended fe_user table is not required when registering in the FE
+	* Add feature #35931: Allow to show terms of usage on page or url
+	* Add feature #15100 (old bug tracker): How to include terms of use in registration form
 
 2012-04-11 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up 4 to feature #35805: Display message in frontend if required extension is not loaded

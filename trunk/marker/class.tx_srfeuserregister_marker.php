@@ -568,10 +568,13 @@ class tx_srfeuserregister_marker {
 		$markerArray['###SITE_URL###'] = $this->controlData->getSiteUrl();
 		$markerArray['###SITE_WWW###'] = t3lib_div::getIndpEnv('TYPO3_HOST_ONLY');
 		$markerArray['###SITE_EMAIL###'] = $this->conf['email.']['from'];
-
-		$file = ($this->conf['terms.']['file'] ? $GLOBALS['TSFE']->tmpl->getFileName($this->conf['terms.']['file']) : '');
-		$markerArray['###TERMS_URL###'] = $file;
-
+			// Set the url to the terms and conditions
+		if ($this->conf['terms.']['url']) {
+			$termsUrlParam = $this->conf['terms.']['url'];
+		} else {
+			$termsUrlParam = ($this->conf['terms.']['file'] ? $GLOBALS['TSFE']->tmpl->getFileName($this->conf['terms.']['file']) : '');
+		}
+		$markerArray['###TERMS_URL###'] = $this->urlObj->get('', $termsUrlParam, array(), array(), FALSE);
 		return $markerArray;
 	}	// generateURLMarkers
 

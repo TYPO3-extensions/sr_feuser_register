@@ -50,6 +50,7 @@ plugin.tx_srfeuserregister_pi1 {
 	addAttachment.file = {$plugin.tx_srfeuserregister_pi1.file.attachmentFile}
 
 	terms.file = {$plugin.tx_srfeuserregister_pi1.file.termsFile}
+	terms.url = {$plugin.tx_srfeuserregister_pi1.termsUrl}
 
 	displayRequired = TEXT
 	displayRequired {
