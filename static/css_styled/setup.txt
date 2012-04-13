@@ -108,6 +108,7 @@ plugin.tx_srfeuserregister_pi1 {
 			status =
 			module_sys_dmail_category =
 			module_sys_dmail_html =
+			module_sys_dmail_newsletter =
 			usergroup =
 			by_invitation =
 			captcha_response =
@@ -167,6 +168,7 @@ plugin.tx_srfeuserregister_pi1 {
 			usergroup >
 			module_sys_dmail_html >
 			module_sys_dmail_category >
+			module_sys_dmail_newsletter >
 			by_invitation >
 		}
 
@@ -214,6 +216,7 @@ plugin.tx_srfeuserregister_pi1 {
 		image = files
 			## setEmptyIfAbsent is required for any checkbox
 		module_sys_dmail_html = setEmptyIfAbsent
+		module_sys_dmail_newsletter = setEmptyIfAbsent
 		terms_acknowledged = setEmptyIfAbsent
 		module_sys_dmail_category = multiple
 		www = wwwURL

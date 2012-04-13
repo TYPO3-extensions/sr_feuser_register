@@ -186,8 +186,8 @@ class tx_srfeuserregister_control {
 		$this->data->setTemplateCode($this->cObj->fileResource($this->conf['templateFile']));
 
 		if (!t3lib_extMgm::isLoaded('direct_mail')) {
-			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('module_sys_dmail_category')));
-			$this->conf[$cmdKey.'.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'], 1), array('module_sys_dmail_category')));
+			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('module_sys_dmail_category, module_sys_dmail_newsletter')));
+			$this->conf[$cmdKey.'.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'], 1), array('module_sys_dmail_category, module_sys_dmail_newsletter')));
 		}
 
 		$fieldConfArray = array('fields', 'required');
