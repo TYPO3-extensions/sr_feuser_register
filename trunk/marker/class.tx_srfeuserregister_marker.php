@@ -443,11 +443,28 @@ class tx_srfeuserregister_marker {
 				$markerArray['###ATTRIBUTE_BUTTON_' . $buttonKey . '###'] = $attributes;
 			}
 		}
-
+			// Assemble the name to be substituted in the labels
 		if ($this->conf['salutation'] == 'informal' && $row['first_name'] != '') {
 			$name = $row['first_name'];
 		} else {
-			$name = ($row['name'] ? $row['name'] : $row['first_name'] . ($row['middle_name'] != '' ? ' ' . $row['middle_name'] : '' ) . ' ' . $row['last_name']);
+				// Honour Address List (tt_address) configuration settings
+			if ($theTable == 'tt_address') {
+				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$theTable]);
+				if ($extConf['disableCombinedNameField'] != '1' && $row['name'] != '') {
+					$name = $row['name'];
+				} else {
+					$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$theTable]);
+					$nameFormat = $extConf['backwardsCompatFormat'];
+					$name = sprintf(
+						$nameFormat,
+						$row['first_name'],
+						$row['middle_name'],
+						$row['last_name']
+					);
+				}
+			} else {
+				$name = $row['name'] ? $row['name'] : ($row['first_name'] . ($row['middle_name'] != '' ? ' ' . $row['middle_name'] : '' ) . ' ' . $row['last_name']);
+			}
 			if ($name == '') {
 				$name = 'id(' . $row['uid'] . ')';
 			}
@@ -739,7 +756,9 @@ class tx_srfeuserregister_marker {
 		if (!$markerArray) {
  			$markerArray = $this->getArray();
  		}
- 		$this->controlData->getTransmissionSecurity()->getMarkers($markerArray);
+ 		if ($this->controlData->getTable() == 'fe_users') { 
+ 			$this->controlData->getTransmissionSecurity()->getMarkers($markerArray);
+ 		}
 	}
 
 	/**

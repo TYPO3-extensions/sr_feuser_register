@@ -1718,25 +1718,38 @@ class tx_srfeuserregister_data {
 		return $inputArr;
 	}	// modifyDataArrForFormUpdate
 
-
 	/**
 	* Moves first, middle and last name into name
 	*
-	* @return void  done directly on array $this->dataArray
+	* @param array $dataArray: incoming array
+	* @param string $cmdKey: the command key
+	* @param string $theTable: the table in use
+	* @return void  done directly on $dataArray passed by reference
 	*/
-	public function setName (&$dataArray, $cmdKey) {
-
+	public function setName (&$dataArray, $cmdKey, $theTable) {	
 		if (
 			in_array('name', explode(',', $this->getFieldList())) &&
 			!in_array('name', t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1)) &&
 			in_array('first_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1)) &&
 			in_array('last_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1))
 		) {
-			$dataArray['name'] = trim(trim($dataArray['first_name'])
-				. ((in_array('middle_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1)) && trim($dataArray['middle_name']) != '') ? ' ' . trim($dataArray['middle_name']) : '' ) 
-				. ' ' . trim($dataArray['last_name']));
+				// Honour Address List (tt_address) configuration settings
+			if ($theTable == 'tt_address') {
+				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$theTable]);
+				$nameFormat = $extConf['backwardsCompatFormat'];
+				$dataArray['name'] = sprintf(
+					$nameFormat,
+					$dataArray['first_name'],
+					$dataArray['middle_name'],
+					$dataArray['last_name']
+				);
+			} else {
+				$dataArray['name'] = trim(trim($dataArray['first_name'])
+					. ((in_array('middle_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1)) && trim($dataArray['middle_name']) != '') ? ' ' . trim($dataArray['middle_name']) : '' ) 
+					. ' ' . trim($dataArray['last_name']));
+			}
 		}
-	}	// setName
+	}
 
 	/**
 	* Moves email into username if useEmailAsUsername is set

@@ -249,13 +249,21 @@ class tx_srfeuserregister_control {
 				// Infomail does not apply to fe_users
 			$this->conf['infomail'] = 0;
 		}
-
+			// Honour Address List (tt_address) configuration setting
+		if ($theTable === 'tt_address') {
+			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$theTable]);
+			if ($extConf['disableCombinedNameField'] == '1') {
+				$this->conf[$cmdKey . '.']['fields'] = t3lib_div::rmFromList('name', $this->conf[$cmdKey . '.']['fields']);
+			}
+		}
 		if (is_array($this->conf[$cmdKey . '.']['evalValues.'])) {
+				// Do not evaluate any password when inviting
 			if (
 				$cmdKey === 'invite'
 			) {
 				unset($this->conf[$cmdKey . '.']['evalValues.']['password']);
 			}
+				// Do not evaluate the username if it is generated or if email is used
 			if (
 				$this->conf[$cmdKey . '.']['useEmailAsUsername'] ||
 				($this->conf[$cmdKey . '.']['generateUsername'] && $cmdKey !== 'edit' && $cmdKey !== 'password')
@@ -360,7 +368,7 @@ class tx_srfeuserregister_control {
 
 			// Evaluate incoming data
 		if (count($finalDataArray) && !in_array($cmd, $noSaveCommands)) {
-			$this->data->setName($finalDataArray, $cmdKey);
+			$this->data->setName($finalDataArray, $cmdKey, $theTable);
 			$this->data->parseValues($theTable, $finalDataArray, $origArray, $cmdKey);
 			$this->data->overrideValues($finalDataArray, $cmdKey);
 			if (
