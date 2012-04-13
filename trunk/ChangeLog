@@ -1,5 +1,6 @@
 2012-04-13 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up 10 to feature #34447: Upgrade markers only for extension sr_feuser_register
+	* Update manual: Remove references to simulateStaticDocuments
 
 2012-04-12 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #35910: Messages regarding installation problems are not localized
