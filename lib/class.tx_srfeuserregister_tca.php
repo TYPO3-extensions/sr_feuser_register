@@ -55,17 +55,18 @@ class tx_srfeuserregister_tca {
 
 
 	public function init ($extKey, $theTable) {
-		global $TSFE, $TCA;
 
-			// get the table definition
-		//	$TSFE->includeTCA();	takes too much memory
-		tx_div2007_alpha::loadTcaAdditions_fh001(array($extKey));
-		if (t3lib_extMgm::isLoaded('direct_mail')) {
+			// Get the table definition
+			// Avoid multiple executions of EXT:tt_address/tca.php
+		if ($extKey != 'sr_email_subscribe') {
+			tx_div2007_alpha::loadTcaAdditions_fh001(array($extKey));
+		}
+		if (!t3lib_extMgm::isLoaded('tt_address') && t3lib_extMgm::isLoaded('direct_mail')) {
 			tx_div2007_alpha::loadTcaAdditions_fh001(array('direct_mail'));
 		}
 		tx_div2007_alpha::loadTcaAdditions_fh001($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['extendingTCA']);
 
-		$this->TCA = $TCA[$theTable];
+		$this->TCA = $GLOBALS['TCA'][$theTable];
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['uploadFolder']) {
 			$this->TCA[$theTable]['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['uploadFolder'];
 		}

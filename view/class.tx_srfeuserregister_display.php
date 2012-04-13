@@ -348,8 +348,7 @@ class tx_srfeuserregister_display {
 				$theTable
 			);
 
-			foreach ($this->tca->TCA['columns'] as $theField => $fieldConfig)	{
-
+			foreach ($this->tca->TCA['columns'] as $theField => $fieldConfig) {
 				if (
 					$fieldConfig['config']['internal_type'] == 'file' &&
 					$fieldConfig['config']['allowed'] != '' &&
@@ -769,6 +768,13 @@ class tx_srfeuserregister_display {
 
 		if (!$this->controlData->useCaptcha($cmdKey)) {
 			$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_captcha_response###', '');
+		}
+			// Honour Address List (tt_address) configuration setting
+		if ($this->controlData->getTable() == 'tt_address') {
+			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address']);
+			if ($extConf['disableCombinedNameField'] == '1') {
+				$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_name###', '');
+			}
 		}
 
 		foreach($infoFields as $k => $theField) {
