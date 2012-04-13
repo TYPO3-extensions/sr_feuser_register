@@ -32,7 +32,7 @@ plugin.tx_srfeuserregister_pi1 {
   siteName = My TYPO3 Site
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Registration form fields: List of fields to be included on the front end user registration form.
-  formFields = username, password, gender, first_name, middle_name, last_name, status, date_of_birth, email, address, city, zone, static_info_country, zip, telephone, fax, language, title, company, www, module_sys_dmail_html, module_sys_dmail_category, image, comments, terms_acknowledged, disable
+  formFields = username, password, gender, first_name, middle_name, last_name, status, date_of_birth, email, address, city, zone, static_info_country, zip, telephone, fax, language, title, company, www, module_sys_dmail_html, module_sys_dmail_newsletter, module_sys_dmail_category, image, comments, terms_acknowledged, disable
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Required fields: List of fields that must be filled in on the front end user registration form.
   requiredFields = username, password, first_name, last_name,email
