@@ -1031,21 +1031,25 @@ class tx_srfeuserregister_marker {
 	 * Replaces some deprecated markers in the source code of the HTML template
 	 *
 	 * @param string $templateCode: the template source code
+	 * @param string $extKey: current extension key	 
 	 * @return string $the modified template source code
 	 */
-	public function upgradeTemplateCode ($templateCode) {
+	public function upgradeTemplateCode ($templateCode, $extKey) {
 		$upgradedTemplateCode = $templateCode;
-			// Version 3: no clear-text passwords in templates
-			// Remove any ###FIELD_password###, ###FIELD_password_again### markers
-		$upgradedTemplateCode = str_replace('###FIELD_password###', '' , $upgradedTemplateCode);
-		$upgradedTemplateCode = str_replace('###FIELD_password_again###', '' , $upgradedTemplateCode);
-			// Version 3: No clear-text password in email
-			// Replace ###LABEL_V_REGISTRATION_INVITED_MESSAGE1### with ###LABEL_V_REGISTRATION_INVITED_MESSAGE1A###
-		$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INVITED_MESSAGE1###', '###LABEL_V_REGISTRATION_INVITED_MESSAGE1A###' , $upgradedTemplateCode);
-		$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INVITED_MESSAGE1_INFORMAL###', '###LABEL_V_REGISTRATION_INVITED_MESSAGE1A_INFORMAL###' , $upgradedTemplateCode);
-			// Replace ###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1### with ###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A###
-		$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1###', '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A###' , $upgradedTemplateCode);
-		$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1_INFORMAL###', '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A_INFORMAL###' , $upgradedTemplateCode);
+			// These changes apply only to sr_feuser_register
+		if ($extKey === 'sr_feuser_register') {
+				// Version 3: no clear-text passwords in templates
+				// Remove any ###FIELD_password###, ###FIELD_password_again### markers
+			$upgradedTemplateCode = str_replace('###FIELD_password###', '' , $upgradedTemplateCode);
+			$upgradedTemplateCode = str_replace('###FIELD_password_again###', '' , $upgradedTemplateCode);
+				// Version 3: No clear-text password in email
+				// Replace ###LABEL_V_REGISTRATION_INVITED_MESSAGE1### with ###LABEL_V_REGISTRATION_INVITED_MESSAGE1A###
+			$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INVITED_MESSAGE1###', '###LABEL_V_REGISTRATION_INVITED_MESSAGE1A###' , $upgradedTemplateCode);
+			$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INVITED_MESSAGE1_INFORMAL###', '###LABEL_V_REGISTRATION_INVITED_MESSAGE1A_INFORMAL###' , $upgradedTemplateCode);
+				// Replace ###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1### with ###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A###
+			$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1###', '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A###' , $upgradedTemplateCode);
+			$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1_INFORMAL###', '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A_INFORMAL###' , $upgradedTemplateCode);
+		}
 		return $upgradedTemplateCode;
 	}
 }

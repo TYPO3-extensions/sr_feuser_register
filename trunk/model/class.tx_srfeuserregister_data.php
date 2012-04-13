@@ -140,7 +140,7 @@ class tx_srfeuserregister_data {
 	 */
 	public function setTemplateCode (&$templateCode) {
 			// Replace some deprecated markers
-		$this->templateCode = $this->control->marker->upgradeTemplateCode($templateCode);		
+		$this->templateCode = $this->control->marker->upgradeTemplateCode($templateCode, $this->controlData->getExtKey());		
 	}
 
 
