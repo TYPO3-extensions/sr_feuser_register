@@ -76,7 +76,7 @@ class tx_srfeuserregister_control_main {
 
 		$this->pibaseObj = &$pibaseObj;
 		$this->extKey = $this->pibaseObj->extKey;
-		$rc = $this->init(
+		$success = $this->init(
 			$conf,
 			$theTable,
 			$adminFieldList,
@@ -90,7 +90,7 @@ class tx_srfeuserregister_control_main {
 		$dataArray = $this->data->getDataArray();
 		$templateCode = $this->data->getTemplateCode();
 
-		if ($rc !== FALSE)	{
+		if ($success !== FALSE)	{
 			$error_message = '';
 			$content = $this->control->doProcessing (
 				$theTable,
@@ -104,15 +104,20 @@ class tx_srfeuserregister_control_main {
 		} else {
 			$content = '<em>Internal error in ' . $pibaseObj->extKey . '!</em><br /> Maybe you forgot to include the basic template file under statics from extensions.';
 		}
-		$rc = $pibaseObj->pi_wrapInBaseClass($content);
-		return $rc;
+		$success = $pibaseObj->pi_wrapInBaseClass($content);
+		return $success;
 	}
 
 
 	/**
-	* Initialization
+	* Creates and initializes all component classes
 	*
-	* @return void
+	* @param array $conf: the configuration of the cObj
+	* @param string $theTable: the table in use
+	* @param string $adminFieldList: list of table fields that are considered reserved for administration purposes
+	* @param string $buttonLabelsList: a list of button label names
+	* @param string $otherLabelsList: a list of other label names
+	* @return boolean TRUE, if initialization was successful, FALSE otherwise
 	*/
 	public function init (
 		&$conf,
@@ -186,9 +191,9 @@ class tx_srfeuserregister_control_main {
 			$this->pibaseObj->scriptRelPath,
 			$this->extKey
 		);
-		$rc = $this->langObj->loadLL();
+		$success = $this->langObj->loadLL();
 
-		if ($rc !== FALSE) {
+		if ($success !== FALSE) {
 			$this->tca->init2(
 				$this->pibaseObj,
 				$this->conf,
@@ -284,11 +289,9 @@ class tx_srfeuserregister_control_main {
 			);
 		}
 
-		return $rc;
+		return $success;
 	}	// init
 }
-
-
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/control/class.tx_srfeuserregister_control_main.php']) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/control/class.tx_srfeuserregister_control_main.php']);
 }
