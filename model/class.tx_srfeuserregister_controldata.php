@@ -444,7 +444,7 @@ class tx_srfeuserregister_controldata {
 	*/
 	protected function writePassword ($password) {
 		$sessionData = $this->readSessionData();
-		if ($password === '') {
+		if ($password == '') {
 			unset($sessionData['password']);
 			unset($sessionData['password_again']);
 		} else {
@@ -494,7 +494,7 @@ class tx_srfeuserregister_controldata {
 	*/
 	protected function writeToken ($token) {
 		$sessionData = $this->readSessionData();
-		if ($token === '') {
+		if ($token == '') {
 			unset($sessionData['token']);
 		} else {
 			$sessionData['token'] = $token;
@@ -521,7 +521,7 @@ class tx_srfeuserregister_controldata {
 	*/
 	protected function writeRedirectUrl () {
 		$redirectUrl = t3lib_div::_GET('redirect_url');
-		if ($redirectUrl !== '') {
+		if ($redirectUrl != '') {
 			$data = array();
 			$data['redirect_url'] = $redirectUrl;
 			$this->writeSessionData($data);
@@ -562,13 +562,13 @@ class tx_srfeuserregister_controldata {
 		$clearSession = empty($data);
 		if ($keepToken && !isset($data['token'])) {
 			$token = $this->readToken();
-			if ($token !== '') {
+			if ($token != '') {
 				$data['token'] = $token;
 			}
 		}
 		if ($keepRedirectUrl && !isset($data['redirect_url'])) {
 			$redirect_url = $this->readRedirectUrl();
-			if ($redirect_url !== '') {
+			if ($redirect_url != '') {
 				$data['redirect_url'] = $redirect_url;
 			}
 		}

@@ -87,7 +87,7 @@ class tx_srfeuserregister_control {
 		$extKey = $this->controlData->getExtKey();
 		$cmd = $this->controlData->getCmd();
 
-		if ($cmd=='') {
+		if ( $cmd == '') {
 				// Check the flexform
 			$this->cObj->data['pi_flexform'] = t3lib_div::xml2array($this->cObj->data['pi_flexform']);
 			$cmd = tx_div2007_alpha::getSetupOrFFvalue_fh002(
@@ -136,7 +136,7 @@ class tx_srfeuserregister_control {
 		}
 			// Set the command key
 		$cmdKey = '';
-		if ($cmd == 'edit' || $cmd == 'invite' || $cmd === 'password') {
+		if ($cmd == 'edit' || $cmd == 'invite' || $cmd == 'password') {
 			$cmdKey = $cmd;
 		} else {
 			if (
@@ -200,7 +200,7 @@ class tx_srfeuserregister_control {
 		if ($theTable === 'fe_users') {
 				// When not in edit mode, add username to lists of fields and required fields unless explicitly disabled
 			if (empty($this->conf[$cmdKey.'.']['doNotEnforceUsername'])) {
-				if ($cmdKey !== 'edit' && $cmdKey !== 'password') {
+				if ($cmdKey != 'edit' && $cmdKey != 'password') {
 					$this->conf[$cmdKey . '.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'] . ',username', 1)));
 					$this->conf[$cmdKey . '.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['required'] . ',username', 1)));
 				}
@@ -266,7 +266,7 @@ class tx_srfeuserregister_control {
 				// Do not evaluate the username if it is generated or if email is used
 			if (
 				$this->conf[$cmdKey . '.']['useEmailAsUsername'] ||
-				($this->conf[$cmdKey . '.']['generateUsername'] && $cmdKey !== 'edit' && $cmdKey !== 'password')
+				($this->conf[$cmdKey . '.']['generateUsername'] && $cmdKey != 'edit' && $cmdKey != 'password')
 			) {
 				unset($this->conf[$cmdKey . '.']['evalValues.']['username']);
 			}
@@ -332,7 +332,6 @@ class tx_srfeuserregister_control {
 				!in_array($cmd, $this->noLoginCommands)
 			)
 		) {
-			$cmd = '';
 			$this->controlData->setCmd($cmd);
 			$origArray = array();
 			$this->data->setOrigArray($origArray);
@@ -450,6 +449,7 @@ class tx_srfeuserregister_control {
 				$this->controlData->setFeUserData(0, 'preview'); // No preview if data is not received and deleted
 			}
 		}
+
 		if ($this->controlData->getFailure() != '') {
 			$this->controlData->setFeUserData(0, 'preview');
 		}
@@ -484,7 +484,7 @@ class tx_srfeuserregister_control {
 
 			if (
 				$bDefaultMode
-				&& ($cmdKey !== 'edit')
+				&& ($cmdKey != 'edit')
 				&& $this->conf['enableAdminReview']
 				&& ($this->conf['enableEmailConfirmation'] || $this->conf['infomail'])
 			) {
@@ -594,14 +594,15 @@ class tx_srfeuserregister_control {
 			$this->marker->setArray($markerArray);
 			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
 		} else {
-				// Finally, if there has been no attempt to save. That is either preview or just displaying and empty or not correctly filled form:
+				// Finally, there has been no attempt to save.
+				// That is either preview or just displaying an empty or not correctly filled form
 			$this->marker->setArray($markerArray);
 			$token = $this->controlData->readToken();
 
 			if ($cmd == '' && $this->controlData->getFeUserData('preview')) {
 				$cmd = $cmdKey;
 			}
-			switch($cmd) {
+			switch ($cmd) {
 				case 'setfixed':
 					if ($this->conf['infomail']) {
 						$this->controlData->setSetfixedEnabled(1);
@@ -714,7 +715,7 @@ class tx_srfeuserregister_control {
 			}
 
 			if (
-				($cmd !== 'setfixed' || $cmdKey !== 'edit' || $cmdKey !== 'password')
+				($cmd != 'setfixed' || $cmdKey != 'edit' || $cmdKey != 'password')
 				&& !$errorContent
 				&& !$this->controlData->getFeUserData('preview')
 			) {
