@@ -1,6 +1,7 @@
 2012-04-14 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #36051: RegHash not cleared if link results in auto-login
 	* Change order of extension dependencies (rsaauth before saltedpasswords)
+	* Update extensions dependencies, require TYPO3 4.4
 
 2012-04-13 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up 10 to feature #34447: Upgrade markers only for extension sr_feuser_register
