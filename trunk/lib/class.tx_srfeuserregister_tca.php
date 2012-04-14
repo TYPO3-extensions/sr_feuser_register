@@ -57,18 +57,34 @@ class tx_srfeuserregister_tca {
 	public function init ($extKey, $theTable) {
 
 			// Get the table definition
-			// Avoid multiple executions of EXT:tt_address/tca.php
-		if ($extKey != 'sr_email_subscribe') {
-			tx_div2007_alpha::loadTcaAdditions_fh001(array($extKey));
-		}
-		if (!t3lib_extMgm::isLoaded('tt_address') && t3lib_extMgm::isLoaded('direct_mail')) {
+		tx_div2007_alpha::loadTcaAdditions_fh001(array($extKey));
+		$this->fixAddressFeAdminFieldList();
+
+		if (t3lib_extMgm::isLoaded('direct_mail')) {
 			tx_div2007_alpha::loadTcaAdditions_fh001(array('direct_mail'));
+			$this->fixAddressFeAdminFieldList();
 		}
 		tx_div2007_alpha::loadTcaAdditions_fh001($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['extendingTCA']);
+		$this->fixAddressFeAdminFieldList();
 
 		$this->TCA = $GLOBALS['TCA'][$theTable];
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['uploadFolder']) {
 			$this->TCA[$theTable]['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['uploadFolder'];
+		}
+	}
+	/**
+	 * Fix contents of $GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList']
+	 * The list gets broken when EXT:tt_address/tca.php is included twice
+	 *
+	 * @return void
+	 */ 
+	protected function fixAddressFeAdminFieldList () {
+		if ($GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList']) {
+			$fieldArray = array_unique(t3lib_div::trimExplode(',', $GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList'], 1));
+			$fieldArray = array_diff($fieldArray, array('middle_first_name', 'last_first_name'));
+			$fieldList = implode(',', $fieldArray);
+			$fieldList = str_replace('first_first_name', 'first_name', $fieldList);
+			$GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList'] = $fieldList;
 		}
 	}
 
