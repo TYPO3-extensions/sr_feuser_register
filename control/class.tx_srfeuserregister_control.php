@@ -768,6 +768,13 @@ class tx_srfeuserregister_control {
 					$GLOBALS['TSFE']->fe_user->fetchGroupData();
 					$GLOBALS['TSFE']->loginUser = 1;
 					$GLOBALS['TSFE']->gr_list = '0,-2';
+						// Delete regHash
+					if (
+						$this->controlData->getValidRegHash()
+					) {
+						$regHash = $this->controlData->getRegHash();
+						$this->controlData->deleteShortUrl($regHash);
+					}
 					if ($redirect) {
 							// Redirect to configured page, if any
 						$redirectUrl = $this->controlData->readRedirectUrl();
