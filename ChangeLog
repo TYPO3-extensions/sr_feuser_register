@@ -2,6 +2,7 @@
 	* Follow-up 10 to feature #34447: Upgrade markers only for extension sr_feuser_register
 	* Update manual: Remove references to simulateStaticDocuments
 	* Add feature #36006: Honour tt_address extension configuration settings
+	* Follow-up feature #36006: Fix $GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList']
 
 2012-04-12 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #35910: Messages regarding installation problems are not localized
