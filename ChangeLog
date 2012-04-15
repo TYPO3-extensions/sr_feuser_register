@@ -4,6 +4,7 @@
 	* Update extensions dependencies, require TYPO3 4.4
 	* Update manual
 	* Add feature #36089: Issue error message if html template contains deprecated marker
+	* Fix bug #36091: setEmptyIfAbsent may not work if field is not numeric
 
 2012-04-13 Stanislas Rolland  <typo3@sjbr.ca>
 	* Follow-up 10 to feature #34447: Upgrade markers only for extension sr_feuser_register
