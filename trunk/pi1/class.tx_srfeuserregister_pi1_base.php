@@ -46,12 +46,13 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 	public $extKey = SR_FEUSER_REGISTER_EXTkey;		// Extension key.
 
 	public function main ($content, $conf) {
-
 		$this->pi_setPiVarDefaults();
 		$this->conf = &$conf;
-
+			// Check installation requirements
 		$content = $this->checkRequirements();
-
+			// Check presence of deprecated markers
+		$content .= $this->checkDeprecatedMarkers($conf);
+			// If no error content, proceed
 		if (!$content) {
 			$mainObj = &t3lib_div::getUserObj('&tx_srfeuserregister_control_main');
 			$mainObj->cObj = &$this->cObj;
@@ -117,6 +118,22 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 					$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_check_requirements_frontend'), $message);
 				}
 			}
+		}
+		return $content;
+	}
+
+	/* Checks whether the HTML templates contains any deprecated marker
+	 *
+	 * @return string Error message, if error found, empty string otherwise
+	 */
+	protected function checkDeprecatedMarkers() {
+		$content = '';
+		$templateCode = $this->cObj->fileResource($this->conf['templateFile']);
+		$marker = &t3lib_div::getUserObj('&tx_srfeuserregister_marker');
+		$messages = $marker->checkDeprecatedMarkers($templateCode, $this->extKey, $this->conf['templateFile']);
+		foreach ($messages as $message) {
+			t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
+			$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_check_requirements_frontend'), $message);
 		}
 		return $content;
 	}
