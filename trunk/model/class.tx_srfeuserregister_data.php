@@ -907,9 +907,8 @@ class tx_srfeuserregister_data {
 			foreach($this->conf['parseValues.'] as $theField => $theValue) {
 
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
-					// setEmptyIfAbsent is required for any checkbox
-				if (in_array('setEmptyIfAbsent', $listOfCommands) && !isset($dataArray[$theField])) {
-					$dataArray[$theField] = 0;
+				if (in_array('setEmptyIfAbsent', $listOfCommands)) {
+					$this->setEmptyIfAbsent($theTable, $theField, $dataArray);
 				}
 				$internalType = $this->tca->TCA['columns'][$theField]['config']['internal_type'];
 
@@ -1963,8 +1962,51 @@ class tx_srfeuserregister_data {
 	public function getInError () {
 		return $this->inError;
 	}
-}
 
+	/*
+	 * Sets the index $theField of the incoming data array to empty value depending on type of $theField
+	 * as defined in the TCA for $theTable
+	 *
+	 * @param string $theTable: the name of the table
+	 * @param string $theField: the name of the field
+	 * @param array $dataArray: the incoming data array
+	 * @return void
+	 */
+	protected function setEmptyIfAbsent($theTable, $theField, &$dataArray) {
+		if (!isset($dataArray[$theField])) {
+			$fieldConfig = $this->tca->TCA['columns'][$theField]['config'];
+			if (is_array($fieldConfig)) {
+				$type = $fieldConfig['type'];
+				switch ($type) {
+					case 'check':
+					case 'radio':
+						$dataArray[$theField] = 0;
+						break;
+					case 'input':
+						$eval = $fieldConfig['eval'];
+						switch ($eval) {
+							case 'int':
+							case 'date':
+							case 'datetime':
+							case 'time':
+							case 'timesec':
+								$dataArray[$theField] = 0;
+								break;
+							default:
+								$dataArray[$theField] = '';
+								break;
+						}
+						break;
+					default:
+						$dataArray[$theField] = '';
+						break;
+				}
+			} else {
+				$dataArray[$theField] = '';
+			}
+		}
+	}
+}
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_data.php'])  {
   include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_data.php']);
