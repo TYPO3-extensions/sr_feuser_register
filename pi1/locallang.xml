@@ -522,6 +522,8 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 			<label index="internal_required_extension_missing">Required extension "%1$s" is not available and must be installed</label>
 			<label index="internal_required_authentication_service_not_available">Required authentication service not available</label>
 			<label index="internal_check_requirements_frontend">&lt;p&gt;&lt;big&gt;&lt;b&gt;Front End User Registration (sr_feuser_register): %1$s.&lt;/b&gt;&lt;/big&gt;&lt;/p&gt;</label>
+			<label index="internal_replace_deprecated_marker">Deprecated marker %1$s must be replaced by marker %2$s in HTML template file %3$s</label>
+			<label index="internal_remove_deprecated_marker">Deprecated marker %1$s must be removed from HTML template file %2$s</label>
 		</languageKey>
 	</data>
 </T3locallang>

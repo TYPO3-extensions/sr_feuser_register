@@ -1046,30 +1046,59 @@ class tx_srfeuserregister_marker {
 		}
 		return $markerArray;
 	}
+
 	/*
-	 * Replaces some deprecated markers in the source code of the HTML template
+	 * Cheks for the presence of some deprecated markers in the source code of the HTML template
 	 *
 	 * @param string $templateCode: the template source code
-	 * @param string $extKey: current extension key	 
-	 * @return string $the modified template source code
+	 * @param string $extKey: current extension key
+	 * @param string $fileName: name of template file	
+	 * @return array error messages
+	 *
+	 * See: tx_srfeuserregister_pi1_base::checkDeprecatedMarkers
 	 */
-	public function upgradeTemplateCode ($templateCode, $extKey) {
-		$upgradedTemplateCode = $templateCode;
+	public function checkDeprecatedMarkers ($templateCode, $extKey, $fileName) {
+		$messages = array();
 			// These changes apply only to sr_feuser_register
 		if ($extKey === 'sr_feuser_register') {
 				// Version 3: no clear-text passwords in templates
 				// Remove any ###FIELD_password###, ###FIELD_password_again### markers
-			$upgradedTemplateCode = str_replace('###FIELD_password###', '' , $upgradedTemplateCode);
-			$upgradedTemplateCode = str_replace('###FIELD_password_again###', '' , $upgradedTemplateCode);
+			$removeMarkers = array('###FIELD_password###', '###FIELD_password_again###');
+			$removeMarkerMessage = $GLOBALS['TSFE']->sL('LLL:EXT:' . $extKey . '/pi1/locallang.xml:internal_remove_deprecated_marker');
+			foreach ($removeMarkers as $marker) {
+				if (strpos($templateCode, $marker) !== FALSE) {
+					$messages[] = sprintf($removeMarkerMessage, $marker, $fileName);
+				}
+			}
 				// Version 3: No clear-text password in email
 				// Replace ###LABEL_V_REGISTRATION_INVITED_MESSAGE1### with ###LABEL_V_REGISTRATION_INVITED_MESSAGE1A###
-			$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INVITED_MESSAGE1###', '###LABEL_V_REGISTRATION_INVITED_MESSAGE1A###' , $upgradedTemplateCode);
-			$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INVITED_MESSAGE1_INFORMAL###', '###LABEL_V_REGISTRATION_INVITED_MESSAGE1A_INFORMAL###' , $upgradedTemplateCode);
 				// Replace ###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1### with ###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A###
-			$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1###', '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A###' , $upgradedTemplateCode);
-			$upgradedTemplateCode = str_replace('###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1_INFORMAL###', '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A_INFORMAL###' , $upgradedTemplateCode);
+			$replaceMarkers = array(
+				array(
+					'marker' => '###LABEL_V_REGISTRATION_INVITED_MESSAGE1###',
+					'replacement' => '###LABEL_V_REGISTRATION_INVITED_MESSAGE1A###'
+				),
+				array(
+					'marker' => '###LABEL_V_REGISTRATION_INVITED_MESSAGE1_INFORMAL###',
+					'replacement' => '###LABEL_V_REGISTRATION_INVITED_MESSAGE1A_INFORMAL###',
+				),
+				array(
+					'marker' => '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1###',
+					'replacement' => '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A###',
+				),
+				array(
+					'marker' => '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1_INFORMAL###',
+					'replacement' => '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A_INFORMAL###',
+				),
+			);
+			$replaceMarkerMessage = $GLOBALS['TSFE']->sL('LLL:EXT:' . $extKey . '/pi1/locallang.xml:internal_replace_deprecated_marker');
+			foreach ($replaceMarkers as $replaceMarker) {
+				if (strpos($templateCode, $replaceMarker['marker']) !== FALSE) {
+					$messages[] = sprintf($replaceMarkerMessage, $replaceMarker['marker'], $replaceMarker['replacement'], $fileName);
+				}
+			}
 		}
-		return $upgradedTemplateCode;
+		return $messages;
 	}
 }
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/marker/class.tx_srfeuserregister_marker.php']) {
