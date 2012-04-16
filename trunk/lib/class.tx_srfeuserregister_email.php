@@ -280,9 +280,15 @@ class tx_srfeuserregister_email {
 		$infomailArray = array('INFOMAIL', 'INFOMAIL_NORECORD');
 
 		if (
-			$this->conf['email.'][$key] ||
-			$this->conf['enableEmailConfirmation'] && in_array($key, $setfixedArray) ||
-			$this->conf['infomail'] && in_array($key, $infomailArray)
+				// Silently refuse to not send infomail to non-subscriber, if so requested
+			(isset($this->conf['email.'][$key]) && $this->conf['email.'][$key] != '0') ||
+			($this->conf['enableEmailConfirmation'] && in_array($key, $setfixedArray)) ||
+			(
+				$this->conf['infomail'] &&
+				in_array($key, $infomailArray) &&
+					// Silently refuse to not send infomail to non-subscriber, if so requested
+				!($key === 'INFOMAIL_NORECORD' && $this->conf['email.'][$key] == '0')
+			)
 		) {
 			$subpartMarker = '###' . $this->emailMarkPrefix . $key . '###';
 			$content['user']['all'] = trim($this->cObj->getSubpart($templateCode,  $subpartMarker));

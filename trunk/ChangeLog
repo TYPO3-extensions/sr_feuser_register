@@ -4,6 +4,7 @@
 	* Follow-up 10 to feature #34447: No infomail feature for fe_users
 	* Update manual: Remove color and wrap markers absent of css-styled template
 	* Add feature #36125: Require to remove obsolete infomail markers
+	* Fix bug #36126: email.INFOMAIL_NORECORD = 0 is not honoured
 
 2012-04-14 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #36051: RegHash not cleared if link results in auto-login
