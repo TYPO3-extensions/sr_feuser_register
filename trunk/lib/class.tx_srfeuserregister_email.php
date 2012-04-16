@@ -112,35 +112,17 @@ class tx_srfeuserregister_email {
 			if (isset($fetch) && !empty($fetch) && !$failure) {
 				$pidLock = 'AND pid IN (' . ($this->cObj->data['pages'] ? $this->cObj->data['pages'] . ',' : '') . $this->controlData->getPid() . ')';
 				$enable = $GLOBALS['TSFE']->sys_page->enableFields($theTable);
-				$bFetchIsInt = (
-					class_exists('t3lib_utility_Math') ?
-						t3lib_utility_Math::canBeInterpretedAsInteger($fetch) :
-						t3lib_div::testInt($fetch)
-				);
-
 					// Getting records
-				if ($theTable == 'fe_users' && $bFetchIsInt) {
-					$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField(
-						$theTable,
-						'uid',
-						$fetch,
-						$pidLock.$enable,
-						'',
-						'',
-						'1'
-					);
-				} elseif ($fetch) {	// $this->conf['email.']['field'] must be a valid field in the table!
-					$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField(
-						$theTable,
-						$this->conf['email.']['field'],
-						$fetch,
-						$pidLock.$enable,
-						'',
-						'',
-						'100'
-					);
-				}
-
+					// $this->conf['email.']['field'] must be a valid field in the table!
+				$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField(
+					$theTable,
+					$this->conf['email.']['field'],
+					$fetch,
+					$pidLock.$enable,
+					'',
+					'',
+					'100'
+				);
 					// Processing records
 				if (is_array($DBrows))	{
 					$recipient = $DBrows[0][$this->conf['email.']['field']];
@@ -226,7 +208,7 @@ class tx_srfeuserregister_email {
 				);
 			}
 		} else {
-			$content=$this->langObj->getLL('internal_infomail_configuration');
+			$content = $this->langObj->getLL('internal_infomail_configuration');
 		}
 		return $content;
 	}
