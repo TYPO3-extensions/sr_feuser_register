@@ -760,7 +760,7 @@ class tx_srfeuserregister_data {
 								}
 							break;
 							case 'preg':
-								if (!is_array($dataArray[$theField]) && trim($dataArray[$theField])) {
+								if (!is_array($dataArray[$theField]) && !(empty($dataArray[$theField]) && $dataArray[$theField] !== '0')) {
 									if (isset($countArray['preg'][$theCmd])) {
 										$countArray['preg'][$theCmd]++;
 									} else {

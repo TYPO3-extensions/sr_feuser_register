@@ -1,5 +1,6 @@
 2012-04-15 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #36165: Localization of some strings results in empty string
+	* Fix bug #18108 (old bug tracker): Evaluating for white spaces with preg does not work
 
 2012-04-15 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Add feature #36123: Allow evaluation of email and captcha on the infomail form
