@@ -52,6 +52,7 @@ $EM_CONF[$_EXTKEY] = array(
 			'patch1822' => '',
 		),
 		'suggests' => array(
+			'sr_freecap' => '1.5.3-',
 		),
 	),
 	'suggests' => array(
