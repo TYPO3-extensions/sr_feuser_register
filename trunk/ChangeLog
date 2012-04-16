@@ -1,3 +1,6 @@
+2012-04-15 Stanislas Rolland  <typo3@sjbr.ca>
+	* Add feature #36123: Allow evaluation of email and captcha on the infomail form
+
 2012-04-14 Stanislas Rolland  <typo3@sjbr.ca>
 	* Fix bug #36051: RegHash not cleared if link results in auto-login
 	* Change order of extension dependencies (rsaauth before saltedpasswords)
