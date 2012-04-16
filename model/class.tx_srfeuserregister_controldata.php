@@ -113,7 +113,7 @@ class tx_srfeuserregister_controldata {
 
 		if (
 			$this->conf['enableEmailConfirmation'] ||
-			$this->conf['enableAdminReview'] ||
+			($this->theTable == 'fe_users' && $this->conf['enableAdminReview']) ||
 			$this->conf['setfixed']
 		) {
 			$this->setSetfixedEnabled(1);
