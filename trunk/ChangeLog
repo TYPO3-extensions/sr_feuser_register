@@ -1,7 +1,8 @@
-2012-04-15 Stanislas Rolland  <typo3@sjbr.ca>
+2012-04-15 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Add feature #36123: Allow evaluation of email and captcha on the infomail form
+	* Cleanup changelog
 
-2012-04-14 Stanislas Rolland  <typo3@sjbr.ca>
+2012-04-14 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #36051: RegHash not cleared if link results in auto-login
 	* Change order of extension dependencies (rsaauth before saltedpasswords)
 	* Update extensions dependencies, require TYPO3 4.4
@@ -9,14 +10,14 @@
 	* Add feature #36089: Issue error message if html template contains deprecated marker
 	* Fix bug #36091: setEmptyIfAbsent may not work if field is not numeric
 
-2012-04-13 Stanislas Rolland  <typo3@sjbr.ca>
+2012-04-13 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up 10 to feature #34447: Upgrade markers only for extension sr_feuser_register
 	* Update manual: Remove references to simulateStaticDocuments
 	* Add feature #36006: Honour tt_address extension configuration settings
 	* Follow-up feature #36006: Fix $GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList']
 	* Cleanup identity checks
 
-2012-04-12 Stanislas Rolland  <typo3@sjbr.ca>
+2012-04-12 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #35910: Messages regarding installation problems are not localized
 	* Follow-up to bug #35910: Messages regarding installation problems are not localized
 	* Cleanup: Remove unnecessary check for div2007 in tx_srfeuserregister_email
@@ -29,7 +30,7 @@
 	* Fix bug #11529 (old bug tracker): tx_srfeuserregister_control_main::init has wrong PhpDoc comment
 	* Follow-up to feature #35883: Always use flexforms
 
-2012-04-11 Stanislas Rolland  <typo3@sjbr.ca>
+2012-04-11 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up 4 to feature #35805: Display message in frontend if required extension is not loaded
 	* Add feature #35878: Issue error message if FE login security level is not set to "normal" or to "rsa"
 	* Add feature #35881: Add a status report about the installation of the extension (TYPO3 4.6+ only)
@@ -39,7 +40,7 @@
 	* Add feature #35883: Always use flexforms
 	* Add feature #35884: Add support for middle name
 
-2012-04-10 Stanislas Rolland  <typo3@sjbr.ca>
+2012-04-10 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up 1 to feature #35805: Require system extension adodb
 	* Follow-up 9 to feature #34447: Do not show tx_srfeuserregister_password in HTML source
 	* Follow-up to #15174 (old bug tracker): Incorrect test of absence of required value
@@ -47,7 +48,7 @@
 	* Follow-up 2 to feature #35805: Write error to syslog if required extension is not loaded
 	* Follow-up 3 to feature #35805: Always use adodb Date library for timestamp conversion
 	
-2012-04-09 Stanislas Rolland  <typo3@sjbr.ca>
+2012-04-09 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #15174 (old bug tracker): Doesn't allow update of user group
 	* Fix bug #10435 (old bug tracker): Error messages when country is changed while no user group is selected in frontend
 	* Cleanup line breaks in rsaauth.js
@@ -56,7 +57,7 @@
 	* Cleanup: Add tx_srfeuserregister_pi1_adodb_time to ext_autoload
 	* Add feature #35805: Use ADOdb Date Library from system extension adodb
 
-2012-04-08 Stanislas Rolland  <typo3@sjbr.ca>
+2012-04-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Add feature #28370: replyTo feature for mails sent to user
 	* Add feature #6168 (old bug tracker): Support itemsProcFunc property of TCA select and radio fields (Thanks to Jeff Segars)
 	* Fix bug #12795 (old bug tracker): Default setup damages valid e-mail adresses
@@ -66,32 +67,32 @@
 	* Fix bug #16658 (old bug tracker): amp htmlspecialchars_decode doesn't work in 2.6.1
 	* Fix bug #14739 (old bug tracker): htmlspecialchars_decode doesn't work
 
-2012-04-07 Stanislas Rolland  <typo3@sjbr.ca>
+2012-04-07 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up 7 to feature #34447: ###HIDDENFIELDS### not always replaced
 
-2012-04-06 Stanislas Rolland  <typo3@sjbr.ca>
+2012-04-06 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up to bug #27521: Deleting images in EDIT mode leads to broken references
 	* Follow-up 6 to feature #34447: Add getters for transmission security and storage security
 
-2012-04-05 Stanislas Rolland  <typo3@sjbr.ca>
+2012-04-05 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up 5 to feature #34447: Move transmission security to own class
 	* Cleanup: Initialize the command key
 	* Follow-up 2 to feature #34405: Allow old mailer API for TYPO3 4.5-4.6
 	* Fix bug #35730: enableEmailOnDelete not honoured
 	* Fix bug #35732: Error due to username being required in edit mode	
 
-2012-04-04 Stanislas Rolland  <typo3@sjbr.ca>
+2012-04-04 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up to cleanup #35292: Cleanup in ext_tables.php
 	* Follow-up 3 to feature #34447: Add support for saltedpasswords and rsaauth
 	* Follow-up 4 to feature #34447: Move storage security to own class
 
-2012-04-03 Stanislas Rolland  <typo3@sjbr.ca>
+2012-04-03 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Add feature #27504: Add userGroupsPidList TS constant and TS setup property (Thanks to Georg Schönweger).
 
-2012-03-29 Stanislas Rolland  <typo3@sjbr.ca>
+2012-03-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #14271 (old bug tracker): Password constant not respected 
 
-2012-03-28 Stanislas Rolland  <typo3@sjbr.ca>
+2012-03-28 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up 1 to feature #34405: Make use of Swift Mailer API
 	* Fix bug #17506 (old bug tracker): Error in registration process since TYPO3 4.5
 	* Fix bug #18475 (old bug tracker): Backslashes added to Name in E-Mail
@@ -99,7 +100,7 @@
 	* Add feature #35347: Add autoload file
 	* Fix bug #16950 (old bug tracker): Adding middle_name to field list
 
-2012-03-27 Stanislas Rolland  <typo3@sjbr.ca>
+2012-03-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #33122: User confirmation with multiple usergroups (Thanks to Tomita Militaru)
 	* Fix bug #14930 (old bug tracker): Admin confirmation not working
 	* Fix bug #11191: enableAdminReview do not work without enableEmailConfirmation
@@ -110,7 +111,7 @@
 	* Cleanup #35292: Cleanup in ext_tables.php
 	* Fix bug #35293: Protect method tx_srfeuserregister_controldata::writeToken
 
-2012-03-26 Stanislas Rolland  <typo3@sjbr.ca>
+2012-03-26 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #33279: Evaluation of arrays returns always false
 	* Follow-up 1 to feature #34447: Add support for saltedpasswords and rsaauth
 	* Add feature #34676: Add support for title attribute on input fields for TCA markers (Thanks to Carlos Meyer)
@@ -121,15 +122,15 @@
 	* Fix bug #14509 (old bug tracker): Deleting images still buggy
 	* Fix bug #13882: Gender is not shown in backend
 
-2012-03-25 Stanislas Rolland  <typo3@sjbr.ca>
+2012-03-25 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #32066: Security bug in admin confirmation
 	* Fix bug #15081 (old bug tracker): Admin review email is not sent to the admin but to the user
 	* Fix bug #15182 (old bug tracker): Very very big problem with administrative review
 
-2012-03-24 Stanislas Rolland  <typo3@sjbr.ca>
+2012-03-24 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up to bug #13349: Checkbox is set to "0" if not checked (Thanks to Oliver Hader)
 
-2012-03-23 Stanislas Rolland  <typo3@sjbr.ca>
+2012-03-23 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Add feature #34447: Add support for saltedpasswords and rsaauth
 	* Fix bug #26708: Autologin does not work with rsa and saltedpasswords
 	* Fix bug #34417: Does not work with srfeuserregister_t3secsaltedpw anymore
@@ -153,19 +154,19 @@
 	* Fix #6731 (old bug tracker): Suboptimal way to tell user his pw if generatepassword & md5 is used
 	* Add feature #35209: Make extension conflict with extension patch1822
 
-2012-03-01 Stanislas Rolland  <typo3@sjbr.ca>
+2012-03-01 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up to feature #34405: Fix CGL in tx_srfeuserregister_email (Thanks to Franz Holzinger)
 
-2012-02-28 Stanislas Rolland  <typo3@sjbr.ca>
+2012-02-28 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Add feature #34405: Make use of Swift Mailer API
 
-2012-02-25 Stanislas Rolland  <typo3@sjbr.ca>
+2012-02-25 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* fix regression on security issue: Information (and password) Disclosure in extension sr_feuser_register (Thanks to Franz Holzinger)
 
 2012-02-24 Franz Holzinger  <franz@ttproducts.de>
 	* add more parameters to the hooks for registrationProcess_afterSaveCreate, registrationProcess_afterSaveCreate and evalValues
 
-2012-02-22 Stanislas Rolland  <typo3@sjbr.ca>
+2012-02-22 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* fix security issue: Information (and password) Disclosure in extension sr_feuser_register
 	* fix security issue: sr_feuser_register: "edit account" page contains cleartext password in HTML source
 
@@ -251,7 +252,7 @@
 2010-12-01 Franz Holzinger  <franz@ttproducts.de>
 	* undo the change to disable a user confirmation when the admin receives the email to review SETFIXED_REVIEW
 
-2010-11-29 Stanislas Rolland  <typo3@sjbr.ca>
+2010-11-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Restored missing entry in Changelog
 	* Fixed bug #11149(Forge): Extension Manager issues warning regarding class tx_srfeuserregister_lib_conf
 	* Fixed issue #11150(Forge): Remove references to obsolete extension patch1822
@@ -268,7 +269,7 @@
 	* fix bug 15281: the authorization in the confirmation link did not work with multiple FE groups because the comma had been HTML encoded
 	* fix bug 15225: Form token is empty
 
-2010-10-17 Stanislas Rolland  <typo3@sjbr.ca>
+2010-10-17 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Updated manual
 	* Fix XCLASS keys of files model/class.tx_srfeuserregister_model_table_base.php and model/class.tx_srfeuserregister_model_conf.php
 	* Version 2.6.1
@@ -529,7 +530,7 @@
 	* Fix bug: The select box entries could not be saved
 	* enhance CSS template to show the select box entries as plain texts
 
-2006-08-14 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-08-14 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 2.5.1
 	* Update to Russian translation.
 	* When a foreign table is used on a select field, sort values according to the sortby field.
@@ -539,12 +540,12 @@
 	* Remove for attribute from label tag of "gender" radio buttons field.
 	* onchange and onsubmit attribute names should be lowercase.
 
-2006-06-21 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-06-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 2.5
 	* Remove dependency on Static Info Library (sr_static_info)
 	* Correction for missing htmlspecialcharacters statements.
 
-2006-06-08 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-06-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 2.4
 	* Correction to some improbable failure. Thanks to Rupert Germann.
 	* Small corrections to the manual.
@@ -553,122 +554,122 @@
 	* Correction to back path of the delete dialog.
 	* Conversion of locallang files to xml format.
 
-2006-05-16 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-05-16 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 2.3.6
 	* CSS adjustments for multiple checkboxes.
 
-2006-05-16 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-05-16 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 2.3.5
 	* Honor TCA setting renderMode = checkbox for columns of type select when static template css-styled is used.
 
-2006-05-16 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-05-16 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 2.3.4
 	* Fix bugtracker issue 3431: incorrect email url's when config.absRefPrefix is used.
 	* New TS Constant: enableAutoLoginOnCreate.
 	* Update to the structure of the manual.
 
-2006-04-05 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-04-05 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 2.3.3
 	* Correction: missing inclusion of t3lib_htmlmail
 
-2006-03-27 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-03-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Use cObj->caseshift for case shifting operations on markers.
 
-2006-03-26 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-03-26 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Two new TS constants: enableAdminNotifyOnAdminAccept and enableAdminNotifyOnAdminRefuse.
 	* Remove locally defined quoteJSvalue and getUpdateJS (these were fixed in TYPO3 4.0).
 	* Use TCA-driven field module_sys_dmail_html in css-styled template.
 	* If usergroup selection is enabled on edit, keep usergroups set by confirmation or acceptation.
 	* Ensure that case shifting operations on markers are performed using C locale.
 
-2006-03-25 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-03-25 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Add TS setup property extraLabels. Thanks to Dmitry Dulepov.
 
-2006-03-22 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-03-22 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Adjustments to make the extension compatible with system extension Database Abstraction Layer (dbal).
 	* Correct bugtracker issue 2912: some missing slashes.
 	* Preserve <url> constructs in plain text html template. See bugtracker issue 1966.
 
-2006-03-08 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-03-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Remove locally extended t3lib_htmlmail (fixed in TYPO3 4.0).
 
-2006-03-08 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-03-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Add short URL's feature. Thanks to Steve Webster.
 	* Update requirements to TYPO3 4.0.0
 	* Correct processing of module_sys_dmail fields when Direct Mail is not installed.
 	* Modify plugin initialization: remove constructor and initId method.
 
-2006-03-03 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-03-03 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Update Danish localization.
 	* Update version number to 2.3.0
 	* On edit, do not reset the username if we have no new value
 
-2006-03-01 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-03-01 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Add support for localization of MM relations when configured on the foreign table.
 	* Add constant and setup property module_sys_dmail_category_PIDLIST
 	* Update to the requirements section of the manual
 	* Small cleaning changes in class.tx_srfeuserregister_pi1.php and static templates setup.txt
 
-2006-02-03 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-02-03 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Honor TCA default value for TCA-driven multiple checkboxes. Thanks to Simon Tuck.
 	* Remove support for TYPO3 3.5.0.
 
-2006-01-30 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-01-30 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Verify enabled fields when selecting MM relations, in particular module_sys_dmail_category.
 	* Accept value '0' on required fields (see bugtracker issue #2027).
 
-2006-01-30 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-01-30 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Correction to css-styled html template (see bugtracker issue #2403).
 	* Remove changes to the TCA for fields module_sys_dmail_category and module_sys_dmail_html
 	* Ignore fields module_sys_dmail_category and module_sys_dmail_html if direct_mail extension is not loaded.
 	* Enable support for select fields with MM relations, in particular module_sys_dmail_category.
 
-2006-01-14 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-01-14 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 2.2.5:
 	* Correction to the useEmailAsUsername property: when set, the username was erased on editing the profile.
 
-2006-01-10 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-01-10 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 2.2.4:
 	* Correction to the generateUsername property: when set, the username was erased on editing the profile.
 	* For TCA-driven select fields, if no default value is set in TS template, apply default value from TCA, if present.
 
-2006-01-08 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-01-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 2.2.3:
 	* Update to Danish, Norwegian and Turkish translations.
 
-2006-01-08 Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2006-01-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 2.2.3:
 	* Allow to override TCA labels in TS template setup
 	* Add generateUsername setup property.
 	* Add registrationProcess_beforeConfirmCreate hook. Thanks to Pieter Verstraelen.
 
-2005-12-05  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-12-05  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Use backURL linkVar to link back from the edit page, after saving, to some referring extension such as tt_products. Thanks to Franz Holzinger.
 
-2005-12-04  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-12-04  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Correction: setting usergroupAfterAcceptation did not work if the original usergroup assigned at creation was changed by usergroupAfterConfirmation.
 
 2005-11-30  Franz Holzinger  <franz@fholzinger.com>
 	* German texts for the flexform
 
-2005-11-28  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-11-28  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Eliminate error subpart when a required field is missing but no other validation error is raised.
 	* Minor improvement to html template.
 
-2005-11-26  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-11-26  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 2.2.1:
 	* Fix in ext_localconf.php
 	* Documentation update.
 
-2005-11-25  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-11-25  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Added support for backend flexforms by Franz Holzinger.
 
-2005-11-25  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-11-25  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 2.2.0:
 	* Further correction due to IE mishandling of button elements of type button. Eliminated all button elements from the html template.
 	* Added a note on upgrading to version 2 in the configuration section.
 
-2005-11-24  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-11-24  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 2.1.0:
 	* Major correction to the CSS-styled html template: backtracking on the use of button elements of type submit because their behavior is erratic in Internet Explorer 6 and break a number of screens of the extension. Most of them are replaced by input elements.
 	* Some further adjustments to the CSS-styled template.
@@ -679,24 +680,24 @@
 	* Many cleanups & some bugfixes.
 	* Fixed some whitespace issues with IE/FF.
 
-2005-11-16  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-11-16  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 2.0.0
 	* Adding size and maxlength attributes on text input fields (in css-styled template).
 	* Final css adjustments.
 	* Updating the manual.
 
-2005-11-15  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-11-15  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Adding tooltips
 	* Adding fieldset tags
 	* Adding by_invitation field to fe_users table.
 	* Generate password when inviting and useMd5Password is enabled.
 	* Do not request administrative review on invitation.
 
-2005-11-14  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-11-14  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Finalizing css styling (css-styled template).
 	* Working around varions IE css bugs and label on select bug.
 
-2005-11-13  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-11-13  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Further adjustments to default css (in css-styled template).
 	* Adding label tags for radio and checkbox values of TCA-driven fields.
 	* Further adjustments to default css for email messages in css-styled template.
@@ -711,11 +712,11 @@
 	* Zapped some bugs in css styled template.
 	* Improved xhtml compliance.
 
-2005-11-08  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-11-08  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Correction to reserved user groups when the administrative review is enabled (in css-styled template).
 	* Addition of id attribute on select tags produced by sr_static_info: version 1.4.7 of sr_static_info is now required to use css-styled template.
 
-2005-11-08  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-11-08  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Rename tx_srfeuserregister_pi1_css_tmpl.tmpl to tx_srfeuserregister_pi1_css_tmpl.html
 	* Correctly display all data fields in email messages in css-styled template.
 	* Correct error when entering multiple lines in a textarea field.
@@ -727,13 +728,13 @@
 2005-11-07  Sebastian Roth <sebastian.roth@c-qube.com>
 	* Bugfixing.
 
-2005-11-06  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-11-06  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Additional html subparts in the css-styled template for the administrative review process (work in progress).
 
-2005-11-05  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-11-05  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Adding some new subparts for the administrative review process (work in progress).
 
-2005-11-04  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-11-04  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Restructure the extension with two Static Templates: Old Style and CSS-styled. One static template must be added to the TS template after extension installation.
 	* Add label tag on all form fields in css-styled html template
 	* Prefix all field ids with tx-srfeuserregister-pi1- in css-styled html template
@@ -748,13 +749,13 @@
 	* Added basic template using CSS. Please note that it's not useable at the moment. We still zap our gremlins with it.
 	* Cleaned up some other stuff like css & typoscript.
 
-2005-11-01  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-11-01  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 1.6.8
 	* Corrections to a few glitches introduced in version 1.6.7.
 	* Update to the Russian translation.
 	* New TS constant confirmInvitationPID.
 
-2005-10-28  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-10-28  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 1.6.7
 	* Add a few labels.
 	* Add an 'en_US' localization for the frontend side of the extension.
@@ -762,7 +763,7 @@
 	* New TS constant salutation allows to switch salutation mode.
 	* New TS constant useMd5Password enables md5-hashed passwords when extension KB MD5 FE Password (kb_md5fepw) is installed. HTML templates should be updated with markers ###FORM_ONSUBMIT### and ###PASSWORD_ONCHANGE###. See the example HTML templates. ###HIDDENFIELDS### marker is also added to subparts ###TEMPLATE_CREATE_SAVED### and ###TEMPLATE_SETFIXED_OK###.
 
-2005-10-16  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-10-16  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Correction to the useEmailAsUsername feature.
 	* Take into account the user preference regarding html emails when sending infomails (used by sr_email_subscribe).
 
@@ -776,13 +777,13 @@
 	  versions of php and create error messages. Thanks to Stefan Galinski
 	  for pointing that out.
 
-2005-10-10  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-10-10  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 1.6.6
 	* Correction to the usergroup language overlay. Thanks to Rakowski Tomasz.
 	* Correction to TCA-driven select field with values from foreign table. Thanks to Rakowski Tomasz.
 	* Update to step 3 of the tutorial for the case of multiple selection fields.
 	* Change log added.
 
-2005-10-06  Stanislas Rolland  <stanislas.rolland(arobas)fructifor.ca>
+2005-10-06  Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Version 1.6.5
 	* Initial CVS upload.
