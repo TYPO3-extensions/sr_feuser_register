@@ -1063,7 +1063,14 @@ class tx_srfeuserregister_marker {
 		if ($extKey === 'sr_feuser_register') {
 				// Version 3: no clear-text passwords in templates
 				// Remove any ###FIELD_password###, ###FIELD_password_again### markers
-			$removeMarkers = array('###FIELD_password###', '###FIELD_password_again###');
+				// Remove markers ###TEMPLATE_INFOMAIL###, ###TEMPLATE_INFOMAIL_SENT### and ###EMAIL_TEMPLATE_INFOMAIL###
+			$removeMarkers = array(
+				'###FIELD_password###',
+				'###FIELD_password_again###',
+				'###TEMPLATE_INFOMAIL###',
+				'###TEMPLATE_INFOMAIL_SENT###',
+				'###EMAIL_TEMPLATE_INFOMAIL###',
+			);
 			$removeMarkerMessage = $GLOBALS['TSFE']->sL('LLL:EXT:' . $extKey . '/pi1/locallang.xml:internal_remove_deprecated_marker');
 			foreach ($removeMarkers as $marker) {
 				if (strpos($templateCode, $marker) !== FALSE) {
