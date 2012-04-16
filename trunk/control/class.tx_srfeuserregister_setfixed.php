@@ -419,18 +419,18 @@ class tx_srfeuserregister_setfixed {
 			$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 			$addressObj = $tablesObj->get('address');
 
-			if ($theTable != 'fe_users' && $theKey == 'EDIT' ) {
-				$noFeusersEdit = TRUE;
-			} else {
-				$noFeusersEdit = FALSE;
-			}
-
 			foreach($setfixed as $theKey => $data) {
 
 				if (strstr($theKey, '.') ) {
 					$theKey = substr($theKey, 0, -1);
 				}
 				unset($setfixedpiVars);
+
+				if ($theTable != 'fe_users' && $theKey == 'EDIT') {
+					$noFeusersEdit = TRUE;
+				} else {
+					$noFeusersEdit = FALSE;
+				}
 
 				$setfixedpiVars[$prefixId . '%5BrU%5D'] = $r['uid'];
 				$fieldList = $data['_FIELDLIST'];
