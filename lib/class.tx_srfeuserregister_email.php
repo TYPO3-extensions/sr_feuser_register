@@ -103,12 +103,13 @@ class tx_srfeuserregister_email {
 		&$markerArray,
 		$cmd,
 		$cmdKey,
-		$templateCode
+		$templateCode,
+		$failure = ''
 	)	{
 		if ($this->conf['infomail'] && $this->conf['email.']['field']) {
 			$fetch = $this->controlData->getFeUserData('fetch');
 
-			if (isset($fetch) && !empty($fetch)) {
+			if (isset($fetch) && !empty($fetch) && !$failure) {
 				$pidLock = 'AND pid IN (' . ($this->cObj->data['pages'] ? $this->cObj->data['pages'] . ',' : '') . $this->controlData->getPid() . ')';
 				$enable = $GLOBALS['TSFE']->sys_page->enableFields($theTable);
 				$bFetchIsInt = (
@@ -206,7 +207,15 @@ class tx_srfeuserregister_email {
 				}
 			} else {
 				$subpartkey = '###TEMPLATE_INFOMAIL###';
-				$markerArray['###FIELD_email###'] = $this->controlData->getPrefixId().'[fetch]';
+				if (isset($fetch) && !empty($fetch)) {
+					$markerArray['###FIELD_email###'] = htmlspecialchars($fetch);
+				} else {
+					$markerArray['###FIELD_email###'] = '';
+				}
+					// Remove captcha...
+				if (!$this->controlData->useCaptcha($cmdKey)) {
+					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_captcha_response###', '');
+				}
 				$content = $this->display->getPlainTemplate(
 					$templateCode,
 					$subpartkey,

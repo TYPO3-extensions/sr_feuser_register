@@ -256,11 +256,10 @@ class tx_srfeuserregister_control {
 				$this->conf[$cmdKey . '.']['fields'] = t3lib_div::rmFromList('name', $this->conf[$cmdKey . '.']['fields']);
 			}
 		}
+			// Adjust some evaluation settings
 		if (is_array($this->conf[$cmdKey . '.']['evalValues.'])) {
 				// Do not evaluate any password when inviting
-			if (
-				$cmdKey === 'invite'
-			) {
+			if ($cmdKey === 'invite') {
 				unset($this->conf[$cmdKey . '.']['evalValues.']['password']);
 			}
 				// Do not evaluate the username if it is generated or if email is used
@@ -269,6 +268,10 @@ class tx_srfeuserregister_control {
 				($this->conf[$cmdKey . '.']['generateUsername'] && $cmdKey != 'edit' && $cmdKey != 'password')
 			) {
 				unset($this->conf[$cmdKey . '.']['evalValues.']['username']);
+			}
+				// Require an email in the infomail form and evaluate it, if entered 
+			if ($cmd === 'infomail') {
+				$this->conf[$cmdKey . '.']['evalValues.']['email'] = 'email,required';
 			}
 		}
 		$confObj->setConf($this->conf);
@@ -442,6 +445,22 @@ class tx_srfeuserregister_control {
 					$this->controlData->clearSessionData();
 				}
 			}
+		} else if ($cmd === 'infomail') {
+			if ($bSubmit) {
+				$fetch = $this->controlData->getFeUserData('fetch');
+				$finalDataArray['email'] = $fetch;
+				$this->data->evalValues(
+					$theTable,
+					$finalDataArray,
+					$origArray,
+					$markerArray,
+					$cmdKey,
+					array()
+				);
+			}
+			$this->controlData->setRequiredArray(array());
+			$this->marker->setArray($markerArray);
+			$this->controlData->setFeUserData(0, 'preview');
 		} else {
 			$this->marker->setNoError($cmdKey, $markerArray);
 			$this->marker->setArray($markerArray);
@@ -454,7 +473,7 @@ class tx_srfeuserregister_control {
 			$this->controlData->setFeUserData(0, 'preview');
 		}
 
-		 // No preview flag if a evaluation failure has occured
+			// No preview flag if a evaluation failure has occured
 		if ($this->controlData->getFeUserData('preview')) {
 			$this->marker->setPreviewLabel('_PREVIEW');
 			$this->controlData->setMode(MODE_PREVIEW);
@@ -642,7 +661,8 @@ class tx_srfeuserregister_control {
 						$markerArray,
 						$cmd,
 						$cmdKey,
-						$templateCode
+						$templateCode,
+						$this->controlData->getFailure()
 					);
 					break;
 				case 'delete':
