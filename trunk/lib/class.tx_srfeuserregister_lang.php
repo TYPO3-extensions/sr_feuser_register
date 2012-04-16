@@ -140,7 +140,7 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 	public function getLL ($key, $alt = '', $hsc = FALSE) {
 
 			// If the suffix is allowed and we have a localized string for the desired salutation, we'll take that.
-		$rc = '';
+		$localizedLabel = '';
 		$usedLang = '';
 
 		if (
@@ -148,7 +148,7 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 			in_array($this->conf['salutation'], $this->allowedSuffixes, 1)
 		) {
 			$expandedKey = $key . '_' . $this->conf['salutation'];
-			$rc =
+			$localizedLabel =
 				tx_div2007_alpha5::getLL_fh002(
 					$this,
 					$expandedKey,
@@ -156,10 +156,14 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 					$alt,
 					$hsc
 				);
+					// To do: fix incomplete language array
+				if ($localizedLabel == '') {
+					$localizedLabel = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:' . $expandedKey);
+				}
 		}
 
-		if ($rc == '' || $rc == $alt || $usedLang != $this->LLkey) {
-			$rc =
+		if ($localizedLabel == '' || $localizedLabel == $alt || $usedLang != $this->LLkey) {
+			$localizedLabel =
 				tx_div2007_alpha5::getLL_fh002(
 					$this,
 					$key,
@@ -167,9 +171,13 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 					$alt,
 					$hsc
 				);
+				// To do: fix incomplete language array
+			if ($localizedLabel == '') {
+				$localizedLabel = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:' . $key);
+			}
 		}
 
-		return $rc;
+		return $localizedLabel;
 	}	// getLL
 
 
