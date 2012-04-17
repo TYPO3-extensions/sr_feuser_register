@@ -87,9 +87,8 @@ class tx_srfeuserregister_data {
 		$this->cObj = &$pibase->cObj;
 		$this->fileFunc = t3lib_div::makeInstance('t3lib_basicFileFunctions');
 
-		if (t3lib_extMgm::isLoaded('sr_freecap') ) {
-			require_once(t3lib_extMgm::extPath('sr_freecap').'pi2/class.tx_srfreecap_pi2.php');
-			$this->freeCap = &t3lib_div::getUserObj('&tx_srfreecap_pi2');
+		$captchaExtensions = $this->controlData->getCaptchaExtensions();
+		if (!empty($captchaExtensions)) {
 			$this->setSpecialFieldList('captcha_response');
 		}
 
@@ -729,36 +728,6 @@ class tx_srfeuserregister_data {
 										);
 								}
 							break;
-							case 'freecap':
-								if (
-									$this->controlData->useCaptcha($cmdKey) &&
-									is_object($this->freeCap) &&
-									isset($dataArray['captcha_response'])
-								) {
-									// Store the sr_freecap word_hash
-									// sr_freecap will invalidate the word_hash after calling checkWord
-									$er = session_start();
-									$sessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_' . $this->freeCap->extKey);
-									if (!$this->freeCap->checkWord($dataArray['captcha_response'])) {
-										$failureArray[] = $theField;
-										$this->inError[$theField] = TRUE;
-										$this->failureMsg[$theField][] =
-											$this->getFailureText(
-												$theField,
-												$theCmd,
-												'evalErrors_captcha'
-											);
-									} else {
-										// Restore sr_freecap word_hash
-										$GLOBALS['TSFE']->fe_user->setKey(
-											'ses',
-											'tx_' . $this->freeCap->extKey,
-											$sessionData
-										);
-										$GLOBALS['TSFE']->storeSessionData();
-									}
-								}
-							break;
 							case 'preg':
 								if (!is_array($dataArray[$theField]) && !(empty($dataArray[$theField]) && $dataArray[$theField] !== '0')) {
 									if (isset($countArray['preg'][$theCmd])) {
@@ -787,59 +756,55 @@ class tx_srfeuserregister_data {
 								}
 							break;
 							case 'hook':
-								if (!empty($dataArray[$theField]) || $dataArray[$theField] === '0') {
-									if (isset($countArray['hook'][$theCmd])) {
-										$countArray['hook'][$theCmd]++;
-									} else {
-										$countArray['hook'][$theCmd] = 1;
-									}
-									$extKey = $this->controlData->getExtKey();
-									$prefixId = $this->controlData->getPrefixId();
-									$hookClassArray = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['model'];
-
-									if (is_array($hookClassArray)) {
-										foreach($hookClassArray as $classRef) {
-											$hookObj= t3lib_div::getUserObj($classRef);
-											if (
-												is_object($hookObj) &&
-												method_exists($hookObj, 'evalValues')
-											) {
-												$test = TRUE;
-												$bInternal = FALSE;
-												$errorField = $hookObj->evalValues(
-													$theTable,
-													$dataArray,
-													$origArray,
-													$markContentArray,
-													$cmdKey,
-													$requiredArray,
-													$theField,
-													$cmdParts,
-													$bInternal,
-													$test, // must be set to FALSE if it is not a test
-													$this
-												);
-
-												if ($errorField != '') {
-													$failureArray[] = $errorField;
-
-													if (!$test) {
-														$this->inError[$theField] = TRUE;
-														$this->failureMsg[$theField][] =
-															$this->getFailureText(
-																$theField,
-																$theCmd,
-																'evalErrors_' . $theCmd,
-																$countArray['hook'][$theCmd],
-																$cmd,
-																$bInternal
-															);
-													}
-													break;
+							default:
+								if (isset($countArray['hook'][$theCmd])) {
+									$countArray['hook'][$theCmd]++;
+								} else {
+									$countArray['hook'][$theCmd] = 1;
+								}
+								$extKey = $this->controlData->getExtKey();
+								$prefixId = $this->controlData->getPrefixId();
+								$hookClassArray = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['model'];
+								if (is_array($hookClassArray)) {
+									foreach ($hookClassArray as $classRef) {
+										$hookObj= t3lib_div::getUserObj($classRef);
+										if (
+											is_object($hookObj) &&
+											method_exists($hookObj, 'evalValues')
+										) {
+											$test = TRUE;
+											$bInternal = FALSE;
+											$errorField = $hookObj->evalValues(
+												$theTable,
+												$dataArray,
+												$origArray,
+												$markContentArray,
+												$cmdKey,
+												$requiredArray,
+												$theField,
+												$cmdParts,
+												$bInternal,
+												$test, // must be set to FALSE if it is not a test
+												$this
+											);
+											if ($errorField != '') {
+												$failureArray[] = $errorField;
+												if (!$test) {
+													$this->inError[$theField] = TRUE;
+													$this->failureMsg[$theField][] =
+														$this->getFailureText(
+															$theField,
+															$theCmd,
+															'evalErrors_' . $theCmd,
+															$countArray['hook'][$theCmd],
+															$cmd,
+															$bInternal
+														);
 												}
-											} else {
-												debug ($classRef, 'error in the class name for the hook "model"'); // keep debug
+												break;
 											}
+										} else {
+											debug ($classRef, 'error in the class name for the hook "model"'); // keep debug
 										}
 									}
 								}

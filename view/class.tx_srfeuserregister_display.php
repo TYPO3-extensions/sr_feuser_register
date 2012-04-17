@@ -669,16 +669,14 @@ class tx_srfeuserregister_display {
 	) {
 		$templateCode = $this->cObj->getSubpart($templateCode, $subpartMarker);
 
-		if ($templateCode != '')	{
-			if (is_array($row))	{
-				$markerArray =
-					$this->marker->fillInMarkerArray(
-						$markerArray,
-						$row,
-						$securedArray,
-						''
-					);
-			}
+		if ($templateCode != '') {
+			$markerArray =
+				$this->marker->fillInMarkerArray(
+					$markerArray,
+					is_array($row) ? $row : array(),
+					$securedArray,
+					''
+				);
 			$this->marker->addStaticInfoMarkers($markerArray, $row);
 			$cmd = $this->controlData->getCmd();
 			$cmdKey = $this->controlData->getCmdKey();

@@ -194,10 +194,6 @@ class tx_srfeuserregister_email {
 				} else {
 					$markerArray['###FIELD_email###'] = '';
 				}
-					// Remove captcha...
-				if (!$this->controlData->useCaptcha($cmdKey)) {
-					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_captcha_response###', '');
-				}
 				$content = $this->display->getPlainTemplate(
 					$templateCode,
 					$subpartkey,
