@@ -71,6 +71,17 @@ class tx_srfeuserregister_controldata {
 	protected $transmissionSecurity;
 		// Storage security object
 	protected $storageSecurity;
+		// Supported captcha extensions
+	protected $captchaExtensions = array(
+		array(
+			'extensionKey' => 'sr_freecap',
+			'evalRule' => 'freecap',
+		),
+		array(
+			'extensionKey' => 'captcha',
+			'evalRule' => 'captcha',
+		),
+	);
 
 
 	public function init (&$conf, $prefixId, $extKey, $piVars, $theTable) {
@@ -90,6 +101,9 @@ class tx_srfeuserregister_controldata {
 		$this->setTable($theTable);
 		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 
+			// Initialize array of installed captcha extensions
+		$this->setCaptchaExtensions();
+		
 		$bSysLanguageUidIsInt = (
 			class_exists('t3lib_utility_Math') ?
 				t3lib_utility_Math::canBeInterpretedAsInteger($GLOBALS['TSFE']->config['config']['sys_language_uid']) :
@@ -122,7 +136,11 @@ class tx_srfeuserregister_controldata {
 		$feUserData = t3lib_div::_GP($this->getPrefixId());
 		$bSecureStartCmd = (count($feUserData) == 1 && in_array($feUserData['cmd'], array('create', 'edit')));
 		$bValidRegHash = FALSE;
-
+									$er = session_start();
+									$captchaString = $_SESSION['tx_captcha_string'];
+									if ($captchaString) {
+										die(strval($captchaString));
+									}
 		// <Steve Webster added short url feature>
 		if ($this->conf['useShortUrls']) {
 			$this->cleanShortUrlCache();
@@ -662,22 +680,56 @@ class tx_srfeuserregister_controldata {
 		return $rc;
 	}
 
-
-	public function useCaptcha ($theCode) {
-		$rc = FALSE;
-
-		if (
-			(t3lib_extMgm::isLoaded('sr_freecap') &&
-			t3lib_div::inList($this->conf[$theCode . '.']['fields'], 'captcha_response') &&
-			is_array($this->conf[$theCode . '.']) &&
-			is_array($this->conf[$theCode . '.']['evalValues.']) &&
-			$this->conf[$theCode . '.']['evalValues.']['captcha_response'] == 'freecap')
-		) {
-			$rc = TRUE;
+	/*************************************
+	* CAPTCHA
+	*************************************/
+	/**
+	 * Sets the array of loaded captcha extensions
+	 *
+	 * @return void
+	 */
+	public function setCaptchaExtensions() {
+		foreach ($this->captchaExtensions as $index => $captchaExtension) {
+			if (!t3lib_extMgm::isLoaded($captchaExtension['extensionKey'])) {
+				unset($this->captchaExtensions[$index]);
+			}
 		}
-		return $rc;
 	}
 
+	/**
+	 * Gets the array of loaded captcha extensions
+	 *
+	 * @return array TRUE, if the use of captcha is enabled
+	 */
+	public function getCaptchaExtensions() {
+		return $this->captchaExtensions;
+	}
+
+	/**
+	 * Determines whether the use of captcha is enabled
+	 *
+	 * @param string $cmdKey: the cmdKey for which the check is requested
+	 * @return boolean TRUE, if the use of captcha is enabled
+	 */
+	public function useCaptcha ($cmdKey) {
+		$useCaptcha = FALSE;
+		if (
+			t3lib_div::inList($this->conf[$cmdKey . '.']['fields'], 'captcha_response') &&
+			is_array($this->conf[$cmdKey . '.']) &&
+			is_array($this->conf[$cmdKey . '.']['evalValues.'])
+		) {
+			$captchaExtensions = $this->getCaptchaExtensions();
+			foreach ($captchaExtensions as $captchaExtension) {
+				if (
+					$this->conf[$cmdKey . '.']['evalValues.']['captcha_response'] === $captchaExtension['evalRule']
+				) {
+					$useCaptcha = TRUE;
+					break;
+				}
+			}
+		}
+		return $useCaptcha;
+	}
 
 	// example: plugin.tx_srfeuserregister_pi1.conf.sys_dmail_category.ALL.sys_language_uid = 0
 	public function getSysLanguageUid ($theCode, $theTable) {

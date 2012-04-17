@@ -2,6 +2,7 @@
 	* Fix bug #36165: Localization of some strings results in empty string
 	* Fix bug #18108 (old bug tracker): Evaluating for white spaces with preg does not work
 	* Fix bug #14453 (old bug tracker): Confirmation mail is sent to user although enableEmailConfirmation = 0
+	* Add feature #36191: Move captcha markers setting and captcha evaluation to hooks
 
 2012-04-15 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Add feature #36123: Allow evaluation of email and captcha on the infomail form

@@ -110,22 +110,7 @@ class tx_srfeuserregister_marker {
 			// Setting URL, HIDDENFIELDS and signature markers
 		$urlMarkerArray = $this->generateURLMarkers($this->controlData->getBackURL(), $uid, $token, $theTable);
 		$this->setUrlMarkerArray($urlMarkerArray);
-
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'] as $classRef) {
-				$hookObj= &t3lib_div::getUserObj($classRef);
-				if (method_exists($hookObj, 'addGlobalMarkers')) {
-					$hookObj->addGlobalMarkers($markerArray, $this);
-				}
-			}
-		}
-
-		if (is_object($this->data->freeCap)) {
-			$captchaMarkerArray = $this->data->freeCap->makeCaptcha();
-		} else {
-			$captchaMarkerArray = array('###SR_FREECAP_NOTICE###' => '', '###SR_FREECAP_CANT_READ###' => '', '###SR_FREECAP_IMAGE###' => '', '###SR_FREECAP_ACCESSIBLE###' => '');
-		}
-		$markerArray = array_merge($markerArray, $captchaMarkerArray, $urlMarkerArray);
+		$markerArray = array_merge($markerArray, $urlMarkerArray);
 		$this->setArray($markerArray);
 
 			// Button labels
@@ -1041,6 +1026,17 @@ class tx_srfeuserregister_marker {
 						}
 						$markerArray['###' . $prefix . $field . '###'] = $nl2br ? nl2br($value) : $value;
 					}
+				}
+			}
+		}
+			// Add global markers
+		$extKey = $this->controlData->getExtKey();
+		$prefixId = $this->controlData->getPrefixId();
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'] as $classRef) {
+				$hookObj= &t3lib_div::getUserObj($classRef);
+				if (method_exists($hookObj, 'addGlobalMarkers')) {
+					$hookObj->addGlobalMarkers($markerArray, $this);
 				}
 			}
 		}

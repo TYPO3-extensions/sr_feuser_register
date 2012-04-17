@@ -461,7 +461,8 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 			<label index="evalErrors_atMost_password">The password must contain at most %s characters.</label>
 			<label index="evalErrors_atMost_password_informal">The password must contain at most %s characters.</label>
 			<label index="evalErrors_atMost_username">The username must contain at most %s characters.</label>
-			<label index="evalErrors_captcha">invalid!</label>
+			<label index="evalErrors_captcha">Invalid!</label>
+			<label index="evalErrors_freecap">Invalid!</label>
 			<label index="evalErrors_date">Please enter a valid date in format dd-mm-yyyy!</label>
 			<label index="evalErrors_date_informal">Please enter a valid date in format dd-mm-yyyy!</label>
 			<label index="evalErrors_email">Please enter a valid e-mail address.</label>
