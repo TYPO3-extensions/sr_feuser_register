@@ -1,3 +1,6 @@
+2012-04-16 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix variable name in class.tx_srfeuserregister_control_main.php
+
 2012-04-15 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #36165: Localization of some strings results in empty string
 	* Fix bug #18108 (old bug tracker): Evaluating for white spaces with preg does not work
