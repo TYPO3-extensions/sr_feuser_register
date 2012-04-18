@@ -104,8 +104,8 @@ class tx_srfeuserregister_control_main {
 		} else {
 			$content = '<em>Internal error in ' . $pibaseObj->extKey . '!</em><br /> Maybe you forgot to include the basic template file under statics from extensions.';
 		}
-		$success = $pibaseObj->pi_wrapInBaseClass($content);
-		return $success;
+		$content = $pibaseObj->pi_wrapInBaseClass($content);
+		return $content;
 	}
 
 
