@@ -429,25 +429,31 @@ class tx_srfeuserregister_marker {
 			}
 		}
 			// Assemble the name to be substituted in the labels
+		$name = '';
 		if ($this->conf['salutation'] == 'informal' && $row['first_name'] != '') {
 			$name = $row['first_name'];
 		} else {
 				// Honour Address List (tt_address) configuration settings
-			if ($theTable == 'tt_address') {
-				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$theTable]);
-				if ($extConf['disableCombinedNameField'] != '1' && $row['name'] != '') {
-					$name = $row['name'];
-				} else {
-					$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$theTable]);
-					$nameFormat = $extConf['backwardsCompatFormat'];
-					$name = sprintf(
-						$nameFormat,
-						$row['first_name'],
-						$row['middle_name'],
-						$row['last_name']
-					);
+			if ($theTable === 'tt_address' && t3lib_extMgm::isLoaded('tt_address') && isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address'])) {
+				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address']);
+				if (is_array($extConf)) {
+					$nameFormat = '';
+					if ($extConf['disableCombinedNameField'] != '1' && $row['name'] != '') {
+						$name = $row['name'];
+					} else if (isset($extConf['backwardsCompatFormat'])) {
+						$nameFormat = $extConf['backwardsCompatFormat'];
+					}
+					if ($nameFormat != '') {
+						$name = sprintf(
+							$nameFormat,
+							$row['first_name'],
+							$row['middle_name'],
+							$row['last_name']
+						);
+					}
 				}
-			} else {
+			}
+			if ($name == '') {
 				$name = $row['name'] ? $row['name'] : ($row['first_name'] . ($row['middle_name'] != '' ? ' ' . $row['middle_name'] : '' ) . ' ' . $row['last_name']);
 			}
 			if ($name == '') {

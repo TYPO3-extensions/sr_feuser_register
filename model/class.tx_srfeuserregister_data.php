@@ -1697,9 +1697,14 @@ class tx_srfeuserregister_data {
 			in_array('last_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1))
 		) {
 				// Honour Address List (tt_address) configuration settings
-			if ($theTable == 'tt_address') {
-				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$theTable]);
-				$nameFormat = $extConf['backwardsCompatFormat'];
+			$nameFormat = '';
+			if ($theTable === 'tt_address' && t3lib_extMgm::isLoaded('tt_address') && isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address'])) {
+				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address']);
+				if (is_array($extConf) && isset($extConf['backwardsCompatFormat'])) {
+					$nameFormat = $extConf['backwardsCompatFormat'];
+				}
+			}
+			if ($nameFormat != '') {
 				$dataArray['name'] = sprintf(
 					$nameFormat,
 					$dataArray['first_name'],
