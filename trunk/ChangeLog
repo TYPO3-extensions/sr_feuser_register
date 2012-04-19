@@ -5,6 +5,7 @@
 	* Move call to clearSessionData out of tx_srfeuserregister_data
 	* Restructure tx_srfeuserregister_display::getKeyAfterSave
 	* Require div2007 0.9.0
+	* Follow-up to bug #36165: Log warning to sysLog if localized label was not returned by div2007
 
 2012-04-16 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix variable name in class.tx_srfeuserregister_control_main.php
