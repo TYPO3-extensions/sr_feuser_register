@@ -3,6 +3,7 @@
 	* Fix typo in comment in class.tx_srfeuserregister_marker.php
 	* Simplify condition in class.tx_srfeuserregister_data.php
 	* Move call to clearSessionData out of tx_srfeuserregister_data
+	* Restructure tx_srfeuserregister_display::getKeyAfterSave
 
 2012-04-16 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix variable name in class.tx_srfeuserregister_control_main.php

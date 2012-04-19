@@ -838,11 +838,32 @@ class tx_srfeuserregister_display {
 		}
 
 		return $templateCode;
-	}	// removeRequired
+	}
 
-
-	public function getKeyAfterSave ($cmd, $cmdKey, $bCustomerConfirmsMode)	{
-
+	/**
+	 * Determine what template subpart should be used atfer the last save operation
+	 *
+	 * @param string $cmd: the cmd that was executed
+	 * @param string $cmdKey: the command key that was use
+	 * @param boolean $bCustomerConfirmsMode =			
+	 * 			($cmd == '' || $cmd == 'create') &&
+	 *			($cmdKey != 'edit') &&
+	 *			$this->conf['enableAdminReview'] &&
+	 *			($this->conf['enableEmailConfirmation'] || $this->conf['infomail'])
+	 * @param boolean $bSetfixed =
+	 *				This is the case where the user or admin has to confirm
+	 *			$this->conf['enableEmailConfirmation'] ||
+	 *			($this->theTable == 'fe_users' && $this->conf['enableAdminReview']) ||
+	 *			$this->conf['setfixed']
+	 * @param boolean $bCreateReview =
+	 *				This is the case where the user does not have to confirm, but has to wait for admin review
+	 *				This applies only on create ($bDefaultMode) and to fe_users
+	 *				$bCreateReview implies $bSetfixed
+	 *			!$this->conf['enableEmailConfirmation'] &&
+	 *			$this->conf['enableAdminReview']
+	 * @return boolean or string
+	 */
+	public function getKeyAfterSave ($cmd, $cmdKey, $bCustomerConfirmsMode, $bSetfixed, $bCreateReview) {
 		$result = FALSE;
 		switch ($cmd) {
 			case 'delete':
@@ -859,14 +880,13 @@ class tx_srfeuserregister_display {
 			default:
 				if ($cmdKey == 'edit') {
 					$result = 'EDIT' . SAVED_SUFFIX;
-				} else if ($this->controlData->getSetfixedEnabled()) {
+				} else if ($bSetfixed) {
 					$result = SETFIXED_PREFIX . 'CREATE';
 
-					if ($bCustomerConfirmsMode) {
-						$result .= '_REVIEW';
-					}
-					if (!$this->conf['enableEmailConfirmation'] && $this->conf['enableAdminReview']) {
+					if ($bCreateReview) {
 						$result = 'CREATE' . SAVED_SUFFIX . '_REVIEW';
+					} else if ($bCustomerConfirmsMode) {
+						$result .= '_REVIEW';
 					}
 				} else {
 					$result = 'CREATE' . SAVED_SUFFIX;
@@ -875,7 +895,6 @@ class tx_srfeuserregister_display {
 		}
 		return $result;
 	}
-
 
 	/**
 	* Displaying the page here that says, the record has been saved.
