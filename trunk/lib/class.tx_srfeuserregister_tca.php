@@ -79,7 +79,7 @@ class tx_srfeuserregister_tca {
 	 * @return void
 	 */ 
 	protected function fixAddressFeAdminFieldList () {
-		if ($GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList']) {
+		if (t3lib_extMgm::isLoaded('tt_address') && isset($GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList'])) {
 			$fieldArray = array_unique(t3lib_div::trimExplode(',', $GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList'], 1));
 			$fieldArray = array_diff($fieldArray, array('middle_first_name', 'last_first_name'));
 			$fieldList = implode(',', $fieldArray);

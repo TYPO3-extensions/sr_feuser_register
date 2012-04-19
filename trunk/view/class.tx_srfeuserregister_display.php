@@ -768,9 +768,9 @@ class tx_srfeuserregister_display {
 			$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_captcha_response###', '');
 		}
 			// Honour Address List (tt_address) configuration setting
-		if ($this->controlData->getTable() == 'tt_address') {
+		if ($this->controlData->getTable() === 'tt_address' && t3lib_extMgm::isLoaded('tt_address') && isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address'])) {
 			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address']);
-			if ($extConf['disableCombinedNameField'] == '1') {
+			if (is_array($extConf) && $extConf['disableCombinedNameField'] == '1') {
 				$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_name###', '');
 			}
 		}

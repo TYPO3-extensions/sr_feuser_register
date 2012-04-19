@@ -250,9 +250,9 @@ class tx_srfeuserregister_control {
 			$this->conf['infomail'] = 0;
 		}
 			// Honour Address List (tt_address) configuration setting
-		if ($theTable === 'tt_address') {
-			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$theTable]);
-			if ($extConf['disableCombinedNameField'] == '1') {
+		if ($theTable === 'tt_address' && t3lib_extMgm::isLoaded('tt_address') && isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address'])) {
+			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address']);
+			if (is_array($extConf) && $extConf['disableCombinedNameField'] == '1') {
 				$this->conf[$cmdKey . '.']['fields'] = t3lib_div::rmFromList('name', $this->conf[$cmdKey . '.']['fields']);
 			}
 		}
