@@ -501,15 +501,9 @@ class tx_srfeuserregister_data {
 								}
 							break;
 							case 'twice':
-								if (
-									(!isset($dataArray[$theField]) && isset($dataArray[$theField.'_again'])) ||
-									(isset($dataArray[$theField]) && !isset($dataArray[$theField.'_again'])) ||
-									(
-										isset($dataArray[$theField]) &&
-										isset($dataArray[$theField.'_again']) &&
-										strcmp($dataArray[$theField], $dataArray[$theField.'_again'])
-									)
-								) {
+								$fieldValue = strval($dataArray[$theField]);
+								$fieldAgainValue = strval($dataArray[$theField . '_again']);
+								if (strcmp($fieldValue, $fieldAgainValue)) {
 									$failureArray[] = $theField;
 									$this->inError[$theField] = TRUE;
 									$this->failureMsg[$theField][] =
