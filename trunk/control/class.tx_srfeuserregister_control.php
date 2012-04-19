@@ -517,7 +517,20 @@ class tx_srfeuserregister_control {
 			) {
 				$bCustomerConfirmsMode = TRUE;
 			}
-			$key = $this->display->getKeyAfterSave($cmd, $cmdKey, $bCustomerConfirmsMode);
+				// This is the case where the user or admin has to confirm
+				// $this->conf['enableEmailConfirmation'] ||
+				// ($this->theTable == 'fe_users' && $this->conf['enableAdminReview']) ||
+				// $this->conf['setfixed']
+			$bSetfixed = $this->controlData->getSetfixedEnabled();
+				// This is the case where the user does not have to confirm, but has to wait for admin review
+				// This applies only on create ($bDefaultMode) and to fe_users
+				// $bCreateReview implies $bSetfixed
+			$bCreateReview = 
+				($theTable === 'fe_users') &&
+				!$this->conf['enableEmailConfirmation'] &&
+				$this->conf['enableAdminReview'];
+			$key = $this->display->getKeyAfterSave($cmd, $cmdKey, $bCustomerConfirmsMode, $bSetfixed, $bCreateReview);
+
 			$errorContent = $this->display->afterSave(
 				$theTable,
 				$dataArray,
