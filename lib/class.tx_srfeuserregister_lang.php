@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2011 Stanislas Rolland (stanislas.rolland@sjbr.ca)
+*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -31,7 +31,7 @@
  *
  * $Id$
  *
- * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
+ * @author	Stanislas Rolland <typo3(arobas)sjbr.ca>
  * @author	Franz Holzinger <franz@ttproducts.de>
  *
  * @package TYPO3
@@ -39,7 +39,6 @@
  *
  *
  */
-
 
 require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha_language_base.php');
 
@@ -120,29 +119,28 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 		return $rc;
 	}	// getItemsLL
 
-
 	/**
-		* Returns the localized label of the LOCAL_LANG key, $key
-		* In $this->conf['salutation'], a suffix to the key may be set (which may be either 'formal' or 'informal').
-		* If a corresponding key exists, the formal/informal localized string is used instead.
-		* If the key doesn't exist, we just use the normal string.
-		*
-		* Example: key = 'greeting', suffix = 'informal'. If the key 'greeting_informal' exists, that string is used.
-		* If it doesn't exist, we'll try to use the string with the key 'greeting'.
-		*
-		* Notice that for debugging purposes prefixes for the output values can be set with the internal vars ->LLtestPrefixAlt and ->LLtestPrefix
-		*
-		* @param    string        The key from the LOCAL_LANG array for which to return the value.
-		* @param    string        Alternative string to return IF no value is found set for the key, neither for the local language nor the default.
-		* @param    boolean        If true, the output label is passed through htmlspecialchars()
-		* @return    string        The value from LOCAL_LANG.
-		*/
+	* Returns the localized label of the LOCAL_LANG key, $key
+	* In $this->conf['salutation'], a suffix to the key may be set (which may be either 'formal' or 'informal').
+	* If a corresponding key exists, the formal/informal localized string is used instead.
+	* If the key doesn't exist, we just use the normal string.
+	*
+	* Example: key = 'greeting', suffix = 'informal'. If the key 'greeting_informal' exists, that string is used.
+	* If it doesn't exist, we'll try to use the string with the key 'greeting'.
+	*
+	* Notice that for debugging purposes prefixes for the output values can be set with the internal vars ->LLtestPrefixAlt and ->LLtestPrefix
+	*
+	* @param string The key from the LOCAL_LANG array for which to return the value.
+	* @param string Alternative string to return IF no value is found set for the key, neither for the local language nor the default.
+	* @param boolean If TRUE, the output label is passed through htmlspecialchars()
+	* @return string The value from LOCAL_LANG.
+	*/
 	public function getLL ($key, $alt = '', $hsc = FALSE) {
 
 			// If the suffix is allowed and we have a localized string for the desired salutation, we'll take that.
 		$localizedLabel = '';
 		$usedLang = '';
-
+			// Check for an allowed salutation suffix and, if configured, try to localize
 		if (
 			isset($this->conf['salutation']) &&
 			in_array($this->conf['salutation'], $this->allowedSuffixes, 1)
@@ -156,12 +154,16 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 					$alt,
 					$hsc
 				);
-					// To do: fix incomplete language array
+					// Fall back to tslib_fe::sL
 				if ($localizedLabel == '') {
 					$localizedLabel = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:' . $expandedKey);
+					if ($localizedLabel != '') {
+						$message = sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_label_not_localized_by_div2007', $expandedKey));
+						t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_WARNING);
+					}
 				}
 		}
-
+			// No allowed salutation suffix and fall back
 		if ($localizedLabel == '' || $localizedLabel == $alt || $usedLang != $this->LLkey) {
 			$localizedLabel =
 				tx_div2007_alpha5::getLL_fh002(
@@ -171,14 +173,17 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 					$alt,
 					$hsc
 				);
-				// To do: fix incomplete language array
+				// Fall back to tslib_fe::sL
 			if ($localizedLabel == '') {
 				$localizedLabel = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:' . $key);
+				if ($localizedLabel != '') {
+					$message = sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_label_not_localized_by_div2007', $key));
+					t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_WARNING);
+				}
 			}
 		}
-
 		return $localizedLabel;
-	}	// getLL
+	}
 
 
 	public function loadLL () {
