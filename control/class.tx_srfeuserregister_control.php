@@ -378,8 +378,8 @@ class tx_srfeuserregister_control {
 				$bDoNotSave ||
 				$this->controlData->getFeUserData('linkToPID')
 			) {
-				// a button was clicked on
-				$this->data->evalValues(
+					// A button was clicked on
+				$evalErrors = $this->data->evalValues(
 					$theTable,
 					$finalDataArray,
 					$origArray,
@@ -387,15 +387,19 @@ class tx_srfeuserregister_control {
 					$cmdKey,
 					$this->controlData->getRequiredArray()
 				);
+					// If the two password fields are not equal, clear session data
+				if (is_array($evalErrors['password']) && in_array('twice', $evalErrors['password'])) {
+					$this->controlData->clearSessionData();
+				}
 				if ($this->conf['evalFunc'] ) {
 					$this->marker->setArray($markerArray);
 					$finalDataArray = $this->userProcess('evalFunc', $finalDataArray);
 					$markerArray = $this->marker->getArray();
 				}
 			} else {
-				//this is either a country change submitted through the onchange event or a file deletion already processed by the parsing function
-				// we are going to redisplay
-				$this->data->evalValues(
+					// This is either a country change submitted through the onchange event or a file deletion already processed by the parsing function
+					// We are going to redisplay
+				$evalErrors = $this->data->evalValues(
 					$theTable,
 					$finalDataArray,
 					$origArray,
@@ -403,6 +407,10 @@ class tx_srfeuserregister_control {
 					$cmdKey,
 					$this->controlData->getRequiredArray()
 				);
+					// If the two password fields are not equal, clear session data
+				if (is_array($evalErrors['password']) && in_array('twice', $evalErrors['password'])) {
+					$this->controlData->clearSessionData();
+				}
 				$this->marker->setArray($markerArray);
 				$this->controlData->setFailure('submit');
 			}
@@ -449,7 +457,7 @@ class tx_srfeuserregister_control {
 			if ($bSubmit) {
 				$fetch = $this->controlData->getFeUserData('fetch');
 				$finalDataArray['email'] = $fetch;
-				$this->data->evalValues(
+				$evalErrors = $this->data->evalValues(
 					$theTable,
 					$finalDataArray,
 					$origArray,

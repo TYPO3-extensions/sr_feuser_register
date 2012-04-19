@@ -51,7 +51,7 @@ class tx_srfeuserregister_data {
 	public $dataArray = array();
 	public $origArray = array();
 	public $cObj;
-	public $failureMsg = array();
+	protected $evalErrors = array();
 	public $saved = FALSE; // is set if data is saved
 	public $theTable;
 	public $addTableArray = array();
@@ -390,6 +390,7 @@ class tx_srfeuserregister_data {
 		$cmdKey,
 		$requiredArray
 	) {
+		$failureMsg = array();
 		$displayFieldArray = t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1);
 		if ($this->controlData->useCaptcha($cmdKey)) {
 			$displayFieldArray[] = 'captcha_response';
@@ -441,6 +442,8 @@ class tx_srfeuserregister_data {
 			$countArray['preg'] = array();
 
 			foreach ($this->conf[$cmdKey.'.']['evalValues.'] as $theField => $theValue) {
+				$this->evalErrors[$theField] = array();
+				$failureMsg[$theField] = array();
 				$listOfCommands = t3lib_div::trimExplode(',', $theValue, 1);
 					// Unset the incoming value is empty and unsetEmpty is specified
 				if (array_search('unsetEmpty', $listOfCommands) !== FALSE) {
@@ -491,7 +494,8 @@ class tx_srfeuserregister_data {
 										// Only issue an error if the record is not existing (if new...) and if the record with the false value selected was not our self.
 										$failureArray[] = $theField;
 										$this->inError[$theField] = TRUE;
-										$this->failureMsg[$theField][] =
+										$this->evalErrors[$theField][] = $theCmd;
+										$failureMsg[$theField][] =
 											$this->getFailureText(
 												$theField,
 												'uniqueLocal',
@@ -506,20 +510,21 @@ class tx_srfeuserregister_data {
 								if (strcmp($fieldValue, $fieldAgainValue)) {
 									$failureArray[] = $theField;
 									$this->inError[$theField] = TRUE;
-									$this->failureMsg[$theField][] =
+									$this->evalErrors[$theField][] = $theCmd;
+									$failureMsg[$theField][] =
 										$this->getFailureText(
 											$theField,
 											$theCmd,
 											'evalErrors_same_twice'
 										);
-									$this->controlData->clearSessionData();
 								}
 							break;
 							case 'email':
 								if (!is_array($dataArray[$theField]) && trim($dataArray[$theField]) && !t3lib_div::validEmail($dataArray[$theField])) {
 									$failureArray[] = $theField;
 									$this->inError[$theField] = TRUE;
-									$this->failureMsg[$theField][] =
+									$this->evalErrors[$theField][] = $theCmd;
+									$failureMsg[$theField][] =
 										$this->getFailureText(
 											$theField,
 											$theCmd,
@@ -531,7 +536,8 @@ class tx_srfeuserregister_data {
 								if (empty($dataArray[$theField]) && $dataArray[$theField] !== '0') {
 									$failureArray[] = $theField;
 									$this->inError[$theField] = TRUE;
-									$this->failureMsg[$theField][] =
+									$this->evalErrors[$theField][] = $theCmd;
+									$failureMsg[$theField][] =
 										$this->getFailureText(
 											$theField,
 											$theCmd,
@@ -544,7 +550,8 @@ class tx_srfeuserregister_data {
 								if (!is_array($dataArray[$theField]) && strlen($dataArray[$theField]) < $chars) {
 									$failureArray[] = $theField;
 									$this->inError[$theField] = TRUE;
-									$this->failureMsg[$theField][] =
+									$this->evalErrors[$theField][] = $theCmd;
+									$failureMsg[$theField][] =
 										sprintf(
 											$this->getFailureText(
 												$theField,
@@ -560,7 +567,8 @@ class tx_srfeuserregister_data {
 								if (!is_array($dataArray[$theField]) && strlen($dataArray[$theField]) > $chars) {
 									$failureArray[] = $theField;
 									$this->inError[$theField] = TRUE;
-									$this->failureMsg[$theField][] =
+									$this->evalErrors[$theField][] = $theCmd;
+									$failureMsg[$theField][] =
 										sprintf(
 											$this->getFailureText(
 												$theField,
@@ -583,7 +591,8 @@ class tx_srfeuserregister_data {
 									if (!$pid_list || !t3lib_div::inList($pid_list, $dataArray[$theField])) {
 										$failureArray[] = $theField;
 										$this->inError[$theField] = TRUE;
-										$this->failureMsg[$theField][] =
+										$this->evalErrors[$theField][] = $theCmd;
+										$failureMsg[$theField][] =
 											sprintf(
 												$this->getFailureText(
 													$theField,
@@ -623,7 +632,8 @@ class tx_srfeuserregister_data {
 														if (!$maxSize || (filesize(PATH_site.$uploadPath.'/'.$filename) < ($maxSize * 1024))) {
 															$newFileNameArray[] = $filename;
 														} else {
-															$this->failureMsg[$theField][] =
+															$this->evalErrors[$theField][] = $theCmd;
+															$failureMsg[$theField][] =
 																sprintf(
 																	$this->getFailureText(
 																		$theField,
@@ -656,11 +666,13 @@ class tx_srfeuserregister_data {
 														} else {
 															$bWritePermissionError = FALSE;
 														}
-														$this->failureMsg[$theField][] = sprintf($this->getFailureText($theField, 'isfile', ($bWritePermissionError ? 'evalErrors_write_permission' : 'evalErrors_file_upload')), $filename);
+														$this->evalErrors[$theField][] = $theCmd;
+														$failureMsg[$theField][] = sprintf($this->getFailureText($theField, 'isfile', ($bWritePermissionError ? 'evalErrors_write_permission' : 'evalErrors_file_upload')), $filename);
 														$failureArray[] = $theField;
 													}
 												} else {
-													$this->failureMsg[$theField][] =
+													$this->evalErrors[$theField][] = $theCmd;
+													$failureMsg[$theField][] =
 														sprintf(
 															$this->getFailureText(
 																$theField,
@@ -694,7 +706,8 @@ class tx_srfeuserregister_data {
 									if ($wwwURLResult['Result'] != 'EW_OK' ) {
 										$failureArray[] = $theField;
 										$this->inError[$theField] = TRUE;
-										$this->failureMsg[$theField][] =
+										$this->evalErrors[$theField][] = $theCmd;
+										$failureMsg[$theField][] =
 											$this->getFailureText(
 												$theField,
 												$theCmd,
@@ -714,7 +727,8 @@ class tx_srfeuserregister_data {
 								) {
 									$failureArray[] = $theField;
 									$this->inError[$theField] = TRUE;
-									$this->failureMsg[$theField][] =
+									$this->evalErrors[$theField][] = $theCmd;
+									$failureMsg[$theField][] =
 										$this->getFailureText(
 											$theField,
 											$theCmd,
@@ -737,7 +751,8 @@ class tx_srfeuserregister_data {
 									if ($test === FALSE || $test == 0) {
 										$failureArray[] = $theField;
 										$this->inError[$theField] = TRUE;
-										$this->failureMsg[$theField][] =
+										$this->evalErrors[$theField][] = $theCmd;
+										$failureMsg[$theField][] =
 											$this->getFailureText(
 												$theField,
 												$theCmd,
@@ -783,9 +798,10 @@ class tx_srfeuserregister_data {
 											);
 											if ($errorField != '') {
 												$failureArray[] = $errorField;
+												$this->evalErrors[$theField][] = $theCmd;
 												if (!$test) {
 													$this->inError[$theField] = TRUE;
-													$this->failureMsg[$theField][] =
+													$failureMsg[$theField][] =
 														$this->getFailureText(
 															$theField,
 															$theCmd,
@@ -811,26 +827,21 @@ class tx_srfeuserregister_data {
 					in_array($theField, $displayFieldArray) ||
 					in_array($theField, $failureArray)
 				) {
-					if (
-						isset($this->failureMsg[$theField]) &&
-						is_array($this->failureMsg[$theField])
-					) {
+					if (!empty($failureMsg[$theField])) {
 						if ($markContentArray['###EVAL_ERROR_saved###']) {
 							$markContentArray['###EVAL_ERROR_saved###'] .= '<br />';
 						}
-						$errorMsg = implode($this->failureMsg[$theField], '<br />');
+						$errorMsg = implode($failureMsg[$theField], '<br />');
 						$markContentArray['###EVAL_ERROR_saved###'] .= $errorMsg;
 					} else {
 						$errorMsg = '';
 					}
 					$markContentArray['###EVAL_ERROR_FIELD_' . $theField . '###'] = ($errorMsg != '' ? $errorMsg : '<!--no error-->');
 				}
-			} // foreach
+			}
 		}
 
-		if (
-			empty($markContentArray['###EVAL_ERROR_saved###'])
-		) {
+		if (empty($markContentArray['###EVAL_ERROR_saved###'])) {
 			$markContentArray['###EVAL_ERROR_saved###'] = '';
 		}
 
@@ -851,7 +862,9 @@ class tx_srfeuserregister_data {
 
 		$failure = implode($failureArray, ',');
 		$this->controlData->setFailure($failure);
-	}	// evalValues
+
+		return $this->evalErrors;
+	}
 
 
 	/**
@@ -1719,11 +1732,10 @@ class tx_srfeuserregister_data {
 	* @return void  done directly on array $this->dataArray
 	*/
 	public function setUsername ($theTable, &$dataArray, $cmdKey) {
-
-		if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $theTable === 'fe_users' && t3lib_div::inList($this->getFieldList(), 'username') && !$this->failureMsg['email']) {
+		if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $theTable === 'fe_users' && t3lib_div::inList($this->getFieldList(), 'username') && empty($this->evalErrors['email'])) {
 			$dataArray['username'] = trim($dataArray['email']);
 		}
-	}	// setUsername
+	}
 
 	/**
 	* Transforms incoming timestamps into dates
