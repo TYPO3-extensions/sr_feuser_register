@@ -1050,7 +1050,7 @@ class tx_srfeuserregister_marker {
 	}
 
 	/*
-	 * Cheks for the presence of some deprecated markers in the source code of the HTML template
+	 * Checks for the presence of some deprecated markers in the source code of the HTML template
 	 *
 	 * @param string $templateCode: the template source code
 	 * @param string $extKey: current extension key
