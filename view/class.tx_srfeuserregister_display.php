@@ -92,7 +92,6 @@ class tx_srfeuserregister_display {
 		$errorFieldArray,
 		$token
 	) {
-		global $TSFE;
 
 		$prefixId = $this->controlData->getPrefixId();
 
@@ -270,7 +269,6 @@ class tx_srfeuserregister_display {
 		$errorFieldArray,
 		$token
 	) {
-		global $TSFE;
 
 		$templateCode = $this->data->getTemplateCode();
 		$prefixId = $this->controlData->getPrefixId();
@@ -447,8 +445,6 @@ class tx_srfeuserregister_display {
 		$errorFieldArray,
 		$token
 	) {
-		global $TSFE;
-
 			// If editing is enabled
 		if ($this->conf['edit']) {
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
@@ -918,7 +914,6 @@ class tx_srfeuserregister_display {
 		$errorFieldArray,
 		&$content
 	) {
-		global $TSFE;
 
 		$errorContent = '';
 
