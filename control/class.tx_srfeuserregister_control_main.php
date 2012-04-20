@@ -72,7 +72,6 @@ class tx_srfeuserregister_control_main {
 		$buttonLabelsList = '',
 		$otherLabelsList = ''
 	) {
-		global $TSFE;
 
 		$this->pibaseObj = &$pibaseObj;
 		$this->extKey = $this->pibaseObj->extKey;
@@ -126,7 +125,6 @@ class tx_srfeuserregister_control_main {
 		$buttonLabelsList,
 		$otherLabelsList
 	) {
-		global $TSFE, $TCA;
 
 		$this->tca = &t3lib_div::getUserObj('&tx_srfeuserregister_tca');
 

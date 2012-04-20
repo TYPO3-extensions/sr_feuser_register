@@ -69,8 +69,6 @@ class tx_srfeuserregister_setfixed {
 		&$email,
 		&$marker
 	) {
-		global $TSFE;
-
 		$this->cObj = &$cObj;
 		$this->conf = &$conf;
 		$this->config = &$config;
@@ -102,7 +100,6 @@ class tx_srfeuserregister_setfixed {
 		&$feuData,
 		$token
 	) {
-		global $TSFE;
 
 		$row = $origArray;
 
@@ -409,7 +406,6 @@ class tx_srfeuserregister_setfixed {
 	* @return void
 	*/
 	public function computeUrl ($cmdKey, &$markerArray, $setfixed, $r, $theTable) {
-		global $TSFE;
 
 		$prefixId = $this->controlData->getPrefixId();
 
@@ -488,7 +484,7 @@ class tx_srfeuserregister_setfixed {
 						t3lib_div::testInt($this->conf['confirmType'])
 				);
 
-				$confirmType = ($bconfirmTypeIsInt ? intval($this->conf['confirmType']) : $TSFE->type);
+				$confirmType = ($bconfirmTypeIsInt ? intval($this->conf['confirmType']) : $GLOBALS['TSFE']->type);
 				$url =
 					tx_div2007_alpha::getTypoLink_URL_fh002(
 						$this->cObj,
@@ -505,12 +501,10 @@ class tx_srfeuserregister_setfixed {
 		}
 	}	// computeUrl
 
-
 	/**
-		*  Store the setfixed vars and return a replacement hash
-		*/
+	 *  Store the setfixed vars and return a replacement hash
+	 */
 	public function storeFixedPiVars ($vars) {
-		global $TYPO3_DB;
 
 			// create a unique hash value
 		$regHash_array =
@@ -518,17 +512,17 @@ class tx_srfeuserregister_setfixed {
 		$regHash_calc = t3lib_div::shortMD5(serialize($regHash_array), 20);
 			// and store it with a serialized version of the array in the DB
 		$res =
-			$TYPO3_DB->exec_SELECTquery(
+			$GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'md5hash',
 				'cache_md5params',
 				'md5hash=' .
-					$TYPO3_DB->fullQuoteStr(
+					$GLOBALS['TYPO3_DB']->fullQuoteStr(
 						$regHash_calc,
 						'cache_md5params'
 					)
 				);
 
-		if (!$TYPO3_DB->sql_num_rows($res)) {
+		if (!$GLOBALS['TYPO3_DB']->sql_num_rows($res)) {
 			$insertFields = array (
 				'md5hash' => $regHash_calc,
 				'tstamp' => time(),
@@ -536,18 +530,17 @@ class tx_srfeuserregister_setfixed {
 				'params' => serialize($vars)
 			);
 
-			$TYPO3_DB->exec_INSERTquery(
+			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
 				'cache_md5params',
 				$insertFields
 			);
 		}
-		$TYPO3_DB->sql_free_result($res);
+		$GLOBALS['TYPO3_DB']->sql_free_result($res);
 		return $regHash_calc;
-	}	// storeFixedPiVars
+	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/control/class.tx_srfeuserregister_setfixed.php'])  {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/control/class.tx_srfeuserregister_setfixed.php']) {
   include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/control/class.tx_srfeuserregister_setfixed.php']);
 }
 ?>

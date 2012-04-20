@@ -9,6 +9,7 @@
 	* Fix bug #36306: Attachment fails with current trunk producing fatal error in div2007
 	* Fix bug #36307: Admin review E-Mail plain text rendering problem with current trunk
 	* Recommend setting ['MAIL']['substituteOldMailAPI'] to '1' in the Install tool
+	* Remove global declarations from tx_srfeuserregister_control, tx_srfeuserregister_control_main and tx_srfeuserregister_setfixed
 
 2012-04-16 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix variable name in class.tx_srfeuserregister_control_main.php

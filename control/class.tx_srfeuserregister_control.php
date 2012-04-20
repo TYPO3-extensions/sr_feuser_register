@@ -69,7 +69,6 @@ class tx_srfeuserregister_control {
 		&$setfixedObj,
 		&$urlObj
 	) {
-		global $TSFE;
 
 		$this->langObj = &$langObj;
 		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_conf');
@@ -110,7 +109,6 @@ class tx_srfeuserregister_control {
 		&$data,
 		&$adminFieldList
 	) {
-		global $TSFE;
 
 		$this->data = &$data;
 
@@ -123,11 +121,11 @@ class tx_srfeuserregister_control {
 		$dataArray = $this->data->getDataArray();
 		$feUserdata = $this->controlData->getFeUserData();
 
-		$theUid = ($dataArray['uid'] ? $dataArray['uid'] : ($feUserdata['rU'] ? $feUserdata['rU'] : (!in_array($cmd,$this->noLoginCommands) ? $TSFE->fe_user->user['uid'] : 0 )));
+		$theUid = ($dataArray['uid'] ? $dataArray['uid'] : ($feUserdata['rU'] ? $feUserdata['rU'] : (!in_array($cmd,$this->noLoginCommands) ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0 )));
 
 		if ($theUid) {
 			$this->data->setRecUid($theUid);
-			$newOrigArray = $TSFE->sys_page->getRawRecord($theTable, $theUid);
+			$newOrigArray = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $theUid);
 
 			if (isset($newOrigArray) && is_array($newOrigArray)) {
 				$this->tca->modifyRow($newOrigArray, TRUE);
@@ -145,7 +143,7 @@ class tx_srfeuserregister_control {
 					$cmd == 'setfixed'
 				) &&
 				(
-					($theTable != 'fe_users' || $theUid == $TSFE->fe_user->user['uid']) &&
+					($theTable != 'fe_users' || $theUid == $GLOBALS['TSFE']->fe_user->user['uid']) &&
 					count($origArray)
 				)
 			) {
@@ -314,7 +312,6 @@ class tx_srfeuserregister_control {
 		$templateCode,
 		&$error_message
 	) {
-		global $TSFE;
 
 		$this->controlData->setMode(MODE_NORMAL);
 
@@ -595,7 +592,7 @@ class tx_srfeuserregister_control {
 				if ($theTable === 'fe_users' &&
 					($cmd === 'edit' || $cmd === 'password') &&
 					($this->controlData->getBackURL() || ($this->conf['linkToPID'] && ($this->controlData->getFeUserData('linkToPID') || !$this->conf['linkToPIDAddButton']))) ) {
-					$destUrl = ($this->controlData->getBackURL() ? $this->controlData->getBackURL() : $this->cObj->getTypoLink_URL($this->conf['linkToPID'] . ',' . $TSFE->type));
+					$destUrl = ($this->controlData->getBackURL() ? $this->controlData->getBackURL() : $this->cObj->getTypoLink_URL($this->conf['linkToPID'] . ',' . $GLOBALS['TSFE']->type));
 					header('Location: '.t3lib_div::locationHeaderUrl($destUrl));
 					exit;
 				}
@@ -859,12 +856,11 @@ class tx_srfeuserregister_control {
 	* @return array  the updated array of passed variables
 	*/
 	public function userProcess ($mConfKey, &$passVar) {
-		global $TSFE;
 
 		if ($this->conf[$mConfKey]) {
 			$funcConf = $this->conf[$mConfKey . '.'];
 			$funcConf['parentObj'] = &$this;
-			$passVar = $TSFE->cObj->callUserFunction($this->conf[$mConfKey], $funcConf, $passVar);
+			$passVar = $GLOBALS['TSFE']->cObj->callUserFunction($this->conf[$mConfKey], $funcConf, $passVar);
 		}
 		return $passVar;
 	}	// userProcess
@@ -879,12 +875,11 @@ class tx_srfeuserregister_control {
 	* @return array  the updated array of passed variables
 	*/
 	public function userProcess_alt ($confVal, $confArr, $passVar) {
-		global $TSFE;
 
 		if ($confVal) {
 			$funcConf = $confArr;
 			$funcConf['parentObj'] = &$this;
-			$passVar = $TSFE->cObj->callUserFunction($confVal, $funcConf, $passVar);
+			$passVar = $GLOBALS['TSFE']->cObj->callUserFunction($confVal, $funcConf, $passVar);
 		}
 		return $passVar;
 	}	// userProcess_alt
