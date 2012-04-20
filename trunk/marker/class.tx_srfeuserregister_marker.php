@@ -95,12 +95,7 @@ class tx_srfeuserregister_marker {
 		}
 		$markerArray = array();
 
-			// prepare for character set settings
-		if ($GLOBALS['TSFE']->metaCharset) {
-			$charset = $GLOBALS['TSFE']->csConvObj->parse_charset($GLOBALS['TSFE']->metaCharset);
-		} else {
-			$charset = 'iso-8859-1'; // charset to be used in emails and form conversions
-		}
+		$charset = $GLOBALS['TSFE']->metaCharset ? $GLOBALS['TSFE']->metaCharset : 'utf-8';
 		$prefixId = $this->controlData->getPrefixId();
 		$extKey = $this->controlData->getExtKey();
 		$markerArray['###CHARSET###'] = $charset;
@@ -325,7 +320,7 @@ class tx_srfeuserregister_marker {
 
 		// Data field labels
 		$infoFieldArray = t3lib_div::trimExplode(',', $infoFields, 1);
-		$charset = $GLOBALS['TSFE']->renderCharset;
+		$charset = $GLOBALS['TSFE']->renderCharset ? $GLOBALS['TSFE']->renderCharset : 'utf-8';
 		$specialFieldArray = t3lib_div::trimExplode(',',$this->data->getSpecialFieldList(),1);
 
 		if ($specialFieldArray[0] != '') {

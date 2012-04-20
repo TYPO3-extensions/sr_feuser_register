@@ -328,7 +328,7 @@ class tx_srfeuserregister_tca {
 		$HSC = TRUE
 	) {
 
-		$charset = $GLOBALS['TSFE']->renderCharset;
+		$charset = $GLOBALS['TSFE']->renderCharset ? $GLOBALS['TSFE']->renderCharset : 'utf-8';
 		$mode = $this->controlData->getMode();
 		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 		$addressObj = $tablesObj->get('address');
