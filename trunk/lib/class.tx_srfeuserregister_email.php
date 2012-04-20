@@ -235,8 +235,6 @@ class tx_srfeuserregister_email {
 		$errorFieldArray,
 		$setFixedConfig = array()
 	) {
-		global $TSFE;
-
 		$missingSubpartArray = array();
 		$userSubpartsFound = 0;
 		$adminSubpartsFound = 0;
@@ -560,7 +558,7 @@ class tx_srfeuserregister_email {
 
 			// Check if we need to add an attachment
 		if ($this->conf['addAttachment'] && $this->conf['addAttachment.']['cmd'] == $cmd && $this->conf['addAttachment.']['sFK'] == $this->controlData->getFeUserData('sFK')) {
-			$file = ($this->conf['addAttachment.']['file'] ? $TSFE->tmpl->getFileName($this->conf['addAttachment.']['file']) : '');
+			$file = ($this->conf['addAttachment.']['file'] ? $GLOBALS['TSFE']->tmpl->getFileName($this->conf['addAttachment.']['file']) : '');
 		}
 			// SETFIXED_REVIEW will be sent to user only id the admin part is present
 		if (
@@ -662,7 +660,6 @@ class tx_srfeuserregister_email {
 		return $markerArray;
 	}	// addCSSStyleMarkers
 
-
 	/**
 	* Invokes the HTML mailing class
 	*
@@ -695,11 +692,10 @@ class tx_srfeuserregister_email {
 				$typo3Version >= 4007000 ||
 				(
 					$typo3Version >= 4005000 &&
-					isset($TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']) &&
-					is_array($TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']) &&
-					isset($TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']['substituteMailDelivery']) &&
-					is_array($TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']['substituteMailDelivery']) &&
-					array_search('t3lib_mail_SwiftMailerAdapter', $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']['substituteMailDelivery']) !== FALSE
+					is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']) &&
+					isset($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']['substituteMailDelivery']) &&
+					is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']['substituteMailDelivery']) &&
+					array_search('t3lib_mail_SwiftMailerAdapter', $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']['substituteMailDelivery']) !== FALSE
 				)
 			) {
 				$fromName = str_replace('"', '\'', $fromName);
