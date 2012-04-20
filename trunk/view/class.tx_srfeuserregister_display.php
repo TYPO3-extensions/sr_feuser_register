@@ -666,6 +666,12 @@ class tx_srfeuserregister_display {
 		$templateCode = $this->cObj->getSubpart($templateCode, $subpartMarker);
 
 		if ($templateCode != '') {
+				// Remove non-included fields
+			$templateCode =
+				$this->removeRequired(
+					$templateCode,
+					array()
+				);
 			$markerArray =
 				$this->marker->fillInMarkerArray(
 					$markerArray,
@@ -756,8 +762,21 @@ class tx_srfeuserregister_display {
 
 		$infoFields = explode(',', $this->data->fieldList);
 		if (!t3lib_extMgm::isLoaded('direct_mail')) {
-			$infoFields[] = 'module_sys_dmail_category';
-			$infoFields[] = 'module_sys_dmail_html';
+			$infoFields = array_merge(
+				$infoFields,
+				array(
+					'module_sys_dmail_category',
+					'module_sys_dmail_newsletter',
+					'module_sys_dmail_html',
+				)
+			);
+			$includedFields = array_diff(
+				$includedFields,
+				array(
+					'module_sys_dmail_category',
+					'module_sys_dmail_newsletter',
+				)
+			);
 		}
 
 		if (!$this->controlData->useCaptcha($cmdKey)) {
@@ -771,8 +790,8 @@ class tx_srfeuserregister_display {
 			}
 		}
 
-		foreach($infoFields as $k => $theField) {
-
+		foreach ($infoFields as $k => $theField) {
+				// Remove field required subpart, if field is not required
 			if (in_array(trim($theField), $requiredArray) ) {
 				if (!t3lib_div::inList($failure, $theField)) {
 					$templateCode =
@@ -796,6 +815,7 @@ class tx_srfeuserregister_display {
 						);
 				}
 			} else {
+					// Remove field included subpart, if field is not included and is not in failure list
 				if (!in_array(trim($theField), $includedFields) && !t3lib_div::inList($failure,  $theField)) {
 					$templateCode =
 						$this->cObj->substituteSubpart(
@@ -919,9 +939,15 @@ class tx_srfeuserregister_display {
 
 			// Display confirmation message
 		$subpartMarker = '###TEMPLATE_' . $key . '###';
-		$localTemplateCode = $this->cObj->getSubpart($templateCode, $subpartMarker);
+		$templateCode = $this->cObj->getSubpart($templateCode, $subpartMarker);
 
-		if ($localTemplateCode) {
+		if ($templateCode) {
+				// Remove non-included fields
+			$templateCode =
+				$this->removeRequired(
+					$templateCode,
+					$errorFieldArray
+				);
 			$markerArray =
 				$this->marker->fillInMarkerArray(
 					$markerArray,
@@ -975,10 +1001,14 @@ class tx_srfeuserregister_display {
 					);
 				}
 			}
-
+			$uppercase = FALSE;
+			$deleteUnusedMarkers = TRUE;
 			$content = $this->cObj->substituteMarkerArray(
-				$localTemplateCode,
-				$markerArray
+				$templateCode,
+				$markerArray,
+				'',
+				$uppercase,
+				$deleteUnusedMarkers
 			);
 		} else {
 			$langObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lang');
