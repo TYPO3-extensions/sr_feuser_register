@@ -512,8 +512,7 @@ class tx_srfeuserregister_tca {
 
 									if (is_array($itemArray)) {
 										$itemKeyArray = $this->getItemKeyArray($itemArray);
-
-										for($i = 0; $i < count ($valuesArray); $i++) {
+										for ($i = 0; $i < count ($valuesArray); $i++) {
 											$label = $this->langObj->getLLFromString($itemKeyArray[$valuesArray[$i]][0]);
 											if ($HSC) {
 												$label = htmlspecialchars($label, ENT_QUOTES, $charset);
@@ -535,28 +534,25 @@ class tx_srfeuserregister_tca {
 										if (!empty($firstValue) || count($valuesArray) > 1) {
 											$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
 											$where = 'uid IN (' . implode(',', $valuesArray) . ')';
-
-											$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+											$foreignRows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 												'*',
 												$colConfig['foreign_table'],
 												$where
 											);
-											$i = 0;
-											$languageUid = $this->controlData->getSysLanguageUid('ALL',$colConfig['foreign_table']);
-
-											while($row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-
-												if ($theTable == 'fe_users' && $colName == 'usergroup') {
-													$row2 = $this->getUsergroupOverlay($row2);
-												} else if ($localizedRow = $GLOBALS['TSFE']->sys_page->getRecordOverlay($colConfig['foreign_table'], $row2, $languageUid)) {
-													$row2 = $localizedRow;
+											$languageUid = $this->controlData->getSysLanguageUid('ALL', $colConfig['foreign_table']);
+											if (is_array($foreignRows) && count($foreignRows) > 0) {
+												for ($i = 0; $i < count($foreignRows); $i++) {
+													if ($theTable == 'fe_users' && $colName == 'usergroup') {
+														$foreignRows[$i] = $this->getUsergroupOverlay($foreignRows[$i]);
+													} else if ($localizedRow = $GLOBALS['TSFE']->sys_page->getRecordOverlay($colConfig['foreign_table'], $foreignRows[$i], $languageUid)) {
+														$foreignRows[$i] = $localizedRow;
+													}
+													$text = $foreignRows[$i][$titleField];
+													if ($HSC)	{
+														$text = htmlspecialchars($text, ENT_QUOTES, $charset);
+													}
+													$colContent .= (($bNotLast || $i < count($foreignRows) - 1 ) ?  $this->cObj->stdWrap($text, $stdWrap) : $text);
 												}
-												$text = $row2[$titleField];
-												if ($HSC)	{
-													$text = htmlspecialchars($text, ENT_QUOTES, $charset);
-												}
-												$colContent .= $this->cObj->stdWrap($text, $stdWrap);
-	// TODO: consider $bNotLast
 											}
 										}
 									}

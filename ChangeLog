@@ -1,6 +1,7 @@
 2012-04-20 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Remove global declarations from tx_srfeuserregister_tca
 	* Fix bug #36383: module_sys_dmail_newsletter not removed from admin review email
+	* Fix bug #36388: In preview mode, the list of user groups ends with suprfluous br
 
 2012-04-19 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up 2 to feature #36006: Test whether extension tt_address is loaded
