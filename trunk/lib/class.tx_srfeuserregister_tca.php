@@ -90,7 +90,6 @@ class tx_srfeuserregister_tca {
 
 
 	public function init2 (&$pibase, &$conf, &$controlData, &$langObj) {
-		global $TSFE, $TCA;
 
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
@@ -130,7 +129,6 @@ class tx_srfeuserregister_tca {
 	* @return array  the modified data array
 	*/
 	public function modifyTcaMMfields ($dataArray, &$modArray) {
-		global $TYPO3_DB;
 
 		$rcArray = $dataArray;
 
@@ -142,14 +140,14 @@ class tx_srfeuserregister_tca {
 				case 'select':
 					if ($colConfig['MM'] && $colConfig['foreign_table']) {
 						$where = 'uid_local = '.$dataArray['uid'];
-						$res = $TYPO3_DB->exec_SELECTquery(
+						$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 							'uid_foreign',
 							$colConfig['MM'],
 							$where
 						);
 						$valueArray = array();
 
-						while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
+						while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 							$valueArray[] = $row['uid_foreign'];
 						}
 						$rcArray[$colName] = implode(',', $valueArray);
@@ -171,7 +169,6 @@ class tx_srfeuserregister_tca {
 	* @return void
 	*/
 	public function modifyRow (&$dataArray, $bColumnIsCount=TRUE) {
-		global $TYPO3_DB;
 
 		if (isset($dataArray) && is_array($dataArray)) {
 			$fieldsList = array_keys($dataArray);
@@ -202,14 +199,14 @@ class tx_srfeuserregister_tca {
 								// the values from the mm table are already available as an array
 							} else if ($bColumnIsCount) {
 								$valuesArray = array();
-								$res = $TYPO3_DB->exec_SELECTquery(
+								$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 									'uid_local,uid_foreign,sorting',
 									$colConfig['MM'],
 									'uid_local=' . intval($dataArray['uid']),
 									'',
 									'sorting'
 								);
-								while ($row = $TYPO3_DB->sql_fetch_assoc($res)) {
+								while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 									$valuesArray[] = $row['uid_foreign'];
 								}
 								$dataArray[$colName] = $valuesArray;
@@ -269,12 +266,11 @@ class tx_srfeuserregister_tca {
 	* @return string 	foreign table where clause with replaced markers
 	*/
 	public function replaceForeignWhereMarker($whereClause, $colConfig) {
-		global $TYPO3_DB, $TSFE;
 
 		$foreignWhere = $colConfig['foreign_table_where'];
 
 		if ($foreignWhere) {
-			$pageTSConfig = $TSFE->getPagesTSconfig();
+			$pageTSConfig = $GLOBALS['TSFE']->getPagesTSconfig();
 			$TSconfig = $pageTSConfig['TCEFORM.'][$theTable.'.'][$colName.'.'];
 
 			if ($TSconfig) {
@@ -284,7 +280,7 @@ class tx_srfeuserregister_tca {
 				$foreignWhere =
 					str_replace(
 						'###PAGE_TSCONFIG_IDLIST###',
-						$TYPO3_DB->cleanIntList($TSconfig['PAGE_TSCONFIG_IDLIST']),
+						$GLOBALS['TYPO3_DB']->cleanIntList($TSconfig['PAGE_TSCONFIG_IDLIST']),
 						$foreignWhere
 					);
 			}
@@ -331,9 +327,8 @@ class tx_srfeuserregister_tca {
 		$bChangesOnly = FALSE,
 		$HSC = TRUE
 	) {
-		global $TYPO3_DB, $TCA, $TSFE;
 
-		$charset = $TSFE->renderCharset;
+		$charset = $GLOBALS['TSFE']->renderCharset;
 		$mode = $this->controlData->getMode();
 		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 		$addressObj = $tablesObj->get('address');
@@ -538,10 +533,10 @@ class tx_srfeuserregister_tca {
 										$firstValue = current($valuesArray);
 
 										if (!empty($firstValue) || count($valuesArray) > 1) {
-											$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
+											$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
 											$where = 'uid IN (' . implode(',', $valuesArray) . ')';
 
-											$res = $TYPO3_DB->exec_SELECTquery(
+											$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 												'*',
 												$colConfig['foreign_table'],
 												$where
@@ -549,11 +544,11 @@ class tx_srfeuserregister_tca {
 											$i = 0;
 											$languageUid = $this->controlData->getSysLanguageUid('ALL',$colConfig['foreign_table']);
 
-											while($row2 = $TYPO3_DB->sql_fetch_assoc($res)) {
+											while($row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 
 												if ($theTable == 'fe_users' && $colName == 'usergroup') {
 													$row2 = $this->getUsergroupOverlay($row2);
-												} else if ($localizedRow = $TSFE->sys_page->getRecordOverlay($colConfig['foreign_table'], $row2, $languageUid)) {
+												} else if ($localizedRow = $GLOBALS['TSFE']->sys_page->getRecordOverlay($colConfig['foreign_table'], $row2, $languageUid)) {
 													$row2 = $localizedRow;
 												}
 												$text = $row2[$titleField];
@@ -723,7 +718,7 @@ class tx_srfeuserregister_tca {
 
 								if ($colConfig['foreign_table']) {
 									t3lib_div::loadTCA($colConfig['foreign_table']);
-									$titleField = $TCA[$colConfig['foreign_table']]['ctrl']['label'];
+									$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
 									$reservedValues = array();
 									$whereClause = '1=1';
 
@@ -740,11 +735,11 @@ class tx_srfeuserregister_tca {
 
 									if (
 										$this->conf['useLocalization'] &&
-										$TCA[$colConfig['foreign_table']] &&
-										$TCA[$colConfig['foreign_table']]['ctrl']['languageField'] &&
-										$TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField']
+										$GLOBALS['TCA'][$colConfig['foreign_table']] &&
+										$GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['languageField'] &&
+										$GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['transOrigPointerField']
 									) {
-										$whereClause .= ' AND ' . $TCA[$colConfig['foreign_table']]['ctrl']['transOrigPointerField'] . '=0';
+										$whereClause .= ' AND ' . $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['transOrigPointerField'] . '=0';
 									}
 
 									if (
@@ -772,7 +767,7 @@ class tx_srfeuserregister_tca {
 									}
 									$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
 									$whereClause = $this->replaceForeignWhereMarker($whereClause,  $colConfig);
-									$res = $TYPO3_DB->exec_SELECTquery('*', $colConfig['foreign_table'], $whereClause, '', $TCA[$colConfig['foreign_table']]['ctrl']['sortby']);
+									$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $colConfig['foreign_table'], $whereClause, '', $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['sortby']);
 
 									if (!in_array($colName, $this->controlData->getRequiredArray())) {
 										if ($colConfig['renderMode'] == 'checkbox' || $colContent) {
@@ -783,7 +778,7 @@ class tx_srfeuserregister_tca {
 									}
 
 									$selectedValue = FALSE;
-									while ($row2 = $TYPO3_DB->sql_fetch_assoc($res)) {
+									while ($row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 											// Handle usergroup case
 										if ($colName === 'usergroup' && isset($userGroupObj) && is_object($userGroupObj)) {
 											if (!in_array($row2['uid'], $reservedValues)) {
@@ -803,7 +798,7 @@ class tx_srfeuserregister_tca {
 											}
 										} else {
 											$languageUid = $this->controlData->getSysLanguageUid('ALL',$colConfig['foreign_table']);
-											if ($localizedRow = $TSFE->sys_page->getRecordOverlay($colConfig['foreign_table'], $row2, $languageUid)) {
+											if ($localizedRow = $GLOBALS['TSFE']->sys_page->getRecordOverlay($colConfig['foreign_table'], $row2, $languageUid)) {
 												$row2 = $localizedRow;
 											}
 											$titleText = htmlspecialchars($row2[$titleField], ENT_QUOTES, $charset);
@@ -877,7 +872,6 @@ class tx_srfeuserregister_tca {
 		* @return	array		usergroup row which is overlayed with language_overlay record (or the overlay record alone)
 		*/
 	public function getUsergroupOverlay ($usergroup, $languageUid = '') {
-		global $TYPO3_DB;
 		// Initialize:
 		if ($languageUid == '') {
 			$languageUid = $this->controlData->getSysLanguageUid('ALL','fe_groups_language_overlay');
@@ -900,9 +894,9 @@ class tx_srfeuserregister_tca {
 				$whereClause = 'fe_group=' . intval($fe_groups_uid) . ' ' .
 					'AND sys_language_uid=' . intval($languageUid) . ' ' .
 					$this->cObj->enableFields('fe_groups_language_overlay');
-				$res = $TYPO3_DB->exec_SELECTquery(implode(',', $fieldArr), 'fe_groups_language_overlay', $whereClause);
-				if ($TYPO3_DB->sql_num_rows($res)) {
-					$row = $TYPO3_DB->sql_fetch_assoc($res);
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(implode(',', $fieldArr), 'fe_groups_language_overlay', $whereClause);
+				if ($GLOBALS['TYPO3_DB']->sql_num_rows($res)) {
+					$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 				}
 			}
 		}

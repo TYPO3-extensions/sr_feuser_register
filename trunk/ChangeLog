@@ -1,3 +1,6 @@
+2012-04-20 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Remove global declarations from tx_srfeuserregister_tca
+
 2012-04-19 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up 2 to feature #36006: Test whether extension tt_address is loaded
 	* Fix typo in comment in class.tx_srfeuserregister_marker.php
