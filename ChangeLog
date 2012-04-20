@@ -7,6 +7,7 @@
 	* Remove unnecessary access to secure array
 	* Add feature #36396: Always use character set utf-8 by default
 	* Add feature #36398: Password needs to be entered again when cancelling the preview
+	* Allow update of fe_users on setfixed
 
 2012-04-19 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up 2 to feature #36006: Test whether extension tt_address is loaded

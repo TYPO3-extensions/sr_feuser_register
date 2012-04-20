@@ -207,7 +207,7 @@ class tx_srfeuserregister_setfixed {
 								t3lib_div::trimExplode(',', $dataObj->fieldList), t3lib_div::trimExplode(',', implode($fieldArr, ','), 1)
 							)
 						);
-					if ($theTable !== 'fe_users' || $sFK !== 'ENTER') {
+					if ($sFK !== 'ENTER') {
 						$res = $this->cObj->DBgetUpdate(
 							$theTable,
 							$uid,
