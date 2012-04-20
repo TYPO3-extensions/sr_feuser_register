@@ -528,7 +528,9 @@ class tx_srfeuserregister_email {
 
 		if ($content['admin']['all']) {
 			$content['admin']['final'] .= $this->cObj->substituteSubpart($content['admin']['all'], '###SUB_RECORD###', $content['admin']['accum']);
-			// $content['admin']['final'] = str_replace('###http', '<http', strip_tags(str_replace('<http', '###http', $content['admin']['final'])));
+			$tmp = str_replace('<http', '###http', $content['admin']['final']);
+			$tmp = strip_tags($tmp);
+			$content['admin']['final'] = str_replace('###http', '<http', $tmp);
 			$content['admin']['final'] = $this->display->removeHTMLComments($content['admin']['final']);
 			$content['admin']['final'] = $this->display->replaceHTMLBr($content['admin']['final']);
 		}
