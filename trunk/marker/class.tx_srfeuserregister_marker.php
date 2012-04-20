@@ -925,7 +925,6 @@ class tx_srfeuserregister_marker {
 			$fieldArray = array_diff($fieldArray, array('hidden', 'disable'));
 
 			if ($theTable == 'fe_users') {
-				$fieldArray[] = 'password_again';
 				if ($this->conf[$cmdKey . '.']['useEmailAsUsername'] || $this->conf[$cmdKey . '.']['generateUsername']) {
 					$fieldArray = array_merge($fieldArray, array('username'));
 				}
