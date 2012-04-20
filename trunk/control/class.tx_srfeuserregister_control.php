@@ -337,7 +337,7 @@ class tx_srfeuserregister_control {
 			$this->data->setOrigArray($origArray);
 			$this->data->resetDataArray();
 			$finalDataArray = $dataArray;
-		} else if ($this->data->bNewAvailable() || $cmd === 'password') {
+		} else if ($this->data->bNewAvailable()) {
 			if ($theTable === 'fe_users') {
 				$securedArray = $this->controlData->readSecuredArray();
 			}

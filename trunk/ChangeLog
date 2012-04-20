@@ -4,6 +4,7 @@
 	* Fix bug #36388: In preview mode, the list of user groups ends with suprfluous br
 	* Follow-up 11 to feature #34447: Password edit when both username and email are disabled
 	* Cleanup outdated hidden field for password_again in tx_srfeuserregister_marker
+	* Remove unnecessary access to secure array
 
 2012-04-19 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up 2 to feature #36006: Test whether extension tt_address is loaded
