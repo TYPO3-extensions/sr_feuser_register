@@ -932,6 +932,9 @@ class tx_srfeuserregister_marker {
 				if ($this->conf[$cmdKey . '.']['useEmailAsUsername']) {
 					$fieldArray = array_merge($fieldArray, array('email'));
 				}
+				if ($cmdKey === 'edit' && !in_array('email', $fieldArray) && !in_array('username', $fieldArray)) {
+					$fieldArray = array_merge($fieldArray, array('username'));
+				}
 			}
 			$fields = implode(',', $fieldArray);
 			$fields = $this->controlData->getOpenFields($fields);
