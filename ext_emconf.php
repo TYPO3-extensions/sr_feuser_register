@@ -41,7 +41,7 @@ $EM_CONF[$_EXTKEY] = array(
 			'rsaauth' => '',
 			'saltedpasswords' => '',
 			'static_info_tables' => '2.3.0-',
-			'div2007' => '0.9.0-',
+			'div2007' => '0.10.0-',
 		),
 		'conflicts' => array(
 			'germandates' => '0.0.0-1.0.1',

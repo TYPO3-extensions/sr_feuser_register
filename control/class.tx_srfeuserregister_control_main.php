@@ -40,9 +40,6 @@
  *
  *
  */
-require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha.php');
-require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha5.php');
-
 class tx_srfeuserregister_control_main {
 	public $config = array();
 
