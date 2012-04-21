@@ -430,6 +430,9 @@ class tx_srfeuserregister_controldata {
 		foreach ($securedFieldArray as $securedField) {
 			if (isset($row[$securedField]) && !empty($row[$securedField])) {
 				$data[$securedField] = $row[$securedField];
+				if ($securedField === 'password' || $securedField === 'password_again') {
+					unset($row[$securedField]);
+				}
 			}
 		}
 			// Update FE user session data if required
@@ -447,7 +450,7 @@ class tx_srfeuserregister_controldata {
 		$generatedPassword = substr(md5(uniqid(microtime(), 1)), 0, 32);
 		$dataArray['password'] = $generatedPassword;
 		$dataArray['password_again'] = $generatedPassword;
-		$this->securePassword($dataArray);
+		$this->writePassword($generatedPassword);
 	}
 	/**
 	* Writes the password to session data
@@ -458,8 +461,8 @@ class tx_srfeuserregister_controldata {
 	protected function writePassword ($password) {
 		$sessionData = $this->readSessionData();
 		if ($password == '') {
-			unset($sessionData['password']);
-			unset($sessionData['password_again']);
+			$sessionData['password'] = '__UNSET';
+			$sessionData['password_again'] = '__UNSET';
 		} else {
 			$sessionData['password'] = $password;
 		}
@@ -508,7 +511,7 @@ class tx_srfeuserregister_controldata {
 	protected function writeToken ($token) {
 		$sessionData = $this->readSessionData();
 		if ($token == '') {
-			unset($sessionData['token']);
+			$sessionData['token'] = '__UNSET';
 		} else {
 			$sessionData['token'] = $token;
 		}
@@ -589,12 +592,23 @@ class tx_srfeuserregister_controldata {
 			// Read all session data
 		$allSessionData = $this->readSessionData(TRUE);
 		if (is_array($allSessionData[$extKey])) {
+			$keys = array_keys($allSessionData[$extKey]);
 			if ($clearSession) {
-				$keys = array_keys($allSessionData[$extKey]);
 				foreach ($keys as $key) {
 					unset($allSessionData[$extKey][$key]);
 				}
+			} else {
+				$typo3Version = class_exists('t3lib_utility_VersionNumber') ? t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) : t3lib_div::int_from_ver(TYPO3_version);
+				if ($typo3Version < 4007000) {
+					foreach ($keys as $key) {
+						if ($data[$key] === '__UNSET') {
+							unset($data[$key]);
+							unset($allSessionData[$extKey][$key]);
+						}
+					}
+				}				
 			}
+			
 			$allSessionData[$extKey] = t3lib_div::array_merge_recursive_overrule($allSessionData[$extKey], $data);
 		} else {
 			$allSessionData[$extKey] = $data;

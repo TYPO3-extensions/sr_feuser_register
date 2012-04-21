@@ -944,6 +944,12 @@ class tx_srfeuserregister_marker {
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $theTable . '][' . $theField . ']" value="' . $value . '" />';
 			}
 		}
+			// Password change form probably contains neither email nor username
+		if ($cmdKey === 'password' && !in_array('email', $fieldArray) && !in_array('username', $fieldArray)) {
+			$theField = 'username';
+			$value = htmlspecialchars($dataArray[$theField]);
+			$markerArray['###HIDDENFIELDS###'] .= LF . '<input type="hidden" name="FE[' . $theTable . '][' . $theField . ']" value="' . $value . '" />';
+		}
 
 		$this->addFormToken($markerArray, $token);
 	}	// addHiddenFieldsMarkers
