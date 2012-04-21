@@ -293,6 +293,7 @@ class tx_srfeuserregister_display {
 					}
 				}
 			}
+			$currentArray = array_merge($currentArray, $dataArray);
 			$key = ($cmd == 'invite') ? 'INVITE': 'CREATE';
 
 			$bNeedUpdateJS = TRUE;
