@@ -1,3 +1,6 @@
+2012-04-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Require div2007 0.10.0
+
 2012-04-20 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Remove global declarations from tx_srfeuserregister_tca
 	* Fix bug #36383: module_sys_dmail_newsletter not removed from admin review email
