@@ -3,6 +3,7 @@
 	* Follow-up 12 to feature #34447: Avoid retrieving private key when no password is set
 	* Follow-up to feature #36191: Remove left over debugging code
 	* Follow-up 13 to feature #34447: Remove secured password from data array
+	* Fix bug #15231 (old bug tracker): when generating username, the username is not shown in the preview page
 
 2012-04-20 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Remove global declarations from tx_srfeuserregister_tca
