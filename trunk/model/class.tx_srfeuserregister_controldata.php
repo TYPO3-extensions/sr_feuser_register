@@ -136,11 +136,6 @@ class tx_srfeuserregister_controldata {
 		$feUserData = t3lib_div::_GP($this->getPrefixId());
 		$bSecureStartCmd = (count($feUserData) == 1 && in_array($feUserData['cmd'], array('create', 'edit')));
 		$bValidRegHash = FALSE;
-									$er = session_start();
-									$captchaString = $_SESSION['tx_captcha_string'];
-									if ($captchaString) {
-										die(strval($captchaString));
-									}
 		// <Steve Webster added short url feature>
 		if ($this->conf['useShortUrls']) {
 			$this->cleanShortUrlCache();
