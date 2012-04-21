@@ -80,55 +80,64 @@ class tx_srfeuserregister_transmission_security {
 	public function decryptIncomingFields (array &$row) {
 		$success = TRUE;
 		$fields = array('password', 'password_again');
-		switch ($this->getTransmissionSecurityLevel()) {
-			case 'rsa':
-					// Get services from rsaauth
-					// Can't simply use the authentication service because we have two fields to decrypt
-				$backend = tx_rsaauth_backendfactory::getBackend();
-				$storage = tx_rsaauth_storagefactory::getStorage();
-				/* @var $storage tx_rsaauth_abstract_storage */
-				if (is_object($backend) && is_object($storage)) {
-					$key = $storage->get();
-					if ($key != NULL) {
-						foreach ($fields as $field) {
-							if (isset($row[$field]) && $row[$field] !== '') {
-								if (substr($row[$field], 0, 4) === 'rsa:') {
-										// Decode password
-									$result = $backend->decrypt($key, substr($row[$field], 4));
-									if ($result) {
-										$row[$field] = $result;
-									} else {
-											// RSA auth service failed to process incoming password
-											// May happen if the key is wrong
-											// May happen if multiple instance of rsaauth on same page
-										$success = FALSE;
-										$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_rsaauth_process_incoming_password_failed');
-										t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
+		$incomingFieldSet = FALSE;
+		foreach ($fields as $field) {
+			if (isset($row[$field])) {
+				$incomingFieldSet = TRUE;
+				break;
+			}
+		}
+		if ($incomingFieldSet) {
+			switch ($this->getTransmissionSecurityLevel()) {
+				case 'rsa':
+						// Get services from rsaauth
+						// Can't simply use the authentication service because we have two fields to decrypt
+					$backend = tx_rsaauth_backendfactory::getBackend();
+					$storage = tx_rsaauth_storagefactory::getStorage();
+					/* @var $storage tx_rsaauth_abstract_storage */
+					if (is_object($backend) && is_object($storage)) {
+						$key = $storage->get();
+						if ($key != NULL) {
+							foreach ($fields as $field) {
+								if (isset($row[$field]) && $row[$field] !== '') {
+									if (substr($row[$field], 0, 4) === 'rsa:') {
+											// Decode password
+										$result = $backend->decrypt($key, substr($row[$field], 4));
+										if ($result) {
+											$row[$field] = $result;
+										} else {
+												// RSA auth service failed to process incoming password
+												// May happen if the key is wrong
+												// May happen if multiple instance of rsaauth on same page
+											$success = FALSE;
+											$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_rsaauth_process_incoming_password_failed');
+											t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
+										}
 									}
 								}
 							}
+								// Remove the key
+							$storage->put(NULL);
+						} else {
+								// RSA auth service failed to retrieve private key
+								// May happen if the key was already removed
+							$success = FALSE;
+							$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_rsaauth_retrieve_private_key_failed');
+							t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 						}
-							// Remove the key
-						$storage->put(NULL);
 					} else {
-							// RSA auth service failed to retrieve private key
-							// May happen if the key was already removed
+							// Required RSA auth backend not available
+							// Should not happen: checked in tx_srfeuserregister_pi1_base::checkRequirements
 						$success = FALSE;
-						$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_rsaauth_retrieve_private_key_failed');
+						$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_rsaauth_backend_not_available');
 						t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 					}
-				} else {
-						// Required RSA auth backend not available
-						// Should not happen: checked in tx_srfeuserregister_pi1_base::checkRequirements
-					$success = FALSE;
-					$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_rsaauth_backend_not_available');
-					t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
-				}
-				break;
-			case 'normal':
-			default:
-					// Nothing to decrypt
-				break;	
+					break;
+				case 'normal':
+				default:
+						// Nothing to decrypt
+					break;	
+			}
 		}
 		return $success;
 	}
