@@ -1,5 +1,6 @@
 2012-04-22 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug 36433: Non-closed br tags in pi1/locallang.xml
+	* Fix bug 36434: locallang.xml contains \n characters combination
 
 2012-04-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Require div2007 0.10.0
