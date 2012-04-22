@@ -505,11 +505,16 @@ class tx_srfeuserregister_setfixed {
 	 *  Store the setfixed vars and return a replacement hash
 	 */
 	public function storeFixedPiVars ($vars) {
-
-			// create a unique hash value
-		$regHash_array =
-			t3lib_div::cHashParams(t3lib_div::implodeArrayForUrl('', $vars));
-		$regHash_calc = t3lib_div::shortMD5(serialize($regHash_array), 20);
+			// Create a unique hash value
+		if (class_exists('t3lib_cacheHash')) {
+			$cacheHash = t3lib_div::makeInstance('t3lib_cacheHash');
+			$regHash_calc = $cacheHash->calculateCacheHash($vars);
+			$regHash_calc = substr($regHash_calc, 0, 20);
+		} else {
+				// t3lib_div::cHashParams is deprecated in TYPO3 4.7
+			$regHash_array = t3lib_div::cHashParams(t3lib_div::implodeArrayForUrl('', $vars));
+			$regHash_calc = t3lib_div::shortMD5(serialize($regHash_array), 20);
+		}
 			// and store it with a serialized version of the array in the DB
 		$res =
 			$GLOBALS['TYPO3_DB']->exec_SELECTquery(

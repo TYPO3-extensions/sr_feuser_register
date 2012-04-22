@@ -3,6 +3,7 @@
 	* Fix bug #36434: locallang.xml contains \n characters combination
 	* Fix bug #15661 (old bug tracker): broken linefeed handling in plain text emails
 	* Fix bug #36434: Broken linefeed handling in plain text emails
+	* Fix bug #36442: t3lib_div::cHashParams is deprecated in TYPO3 4.7
 
 2012-04-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Require div2007 0.10.0
