@@ -1027,7 +1027,7 @@ class tx_srfeuserregister_display {
 
 
 	public function replaceHTMLBr ($content) {
-		$result = preg_replace('/<br\s?\/>/', chr(10), $content);
+		$result = preg_replace('/<br\s?\/?>/', LF, $content);
 		return $result;
 	}
 }

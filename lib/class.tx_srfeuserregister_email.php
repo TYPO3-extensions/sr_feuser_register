@@ -506,11 +506,15 @@ class tx_srfeuserregister_email {
 			// Substitute the markers and eliminate HTML markup from plain text versions, but preserve <http://...> constructs
 		if ($content['user']['all']) {
 			$content['user']['final'] .= $this->cObj->substituteSubpart($content['user']['all'], '###SUB_RECORD###', $content['user']['accum']);
+			$content['user']['final'] = $this->display->removeHTMLComments($content['user']['final']);
+			$content['user']['final'] = $this->display->replaceHTMLBr($content['user']['final']);
 			$tmp = str_replace('<http', '###http', $content['user']['final']);
 			$tmp = strip_tags($tmp);
 			$content['user']['final'] = str_replace('###http', '<http', $tmp);
-			$content['user']['final'] = $this->display->removeHTMLComments($content['user']['final']);
-			$content['user']['final'] = $this->display->replaceHTMLBr($content['user']['final']);
+				// Remove erroneous \n from locallang file
+			$content['user']['final'] = str_replace('\n', '', $content['user']['final']);
+				// Remove surfluous LF's
+			$content['user']['final'] = preg_replace('/[' . preg_quote(LF) . ']{3,}/', LF . LF, $content['user']['final']);
 		}
 
 		if ($content['userhtml']['all']) {
@@ -524,15 +528,21 @@ class tx_srfeuserregister_email {
 						$this->controlData->getExtKey()
 					)
 				);
+				// Remove erroneous \n from locallang file
+			$content['userhtml']['final'] = str_replace('\n', '', $content['userhtml']['final']);
 		}
 
 		if ($content['admin']['all']) {
 			$content['admin']['final'] .= $this->cObj->substituteSubpart($content['admin']['all'], '###SUB_RECORD###', $content['admin']['accum']);
+			$content['admin']['final'] = $this->display->removeHTMLComments($content['admin']['final']);
+			$content['admin']['final'] = $this->display->replaceHTMLBr($content['admin']['final']);
 			$tmp = str_replace('<http', '###http', $content['admin']['final']);
 			$tmp = strip_tags($tmp);
 			$content['admin']['final'] = str_replace('###http', '<http', $tmp);
-			$content['admin']['final'] = $this->display->removeHTMLComments($content['admin']['final']);
-			$content['admin']['final'] = $this->display->replaceHTMLBr($content['admin']['final']);
+				// Remove erroneous \n from locallang file
+			$content['admin']['final'] = str_replace('\n', '', $content['admin']['final']);
+				// Remove surfluous LF's
+			$content['admin']['final'] = preg_replace('/[' . preg_quote(LF) . ']{3,}/', LF . LF, $content['admin']['final']);
 		}
 
 		if ($content['adminhtml']['all']) {
@@ -546,6 +556,8 @@ class tx_srfeuserregister_email {
 						$this->controlData->getExtKey()
 					)
 				);
+				// Remove erroneous \n from locallang file
+			$content['adminhtml']['final'] = str_replace('\n', '', $content['adminhtml']['final']);
 		}
 
 		$bRecipientIsInt = (
