@@ -1,3 +1,6 @@
+2012-04-22 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug 36433: Non-closed br tags in pi1/locallang.xml
+
 2012-04-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Require div2007 0.10.0
 	* Follow-up 12 to feature #34447: Avoid retrieving private key when no password is set
