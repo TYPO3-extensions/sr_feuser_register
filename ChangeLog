@@ -3,6 +3,7 @@
 	* Follow-up 14 to feature #34447: Add hidden username if needed
 	* Cleanup captcha-related code
 	* Add feature #36492: Use t3lib_div::isValidUrl to validate url's
+	* Update manual
 	
 2012-04-22 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #36433: Non-closed br tags in pi1/locallang.xml
