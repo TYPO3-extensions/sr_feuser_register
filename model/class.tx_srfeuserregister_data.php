@@ -695,15 +695,14 @@ class tx_srfeuserregister_data {
 							break;
 							case 'wwwURL':
 								if ($dataArray[$theField]) {
-									$wwwURLOptions = array (
-										'AssumeProtocol' => 'http' ,
-										'AllowBracks' => TRUE ,
-										'AllowedProtocols' => array(0 => 'http', 1 => 'https', ) ,
-										'Require' => array('Protocol' => FALSE , 'User' => FALSE , 'Password' => FALSE , 'Server' => TRUE , 'Resource' => FALSE , 'TLD' => TRUE , 'Port' => FALSE , 'QueryString' => FALSE , 'Anchor' => FALSE , ) ,
-										'Forbid' => array('Protocol' => FALSE , 'User' => TRUE , 'Password' => TRUE , 'Server' => FALSE , 'Resource' => FALSE , 'TLD' => FALSE , 'Port' => TRUE , 'QueryString' => FALSE , 'Anchor' => FALSE , ) ,
-									);
-									$wwwURLResult = tx_srfeuserregister_pi1_urlvalidator::_ValURL($dataArray[$theField],  $wwwURLOptions);
-									if ($wwwURLResult['Result'] != 'EW_OK' ) {
+									$urlParts = parse_url($dataArray[$theField]);
+									if (
+										$urlParts === FALSE ||
+										!t3lib_div::isValidUrl($dataArray[$theField]) ||
+										($urlParts['scheme'] !== 'http' && $urlParts['scheme'] !== 'https') ||
+										$urlParts['user'] ||
+										$urlParts['pass']
+									) {
 										$failureArray[] = $theField;
 										$this->inError[$theField] = TRUE;
 										$this->evalErrors[$theField][] = $theCmd;
@@ -991,21 +990,19 @@ class tx_srfeuserregister_data {
 							break;
 							case 'wwwURL':
 								if ($dataValue) {
-									$wwwURLOptions = array (
-										'AssumeProtocol' => 'http' ,
-										'AllowBracks' => TRUE ,
-										'AllowedProtocols' => array(0 => 'http', 1 => 'https', ) ,
-										'Require' => array('Protocol' => FALSE , 'User' => FALSE , 'Password' => FALSE , 'Server' => TRUE , 'Resource' => FALSE , 'TLD' => TRUE , 'Port' => FALSE , 'QueryString' => FALSE , 'Anchor' => FALSE , ) ,
-										'Forbid' => array('Protocol' => FALSE , 'User' => TRUE , 'Password' => TRUE , 'Server' => FALSE , 'Resource' => FALSE , 'TLD' => FALSE , 'Port' => TRUE , 'QueryString' => FALSE , 'Anchor' => FALSE , ) ,
-									);
-									$wwwURLResult =
-										tx_srfeuserregister_pi1_urlvalidator::_ValURL(
-											$dataValue,
-											$wwwURLOptions
-										);
-
-									if ($wwwURLResult['Result'] = 'EW_OK' ) {
-										$dataValue = $wwwURLResult['Value'];
+									$urlParts = parse_url($dataValue);
+									if ($urlParts !== FALSE) {
+										if (!$urlParts['scheme']) {
+											$urlParts['scheme'] = 'http';
+											$dataValue = $urlParts['scheme'] . '://' . $dataValue;
+										}
+										if (t3lib_div::isValidUrl($dataValue)) {
+											$dataValue = $urlParts['scheme'] . '://' . 
+												$urlParts['host'] .
+												$urlParts['path'] .
+												($urlParts['query'] ? '?' . $urlParts['query'] : '') .
+												($urlParts['fragment'] ? '#' . $urlParts['fragment'] : '');
+										}
 									}
 								}
 							break;
