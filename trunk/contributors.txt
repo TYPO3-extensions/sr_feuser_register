@@ -9,7 +9,6 @@ Cornelia Lange http://www.clkm.de/: The extension includes two link icons author
 Volker Graubaum <volker.graubaum@e-netconsulting.de>: The email attachment feature
 Helmut Hummel, TYPO3 Security Team
 Oliver Klee <typo3-coding@oliverklee.de>: several bug fixes and code improvements. This extension incorporates a script borrowed from extension Salutation Switcher (salutation switcher) to allow to set informal salutation mode.
-Esben Maaløe <esm@baseclassmodulweb.dk>: Validation of Internet site URLs is based on URL Validator http://baseclass.modulweb.dk/urlvalidator/
 John Lim: In order to support dates before 1970, the field “date of birth” is handled with the ADOdb Date Time Library. http://phplens.com/phpeverywhere/adodb_date_library
 Dylan Kuhn <dkuhn1@yahoo.com>: Sharing his ideas and code for extending this extension with TCA-driven fields.
 Ries van Twisk <ries@vantwisk.nl>: Sharing of his code to support fields with multiple checkboxes and to incorporate additional hooks.
