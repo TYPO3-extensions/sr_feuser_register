@@ -393,7 +393,7 @@ class tx_srfeuserregister_data {
 		$failureMsg = array();
 		$displayFieldArray = t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1);
 		if ($this->controlData->useCaptcha($cmdKey)) {
-			$displayFieldArray[] = 'captcha_response';
+			$displayFieldArray = array_merge($displayFieldArray, array('captcha_response'));
 		}
 
 		// Check required, set failure if not ok.

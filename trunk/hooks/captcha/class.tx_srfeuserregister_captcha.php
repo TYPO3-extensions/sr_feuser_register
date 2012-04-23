@@ -61,12 +61,17 @@ class tx_srfeuserregister_captcha {
 			t3lib_extMgm::isLoaded('captcha') &&
 			isset($dataArray[$theField])
 		) {
+			$captchaString = '';
 			$started = session_start();
-			$captchaString = $_SESSION['tx_captcha_string'];
-			if (empty($captchaString) || $dataArray['captcha_response'] !== $captchaString) {
-				$errorField = $theField;
+			if (isset($_SESSION['tx_captcha_string'])) {
+				$captchaString = $_SESSION['tx_captcha_string'];
+				if (empty($captchaString) || $dataArray['captcha_response'] !== $captchaString) {
+					$errorField = $theField;
+				} else {
+					$_SESSION['tx_captcha_string'] = '';
+				}
 			} else {
-				$_SESSION['tx_captcha_string'] = '';
+				$errorField = $theField;
 			}
 		}
 		return $errorField;

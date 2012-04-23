@@ -1,6 +1,7 @@
 2012-04-23 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up to bug #35882: Corrections to template subpart "terms acknowledged" on edit form
 	* Follow-up 14 to feature #34447: Add hidden username if needed
+	* Cleanup captcha-related code
 	
 2012-04-22 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #36433: Non-closed br tags in pi1/locallang.xml
