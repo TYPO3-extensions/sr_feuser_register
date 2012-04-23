@@ -915,8 +915,8 @@ class tx_srfeuserregister_marker {
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $theTable . '][email]" value="' . htmlspecialchars($dataArray['email']) . '" />';
 			}
 		}
+		$fieldArray = t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1);
 		if ($mode == MODE_PREVIEW) {
-			$fieldArray = explode(',', $this->conf[$cmdKey . '.']['fields']);
 			$fieldArray = array_diff($fieldArray, array('hidden', 'disable'));
 
 			if ($theTable == 'fe_users') {
@@ -934,7 +934,7 @@ class tx_srfeuserregister_marker {
 			$fields = $this->controlData->getOpenFields($fields);
 			$fieldArray = explode(',', $fields);
 
-			foreach($fieldArray as $theField) {
+			foreach ($fieldArray as $theField) {
 				$value = $dataArray[$theField];
 				if (is_array($value)) {
 					$value = implode (',', $value);
@@ -943,9 +943,13 @@ class tx_srfeuserregister_marker {
 				}
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $theTable . '][' . $theField . ']" value="' . $value . '" />';
 			}
-		}
-			// Password change form probably contains neither email nor username
-		if ($cmdKey === 'password' && !in_array('email', $fieldArray) && !in_array('username', $fieldArray)) {
+		} else if (
+				($theTable === 'fe_users') &&
+				($cmdKey === 'edit' || $cmdKey === 'password') &&
+				!in_array('email', $fieldArray) &&
+				!in_array('username', $fieldArray)
+			) {
+				// Password change form probably contains neither email nor username
 			$theField = 'username';
 			$value = htmlspecialchars($dataArray[$theField]);
 			$markerArray['###HIDDENFIELDS###'] .= LF . '<input type="hidden" name="FE[' . $theTable . '][' . $theField . ']" value="' . $value . '" />';
