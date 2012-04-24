@@ -505,12 +505,12 @@ class tx_srfeuserregister_email {
 
 			// Substitute the markers and eliminate HTML markup from plain text versions, but preserve <http://...> constructs
 		if ($content['user']['all']) {
-			$content['user']['final'] .= $this->cObj->substituteSubpart($content['user']['all'], '###SUB_RECORD###', $content['user']['accum']);
+			$content['user']['final'] = $this->cObj->substituteSubpart($content['user']['all'], '###SUB_RECORD###', $content['user']['accum']);
 			$content['user']['final'] = $this->display->removeHTMLComments($content['user']['final']);
 			$content['user']['final'] = $this->display->replaceHTMLBr($content['user']['final']);
-			$tmp = str_replace('<http', '###http', $content['user']['final']);
-			$tmp = strip_tags($tmp);
-			$content['user']['final'] = str_replace('###http', '<http', $tmp);
+			$content['user']['final'] = str_replace('<http', '###http', $content['user']['final']);
+			$content['user']['final'] = strip_tags($content['user']['final']);
+			$content['user']['final'] = str_replace('###http', '<http', $content['user']['final']);
 				// Remove erroneous \n from locallang file
 			$content['user']['final'] = str_replace('\n', '', $content['user']['final']);
 				// Remove surfluous LF's
@@ -518,7 +518,7 @@ class tx_srfeuserregister_email {
 		}
 
 		if ($content['userhtml']['all']) {
-			$content['userhtml']['final'] .=
+			$content['userhtml']['final'] =
 				$this->cObj->substituteSubpart(
 					$content['userhtml']['all'],
 					'###SUB_RECORD###',
@@ -528,17 +528,19 @@ class tx_srfeuserregister_email {
 						$this->controlData->getExtKey()
 					)
 				);
+				// Remove HTML comments
+			$content['userhtml']['final'] = $this->display->removeHTMLComments($content['userhtml']['final']);
 				// Remove erroneous \n from locallang file
 			$content['userhtml']['final'] = str_replace('\n', '', $content['userhtml']['final']);
 		}
 
 		if ($content['admin']['all']) {
-			$content['admin']['final'] .= $this->cObj->substituteSubpart($content['admin']['all'], '###SUB_RECORD###', $content['admin']['accum']);
+			$content['admin']['final'] = $this->cObj->substituteSubpart($content['admin']['all'], '###SUB_RECORD###', $content['admin']['accum']);
 			$content['admin']['final'] = $this->display->removeHTMLComments($content['admin']['final']);
 			$content['admin']['final'] = $this->display->replaceHTMLBr($content['admin']['final']);
-			$tmp = str_replace('<http', '###http', $content['admin']['final']);
-			$tmp = strip_tags($tmp);
-			$content['admin']['final'] = str_replace('###http', '<http', $tmp);
+			$content['admin']['final'] = str_replace('<http', '###http', $content['admin']['final']);
+			$content['admin']['final'] = strip_tags($content['admin']['final']);
+			$content['admin']['final'] = str_replace('###http', '<http', $content['admin']['final']);
 				// Remove erroneous \n from locallang file
 			$content['admin']['final'] = str_replace('\n', '', $content['admin']['final']);
 				// Remove surfluous LF's
@@ -546,7 +548,7 @@ class tx_srfeuserregister_email {
 		}
 
 		if ($content['adminhtml']['all']) {
-			$content['adminhtml']['final'] .=
+			$content['adminhtml']['final'] =
 				$this->cObj->substituteSubpart(
 					$content['adminhtml']['all'],
 					'###SUB_RECORD###',
@@ -556,6 +558,8 @@ class tx_srfeuserregister_email {
 						$this->controlData->getExtKey()
 					)
 				);
+				// Remove HTML comments
+			$content['adminhtml']['final'] = $this->display->removeHTMLComments($content['adminhtml']['final']);
 				// Remove erroneous \n from locallang file
 			$content['adminhtml']['final'] = str_replace('\n', '', $content['adminhtml']['final']);
 		}
@@ -750,7 +754,7 @@ class tx_srfeuserregister_email {
 				$mail->setTo(array($recipient));
 				$mail->send();
 			} else {
-				require_once(PATH_BE_div2007 . 'class.tx_div2007_email.php');
+				//require_once(PATH_BE_div2007 . 'class.tx_div2007_email.php');
 				tx_div2007_email::sendMail(
 					$recipient,
 					$subject,
