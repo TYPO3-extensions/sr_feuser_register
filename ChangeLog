@@ -3,6 +3,7 @@
 	* Fix class name in ext_autoload.php
 	* Revert class name change in ext_autoload.php
 	* Cleanup in class.tx_srfeuserregister_email.php
+	* Remove require_once class.tx_div2007_email.php in class.tx_srfeuserregister_email.php
 
 2012-04-23 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up to bug #35882: Corrections to template subpart "terms acknowledged" on edit form

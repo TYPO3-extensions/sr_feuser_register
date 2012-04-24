@@ -754,7 +754,6 @@ class tx_srfeuserregister_email {
 				$mail->setTo(array($recipient));
 				$mail->send();
 			} else {
-				//require_once(PATH_BE_div2007 . 'class.tx_div2007_email.php');
 				tx_div2007_email::sendMail(
 					$recipient,
 					$subject,
