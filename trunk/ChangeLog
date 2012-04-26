@@ -1,3 +1,6 @@
+2012-04-26 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #36590: Infomail form does not display email validation error
+
 2012-04-24 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Cleanup in ext_localconf.php
 	* Fix class name in ext_autoload.php

@@ -662,7 +662,8 @@ class tx_srfeuserregister_display {
 		$origArray,
 		$row = '',
 		$securedArray,
-		$bCheckEmpty = TRUE
+		$bCheckEmpty = TRUE,
+		$failure = ''
 	) {
 		$templateCode = $this->cObj->getSubpart($templateCode, $subpartMarker);
 
@@ -671,7 +672,8 @@ class tx_srfeuserregister_display {
 			$templateCode =
 				$this->removeRequired(
 					$templateCode,
-					array()
+					explode(',', $failure),
+					$failure
 				);
 			$markerArray =
 				$this->marker->fillInMarkerArray(
