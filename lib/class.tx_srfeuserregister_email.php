@@ -200,7 +200,9 @@ class tx_srfeuserregister_email {
 					$markerArray,
 					$origArr,
 					'',
-					$securedArray
+					$securedArray,
+					TRUE,
+					$failure
 				);
 			}
 		} else {
