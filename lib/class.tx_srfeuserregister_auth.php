@@ -48,20 +48,23 @@ class tx_srfeuserregister_auth {
 	public $config = array();
 	public $authCode;
 
-	public function init (&$pibase, &$conf, &$config)	{
+	public function init (&$pibase, &$conf, &$config) {
 		$this->pibase = &$pibase;
 		$this->conf = &$conf;
 		$this->config = &$config;
-		$this->config['addKey'] = 'A';
+		$this->config['addKey'] = '';
 
 			// Setting the authCode length
 		$this->config['codeLength'] = 8;
-		if (isset($this->conf['authcodeFields.']) && is_array($this->conf['authcodeFields.']))	{
-			if (intval($this->conf['authcodeFields.']['codeLength']))	{
+		if (isset($this->conf['authcodeFields.']) && is_array($this->conf['authcodeFields.'])) {
+			if (intval($this->conf['authcodeFields.']['codeLength'])) {
 				$this->config['codeLength'] = intval($this->conf['authcodeFields.']['codeLength']);
 			}
-
-			if ($this->conf['authcodeFields.']['addKey'])	{
+				// Additional key may be used for additional security and/or
+				// to isolate multiple sr_feuser_register configurations on the same installation
+				// This makes the authCode incompatible with TYPO3 standard authCode
+				// See t3lib_div::stdAuthCode
+			if ($this->conf['authcodeFields.']['addKey']) {
 				$this->config['addKey'] = $this->conf['authcodeFields.']['addKey'];
 			}
 		}
@@ -76,47 +79,57 @@ class tx_srfeuserregister_auth {
 	}
 
 	/**
-	* Computes the authentication code
-	*
-	* @param array  $r: the data array
-	* @param string  $extra: some extra mixture
-	* @return string  the code
-	*/
-	public function authCode ($r, $fields = '', $extra = '') {
-
-		$rc = '';
-		$l = $this->config['codeLength'];
-		$value = '';
-
+	 * Computes the authentication code
+	 * a variant of t3lib_div::stdAuthCode with added extras
+	 *
+	 * @param array $record Record
+	 * @param string $fields List of fields from the record to include in the computation, if that is given.
+	 * @param string  $extra: some extra non-standard mixture
+	 * @params boolean $rawUrlDecode: whether to rawurldecode the record values
+	 * @return string MD5 hash (default length of 8 for compatibility with Direct Mail)
+	 */
+	public function authCode (array $record, $fields = '', $extra = '', $rawUrlDecode = FALSE) {
+		$codeLength = intval($this->config['codeLength']) ? intval($this->config['codeLength']) : 8;
+		$recordCopy = array();
 		if ($fields) {
-			$recCopy_temp=array();
-			$fieldArr = t3lib_div::trimExplode(',', $fields, 1);
-
-			foreach($fieldArr as $k => $v) {
-
-				if (isset($r[$v])) {
-					if (is_array($r[$v])) {
-						$recCopy_temp[$k] = implode(',',$r[$v]);
+			$fieldArray = t3lib_div::trimExplode(',', $fields, 1);
+			foreach ($fieldArray as $key => $value) {
+				if (isset($record[$value])) {
+					if (is_array($record[$value])) {
+						$recordCopy[$key] = implode(',', $record[$value]);
 					} else {
-						$recCopy_temp[$k] = $r[$v];
+						$recordCopy[$key] = $record[$value];
+					}
+					if ($rawUrlDecode) {
+						$recordCopy[$key] = rawurldecode($recordCopy[$key]);
 					}
 				}
 			}
-
-			if (isset($recCopy_temp) && is_array($recCopy_temp)) {
-				$preKey = implode('|', $recCopy_temp);
-			}
+		} else {
+			$recordCopy = $record;
 		}
-		$value .= $preKey . ($extra != '' ? '|' . $extra : '') . '|'  . $this->config['addKey'];
-
+		$preKey = implode('|', $recordCopy);
+			// Non-standard extra fields
+			// Any of these extras makes the authCode incompatible with TYPO3 standard authCode
+			// See t3lib_div::stdAuthCode
+		$extraArray = array();
+		if ($extra != '') {
+			$extraArray[] = $extra;
+		}
+			// Non-standard addKey field
+		if ($this->config['addKey'] != '') {
+			$extraArray[] = $this->config['addKey'];
+		}
+			// Non-standard addDate field
 		if ($this->conf['authcodeFields.']['addDate']) {
-			$value .= '|'.date($this->conf['authcodeFields.']['addDate']);
+			$extraArray[] = date($this->conf['authcodeFields.']['addDate']);
 		}
-		$value .= '|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
-		$rc = substr(md5($value), 0, $l);
-		return $rc;
-	}	// authCode
-
+		$extras = !empty($extraArray) ? implode('|', $extraArray) : '';
+			// In t3lib_div::stdAuthCode, $extras is empty
+		$authCode = $preKey . '|' . $extras . '|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
+		$authCode = substr(md5($authCode), 0, $codeLength);
+		return $authCode;
+	}
 
 	/**
 	* Authenticates a record
@@ -139,43 +152,15 @@ class tx_srfeuserregister_auth {
 
 	/**
 	* Computes the setfixed hash
-	* a variant of t3lib_div::stdAuthCode
+	* where record value need to be rawurldecoded
 	*
-	* @param array  $recCopy: copy of the record
-	* @param string  $fields: the list of fields to include in the hash computation
+	* @param array $record Record
+	* @param string $fields List of fields from the record to include in the computation, if that is given
 	* @return string  the hash value
 	*/
-	public function setfixedHash ($recCopy, $fields = '') {
-
-		$recCopy_temp = array();
-		if ($fields) {
-			$fieldArr = t3lib_div::trimExplode(',', $fields, 1);
-			foreach($fieldArr as $k => $v) {
-				if (isset($recCopy[$v])) {
-					if (is_array($recCopy[$v])) {
-						$recCopy_temp[$k] = implode(',', rawurldecode($recCopy[$v]));
-					} else {
-						$recCopy_temp[$k] = rawurldecode($recCopy[$v]);
-					}
-				}
-			}
-		} else {
-			$recCopy_temp = $recCopy;
-		}
-
-		if (isset($recCopy_temp) && is_array($recCopy_temp)) {
-			$preKey = implode('|', $recCopy_temp);
-		}
-		$authCode = $preKey . '|' . $this->config['addKey'];
-
-		if ($this->conf['authcodeFields.']['addDate']) {
-			$authCode .= '|' . date($this->conf['authcodeFields.']['addDate']);
-		}
-		$authCode .= '|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
-		$authCode = substr(md5($authCode), 0, $this->config['codeLength']);
-
-		return $authCode;
-	}	// setfixedHash
+	public function setfixedHash (array $record, $fields = '') {
+		return $this->authCode ($record, $fields, '', TRUE);
+	}
 
 	/**
 	* Generates a token for the form to secure agains Cross Site Request Forgery (CSRF)
