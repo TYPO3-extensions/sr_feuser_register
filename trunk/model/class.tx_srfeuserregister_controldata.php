@@ -191,11 +191,9 @@ class tx_srfeuserregister_controldata {
 		if (isset($feUserData) && is_array($feUserData)) {
 			$this->setFeUserData($feUserData);
 		}
-
 			// Establishing compatibility with Direct Mail extension
 		$piVarArray = array('rU', 'aC', 'cmd', 'sFK');
-
-		foreach($piVarArray as $pivar) {
+		foreach ($piVarArray as $pivar) {
 			$value = htmlspecialchars(t3lib_div::_GP($pivar));
 			if ($value != '') {
 				$this->setFeUserData($value, $pivar);
@@ -203,11 +201,15 @@ class tx_srfeuserregister_controldata {
 		}
 		$aC = $this->getFeUserData('aC');
 		$authObj->setAuthCode($aC);
-
-		if (isset($feUserData) && is_array($feUserData) && isset($feUserData['cmd'])) {
-			$cmd = htmlspecialchars($feUserData['cmd']);
-			$this->setCmd($cmd);
+			// Query variable &prefixId[cmd] overrides query variable &cmd, if not empty
+		if (isset($feUserData) && is_array($feUserData) && isset($feUserData['cmd']) && $feUserData['cmd'] != '') {
+			$value = htmlspecialchars($feUserData['cmd']);
+			$this->setFeUserData($value, 'cmd');
 		}
+		$cmd = $this->getFeUserData('cmd');
+		$this->setCmd($cmd);
+
+			// Cleanup input values
 		$feUserData = $this->getFeUserData();
 		$this->secureInput($feUserData);
 
@@ -812,28 +814,34 @@ class tx_srfeuserregister_controldata {
 	public function setCmdKey ($cmdKey) {
 		$this->cmdKey = $cmdKey;
 	}
-
-
-	public function getFeUserData ($k = '') {
-
-		if ($k) {
-			$rc = $this->feUserData[$k];
+	/**
+	 * Gets the feUserData array or an index of the array
+	 *
+	 * @param string $key: the key for which the value should be returned
+	 * @return mixed the value of the specified key or the full array
+	 */
+	public function getFeUserData ($key = '') {
+		if ($key != '') {
+			$value = $this->feUserData[$key];
 		} else {
-			$rc = $this->feUserData;
+			$value = $this->feUserData;
 		}
-		return $rc;
+		return $value;
 	}
-
-
-	public function setFeUserData ($v, $k='') {
-
-		if ($k != '') {
-			$this->feUserData[$k] = $v;
+	/**
+	 * Sets the feUserData array or an index of the array
+	 *
+	 * @param mixed $value: the value to be assigned
+	 * @param string $key: the key for which the value should be set
+	 * @return void
+	 */
+	public function setFeUserData ($value, $key = '') {
+		if ($key != '') {
+			$this->feUserData[$key] = $value;
 		} else {
-			$this->feUserData = $v;
+			$this->feUserData = $value;
 		}
 	}
-
 
 	public function getFailure () {
 		return $this->failure;
