@@ -446,8 +446,14 @@ class tx_srfeuserregister_marker {
 					}
 				}
 			}
+			if ($name == '' && isset($row['name'])) {
+				$name = trim($row['name']);
+			}
 			if ($name == '') {
-				$name = $row['name'] ? $row['name'] : ($row['first_name'] . ($row['middle_name'] != '' ? ' ' . $row['middle_name'] : '' ) . ' ' . $row['last_name']);
+				$name = ((isset($row['first_name']) && trim($row['first_name'])) ? trim($row['first_name']) : '') .
+					((isset($row['middle_name']) && trim($row['middle_name'])) ? ' ' . trim($row['middle_name']) : '') .
+					((isset($row['last_name']) && trim($row['last_name'])) ? ' ' . trim($row['last_name']) : '');
+				$name = trim($name);
 			}
 			if ($name == '') {
 				$name = 'id(' . $row['uid'] . ')';
