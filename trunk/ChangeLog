@@ -3,6 +3,7 @@
 	* Fix bug #36675: Query parameter cmd is not honoured
 	* Fix bug #36526: authCode is not compatible with standard authentication code
 	* Fix bug #36504: SR's authentication code does not match the one from DirectMail
+	* Fix bug #36680: authCode is not horoured if short urls are enabled
 
 2012-04-26 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #36590: Infomail form does not display email validation error

@@ -125,9 +125,15 @@ class tx_srfeuserregister_setfixed {
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 			$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 			$addressObj = $tablesObj->get('address');
-
+				// Calculate the setfixed hash from incoming data
 			$fieldList = $row['_FIELDLIST'];
-			$theCode = $authObj->setfixedHash($row, $fieldList);
+			$codeLength = strlen($authObj->getAuthCode());
+				// Let's try with a code length of 8 in case this link is coming from direct mail
+			if ($codeLength === 8 && in_array($sFK, array('DELETE', 'EDIT', 'UNSUBSCRIBE'))) {
+				$theCode = $authObj->setfixedHash($row, $fieldList, $codeLength);
+			} else {
+				$theCode = $authObj->setfixedHash($row, $fieldList);
+			}
 
 			if (!strcmp($authObj->getAuthCode(), $theCode) && !($sFK == 'APPROVE' && count($origArray) && $origArray['disable'] == '0')) {
 				if ($sFK == 'EDIT') {
