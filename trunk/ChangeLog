@@ -1,6 +1,8 @@
 2012-04-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Require div2007 0.10.1
 	* Fix bug #36675: Query parameter cmd is not honoured
+	* Fix bug #36526: authCode is not compatible with standard authentication code
+	* Fix bug #36504: SR's authentication code does not match the one from DirectMail
 
 2012-04-26 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #36590: Infomail form does not display email validation error
