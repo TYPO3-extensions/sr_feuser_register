@@ -86,10 +86,13 @@ class tx_srfeuserregister_auth {
 	 * @param string $fields List of fields from the record to include in the computation, if that is given.
 	 * @param string  $extra: some extra non-standard mixture
 	 * @params boolean $rawUrlDecode: whether to rawurldecode the record values
+	 * @param integer $codeLength: The length of the code, if different than configured
 	 * @return string MD5 hash (default length of 8 for compatibility with Direct Mail)
 	 */
-	public function authCode (array $record, $fields = '', $extra = '', $rawUrlDecode = FALSE) {
-		$codeLength = intval($this->config['codeLength']) ? intval($this->config['codeLength']) : 8;
+	public function authCode (array $record, $fields = '', $extra = '', $rawUrlDecode = FALSE, $codeLength = 0) {
+		if ($codeLength == 0) {
+			$codeLength = intval($this->config['codeLength']) ? intval($this->config['codeLength']) : 8;
+		}
 		$recordCopy = array();
 		if ($fields) {
 			$fieldArray = t3lib_div::trimExplode(',', $fields, 1);
@@ -132,11 +135,11 @@ class tx_srfeuserregister_auth {
 	}
 
 	/**
-	* Authenticates a record
-	*
-	* @param array  $r: the record
-	* @return boolean  true if the record is authenticated
-	*/
+	 * Authenticates a record
+	 *
+	 * @param array  $r: the record
+	 * @return boolean  true if the record is authenticated
+	 */
 	public function aCAuth ($r, $fields) {
 		$rc = FALSE;
 
@@ -151,15 +154,17 @@ class tx_srfeuserregister_auth {
 	}
 
 	/**
-	* Computes the setfixed hash
-	* where record value need to be rawurldecoded
-	*
-	* @param array $record Record
-	* @param string $fields List of fields from the record to include in the computation, if that is given
-	* @return string  the hash value
-	*/
-	public function setfixedHash (array $record, $fields = '') {
-		return $this->authCode ($record, $fields, '', TRUE);
+	 * Computes the setfixed hash
+	 * where record values need to be rawurldecoded
+	 *
+	 * @param array $record: Record
+	 * @param string $fields: List of fields from the record to include in the computation, if that is given
+	 * @param integer $codeLength: The length of the code, if different than configured
+	 * @return string  the hash value
+	 */
+	public function setfixedHash (array $record, $fields = '', $codeLength = 0) {
+		$rawUrlDecode = TRUE;
+		return $this->authCode ($record, $fields, '', $rawUrlDecode, $codeLength);
 	}
 
 	/**
@@ -175,9 +180,7 @@ class tx_srfeuserregister_auth {
 		return $rc;
 	}
 }
-
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_auth.php'])  {
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_auth.php']) {
   include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_auth.php']);
 }
 ?>

@@ -134,9 +134,8 @@ class tx_srfeuserregister_controldata {
 		}
 			// Get hash variable if provided and if short url feature is enabled
 		$feUserData = t3lib_div::_GP($this->getPrefixId());
-		$bSecureStartCmd = (count($feUserData) == 1 && in_array($feUserData['cmd'], array('create', 'edit')));
+		$bSecureStartCmd = (count($feUserData) == 1 && in_array($feUserData['cmd'], array('create', 'edit', 'password')));
 		$bValidRegHash = FALSE;
-		// <Steve Webster added short url feature>
 		if ($this->conf['useShortUrls']) {
 			$this->cleanShortUrlCache();
 			if (isset($feUserData) && is_array($feUserData)) {
@@ -150,7 +149,6 @@ class tx_srfeuserregister_controldata {
 					$regHash = $getData['regHash'];
 				}
 			}
-
 				// Check and process for short URL if the regHash GET parameter exists
 			if ($regHash) {
 				$getVars = $this->getShortUrl($regHash);
@@ -213,6 +211,7 @@ class tx_srfeuserregister_controldata {
 		$feUserData = $this->getFeUserData();
 		$this->secureInput($feUserData);
 
+			// Get the data for the uid provided in query parameters
 		$bRuIsInt = (
 			class_exists('t3lib_utility_Math') ?
 				t3lib_utility_Math::canBeInterpretedAsInteger($feUserData['rU']) :
@@ -220,10 +219,11 @@ class tx_srfeuserregister_controldata {
 		);
 
 		if ($bRuIsInt) {
-			$theUid = intval($feUserData['rU']);                                          // find the uid
-			$origArray = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $theUid);               // Get data
+			$theUid = intval($feUserData['rU']);
+			$origArray = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $theUid);
 		}
 
+			// Get the token
 		$token = '';
 		if (
 			isset($origArray) &&
@@ -231,23 +231,27 @@ class tx_srfeuserregister_controldata {
 			$cmd == 'setfixed' &&
 			$origArray['token'] != ''
 		) {
-			$token = $origArray['token'];	// use the token from the FE user data
-					// Token has been added to pivars in a mail link URL.
-		} else {
-			$token = $this->readToken(); // fetch latest internal token
+				// Use the token from the FE user data
+			$token = $origArray['token'];
+		} else if ($cmd !== 'setfixed') {
+				// Get latest token from session data
+			$token = $this->readToken();
 		}
 
 		if (
-			is_array($feUserData) && (
+			is_array($feUserData) &&
+			(
 				!count($feUserData) ||
 				$bSecureStartCmd ||
-				$token != '' && $feUserData['token'] == $token
+				($token != '' && $feUserData['token'] == $token)
 			)
 		) {
 			$this->setTokenValid(TRUE);
 		} else if (
 			$bRuIsInt &&
-			($bValidRegHash || !$this->conf['useShortUrls'])
+				// When processing a setfixed link from other extensions,
+				// there might no token and no short url regHash, but there might be an authCode
+			($bValidRegHash || !$this->conf['useShortUrls'] || ($authObj->getAuthCode($aC) && !$bSecureStartCmd))
 		) {
 			if (
 				isset($getVars) &&
@@ -266,11 +270,20 @@ class tx_srfeuserregister_controldata {
 				isset($origArray) &&
 				is_array($origArray)
 			) {
+					// Calculate the setfixed hash from incoming data
 				$fieldList = rawurldecode($fdArray['_FIELDLIST']);
 				$setFixedArray = array_merge($origArray, $fdArray);
-				$authCode = $authObj->setfixedHash($setFixedArray, $fieldList);
-
-				if ($authCode == $feUserData['aC']) {
+				$codeLength = strlen($authObj->getAuthCode());
+				$sFK = $this->getFeUserData('sFK');
+					// Let's try with a code length of 8 in case this link is coming from direct mail
+				if ($codeLength === 8 && in_array($sFK, array('DELETE', 'EDIT', 'UNSUBSCRIBE'))) {
+					$authCode = $authObj->setfixedHash($setFixedArray, $fieldList, $codeLength);
+				} else {
+					$authCode = $authObj->setfixedHash($setFixedArray, $fieldList);
+				}
+				if (!strcmp($authObj->getAuthCode(), $authCode)) {
+						// We use the valid authCode in place of token
+					$this->setFeUserData($authCode, 'token');
 					$this->setTokenValid(TRUE);
 				}
 			}
@@ -280,13 +293,14 @@ class tx_srfeuserregister_controldata {
 			$this->setValidRegHash($bValidRegHash);
 			$this->setFeUserData($feUserData);
 			$this->writeRedirectUrl();
-
-			// generate a new token for the next created forms
+				// Generate a new token for the next created forms
 			$token = $authObj->generateToken();
 			$this->writeToken($token);
 		} else {
-			$this->setFeUserData(array());	// delete all FE user data when the token is not valid
-			$this->writePassword('');	// delete the stored password
+				// Erase all FE user data when the token is not valid
+			$this->setFeUserData(array());
+				// Erase any stored password
+			$this->writePassword('');
 		}
 	}
 
@@ -310,7 +324,7 @@ class tx_srfeuserregister_controldata {
 		return $this->bValidRegHash;
 	}
 
-	/*
+	/**
 	 * Gets the transmission security object
 	 *
 	 * @return tx_srfeuserregister_transmission_security the transmission security object
@@ -323,7 +337,7 @@ class tx_srfeuserregister_controldata {
 		return $this->transmissionSecurity;
 	}
 
-	/*
+	/**
 	 * Gets the storage security object
 	 *
 	 * @return tx_srfeuserregister_transmission_security the storage security object
