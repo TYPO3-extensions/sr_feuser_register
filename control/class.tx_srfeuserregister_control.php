@@ -82,11 +82,12 @@ class tx_srfeuserregister_control {
 		$this->controlData = &$controlData;
 		$this->setfixedObj = &$setfixedObj;
 		$this->urlObj = &$urlObj;
-
+			// Retrieve the extension key
 		$extKey = $this->controlData->getExtKey();
+			// Get the command as set in piVars
 		$cmd = $this->controlData->getCmd();
-
-		if ( $cmd == '') {
+			// If not set, get the command from the flexform
+		if ($cmd == '') {
 				// Check the flexform
 			$this->cObj->data['pi_flexform'] = t3lib_div::xml2array($this->cObj->data['pi_flexform']);
 			$cmd = tx_div2007_alpha::getSetupOrFFvalue_fh002(
