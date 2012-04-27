@@ -135,7 +135,7 @@ class tx_srfeuserregister_control {
 		}
 			// Set the command key
 		$cmdKey = '';
-		if ($cmd == 'edit' || $cmd == 'invite' || $cmd == 'password') {
+		if ($cmd == 'edit' || $cmd == 'invite' || $cmd == 'password' || $cmd == 'infomail') {
 			$cmdKey = $cmd;
 		} else {
 			if (
@@ -267,10 +267,6 @@ class tx_srfeuserregister_control {
 				($this->conf[$cmdKey . '.']['generateUsername'] && $cmdKey != 'edit' && $cmdKey != 'password')
 			) {
 				unset($this->conf[$cmdKey . '.']['evalValues.']['username']);
-			}
-				// Require an email in the infomail form and evaluate it, if entered 
-			if ($cmd === 'infomail') {
-				$this->conf[$cmdKey . '.']['evalValues.']['email'] = 'email,required';
 			}
 		}
 		$confObj->setConf($this->conf);
