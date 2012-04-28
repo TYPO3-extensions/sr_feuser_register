@@ -446,6 +446,13 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 			<label index="v_registration_deleted_message2">You will still be able to browse the pages of &lt;b&gt;%1$s&lt;/b&gt; for which membership is not necessary, if you wish.&lt;br /&gt;&lt;br /&gt;If you ever change your mind, you may re-join us and we will be pleased to welcome you again.&lt;br /&gt;</label>
 			<label index="v_registration_deleted_message2_informal">You will still be able to browse the pages of &lt;b&gt;%1$s&lt;/b&gt; for which membership is not necessary, if you wish.&lt;br /&gt;&lt;br /&gt;If you ever change your mind, you may re-join us and we will be pleased to welcome you again.&lt;br /&gt;</label>
 			<label index="v_registration_deleted">%3$s deleted his(her) account from %1$s.</label>
+			<label index="v_registration_unsubscribed_subject">Your subscription to the newsletter of &lt;b&gt;%1$s&lt;/b&gt; has been ended.</label>
+			<label index="v_registration_unsubscribed_subject_informal">Your subscription to the newsletter of &lt;b&gt;%1$s&lt;/b&gt; has been ended.</label>
+			<label index="v_registration_unsubscribed_message1">As requested, we have ended the subscription of user &lt;b&gt;%2$s&lt;/b&gt; to the newsletter of &lt;b&gt;%1$s&lt;/b&gt;.&lt;br /&gt;</label>
+			<label index="v_registration_unsubscribed_message1_informal">As requested, we have ended the subscription of user &lt;b&gt;%2$s&lt;/b&gt; to the newsletter of &lt;b&gt;%1$s&lt;/b&gt;.&lt;br /&gt;</label>
+			<label index="v_registration_unsubscribed_message2">However, your account remains active and you may login into the site. You may also resume your subscription at your convenience.&lt;br /&gt;</label>
+			<label index="v_registration_unsubscribed_message2_informal">However, your account remains active and you may login into the site. You may also resume your subscription at your convenience.&lt;br /&gt;</label>
+			<label index="v_registration_unsubscribed">%3$s has ended his(her) subscription to the newsletter of %1$s.</label>
 			<label index="evalErrors_allowed_image">The file extension %s is not allowed.</label>
 			<label index="evalErrors_atLeast">You must enter at least %s characters!</label>
 			<label index="evalErrors_atLeast_username">The username must contain at least %s characters.</label>

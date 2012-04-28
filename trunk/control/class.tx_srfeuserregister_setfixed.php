@@ -111,7 +111,7 @@ class tx_srfeuserregister_setfixed {
 			$fieldArr = array();
 
 			if (is_array($fD)) {
-				foreach($fD as $field => $value) {
+				foreach ($fD as $field => $value) {
 					$row[$field] = rawurldecode($value);
 					if ($field == 'usergroup') {
 						$setfixedUsergroup = rawurldecode($value);
@@ -205,15 +205,17 @@ class tx_srfeuserregister_setfixed {
 							$hookObj->confirmRegistrationClass_preProcess($row, $this);
 						}
 					}
-
-					$newFieldList =
-						implode(
-							',',
-							array_intersect(
-								t3lib_div::trimExplode(',', $dataObj->fieldList), t3lib_div::trimExplode(',', implode($fieldArr, ','), 1)
-							)
-						);
-					if ($sFK !== 'ENTER') {
+					$newFieldList = implode(',', array_intersect(
+						t3lib_div::trimExplode(',', $dataObj->fieldList, 1),
+						t3lib_div::trimExplode(',', implode($fieldArr, ','), 1)
+					));
+					if ($sFK === 'UNSUBSCRIBE') {
+						$newFieldList = implode(',', array_intersect(
+							t3lib_div::trimExplode(',', $newFieldList),
+							t3lib_div::trimExplode(',', $this->conf['unsubscribeAllowedFields'], 1)
+						));
+					}
+					if ($sFK !== 'ENTER' && $newFieldList != '') {
 						$res = $this->cObj->DBgetUpdate(
 							$theTable,
 							$uid,

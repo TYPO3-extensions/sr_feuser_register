@@ -5,6 +5,7 @@
 	* Fix bug #36504: SR's authentication code does not match the one from DirectMail
 	* Fix bug #36680: authCode is not horoured if short urls are enabled
 	* Follow-up to feature #36123: Allow evaluation of email and captcha on the infomail form
+	* Add feature #36682: Add setfixed option to unsubscribe a fe user without having to login
 
 2012-04-26 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #36590: Infomail form does not display email validation error

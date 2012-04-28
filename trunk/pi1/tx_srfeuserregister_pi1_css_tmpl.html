@@ -2078,7 +2078,15 @@ The user is informed that a message has been sent to the email address and that 
 <h4>###SITE_NAME###</h4>
 <!-- ###TEMPLATE_SETFIXED_OK_DELETE### end-->
 
-
+<p style="margin-top: 20px"><em>This template is the response page when a user was unsubscribed by following a link of a mailing application.</em></p>
+<!-- ###TEMPLATE_SETFIXED_OK_UNSUBSCRIBE### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_UNSUBSCRIBED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_UNSUBSCRIBED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_UNSUBSCRIBED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS_DEL###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_OK_UNSUBSCRIBE### end-->
 
 <p style="margin-top: 20px"><em>This template is the response page when a user has clicked a setfixed link, but the link failed.</em></p>
 <!-- ###TEMPLATE_SETFIXED_FAILED### begin -->
@@ -3052,8 +3060,6 @@ The user is informed that a message has been sent to the email address and that 
 <!-- ###SUB_RECORD### -->
 <!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE### end-->
 
-
-
 <p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon user refusal to confirm his registration.</em></p>
 <!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_ADMIN### begin -->
 <!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CANCELLED###
@@ -3070,6 +3076,53 @@ The user is informed that a message has been sent to the email address and that 
 <!-- ###SUB_RECORD### -->
 <!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_ADMIN### end-->
 
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he was unsubscribed, but that his account is still active.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_UNSUBSCRIBE_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_UNSUBSCRIBED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_UNSUBSCRIBED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_UNSUBSCRIBED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_UNSUBSCRIBED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS_DEL###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_UNSUBSCRIBE_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he was unsubscribed, but that his account is still active.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_UNSUBSCRIBE### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_UNSUBSCRIBED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_UNSUBSCRIBED_SUBJECT###
+
+###LABEL_V_REGISTRATION_UNSUBSCRIBED_MESSAGE1###
+
+###LABEL_V_REGISTRATION_UNSUBSCRIBED_MESSAGE2###
+
+###LABEL_KIND_REGARDS_DEL###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_UNSUBSCRIBE### end-->
 
 
 <p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>

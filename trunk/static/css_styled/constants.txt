@@ -37,6 +37,9 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Required fields: List of fields that must be filled in on the front end user registration form.
   requiredFields = username, password, first_name, last_name,email
 
+    # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Unsubscribe allowed fields: List of fields that are allowed to be updated by an UNSUBSCRIBE link without any login.
+  unsubscribeAllowedFields = module_sys_dmail_newsletter
+
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Use email as username: If set, the user email will be used as the username.
   useEmailAsUsername = 0
 
@@ -118,6 +121,9 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable email on delete: If set, an email will be sent to the front end user to confirm the deletion of his(her) account.
   enableEmailOnDelete = 1
 
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable email on unsubscribe: If set, an email will be sent to the front end user end its subscription to newsletters through a link from a mailing application.
+  enableEmailOnUnsubscribe = 1
+ 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable admin notification on confirmation request: If set, an email will be sent to the site administration when a request for confirmation of registration is sent to a user.
   enableAdminNotifyConfirmation = 1
 
