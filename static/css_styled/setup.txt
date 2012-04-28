@@ -144,6 +144,7 @@ plugin.tx_srfeuserregister_pi1 {
 	enableAdminReview = {$plugin.tx_srfeuserregister_pi1.enableAdminReview}
 	autoLoginRedirect_url = {$plugin.tx_srfeuserregister_pi1.autoLoginRedirect_url}
 
+	unsubscribeAllowedFields = {$plugin.tx_srfeuserregister_pi1.unsubscribeAllowedFields}
 	authcodeFields.codeLength = {$plugin.tx_srfeuserregister_pi1.codeLength}
 
 	invite < .create
@@ -249,6 +250,7 @@ plugin.tx_srfeuserregister_pi1 {
 	email.SETFIXED_DELETE = {$plugin.tx_srfeuserregister_pi1.enableEmailOnRefuse}
 	email.SETFIXED_ACCEPT = 1
 	email.SETFIXED_REFUSE = {$plugin.tx_srfeuserregister_pi1.enableEmailOnAdminRefuse}
+	email.SETFIXED_UNSUBSCRIBE = {$plugin.tx_srfeuserregister_pi1.enableEmailOnUnsubscribe}
 
 	notify.CREATE_SAVED = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnRegister}
 	notify.EDIT_SAVED = {$plugin.tx_srfeuserregister_pi1.enableAdminNotifyOnUpdate}
