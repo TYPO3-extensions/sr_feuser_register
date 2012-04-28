@@ -512,6 +512,7 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 			<label index="evalErrors_uniqueGlobal">This value already exists. Please enter a new value.</label>
 			<label index="evalErrors_uniqueGlobal_informal">This value already exists. Please enter a new value.</label>
 			<label index="evalErrors_uniqueLocal_email">This e-mail address already exist.</label>
+			<label index="evalErrors_uniqueLocal_email_informal">This e-mail address already exist.</label>
 			<label index="evalErrors_wwwURL_www">According to our verifications, the website address you entered is not valid. Perhaps it was not entered correctly?</label>
 			<label index="evalErrors_wwwURL_www_informal">According to our verifications, the website address you entered is not valid. Perhaps it was not entered correctly?</label>
 			<label index="internal_no_subtemplate">The subpart %s has not been found inside of the template file.</label>

@@ -2,6 +2,7 @@
 	* Remove middle_name from default setup
 	* Move some functions to tx_srfeuserregister_display
 	* Update to manual
+	* Add label evalErrors_uniqueLocal_email_informal
 
 2012-04-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Require div2007 0.10.1
