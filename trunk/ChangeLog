@@ -1,3 +1,6 @@
+2012-04-28 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Remove middle_name from default setup
+
 2012-04-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Require div2007 0.10.1
 	* Fix bug #36675: Query parameter cmd is not honoured
