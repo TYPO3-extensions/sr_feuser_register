@@ -1021,15 +1021,50 @@ class tx_srfeuserregister_display {
 		return $errorContent;
 	}
 
-
+	/**
+	 * Removes HTML comments contained in input content string
+	 *
+	 * @param string $content: the input content
+	 * @return string the input content with HTML comment removed
+	 */
 	public function &removeHTMLComments ($content) {
 		$result = preg_replace('/<!(?:--[\s\S]*?--\s*)?>[\t\v\n\r\f]*/','', $content);
 		return $result;
 	}
 
-
+	/**
+	 * Replaces HTML br tags with line feeds in input content string
+	 *
+	 * @param string $content: the input content
+	 * @return string the input content with HTML br tags replaced
+	 */
 	public function replaceHTMLBr ($content) {
 		$result = preg_replace('/<br\s?\/?>/', LF, $content);
+		return $result;
+	}
+
+	/**
+	 * Removes all HTML tags from input content string
+	 *
+	 * @param string $content: the input content
+	 * @return string the input content with HTML tags removed
+	 */
+	public function removeHtmlTags ($content) {
+			// Preserve <http://...> constructs
+		$result = str_replace('<http', '###http', $content);
+		$result = strip_tags($result);
+		$result = str_replace('###http', '<http', $result);
+		return $result;
+	}
+
+	/**
+	 * Removes superfluous line feeds from input content string
+	 *
+	 * @param string $content: the input content
+	 * @return string the input content with superfluous fine feeds removed
+	 */
+	public function removeSuperfluousLineFeeds ($content) {
+		$result = preg_replace('/[' . preg_quote(LF) . ']{3,}/', LF . LF, $content);
 		return $result;
 	}
 }
