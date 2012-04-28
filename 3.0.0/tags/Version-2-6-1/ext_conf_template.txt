@@ -1,0 +1,19 @@
+
+  # cat=basic; type=string; label=Image upload folder: Specify the name of the image upload folder. Default is uploads/tx_srfeuserregister.
+uploadFolder = uploads/tx_srfeuserregister
+
+  # cat=basic; type=string; label=Allowed image types: Specify the list of acceptable file extensions for the front end user images. Default is png, jpg, jpeg, gif, tif, tiff.
+imageTypes = png, jpg, jpeg, gif, tif, tiff
+
+  # cat=basic; type=int+; label=Maximun image size: Specify the maximum size of uploaded image files, in number of KB's. Default is 500.
+imageMaxSize = 500
+
+  # cat=basic/enable; type=boolean; label=Use Flexforms: Enable the use of Flexforms in the backend. Extension div2007 version 0.1.2+ must be installed. Default is 1.
+useFlexforms = 1
+
+  # cat=basic/enable; type=boolean; label=Use MD5 password: Enable the use of MD5 encrypted passwords in the backend.
+useMd5Password = 0
+
+  # cat=basic/enable; type=boolean; label=Use patch 1822: Automatically activated in TYPO3 >= 4.4. Otherwise you need to apply the patch for bug #1822 from bugs.typo3.org or install the extension patch1822 to have an advanced page module.
+usePatch1822 =
+

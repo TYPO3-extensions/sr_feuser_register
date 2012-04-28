@@ -1,0 +1,36 @@
+plugin.tx_srfeuserregister_pi1.CSS_editor = Plugin: "tx_srfeuserregister_pi1"
+plugin.tx_srfeuserregister_pi1.CSS_editor.selector = .tx-srfeuserregister-pi1
+plugin.tx_srfeuserregister_pi1.CSS_editor.exampleWrap = <HR><strong>Plugin: "tx_srfeuserregister_pi1"</strong><HR><DIV class="tx-srfeuserregister-pi1"> | </DIV>
+plugin.tx_srfeuserregister_pi1.CSS_editor.ch {
+	P = Text
+	P.selector = P
+	P.attribs = BODYTEXT
+	P.example = <P>General text wrapped in &lt;P&gt;:<BR>This is text <A href="#">with a link</A> in it. In principio creavit Deus caelum et terram terra autem erat inanis et vacua et tenebrae super faciem abyssi et spiritus...</P>
+	P.exampleStop = 1
+	P.ch.links = < CSS_editor.ch.A
+	
+	INPUT = Input text fields
+	INPUT.selector = INPUT
+	INPUT.example = <div class="tx-srfeuserregister-pi1"><form action="" method="POST"><table width="100%" cellpadding="1" cellspacing="0" border="0"><tr> <td width="25%"><p>Your name:</p></td><td><p><input type="text" size="50" name="tx_srfeuserregister_pi1[name]" value=""></p></td></tr></table><br /><input type="submit" value="Submit" class="tx-srfeuserregister-pi1-submit"></form></div>
+	INPUT.exampleStop = 1
+	INPUT.attribs = TEXT,background-color,width
+	INPUT.ch {
+		button = Submit button
+		button.selector = +.tx-srfeuserregister-pi1-submit
+		button.attribs = TEXT,background-color,width
+	}
+
+	SELECT = Select fields
+	SELECT.selector = SELECT
+	SELECT.example = <div class="tx-srfeuserregister-pi1"><form action="" method="POST"><table width="100%" cellpadding="1" cellspacing="0" border="0"><tr><td width="25%"><p><select name="tx_srfeuserregister_pi1[music]"><option value="" selected>No music</option><option value="autumnleaves.mid">Autumn Leaves</option> </td></tr></table><br /><br /><input type="submit" value="Submit" class="tx-srfeuserregister-pi1-submit"></form></div>
+	SELECT.exampleStop = 1
+	SELECT.attribs = TEXT,background-color,width
+
+	TEXTAREA = Textarea fields
+	TEXTAREA.selector = INPUT
+	TEXTAREA.example = <div class="tx-srfeuserregister-pi1"><form action="" method="POST"><table width="100%" cellpadding="1" cellspacing="0" border="0"><tr> <td width="25%"> <p><textarea name="tx_srfeuserregister_pi1[title]" cols="60" rows="1" wrap="VIRTUAL"> </textarea></p> </td></tr></table><br /><input type="submit" value="Submit" class="tx-srfeuserregister-pi1-submit"></form></div>
+	TEXTAREA.exampleStop = 1
+	TEXTAREA.attribs = TEXT,background-color,width
+}
+
+tt_content.CSS_editor.ch.tx_srfeuserregister_pi1 = < plugin.tx_srfeuserregister_pi1.CSS_editor

@@ -1,0 +1,21 @@
+Franz Holzinger <franz@ttproducts.de>: software development and bug fixes
+Gideon So <gideonso@mcnet.com.hk>: Hongkong Chinese translations
+Thomas Dubach <tom@etown.ch>: German translations
+Dennis S. Hennen <dennis@28studios.com>: generatePassword.
+Ralph Brugger <Ralph.Brugger@linkpool.de>: captcha feature
+Dirk Heitzmann <dirk.heitzmann@c-wd.de>: date formats
+Martin Kutschker <martin.kutschker@activesolution.at>: changes to label markers
+Pieter Verstraelen <pieter.v@gmx.net>: sharing his ideas and code to incorporate an additional hook to generate a username.
+Cornelia Lange http://www.clkm.de/: The extension includes two link icons authored by creator and copyright-owner
+Volker Graubaum <volker.graubaum@e-netconsulting.de>: The email attachment feature
+Helmut Hummel, TYPO3 Security Team
+
+
+
+
+
+
+
+
+
+

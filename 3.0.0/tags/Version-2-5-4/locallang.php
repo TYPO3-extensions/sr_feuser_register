@@ -1,0 +1,108 @@
+<?php
+
+$LOCAL_LANG = Array (
+	'default' => Array (
+		'fe_user_register' => 'Front End User Registration',
+	),
+	'dk' => Array (
+		'fe_user_register' => 'Front End Bruger Registrering',
+	),
+	'de' => Array (
+		'fe_user_register' => 'Front End Benutzer Registrierung',
+	),
+	'no' => Array (
+		'fe_user_register' => 'Front End bruker registrering',
+	),
+	'it' => Array (
+		'fe_user_register' => 'Registrazione Utenti Frontend',
+	),
+	'fr' => Array (
+		'fe_user_register' => 'Enregistrement des utilisateurs de l\'avant-plan',
+	),
+	'es' => Array (
+		'fe_user_register' => 'Registro de los usuarios del primer plano',
+	),
+	'nl' => Array (
+		'fe_user_register' => 'Front End Gebruiker Registratie',
+	),
+	'cz' => Array (
+		'fe_user_register' => 'Registrace uživatelù frontendu',
+	),
+	'pl' => Array (
+		'fe_user_register' => 'Rejestracja u¿ytkowników zewnêtrznych',
+	),
+	'si' => Array (
+	),
+	'fi' => Array (
+		'fe_user_register' => 'FE kï¿½yttï¿½jï¿½n rekisterï¿½inti',
+	),
+	'tr' => Array (
+		'fe_user_register' => 'Website Kullanýcý Kayýt Ýþlemi',
+	),
+	'se' => Array (
+		'fe_user_register' => 'Registrering av Front End användare',
+	),
+	'pt' => Array (
+	),
+	'ru' => Array (
+		'fe_user_register' => 'Ðåãèñòðàöèÿ ïîëüçîâàòåëåé íà âåá-ñàéòå',
+	),
+	'ro' => Array (
+	),
+	'ch' => Array (
+	),
+	'sk' => Array (
+	),
+	'lt' => Array (
+	),
+	'is' => Array (
+	),
+	'hr' => Array (
+		'fe_user_register' => 'Registracija frontend korisnika',
+	),
+	'hu' => Array (
+		'fe_user_register' => 'Frontend felhasznï¿½lï¿½ regisztrï¿½ciï¿½',
+	),
+	'gl' => Array (
+	),
+	'th' => Array (
+	),
+	'gr' => Array (
+	),
+	'hk' => Array (
+	),
+	'eu' => Array (
+	),
+	'bg' => Array (
+	),
+	'br' => Array (
+		'fe_user_register' => 'Cadastro de Usuários do Site',
+	),
+	'et' => Array (
+	),
+	'ar' => Array (
+	),
+	'he' => Array (
+	),
+	'ua' => Array (
+	),
+	'lv' => Array (
+	),
+	'jp' => Array (
+	),
+	'vn' => Array (
+	),
+	'ca' => Array (
+	),
+	'ba' => Array (
+	),
+	'kr' => Array (
+	),
+	'eo' => Array (
+	),
+	'my' => Array (
+	),
+	'hi' => Array (
+	),
+);
+?>

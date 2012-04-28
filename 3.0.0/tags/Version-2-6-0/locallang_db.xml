@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+    <meta type="array">
+        <description>Front End User Registration</description>
+        <type>database</type>
+        <csh_table></csh_table>
+        <labelContext type="array">
+        </labelContext>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="tt_content.list_type">Front End User Registration</label>
+            <label index="tt_content.pi1_flexform.display_mode">Display mode</label>
+            <label index="tt_content.pi1_flexform.display_mode.1">Default</label>
+            <label index="tt_content.pi1_flexform.display_mode.3">Create</label>
+	    <label index="tt_content.pi1_flexform.display_mode.4">Delete</label>
+            <label index="tt_content.pi1_flexform.display_mode.5">Invite</label>
+            <label index="tt_content.pi1_flexform.display_mode.7">Edit</label>
+	    <label index="tt_content.pi1_flexform.display_mode.8">Setfixed</label>
+	    <label index="tt_content.pi1_flexform.display_mode.9">Infomail</label>
+            <label index="fe_users.cnum">Customer Number:</label>
+            <label index="fe_users.static_info_country">Country Code:</label>
+            <label index="fe_users.zone">State/province:</label>
+            <label index="fe_users.language">Language:</label>
+            <label index="fe_users.first_name">First Name:</label>
+            <label index="fe_users.last_name">Last Name:</label>
+            <label index="fe_users.module_sys_dmail_html">Receive emails in HTML format?</label>
+            <label index="fe_users.date_of_birth">Date of birth:</label>
+            <label index="fe_users.gender">Mr/Ms:</label>
+            <label index="fe_users.gender.I.0">Mr</label>
+            <label index="fe_users.gender.I.1">Ms</label>
+			<label index="fe_users.gender.I.99">  </label>
+            <label index="fe_users.status">Status:</label>
+            <label index="fe_users.status.I.1">Student</label>
+            <label index="fe_users.status.I.2">Job seeking full time</label>
+            <label index="fe_users.status.I.3">Working</label>
+            <label index="fe_users.status.I.4">Retired</label>
+            <label index="fe_users.status.I.5">Job seeking half time</label>
+            <label index="fe_users.comments">Comments:</label>
+            <label index="fe_users.by_invitation">Was invited:</label>
+            <label index="fe_groups_language_overlay">User Group Alternative Language</label>
+            <label index="fe_groups_language_overlay.title">Translated user group name</label>
+        </languageKey>
+	</data>
+</T3locallang>
