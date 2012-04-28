@@ -1,6 +1,7 @@
 2012-04-28 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Remove middle_name from default setup
 	* Move some functions to tx_srfeuserregister_display
+	* Update to manual
 
 2012-04-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Require div2007 0.10.1
