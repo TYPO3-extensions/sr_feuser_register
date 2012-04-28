@@ -1,5 +1,0 @@
-Franz Holzinger <kontakt@fholzinger.com>: software development
-Gideon So <gideonso@mcnet.com.hk>: Hongkong Chinese translations
-Thomas Dubach <tom@etown.ch>: German translations
-
-
