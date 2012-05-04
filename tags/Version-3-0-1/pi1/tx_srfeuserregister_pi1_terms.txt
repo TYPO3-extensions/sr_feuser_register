@@ -1,0 +1,13 @@
+Front End User Registration
+
+Typo3 Extention sr_feuser_register
+
+This is just a sample terms file
+
+The terms are
+
+1.) foo
+
+2.) bar
+
+3.) ...
