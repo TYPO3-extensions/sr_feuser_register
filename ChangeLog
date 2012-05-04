@@ -1,5 +1,6 @@
 2012-05-04 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #36838: FE user password saved in BE is displayed in plaintext
+	* Version 3.0.1
 
 2012-04-28 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Remove middle_name from default setup
