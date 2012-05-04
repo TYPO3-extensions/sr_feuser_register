@@ -22,8 +22,6 @@ if (TYPO3_MODE == 'BE' && !$loadTcaAdditions) {
 t3lib_div::loadTCA('fe_users');
 
 $TCA['fe_users']['columns']['username']['config']['eval'] = 'nospace,uniqueInPid,required';
-$TCA['fe_users']['columns']['password']['config']['eval'] = 'nospace,required';
-
 $TCA['fe_users']['columns']['name']['config']['max'] = '100';
 $TCA['fe_users']['columns']['company']['config']['max'] = '50';
 $TCA['fe_users']['columns']['city']['config']['max'] = '40';
