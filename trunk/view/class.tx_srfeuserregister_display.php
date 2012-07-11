@@ -307,7 +307,7 @@ class tx_srfeuserregister_display {
 					$subpartKey = '###TEMPLATE_AUTH###';
 				}
 			}
-			
+
 			if ($bNeedUpdateJS) {
 				$this->marker->addPasswordTransmissionMarkers($markerArray);
 			}
@@ -763,7 +763,15 @@ class tx_srfeuserregister_display {
 			$includedFields[] = 'username';
 		}
 
-		$infoFields = explode(',', $this->data->fieldList);
+		$infoFields = explode(',', $this->data->getFieldList());
+		if (!is_array($infoFields)) {
+			return FALSE;
+		}
+		$specialFields = explode(',', $this->data->getSpecialFieldList());
+		if (is_array($specialFields) && count($specialFields)) {
+			$infoFields = array_merge($infoFields, $specialFields);
+		}
+
 		if (!t3lib_extMgm::isLoaded('direct_mail')) {
 			$infoFields = array_merge(
 				$infoFields,
@@ -864,7 +872,7 @@ class tx_srfeuserregister_display {
 	 *
 	 * @param string $cmd: the cmd that was executed
 	 * @param string $cmdKey: the command key that was use
-	 * @param boolean $bCustomerConfirmsMode =			
+	 * @param boolean $bCustomerConfirmsMode =
 	 * 			($cmd == '' || $cmd == 'create') &&
 	 *			($cmdKey != 'edit') &&
 	 *			$this->conf['enableAdminReview'] &&
