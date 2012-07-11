@@ -1,3 +1,6 @@
+2012-07-11 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug with captcha: The subpart marker ###SUB_ERROR_FIELD_captcha_response### for the field captcha_response has not been generated.
+
 2012-05-04 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #36838: FE user password saved in BE is displayed in plaintext
 	* Version 3.0.1
@@ -35,7 +38,7 @@
 	* Cleanup captcha-related code
 	* Add feature #36492: Use t3lib_div::isValidUrl to validate url's
 	* Update manual
-	
+
 2012-04-22 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #36433: Non-closed br tags in pi1/locallang.xml
 	* Fix bug #36434: locallang.xml contains \n characters combination
@@ -141,7 +144,7 @@
 	* Fix bug #35833: Password update on accepting invitation may not work
 	* Follow-up 2 to feature #35805: Write error to syslog if required extension is not loaded
 	* Follow-up 3 to feature #35805: Always use adodb Date library for timestamp conversion
-	
+
 2012-04-09 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #15174 (old bug tracker): Doesn't allow update of user group
 	* Fix bug #10435 (old bug tracker): Error messages when country is changed while no user group is selected in frontend
@@ -173,7 +176,7 @@
 	* Cleanup: Initialize the command key
 	* Follow-up 2 to feature #34405: Allow old mailer API for TYPO3 4.5-4.6
 	* Fix bug #35730: enableEmailOnDelete not honoured
-	* Fix bug #35732: Error due to username being required in edit mode	
+	* Fix bug #35732: Error due to username being required in edit mode
 
 2012-04-04 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up to cleanup #35292: Cleanup in ext_tables.php
@@ -184,7 +187,7 @@
 	* Add feature #27504: Add userGroupsPidList TS constant and TS setup property (Thanks to Georg Schönweger).
 
 2012-03-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
-	* Fix bug #14271 (old bug tracker): Password constant not respected 
+	* Fix bug #14271 (old bug tracker): Password constant not respected
 
 2012-03-28 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up 1 to feature #34405: Make use of Swift Mailer API
