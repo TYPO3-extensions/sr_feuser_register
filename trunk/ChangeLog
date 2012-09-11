@@ -1,5 +1,5 @@
 2012-09-11 Franz Holzinger  <franz@ttproducts.de>
-	* fix bug with sprintf: wrong usage of sprintf when locallang wants to report a text which is not replaced by div2007
+	* fix bug #40812: wrong usage of sprintf when locallang wants to report a text which is not replaced by div2007
 
 2012-07-11 Franz Holzinger  <franz@ttproducts.de>
 	* fix bug with captcha: The subpart marker ###SUB_ERROR_FIELD_captcha_response### for the field captcha_response has not been generated.
