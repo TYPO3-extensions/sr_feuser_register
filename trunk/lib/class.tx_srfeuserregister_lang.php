@@ -158,7 +158,7 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 				if ($localizedLabel == '') {
 					$localizedLabel = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:' . $expandedKey);
 					if ($localizedLabel != '') {
-						$message = sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_label_not_localized_by_div2007', $expandedKey));
+						$message = sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_label_not_localized_by_div2007'), $expandedKey);
 						t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_WARNING);
 					}
 				}
@@ -177,7 +177,7 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 			if ($localizedLabel == '') {
 				$localizedLabel = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:' . $key);
 				if ($localizedLabel != '') {
-					$message = sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_label_not_localized_by_div2007', $key));
+					$message = sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_label_not_localized_by_div2007'), $key);
 					t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_WARNING);
 				}
 			}
