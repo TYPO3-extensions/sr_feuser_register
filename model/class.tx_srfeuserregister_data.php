@@ -138,7 +138,7 @@ class tx_srfeuserregister_data {
 	 * @return void
 	 */
 	public function setTemplateCode (&$templateCode) {
-		$this->templateCode = $templateCode;		
+		$this->templateCode = $templateCode;
 	}
 
 
@@ -997,7 +997,7 @@ class tx_srfeuserregister_data {
 											$dataValue = $urlParts['scheme'] . '://' . $dataValue;
 										}
 										if (t3lib_div::isValidUrl($dataValue)) {
-											$dataValue = $urlParts['scheme'] . '://' . 
+											$dataValue = $urlParts['scheme'] . '://' .
 												$urlParts['host'] .
 												$urlParts['path'] .
 												($urlParts['query'] ? '?' . $urlParts['query'] : '') .
@@ -1109,16 +1109,16 @@ class tx_srfeuserregister_data {
 			}
 			if (is_array($_FILES['FE']['name'][$theTable][$theField])) {
 				foreach($_FILES['FE']['name'][$theTable][$theField] as $i => $filename) {
-	
+
 					if (
 						$filename &&
 						$this->checkFilename($filename) &&
 						$this->evalFileError($_FILES['FE']['error'][$theTable][$theField][$i])
 					) {
 						$fI = pathinfo($filename);
-	
+
 						if (t3lib_div::verifyFilenameAgainstDenyPattern($fI['name'])) {
-							$tmpFilename = basename($filename, '.' . $fI['extension']) . '_' . t3lib_div::shortmd5(uniqid($filename)) . '.' . $fI['extension'];	
+							$tmpFilename = basename($filename, '.' . $fI['extension']) . '_' . t3lib_div::shortmd5(uniqid($filename)) . '.' . $fI['extension'];
 							$cleanFilename = $this->fileFunc->cleanFileName($tmpFilename);
 							$theDestFile = $this->fileFunc->getUniqueName($cleanFilename, PATH_site . $uploadPath . '/');
 							$result = t3lib_div::upload_copy_move($_FILES['FE']['tmp_name'][$theTable][$theField][$i], $theDestFile);
@@ -1147,13 +1147,10 @@ class tx_srfeuserregister_data {
 		$cmd,
 		$cmdKey,
 		$pid,
+		$password,
 		&$hookClassArray
 	) {
 		$rc = 0;
-
-		if ($theTable === 'fe_users') {
-			$password = $this->controlData->readPasswordForStorage();
-		}
 
 		switch($cmdKey) {
 			case 'edit':
@@ -1205,11 +1202,11 @@ class tx_srfeuserregister_data {
 								$dataArray,
 								$origArray
 							);
- 
+
  						if ($theTable === 'fe_users' && isset($dataArray['password'])) {
  								// Do not set the outgoing password if the incoming password was unset
 							$outGoingData['password'] = $password;
- 						}						
+ 						}
 						$newFieldList = implode (',', $newFieldArray);
 						if (isset($GLOBALS['TCA'][$theTable]['ctrl']['token'])) {
 								// Save token in record
@@ -1693,7 +1690,7 @@ class tx_srfeuserregister_data {
 	* @param string $theTable: the table in use
 	* @return void  done directly on $dataArray passed by reference
 	*/
-	public function setName (&$dataArray, $cmdKey, $theTable) {	
+	public function setName (&$dataArray, $cmdKey, $theTable) {
 		if (
 			in_array('name', explode(',', $this->getFieldList())) &&
 			!in_array('name', t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1)) &&
@@ -1717,7 +1714,7 @@ class tx_srfeuserregister_data {
 				);
 			} else {
 				$dataArray['name'] = trim(trim($dataArray['first_name'])
-					. ((in_array('middle_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1)) && trim($dataArray['middle_name']) != '') ? ' ' . trim($dataArray['middle_name']) : '' ) 
+					. ((in_array('middle_name', t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1)) && trim($dataArray['middle_name']) != '') ? ' ' . trim($dataArray['middle_name']) : '' )
 					. ' ' . trim($dataArray['last_name']));
 			}
 		}
@@ -1830,8 +1827,8 @@ class tx_srfeuserregister_data {
 						case 'deleteUnreferencedFiles':
 							$fieldConfig = $this->tca->TCA['columns'][$theField]['config'];
 							if (
-								is_array($fieldConfig) && 
-								$fieldConfig['type'] === 'group' && 
+								is_array($fieldConfig) &&
+								$fieldConfig['type'] === 'group' &&
 								$fieldConfig['internal_type'] === 'file' &&
 								$fieldConfig['uploadfolder']
 							) {
@@ -1855,7 +1852,7 @@ class tx_srfeuserregister_data {
 									}
 								}
 							}
-							break;	
+							break;
 					}
 				}
 			}

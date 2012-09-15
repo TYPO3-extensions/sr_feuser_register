@@ -153,7 +153,7 @@ class tx_srfeuserregister_control_main {
 			$theTable
 		);
 
-		if ($this->extKey != SR_FEUSER_REGISTER_EXTkey)	{
+		if ($this->extKey != SR_FEUSER_REGISTER_EXTkey) {
 
 					// Static Methods for Extensions for fetching the texts of sr_feuser_register
 				tx_div2007_alpha5::loadLL_fh002($this->pibaseObj, 'EXT:' . SR_FEUSER_REGISTER_EXTkey . '/pi1/locallang.xml', FALSE);
@@ -241,11 +241,11 @@ class tx_srfeuserregister_control_main {
 				$this->controlData->readToken()
 			);
 
-			if ($buttonLabelsList != '')	{
+			if ($buttonLabelsList != '') {
 				$this->marker->setButtonLabelsList($buttonLabelsList);
 			}
 
-			if ($otherLabelsList != '')	{
+			if ($otherLabelsList != '') {
 				$this->marker->addOtherLabelsList($otherLabelsList);
 			}
 
