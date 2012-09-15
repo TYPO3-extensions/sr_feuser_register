@@ -412,6 +412,7 @@ class tx_srfeuserregister_control {
 			$this->data->setDataArray($finalDataArray);
 
 			if ($this->controlData->getFailure() == '' && !$this->controlData->getFeUserData('preview') && !$bDoNotSave) {
+				$password = '';
 				if ($theTable === 'fe_users') {
 					$this->controlData->getStorageSecurity()->initializeAutoLoginPassword($finalDataArray);
 						// We generate an interim password in the case of an invitation
@@ -422,6 +423,7 @@ class tx_srfeuserregister_control {
 					if ($cmdKey === 'invite' || ($cmdKey === 'create' && $this->conf['enableAutoLoginOnConfirmation'] && !$this->conf['enableAutoLoginOnCreate'])) {
 						$this->controlData->getStorageSecurity()->encryptPasswordForAutoLogin($finalDataArray);
 					}
+					$password = $this->controlData->readPasswordForStorage();
 				}
 				$prefixId = $this->controlData->getPrefixId();
 				$extKey = $this->controlData->getExtKey();
@@ -435,6 +437,7 @@ class tx_srfeuserregister_control {
 					$cmd,
 					$cmdKey,
 					$this->controlData->getPid(),
+					$password,
 					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess']
 				);
 
@@ -519,7 +522,7 @@ class tx_srfeuserregister_control {
 				// This is the case where the user does not have to confirm, but has to wait for admin review
 				// This applies only on create ($bDefaultMode) and to fe_users
 				// $bCreateReview implies $bSetfixed
-			$bCreateReview = 
+			$bCreateReview =
 				($theTable === 'fe_users') &&
 				!$this->conf['enableEmailConfirmation'] &&
 				$this->conf['enableAdminReview'];

@@ -92,7 +92,6 @@ class tx_srfeuserregister_display {
 		$errorFieldArray,
 		$token
 	) {
-
 		$prefixId = $this->controlData->getPrefixId();
 
 		if (isset($dataArray) && is_array($dataArray))	{

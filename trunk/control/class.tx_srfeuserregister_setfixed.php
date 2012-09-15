@@ -119,8 +119,11 @@ class tx_srfeuserregister_setfixed {
 					$fieldArr[] = $field;
 				}
 			}
-				// Determine if auto-login is requested
-			$autoLoginIsRequested = $this->controlData->getStorageSecurity()->getAutoLoginIsRequested($feuData, $row);
+
+			if ($theTable == 'fe_users') {
+					// Determine if auto-login is requested
+				$autoLoginIsRequested = $this->controlData->getStorageSecurity()->getAutoLoginIsRequested($feuData, $row);
+			}
 
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 			$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
