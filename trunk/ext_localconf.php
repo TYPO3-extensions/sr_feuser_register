@@ -46,6 +46,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['tx_srfeuserregiste
 require_once(t3lib_extMgm::extPath($_EXTKEY) . 'ext_emconf.php');
 $TYPO3_CONF_VARS['EXTCONF'][$_EXTKEY]['version'] = $EM_CONF[$_EXTKEY]['version'];
 $TYPO3_CONF_VARS['EXTCONF'][$_EXTKEY]['constraints'] = $EM_CONF[$_EXTKEY]['constraints'];
+$TYPO3_CONF_VARS['EXTCONF'][$_EXTKEY]['loginSecurityLevels'] = array('normal', 'rsa');
 
 	// Set path to extension static_info_tables
 if (t3lib_extMgm::isLoaded('static_info_tables')) {
