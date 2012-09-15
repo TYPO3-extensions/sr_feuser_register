@@ -79,7 +79,8 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 			}
 		}
 			// Check if front end login security level is correctly set
-		$supportedTransmissionSecurityLevels = array('normal', 'rsa');
+		$supportedTransmissionSecurityLevels = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['loginSecurityLevels'];
+
 		if (!in_array($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'], $supportedTransmissionSecurityLevels)) {
 			$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_login_security_level');
 			t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
