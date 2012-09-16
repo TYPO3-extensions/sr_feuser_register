@@ -31,6 +31,7 @@ unset($typo3Version);
 t3lib_extMgm::addPItoST43(SR_FEUSER_REGISTER_EXTkey, 'pi1/class.tx_srfeuserregister_pi1.php', '_pi1', 'list_type', 0);
 
 $_EXTCONF = unserialize($_EXTCONF);    // unserializing the configuration so we can use it here:
+
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['uploadfolder'] = $_EXTCONF['uploadFolder'] ? $_EXTCONF['uploadFolder'] : 'uploads/tx_srfeuserregister';
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageMaxSize'] = $_EXTCONF['imageMaxSize'] ? $_EXTCONF['imageMaxSize'] : 250;
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageTypes'] = $_EXTCONF['imageTypes'] ? $_EXTCONF['imageTypes'] : 'png,jpeg,jpg,gif,tif,tiff';
@@ -46,7 +47,6 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['tx_srfeuserregiste
 require_once(t3lib_extMgm::extPath($_EXTKEY) . 'ext_emconf.php');
 $TYPO3_CONF_VARS['EXTCONF'][$_EXTKEY]['version'] = $EM_CONF[$_EXTKEY]['version'];
 $TYPO3_CONF_VARS['EXTCONF'][$_EXTKEY]['constraints'] = $EM_CONF[$_EXTKEY]['constraints'];
-$TYPO3_CONF_VARS['EXTCONF'][$_EXTKEY]['loginSecurityLevels'] = array('normal', 'rsa');
 
 	// Set path to extension static_info_tables
 if (t3lib_extMgm::isLoaded('static_info_tables')) {
@@ -60,6 +60,12 @@ if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
 		define('PATH_BE_div2007', t3lib_extMgm::extPath(DIV2007_EXTkey));
 	}
 }
+
+if (!isset($TYPO3_CONF_VARS['EXTCONF'][$_EXTKEY]['loginSecurityLevels']) {
+
+	$TYPO3_CONF_VARS['EXTCONF'][$_EXTKEY]['loginSecurityLevels'] = array('normal', 'rsa');
+}
+
 	// Captcha marker hook
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['tx_srfeuserregister_pi1']['registrationProcess'][] = 'EXT:' . SR_FEUSER_REGISTER_EXTkey . '/hooks/captcha/class.tx_srfeuserregister_captcha.php:&tx_srfeuserregister_captcha';
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['tx_srfeuserregister_pi1']['model'][] = 'EXT:' . SR_FEUSER_REGISTER_EXTkey . '/hooks/captcha/class.tx_srfeuserregister_captcha.php:&tx_srfeuserregister_captcha';
