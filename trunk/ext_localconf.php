@@ -61,7 +61,7 @@ if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
 	}
 }
 
-if (!isset($TYPO3_CONF_VARS['EXTCONF'][$_EXTKEY]['loginSecurityLevels']) {
+if (!isset($TYPO3_CONF_VARS['EXTCONF'][$_EXTKEY]['loginSecurityLevels'])) {
 
 	$TYPO3_CONF_VARS['EXTCONF'][$_EXTKEY]['loginSecurityLevels'] = array('normal', 'rsa');
 }
