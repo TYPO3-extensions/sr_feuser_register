@@ -89,7 +89,7 @@ if (TYPO3_MODE=='BE') {
 		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_users'] = array (
 			'default' => array(
 				'MENU' => 'm_default',
-				'fList' =>  'username,usergroup,name,zip,city,email,telephone,gender,uid',
+				'fList' =>  'username,usergroup,name,cnum,zip,city,email,telephone,gender,uid',
 				'icon' => TRUE
 			),
 			'ext' => array (
