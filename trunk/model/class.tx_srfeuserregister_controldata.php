@@ -103,7 +103,7 @@ class tx_srfeuserregister_controldata {
 
 			// Initialize array of installed captcha extensions
 		$this->setCaptchaExtensions();
-		
+
 		$bSysLanguageUidIsInt = (
 			class_exists('t3lib_utility_Math') ?
 				t3lib_utility_Math::canBeInterpretedAsInteger($GLOBALS['TSFE']->config['config']['sys_language_uid']) :
@@ -373,7 +373,7 @@ class tx_srfeuserregister_controldata {
 	/**
 	* Retrieves values of secured fields from FE user session data
 	*
-	* @return	array	secured FE user session data 
+	* @return	array	secured FE user session data
 	*/
 	public function readSecuredArray () {
 		$securedArray = array();
@@ -402,7 +402,7 @@ class tx_srfeuserregister_controldata {
 	*/
 	public function setSecuredFieldArray (array $securedFieldArray) {
 		$this->securedFieldArray = array_merge($securedFieldArray, array('password', 'password_again', 'tx_srfeuserregister_password'));
-		
+
 	}
 
 	/*************************************
@@ -412,6 +412,7 @@ class tx_srfeuserregister_controldata {
 	* Retreieves the password from session data and encrypt it for storage
 	*
 	* @return	string	the encrypted password
+    *           boolean FALSE in case of an error
 	*/
 	public function readPasswordForStorage () {
 		$password = $this->readPassword();
@@ -622,9 +623,9 @@ class tx_srfeuserregister_controldata {
 							unset($allSessionData[$extKey][$key]);
 						}
 					}
-				}				
+				}
 			}
-			
+
 			$allSessionData[$extKey] = t3lib_div::array_merge_recursive_overrule($allSessionData[$extKey], $data);
 		} else {
 			$allSessionData[$extKey] = $data;
