@@ -164,11 +164,12 @@ class tx_srfeuserregister_storage_security {
 	* @return void
 	*/
 	public function decryptPasswordForAutoLogin (array &$dataArray, array $row) {
+		$result = TRUE;
 		if (isset($row['auto_login_key'])) {
 			$privateKey = $row['auto_login_key'];
 			if ($privateKey !== '') {
 				$password = $dataArray['tx_srfeuserregister_password'];
-				if ($password !== '') {
+				if ($password !== '' && t3lib_extMgm::isLoaded('rsaauth')) {
 					$backend = tx_rsaauth_backendfactory::getBackend();
 					if (is_object($backend) && $backend->isAvailable()) {
 						$decryptedPassword = $backend->decrypt($privateKey, $password);
@@ -182,10 +183,12 @@ class tx_srfeuserregister_storage_security {
 					} else {
 						// Required RSA auth backend not available
 						// Should not happen: checked in tx_srfeuserregister_pi1_base::checkRequirements
+						$result = FALSE;
 					}
 				}
 			}
 		}
+		return $result;
 	}
 }
 
