@@ -67,21 +67,30 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 	 */
 	protected function checkRequirements() {
 		$content = '';
+		$requiredExtensions = array();
+		$loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
+
 			// Check if all required extensions are available
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['constraints']['depends'])) {
 			$requiredExtensions = array_diff(array_keys($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['constraints']['depends']), array('php', 'typo3'));
-			foreach ($requiredExtensions as $requiredExtension) {
-				if (!t3lib_extMgm::isLoaded($requiredExtension)) {
-					$message = sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_required_extension_missing'), $requiredExtension);
-					t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
-					$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_check_requirements_frontend'), $message);
-				}
+		}
+
+		if ($loginSecurityLevel == 'rsa') {
+			$requiredExtensions[] = 'rsaauth');
+		}
+
+		foreach ($requiredExtensions as $requiredExtension) {
+			if (!t3lib_extMgm::isLoaded($requiredExtension)) {
+				$message = sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_required_extension_missing'), $requiredExtension);
+				t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
+				$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_check_requirements_frontend'), $message);
 			}
 		}
+
 			// Check if front end login security level is correctly set
 		$supportedTransmissionSecurityLevels = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['loginSecurityLevels'];
 
-		if (!in_array($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'], $supportedTransmissionSecurityLevels)) {
+		if (!in_array($loginSecurityLevel, $supportedTransmissionSecurityLevels)) {
 			$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_login_security_level');
 			t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 			$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_check_requirements_frontend'), $message);
