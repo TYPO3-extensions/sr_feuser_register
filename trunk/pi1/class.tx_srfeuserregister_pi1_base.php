@@ -76,7 +76,7 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 		}
 
 		if ($loginSecurityLevel == 'rsa') {
-			$requiredExtensions[] = 'rsaauth');
+			$requiredExtensions[] = 'rsaauth';
 		}
 
 		foreach ($requiredExtensions as $requiredExtension) {
