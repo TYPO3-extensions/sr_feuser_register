@@ -204,7 +204,7 @@ class tx_srfeuserregister_data {
 	}
 
 
-	public function setDataArray ($dataArray, $k='', $bOverrride=TRUE) {
+	public function setDataArray (array $dataArray, $k = '', $bOverrride = TRUE) {
 		if ($k != '') {
 			if ($bOverrride || !isset($this->dataArray[$k])) {
 				$this->dataArray[$k] = $dataArray;
@@ -230,7 +230,7 @@ class tx_srfeuserregister_data {
 	}
 
 
-	public function setOrigArray ($origArray) {
+	public function setOrigArray (array $origArray) {
 		$this->origArr = $origArray;
 	}
 
@@ -250,7 +250,7 @@ class tx_srfeuserregister_data {
 	*
 	* @return void  all overriding done directly on array $this->dataArray
 	*/
-	public function overrideValues (&$dataArray, $cmdKey) {
+	public function overrideValues (array &$dataArray, $cmdKey) {
 
 		// Addition of overriding values
 		if (is_array($this->conf[$cmdKey . '.']['overrideValues.'])) {
@@ -384,11 +384,11 @@ class tx_srfeuserregister_data {
 	*/
 	public function evalValues (
 		$theTable,
-		&$dataArray,
-		&$origArray,
-		&$markContentArray,
+		array &$dataArray,
+		array &$origArray,
+		array &$markContentArray,
 		$cmdKey,
-		$requiredArray
+		array $requiredArray
 	) {
 		$failureMsg = array();
 		$displayFieldArray = t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1);
@@ -871,7 +871,7 @@ class tx_srfeuserregister_data {
 	*
 	* @return void  all parsing done directly on input array $dataArray
 	*/
-	public function parseValues ($theTable, &$dataArray, &$origArray, $cmdKey) {
+	public function parseValues ($theTable, array &$dataArray, array &$origArray, $cmdKey) {
 
 		if (is_array($this->conf['parseValues.'])) {
 
@@ -1140,10 +1140,10 @@ class tx_srfeuserregister_data {
 	*/
 	public function save (
 		$theTable,
-		$dataArray,
-		$origArray,
+		array $dataArray,
+		array $origArray,
 		$token,
-		&$newRow,
+		array &$newRow,
 		$cmd,
 		$cmdKey,
 		$pid,
@@ -1282,6 +1282,7 @@ class tx_srfeuserregister_data {
 						$parsedArray['token'] = $token;
 						$newFieldList  .= ',token';
 					}
+
 					$res =
 						$this->cObj->DBgetInsert(
 							$theTable,
@@ -1377,8 +1378,8 @@ class tx_srfeuserregister_data {
 	*/
 	public function deleteRecord (
 		$theTable,
-		&$origArray,
-		&$dataArray
+		array &$origArray,
+		array &$dataArray
 	) {
 		$prefixId = $this->controlData->getPrefixId();
 
@@ -1562,7 +1563,7 @@ class tx_srfeuserregister_data {
 	*
 	* @return void
 	*/
-	public function updateMMRelations ($row) {
+	public function updateMMRelations (array $row) {
 
 			// update the MM relation
 		$fieldsList = array_keys($row);
@@ -1592,7 +1593,7 @@ class tx_srfeuserregister_data {
 	*
 	* @return void
 	*/
-	public function deleteMMRelations ($table,$uid,$row = array()) {
+	public function deleteMMRelations ($table, $uid, array $row = array()) {
 			// update the MM relation
 		$fieldsList = array_keys($row);
 		foreach ($this->tca->TCA['columns'] as $colName => $colSettings) {
@@ -1613,7 +1614,7 @@ class tx_srfeuserregister_data {
 	* @param array  $inputArr: new values
 	* @return array  updated array
 	*/
-	public function modifyDataArrForFormUpdate ($inputArr, $cmdKey) {
+	public function modifyDataArrForFormUpdate (array $inputArr, $cmdKey) {
 
 		if (is_array($this->conf[$cmdKey.'.']['evalValues.'])) {
 			foreach($this->conf[$cmdKey.'.']['evalValues.'] as $theField => $theValue) {
@@ -1690,7 +1691,7 @@ class tx_srfeuserregister_data {
 	* @param string $theTable: the table in use
 	* @return void  done directly on $dataArray passed by reference
 	*/
-	public function setName (&$dataArray, $cmdKey, $theTable) {
+	public function setName (array &$dataArray, $cmdKey, $theTable) {
 		if (
 			in_array('name', explode(',', $this->getFieldList())) &&
 			!in_array('name', t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1)) &&
@@ -1725,7 +1726,7 @@ class tx_srfeuserregister_data {
 	*
 	* @return void  done directly on array $this->dataArray
 	*/
-	public function setUsername ($theTable, &$dataArray, $cmdKey) {
+	public function setUsername ($theTable, array &$dataArray, $cmdKey) {
 		if ($this->conf[$cmdKey.'.']['useEmailAsUsername'] && $theTable === 'fe_users' && t3lib_div::inList($this->getFieldList(), 'username') && empty($this->evalErrors['email'])) {
 			$dataArray['username'] = trim($dataArray['email']);
 		}
@@ -1736,7 +1737,7 @@ class tx_srfeuserregister_data {
 	*
 	* @return parsedArray
 	*/
-	public function parseIncomingData ($origArray, $bUnsetZero=TRUE) {
+	public function parseIncomingData (array $origArray, $bUnsetZero = TRUE) {
 
 		$parsedArray = array();
 		$parsedArray = $origArray;
@@ -1786,8 +1787,8 @@ class tx_srfeuserregister_data {
 		$cmdKey,
 		$pid,
 		$conf,
-		$dataArray,
-		$origArray
+		array $dataArray,
+		array $origArray
 	) {
 		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 		$addressObj = $tablesObj->get('address');
@@ -1942,7 +1943,7 @@ class tx_srfeuserregister_data {
 	 * @param array $dataArray: the incoming data array
 	 * @return void
 	 */
-	protected function setEmptyIfAbsent($theTable, $theField, &$dataArray) {
+	protected function setEmptyIfAbsent($theTable, $theField, array &$dataArray) {
 		if (!isset($dataArray[$theField])) {
 			$fieldConfig = $this->tca->TCA['columns'][$theField]['config'];
 			if (is_array($fieldConfig)) {

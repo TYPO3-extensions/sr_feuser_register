@@ -428,6 +428,7 @@ class tx_srfeuserregister_control {
 				$prefixId = $this->controlData->getPrefixId();
 				$extKey = $this->controlData->getExtKey();
 
+				$newDataArray = array();
 				$theUid = $this->data->save(
 					$theTable,
 					$finalDataArray,
