@@ -1823,6 +1823,14 @@ class tx_srfeuserregister_data {
 										$dateArray['d'],
 										$dateArray['y']
 									);
+
+								// Consider time zone offset
+								// This is necessary if the server wants to have the date not in GMT,
+								// so the offset must be added first to compensate for this
+								// it stands to reason to execute it all the time
+								if (!empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['serverTimeZone'])) {
+									$parsedArray[$theField] += ($GLOBALS['TYPO3_CONF_VARS']['SYS']['serverTimeZone'] * 3600);
+								}
 							}
 							break;
 						case 'deleteUnreferencedFiles':

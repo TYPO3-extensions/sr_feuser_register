@@ -1,3 +1,6 @@
+2012-10-10 Franz Holzinger  <franz@ttproducts.de>
+	* Fix bug #35796: you must add the server timezone in seconds after the usage of mktime if the server time is set (serverTimeZone)
+
 2012-10-03 Franz Holzinger  <franz@ttproducts.de>
 	* return a boolean FALSE in decryptPasswordForAutoLogin if there is a problem with the rsaauth backend decryption
 	* do not require rsaauth to be installed
