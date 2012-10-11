@@ -47,6 +47,7 @@ $EM_CONF[$_EXTKEY] = array(
 			'kb_md5fepw' => '',
 			'srfeuserregister_t3secsaltedpw' => '',
 			'patch1822' => '',
+			'cc_random_image' => ''
 		),
 		'suggests' => array(
 			'addons_feusers' => '',
