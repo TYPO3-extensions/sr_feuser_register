@@ -780,7 +780,7 @@ class tx_srfeuserregister_data {
 											is_object($hookObj) &&
 											method_exists($hookObj, 'evalValues')
 										) {
-											$test = TRUE;
+											$test = FALSE; // set it to TRUE when you test the hooks
 											$bInternal = FALSE;
 											$errorField = $hookObj->evalValues(
 												$theTable,
