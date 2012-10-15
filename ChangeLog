@@ -1,3 +1,6 @@
+2012-10-15 Franz Holzinger  <franz@ttproducts.de>
+	* new feature: house_no which contains the house number for the given street
+
 2012-10-10 Franz Holzinger  <franz@ttproducts.de>
 	* Fix bug #35796: you must add the server timezone in seconds after the usage of mktime if the server time is set (serverTimeZone)
 
