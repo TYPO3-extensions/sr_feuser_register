@@ -14,6 +14,7 @@ CREATE TABLE fe_users (
 	last_name varchar(50) DEFAULT '' NOT NULL,
 	status int(11) unsigned DEFAULT '0' NOT NULL,
 	country varchar(60) DEFAULT '' NOT NULL,
+	house_no varchar(20) DEFAULT '' NOT NULL,
 	zip varchar(20) DEFAULT '' NOT NULL,
 	date_of_birth int(11) DEFAULT '0' NOT NULL,
 	comments text NOT NULL,

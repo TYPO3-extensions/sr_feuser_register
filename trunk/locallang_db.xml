@@ -19,6 +19,7 @@
 			<label index="tt_content.pi1_flexform.display_mode.8">Setfixed</label>
 			<label index="tt_content.pi1_flexform.display_mode.9">Infomail</label>
             <label index="fe_users.cnum">Customer Number:</label>
+            <label index="fe_users.house_no">House Number:</label>
             <label index="fe_users.static_info_country">Country Code:</label>
             <label index="fe_users.zone">State/province:</label>
             <label index="fe_users.language">Language:</label>
@@ -41,7 +42,7 @@
             <label index="fe_users.by_invitation">Was invited:</label>
             <label index="fe_users.terms_acknowledged">The terms have been acknowledged:</label>
             <label index="fe_users.token">Security Token</label>
-	    <label index="fe_users.tx_srfeuserregister_password">Encrypted auto-login password</label>
+			<label index="fe_users.tx_srfeuserregister_password">Encrypted auto-login password</label>
             <label index="fe_groups_language_overlay">User Group Alternative Language</label>
             <label index="fe_groups_language_overlay.title">Translated user group name</label>
         </languageKey>
