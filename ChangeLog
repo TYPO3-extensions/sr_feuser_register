@@ -1,3 +1,6 @@
+2012-10-18 Franz Holzinger  <franz@ttproducts.de>
+	* Fix bug: Do not continue if the saving of the user data went wrong
+
 2012-10-15 Franz Holzinger  <franz@ttproducts.de>
 	* new feature: house_no which contains the house number for the given street
 
