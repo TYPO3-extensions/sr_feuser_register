@@ -1335,34 +1335,42 @@ class tx_srfeuserregister_data {
 					$this->updateMMRelations($dataArray);
 					$this->setSaved(TRUE);
 
-						// Post-create processing: call user functions and hooks
-					$newRow = $this->parseIncomingData($GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $newId));
-					$this->tca->modifyRow($newRow, TRUE);
-					$this->control->userProcess_alt(
-						$this->conf['create.']['userFunc_afterSave'],
-						$this->conf['create.']['userFunc_afterSave.'],
-						array('rec' => $newRow)
-					);
+					$newRow = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $newId);
 
-					// Call all afterSaveCreate hooks after the record has been created and saved
-					if (is_array ($hookClassArray)) {
-						foreach ($hookClassArray as $classRef) {
-							$hookObj = t3lib_div::getUserObj($classRef);
-							if (method_exists($hookObj, 'registrationProcess_afterSaveCreate')) {
-								$hookObj->registrationProcess_afterSaveCreate(
-									$theTable,
-									$dataArray,
-									$origArray,
-									$token,
-									$newRow,
-									$cmd,
-									$cmdKey,
-									$pid,
-									$extraList,
-									$this
-								);
+					if (is_array($newRow)) {
+							// Post-create processing: call user functions and hooks
+						$newRow = $this->parseIncomingData($newRow);
+						$this->tca->modifyRow($newRow, TRUE);
+						$this->control->userProcess_alt(
+							$this->conf['create.']['userFunc_afterSave'],
+							$this->conf['create.']['userFunc_afterSave.'],
+							array('rec' => $newRow)
+						);
+
+						// Call all afterSaveCreate hooks after the record has been created and saved
+						if (is_array ($hookClassArray)) {
+							foreach ($hookClassArray as $classRef) {
+								$hookObj = t3lib_div::getUserObj($classRef);
+								if (method_exists($hookObj, 'registrationProcess_afterSaveCreate')) {
+									$hookObj->registrationProcess_afterSaveCreate(
+										$theTable,
+										$dataArray,
+										$origArray,
+										$token,
+										$newRow,
+										$cmd,
+										$cmdKey,
+										$pid,
+										$extraList,
+										$this
+									);
+								}
 							}
 						}
+					} else {
+						$this->setError('###TEMPLATE_NO_PERMISSIONS###');
+						$this->setSaved(FALSE);
+						$rc = FALSE;
 					}
 				}
 			break;
