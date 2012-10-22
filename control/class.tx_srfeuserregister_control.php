@@ -68,7 +68,6 @@ class tx_srfeuserregister_control {
 		$setfixedObj,
 		$urlObj
 	) {
-
 		$this->langObj = $langObj;
 		$confObj = t3lib_div::getUserObj('&tx_srfeuserregister_conf');
 
