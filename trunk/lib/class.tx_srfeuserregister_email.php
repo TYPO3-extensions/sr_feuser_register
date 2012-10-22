@@ -264,19 +264,18 @@ class tx_srfeuserregister_email {
 		$controlData,
 		$theTable,
 		$prefixId,
-		$DBrows,
-		$origRows,
-		$securedArray,
+		array $DBrows,
+		array $origRows,
+		array $securedArray,
 		$recipient,
-		$markerArray,
+		array $markerArray,
 		$cmd,
 		$cmdKey,
 		$templateCode,
 		$errorFieldArray,
-		$setFixedConfig,
+		array $setFixedConfig,
 		&$errorCode
 	) {
-		$markerArray = array();
 		$missingSubpartArray = array();
 		$userSubpartsFound = 0;
 		$adminSubpartsFound = 0;
@@ -428,6 +427,7 @@ class tx_srfeuserregister_email {
 				'',
 				FALSE
 			);
+
 		$this->marker->addLabelMarkers(
 			$markerArray,
 			$theTable,
@@ -553,7 +553,7 @@ class tx_srfeuserregister_email {
 				);
 				$markerArray = array_merge($markerArray, $fieldMarkerArray);
 
-				foreach ($indexArray as $index)	{
+				foreach ($indexArray as $index) {
 					$content[$index]['rec'] =
 						$this->marker->removeStaticInfoSubparts(
 							$content[$index]['rec'],
@@ -642,6 +642,7 @@ class tx_srfeuserregister_email {
 		if ($this->conf['addAttachment'] && $this->conf['addAttachment.']['cmd'] == $cmd && $this->conf['addAttachment.']['sFK'] == $controlData->getFeUserData('sFK')) {
 			$file = ($this->conf['addAttachment.']['file'] ? $GLOBALS['TSFE']->tmpl->getFileName($this->conf['addAttachment.']['file']) : '');
 		}
+
 			// SETFIXED_REVIEW will be sent to user only id the admin part is present
 		if (
 			($userSubpartsFound + $adminSubpartsFound >= 1) &&
@@ -690,8 +691,8 @@ class tx_srfeuserregister_email {
 		// Send mail to admin
 		if ($admin && ($adminContent != '' || $adminContentHTML != '')) {
 
-			if (isset($this->conf['email.']['replyTo']))	{
-				if ($this->conf['email.']['replyTo'] == 'user')	{
+			if (isset($this->conf['email.']['replyTo'])) {
+				if ($this->conf['email.']['replyTo'] == 'user') {
 					$replyTo = $recipient;
 				} else {
 					$replyTo = $this->conf['email.']['replyTo'];
