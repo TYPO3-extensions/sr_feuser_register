@@ -47,7 +47,6 @@ class tx_srfeuserregister_control {
 	public $display;
 	public $data;
 	public $marker;
-	public $cObj;
 	public $auth;
 	public $email;
 	public $tca;
@@ -59,58 +58,54 @@ class tx_srfeuserregister_control {
 
 
 	public function init (
-		&$langObj,
-		&$cObj,
-		&$controlData,
-		&$display,
+		$langObj,
+		$cObj,
+		$controlData,
+		$display,
 		&$marker,
 		&$email,
 		&$tca,
-		&$setfixedObj,
-		&$urlObj
+		$setfixedObj,
+		$urlObj
 	) {
 
-		$this->langObj = &$langObj;
-		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_conf');
+		$this->langObj = $langObj;
+		$confObj = t3lib_div::getUserObj('&tx_srfeuserregister_conf');
 
-		$this->conf = &$confObj->getConf();
-		$this->display = &$display;
+		$this->conf = $confObj->getConf();
+		$this->display = $display;
 		$this->marker = &$marker;
-		$this->cObj = &$cObj;
-		$this->email = &$email;
-		$this->tca = &$tca;
-		$this->controlData = &$controlData;
-		$this->setfixedObj = &$setfixedObj;
-		$this->urlObj = &$urlObj;
+		$this->email = $email;
+		$this->tca = $tca;
+		$this->setfixedObj = $setfixedObj;
+		$this->urlObj = $urlObj;
 			// Retrieve the extension key
-		$extKey = $this->controlData->getExtKey();
+		$extKey = $controlData->getExtKey();
 			// Get the command as set in piVars
-		$cmd = $this->controlData->getCmd();
+		$cmd = $controlData->getCmd();
 			// If not set, get the command from the flexform
 		if ($cmd == '') {
 				// Check the flexform
-			$this->cObj->data['pi_flexform'] = t3lib_div::xml2array($this->cObj->data['pi_flexform']);
+			$cObj->data['pi_flexform'] = t3lib_div::xml2array($cObj->data['pi_flexform']);
 			$cmd = tx_div2007_alpha::getSetupOrFFvalue_fh002(
-				$this->langObj,
+				$langObj,
 				'',
 				'',
 				$this->conf['defaultCODE'],
-				$this->cObj->data['pi_flexform'],
+				$cObj->data['pi_flexform'],
 				'display_mode'
 			);
-			$cmd = $this->cObj->caseshift($cmd, 'lower');
+			$cmd = $cObj->caseshift($cmd, 'lower');
 		}
-		$this->controlData->setCmd($cmd);
+		$controlData->setCmd($cmd);
 	}
-
 
 	public function init2 (
 		$theTable,
-		&$controlData,
+		$controlData,
 		&$data,
 		&$adminFieldList
 	) {
-
 		$this->data = &$data;
 
 		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_conf');
@@ -120,7 +115,7 @@ class tx_srfeuserregister_control {
 		$extKey = $controlData->getExtKey();
 		$cmd = $controlData->getCmd();
 		$dataArray = $this->data->getDataArray();
-		$feUserdata = $this->controlData->getFeUserData();
+		$feUserdata = $controlData->getFeUserData();
 
 		$theUid = ($dataArray['uid'] ? $dataArray['uid'] : ($feUserdata['rU'] ? $feUserdata['rU'] : (!in_array($cmd,$this->noLoginCommands) ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0 )));
 
@@ -180,9 +175,6 @@ class tx_srfeuserregister_control {
 		}
 		$adminFieldList = implode(',', array_intersect( explode(',', $fieldlist), t3lib_div::trimExplode(',', $adminFieldList, 1)));
 		$this->data->setAdminFieldList($adminFieldList);
-
-			// Fetching the template file
-		$this->data->setTemplateCode($this->cObj->fileResource($this->conf['templateFile']));
 
 		if (!t3lib_extMgm::isLoaded('direct_mail')) {
 			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('module_sys_dmail_category, module_sys_dmail_newsletter')));
@@ -287,12 +279,6 @@ class tx_srfeuserregister_control {
 		$controlData->setRequiredArray($requiredArray);
 	}
 
-
-	public function getControlData () {
-		return $this->controlData;
-	}
-
-
 	/**
 	* All processing of the codes is done here
 	*
@@ -300,7 +286,10 @@ class tx_srfeuserregister_control {
 	* @param string message if an error has occurred
 	* @return string  text to display
 	*/
-	public function &doProcessing (
+	public function doProcessing (
+		$cObj,
+		$langObj,
+		$controlData,
 		$theTable,
 		$cmd,
 		$cmdKey,
@@ -309,8 +298,8 @@ class tx_srfeuserregister_control {
 		$templateCode,
 		&$error_message
 	) {
-
-		$this->controlData->setMode(MODE_NORMAL);
+		$prefixId = $controlData->getPrefixId();
+		$controlData->setMode(MODE_NORMAL);
 
 			// Commands with which the data will not be saved by $this->data->save
 		$noSaveCommands = array('infomail','login','delete');
@@ -319,7 +308,7 @@ class tx_srfeuserregister_control {
 		$securedArray = array();
 			// Check for valid token
 		if (
-			!$this->controlData->isTokenValid() ||
+			!$controlData->isTokenValid() ||
 			(
 				$theTable === 'fe_users' &&
 				(
@@ -329,14 +318,14 @@ class tx_srfeuserregister_control {
 				!in_array($cmd, $this->noLoginCommands)
 			)
 		) {
-			$this->controlData->setCmd($cmd);
+			$controlData->setCmd($cmd);
 			$origArray = array();
 			$this->data->setOrigArray($origArray);
 			$this->data->resetDataArray();
 			$finalDataArray = $dataArray;
 		} else if ($this->data->bNewAvailable()) {
 			if ($theTable === 'fe_users') {
-				$securedArray = $this->controlData->readSecuredArray();
+				$securedArray = $controlData->readSecuredArray();
 			}
 			$finalDataArray = t3lib_div::array_merge_recursive_overrule(
 				$dataArray,
@@ -346,18 +335,18 @@ class tx_srfeuserregister_control {
 			$finalDataArray = $dataArray;
 		}
 
-		$submitData = $this->controlData->getFeUserData('submit');
+		$submitData = $controlData->getFeUserData('submit');
 
 		if ($submitData != '') {
 			$bSubmit = TRUE;
-			$this->controlData->setSubmit(TRUE);
+			$controlData->setSubmit(TRUE);
 		}
 
-		$doNotSaveData = $this->controlData->getFeUserData('doNotSave');
+		$doNotSaveData = $controlData->getFeUserData('doNotSave');
 		if ($doNotSaveData != '') {
 			$bDoNotSave = TRUE;
-			$this->controlData->setDoNotSave(TRUE);
-			$this->controlData->clearSessionData();
+			$controlData->setDoNotSave(TRUE);
+			$controlData->clearSessionData();
 		}
 
 		$markerArray = $this->marker->getArray();
@@ -370,7 +359,7 @@ class tx_srfeuserregister_control {
 			if (
 				$bSubmit ||
 				$bDoNotSave ||
-				$this->controlData->getFeUserData('linkToPID')
+				$controlData->getFeUserData('linkToPID')
 			) {
 					// A button was clicked on
 				$evalErrors = $this->data->evalValues(
@@ -379,11 +368,11 @@ class tx_srfeuserregister_control {
 					$origArray,
 					$markerArray,
 					$cmdKey,
-					$this->controlData->getRequiredArray()
+					$controlData->getRequiredArray()
 				);
 					// If the two password fields are not equal, clear session data
 				if (is_array($evalErrors['password']) && in_array('twice', $evalErrors['password'])) {
-					$this->controlData->clearSessionData();
+					$controlData->clearSessionData();
 				}
 				if ($this->conf['evalFunc'] ) {
 					$this->marker->setArray($markerArray);
@@ -399,45 +388,44 @@ class tx_srfeuserregister_control {
 					$origArray,
 					$markerArray,
 					$cmdKey,
-					$this->controlData->getRequiredArray()
+					$controlData->getRequiredArray()
 				);
 					// If the two password fields are not equal, clear session data
 				if (is_array($evalErrors['password']) && in_array('twice', $evalErrors['password'])) {
-					$this->controlData->clearSessionData();
+					$controlData->clearSessionData();
 				}
 				$this->marker->setArray($markerArray);
-				$this->controlData->setFailure('submit');
+				$controlData->setFailure('submit');
 			}
 			$this->data->setUsername($theTable, $finalDataArray, $cmdKey);
 			$this->data->setDataArray($finalDataArray);
 
-			if ($this->controlData->getFailure() == '' && !$this->controlData->getFeUserData('preview') && !$bDoNotSave) {
+			if ($controlData->getFailure() == '' && !$controlData->getFeUserData('preview') && !$bDoNotSave) {
 				$password = '';
 				if ($theTable === 'fe_users') {
-					$this->controlData->getStorageSecurity()->initializeAutoLoginPassword($finalDataArray);
+					$controlData->getStorageSecurity()->initializeAutoLoginPassword($finalDataArray);
 						// We generate an interim password in the case of an invitation
 					if ($cmdKey === 'invite') {
-						$this->controlData->generatePassword($finalDataArray);
+						$controlData->generatePassword($finalDataArray);
 					}
 						// If inviting or if auto-login will be required on confirmation, we store an encrypted version of the password
 					if ($cmdKey === 'invite' || ($cmdKey === 'create' && $this->conf['enableAutoLoginOnConfirmation'] && !$this->conf['enableAutoLoginOnCreate'])) {
-						$this->controlData->getStorageSecurity()->encryptPasswordForAutoLogin($finalDataArray);
+						$controlData->getStorageSecurity()->encryptPasswordForAutoLogin($finalDataArray);
 					}
-					$password = $this->controlData->readPasswordForStorage();
+					$password = $controlData->readPasswordForStorage();
 				}
-				$prefixId = $this->controlData->getPrefixId();
-				$extKey = $this->controlData->getExtKey();
+				$extKey = $controlData->getExtKey();
 
 				$newDataArray = array();
 				$theUid = $this->data->save(
 					$theTable,
 					$finalDataArray,
 					$origArray,
-					$this->controlData->readToken(),
+					$controlData->readToken(),
 					$newDataArray,
 					$cmd,
 					$cmdKey,
-					$this->controlData->getPid(),
+					$controlData->getPid(),
 					$password,
 					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess']
 				);
@@ -448,12 +436,12 @@ class tx_srfeuserregister_control {
 				}
 
 				if ($this->data->getSaved()) {
-					$this->controlData->clearSessionData();
+					$controlData->clearSessionData();
 				}
 			}
 		} else if ($cmd === 'infomail') {
 			if ($bSubmit) {
-				$fetch = $this->controlData->getFeUserData('fetch');
+				$fetch = $controlData->getFeUserData('fetch');
 				$finalDataArray['email'] = $fetch;
 				$evalErrors = $this->data->evalValues(
 					$theTable,
@@ -464,30 +452,30 @@ class tx_srfeuserregister_control {
 					array()
 				);
 			}
-			$this->controlData->setRequiredArray(array());
+			$controlData->setRequiredArray(array());
 			$this->marker->setArray($markerArray);
-			$this->controlData->setFeUserData(0, 'preview');
+			$controlData->setFeUserData(0, 'preview');
 		} else {
 			$this->marker->setNoError($cmdKey, $markerArray);
 			$this->marker->setArray($markerArray);
 			if ($cmd != 'delete') {
-				$this->controlData->setFeUserData(0, 'preview'); // No preview if data is not received and deleted
+				$controlData->setFeUserData(0, 'preview'); // No preview if data is not received and deleted
 			}
 		}
 
-		if ($this->controlData->getFailure() != '') {
-			$this->controlData->setFeUserData(0, 'preview');
+		if ($controlData->getFailure() != '') {
+			$controlData->setFeUserData(0, 'preview');
 		}
 
 			// No preview flag if a evaluation failure has occured
-		if ($this->controlData->getFeUserData('preview')) {
+		if ($controlData->getFeUserData('preview')) {
 			$this->marker->setPreviewLabel('_PREVIEW');
-			$this->controlData->setMode(MODE_PREVIEW);
+			$controlData->setMode(MODE_PREVIEW);
 		}
 			// If data is submitted, we take care of it here.
 		if (
 			$cmd == 'delete' &&
-			!$this->controlData->getFeUserData('preview') &&
+			!$controlData->getFeUserData('preview') &&
 			!$bDoNotSave
 		) {
 			// Delete record if delete command is set + the preview flag is NOT set.
@@ -519,7 +507,7 @@ class tx_srfeuserregister_control {
 				// $this->conf['enableEmailConfirmation'] ||
 				// ($this->theTable == 'fe_users' && $this->conf['enableAdminReview']) ||
 				// $this->conf['setfixed']
-			$bSetfixed = $this->controlData->getSetfixedEnabled();
+			$bSetfixed = $controlData->getSetfixedEnabled();
 				// This is the case where the user does not have to confirm, but has to wait for admin review
 				// This applies only on create ($bDefaultMode) and to fe_users
 				// $bCreateReview implies $bSetfixed
@@ -527,31 +515,48 @@ class tx_srfeuserregister_control {
 				($theTable === 'fe_users') &&
 				!$this->conf['enableEmailConfirmation'] &&
 				$this->conf['enableAdminReview'];
-			$key = $this->display->getKeyAfterSave($cmd, $cmdKey, $bCustomerConfirmsMode, $bSetfixed, $bCreateReview);
+			$key =
+				$this->display->getKeyAfterSave(
+					$cmd,
+					$cmdKey,
+					$bCustomerConfirmsMode,
+					$bSetfixed,
+					$bCreateReview
+				);
 
-			$errorContent = $this->display->afterSave(
-				$theTable,
-				$dataArray,
-				$origArray,
-				$securedArray,
-				$cmd,
-				$cmdKey,
-				$key,
-				$templateCode,
-				$markerArray,
-				$this->data->inError,
-				$content
-			);
+			$errorContent =
+				$this->display->afterSave(
+					$cObj,
+					$langObj,
+					$controlData,
+					$theTable,
+					$prefixId,
+					$dataArray,
+					$origArray,
+					$securedArray,
+					$cmd,
+					$cmdKey,
+					$key,
+					$templateCode,
+					$markerArray,
+					$this->data->inError,
+					$content
+				);
 
 			if ($errorContent == '') {
 				$markerArray = $this->marker->getArray(); // uses its own markerArray
+				$errorCode = '';
 
 				if ($this->conf['enableAdminReview'] && $bDefaultMode && !$bCustomerConfirmsMode) {
 						// Send admin the confirmation email
 						// The user will not confirm in this mode
 					$errorContent = $this->email->compile(
 						SETFIXED_PREFIX . 'REVIEW',
+						$cObj,
+						$langObj,
+						$controlData,
 						$theTable,
+						$prefixId,
 						array($dataArray),
 						array($origArray),
 						$securedArray,
@@ -561,15 +566,25 @@ class tx_srfeuserregister_control {
 						$cmdKey,
 						$templateCode,
 						$errorFieldArray,
-						$this->conf['setfixed.']
+						$this->conf['setfixed.'],
+						$errorCode
 					);
-				} else if ($cmdKey == 'create' || $cmdKey == 'invite' || $this->conf['email.']['EDIT_SAVED'] || $this->conf['email.']['DELETE_SAVED']) {
+				} else if (
+					$cmdKey == 'create' ||
+					$cmdKey == 'invite' ||
+					$this->conf['email.']['EDIT_SAVED'] ||
+					$this->conf['email.']['DELETE_SAVED']
+				) {
 					$emailField = $this->conf['email.']['field'];
 					$recipient = (isset($finalDataArray) && is_array($finalDataArray) && $finalDataArray[$emailField]) ? $finalDataArray[$emailField] : $origArray[$emailField];
 					// Send email message(s)
 					$errorContent = $this->email->compile(
 						$key,
+						$cObj,
+						$langObj,
+						$controlData,
 						$theTable,
+						$prefixId,
 						array($dataArray),
 						array($origArray),
 						$securedArray,
@@ -579,28 +594,39 @@ class tx_srfeuserregister_control {
 						$cmdKey,
 						$templateCode,
 						$errorFieldArray,
-						$this->conf['setfixed.']
+						$this->conf['setfixed.'],
+						$errorCode
 					);
+				}
+
+				if (is_array($errorCode)) {
+					$errorText = $langObj->getLL($errorCode['0']);
+					$errorContent = sprintf($errorText, $errorCode['1']);
 				}
 			}
 
 			if ($errorContent == '') {	// success case
-				$origGetFeUserData = t3lib_div::_GET($this->controlData->getPrefixId());
+				$origGetFeUserData = t3lib_div::_GET($prefixId);
 				$bDeleteRegHash = TRUE;
 
 					// Link to on edit save
 					// backURL may link back to referring process
 				if ($theTable === 'fe_users' &&
 					($cmd === 'edit' || $cmd === 'password') &&
-					($this->controlData->getBackURL() || ($this->conf['linkToPID'] && ($this->controlData->getFeUserData('linkToPID') || !$this->conf['linkToPIDAddButton']))) ) {
-					$destUrl = ($this->controlData->getBackURL() ? $this->controlData->getBackURL() : $this->cObj->getTypoLink_URL($this->conf['linkToPID'] . ',' . $GLOBALS['TSFE']->type));
+					($controlData->getBackURL() || ($this->conf['linkToPID'] && ($controlData->getFeUserData('linkToPID') || !$this->conf['linkToPIDAddButton']))) ) {
+					$destUrl = ($controlData->getBackURL() ? $controlData->getBackURL() : $cObj->getTypoLink_URL($this->conf['linkToPID'] . ',' . $GLOBALS['TSFE']->type));
 					header('Location: '.t3lib_div::locationHeaderUrl($destUrl));
 					exit;
 				}
 
 					// Auto-login on create
-				if ($theTable === 'fe_users' && $cmd === 'create' && !$this->controlData->getSetfixedEnabled() && $this->conf['enableAutoLoginOnCreate']) {
-					$loginSuccess = $this->login($finalDataArray);
+				if ($theTable === 'fe_users' && $cmd === 'create' && !$controlData->getSetfixedEnabled() && $this->conf['enableAutoLoginOnCreate']) {
+					$loginSuccess =
+						$this->login(
+							$langObj,
+							$controlData,
+							$finalDataArray
+						);
 					if ($loginSuccess) {
 							// Login was successful
 						exit;
@@ -616,7 +642,7 @@ class tx_srfeuserregister_control {
 		} else if ($this->data->getError()) {
 
 				// If there was an error, we return the template-subpart with the error message
-			$templateCode = $this->cObj->getSubpart($templateCode, $this->data->getError());
+			$templateCode = $cObj->getSubpart($templateCode, $this->data->getError());
 			$this->marker->addLabelMarkers(
 				$markerArray,
 				$theTable,
@@ -624,34 +650,38 @@ class tx_srfeuserregister_control {
 				$this->data->getOrigArray(),
 				$securedArray,
 				array(),
-				$this->controlData->getRequiredArray(),
+				$controlData->getRequiredArray(),
 				$this->data->getFieldList(),
 				$this->tca->TCA['columns'],
 				FALSE
 			);
 			$this->marker->setArray($markerArray);
-			$content = $this->cObj->substituteMarkerArray($templateCode, $markerArray);
+			$content = $cObj->substituteMarkerArray($templateCode, $markerArray);
 		} else {
 				// Finally, there has been no attempt to save.
 				// That is either preview or just displaying an empty or not correctly filled form
 			$this->marker->setArray($markerArray);
-			$token = $this->controlData->readToken();
+			$token = $controlData->readToken();
 
-			if ($cmd == '' && $this->controlData->getFeUserData('preview')) {
+			if ($cmd == '' && $controlData->getFeUserData('preview')) {
 				$cmd = $cmdKey;
 			}
 			switch ($cmd) {
 				case 'setfixed':
 					if ($this->conf['infomail']) {
-						$this->controlData->setSetfixedEnabled(1);
+						$controlData->setSetfixedEnabled(1);
 					}
-					$feuData = $this->controlData->getFeUserData();
+					$feuData = $controlData->getFeUserData();
 					if (is_array($origArray)) {
 						$origArray = $this->data->parseIncomingData($origArray, FALSE);
 					}
 
 					$content = $this->setfixedObj->processSetFixed(
+						$cObj,
+						$langObj,
+						$controlData,
 						$theTable,
+						$prefixId,
 						$uid,
 						$cmdKey,
 						$markerArray,
@@ -668,26 +698,38 @@ class tx_srfeuserregister_control {
 				case 'infomail':
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
 					if ($this->conf['infomail']) {
-						$this->controlData->setSetfixedEnabled(1);
+						$controlData->setSetfixedEnabled(1);
 					}
 					if (is_array($origArray)) {
 						$origArray = $this->data->parseIncomingData($origArray, FALSE);
 					}
+					$errorCode = '';
 					$content = $this->email->sendInfo(
+						$cObj,
+						$langObj,
+						$controlData,
 						$theTable,
+						$prefixId,
 						$origArray,
 						$securedArray,
 						$markerArray,
 						$cmd,
 						$cmdKey,
 						$templateCode,
-						$this->controlData->getFailure()
+						$controlData->getFailure(),
+						$errorCode
 					);
+					if (is_array($errorCode)) {
+						$content = $langObj->getLL($errorCode['0']);
+					}
 					break;
 				case 'delete':
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
 					$content = $this->display->deleteScreen(
 						$markerArray,
+						$cObj,
+						$langObj,
+						$controlData,
 						$theTable,
 						$finalDataArray,
 						$origArray,
@@ -700,13 +742,16 @@ class tx_srfeuserregister_control {
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
 					$content = $this->display->editScreen(
 						$markerArray,
+						$cObj,
+						$langObj,
+						$controlData,
 						$theTable,
 						$finalDataArray,
 						$origArray,
 						$securedArray,
 						$cmd,
 						$cmdKey,
-						$this->controlData->getMode(),
+						$controlData->getMode(),
 						$this->data->inError,
 						$token
 					);
@@ -720,9 +765,12 @@ class tx_srfeuserregister_control {
 					);
 					$content = $this->display->createScreen(
 						$markerArray,
+						$cObj,
+						$langObj,
+						$controlData,
 						$cmd,
 						$cmdKey,
-						$this->controlData->getMode(),
+						$controlData->getMode(),
 						$theTable,
 						$finalDataArray,
 						$origArray,
@@ -739,9 +787,12 @@ class tx_srfeuserregister_control {
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
 					$content = $this->display->createScreen(
 						$markerArray,
+						$cObj,
+						$langObj,
+						$controlData,
 						$cmd,
 						$cmdKey,
-						$this->controlData->getMode(),
+						$controlData->getMode(),
 						$theTable,
 						$finalDataArray,
 						$origArray,
@@ -756,7 +807,7 @@ class tx_srfeuserregister_control {
 			if (
 				($cmd != 'setfixed' || $cmdKey != 'edit' || $cmdKey != 'password')
 				&& !$errorContent
-				&& !$this->controlData->getFeUserData('preview')
+				&& !$controlData->getFeUserData('preview')
 			) {
 				$bDeleteRegHash = TRUE;
 			}
@@ -764,10 +815,10 @@ class tx_srfeuserregister_control {
 
 		if (
 			$bDeleteRegHash
-			&& $this->controlData->getValidRegHash()
+			&& $controlData->getValidRegHash()
 		) {
-			$regHash = $this->controlData->getRegHash();
-			$this->controlData->deleteShortUrl($regHash);
+			$regHash = $controlData->getRegHash();
+			$controlData->deleteShortUrl($regHash);
 		}
 		return $content;
 	}
@@ -779,7 +830,12 @@ class tx_srfeuserregister_control {
 	 * @param boolen $redirect: whether to redirect after login or not
 	 * @return boolean TRUE, if login was successful, FALSE otherwise
 	 */
-	function login (array $row, $redirect = TRUE) {
+	public function login (
+		$langObj,
+		$controlData,
+		array $row,
+		$redirect = TRUE
+	) {
 		$result = TRUE;
 			// Log the user in
 		$loginData = array(
@@ -809,14 +865,14 @@ class tx_srfeuserregister_control {
 					$GLOBALS['TSFE']->gr_list = '0,-2';
 						// Delete regHash
 					if (
-						$this->controlData->getValidRegHash()
+						$controlData->getValidRegHash()
 					) {
-						$regHash = $this->controlData->getRegHash();
-						$this->controlData->deleteShortUrl($regHash);
+						$regHash = $controlData->getRegHash();
+						$controlData->deleteShortUrl($regHash);
 					}
 					if ($redirect) {
 							// Redirect to configured page, if any
-						$redirectUrl = $this->controlData->readRedirectUrl();
+						$redirectUrl = $controlData->readRedirectUrl();
 						if (!$redirectUrl) {
 							$redirectUrl = trim($this->conf['autoLoginRedirect_url']);
 						}
@@ -824,26 +880,26 @@ class tx_srfeuserregister_control {
 							if ($this->conf['loginPID']) {
 								$redirectUrl = $this->urlObj->get('', $this->conf['loginPID']);
 							} else {
-								$redirectUrl = $this->controlData->getSiteUrl();
+								$redirectUrl = $controlData->getSiteUrl();
 							}
 						}
 						header('Location: '.t3lib_div::locationHeaderUrl($redirectUrl));
 					}
 				} else {
 						// Login failed...
-					$this->controlData->clearSessionData(FALSE);
+					$controlData->clearSessionData(FALSE);
 					$result = FALSE;
 				}
 			} else {
 					// Required authentication service not available
-				$message = $this->langObj->getLL('internal_required_authentication_service_not_available');
-				t3lib_div::sysLog($message, $this->controlData->getExtKey(), t3lib_div::SYSLOG_SEVERITY_ERROR);
-				$this->controlData->clearSessionData(FALSE);
+				$message = $langObj->getLL('internal_required_authentication_service_not_available');
+				t3lib_div::sysLog($message, $controlData->getExtKey(), t3lib_div::SYSLOG_SEVERITY_ERROR);
+				$controlData->clearSessionData(FALSE);
 				$result = FALSE;
 			}
 		} else {
 				// No enabled user of the given name
-			$this->controlData->clearSessionData(FALSE);
+			$controlData->clearSessionData(FALSE);
 			$result = FALSE;
 		}
 		return $result;
@@ -865,7 +921,6 @@ class tx_srfeuserregister_control {
 		}
 		return $passVar;
 	}	// userProcess
-
 
 	/**
 	* Invokes a user process

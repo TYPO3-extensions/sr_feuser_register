@@ -43,11 +43,8 @@
 
 
 class tx_srfeuserregister_setfixed {
-	public $pibase;
 	public $conf = array();
 	public $config = array();
-	public $control;
-	public $controlData;
 	public $tca;
 	public $display;
 	public $email;
@@ -60,19 +57,15 @@ class tx_srfeuserregister_setfixed {
 
 
 	public function init (
-		&$cObj,
 		&$conf,
 		&$config,
-		&$controlData,
 		&$tca,
 		&$display,
 		&$email,
 		&$marker
 	) {
-		$this->cObj = &$cObj;
 		$this->conf = &$conf;
 		$this->config = &$config;
-		$this->controlData = &$controlData;
 		$this->tca = &$tca;
 		$this->display = &$display;
 		$this->email = &$email;
@@ -83,11 +76,18 @@ class tx_srfeuserregister_setfixed {
 	/**
 	* Process the front end user reply to the confirmation request
 	*
+	* @param array $cObj: the cObject
+	* @param array $langObj: the language object
+	* @param array $controlData: the object of the control data
 	* @param array  Array with key/values being marker-strings/substitution values.
 	* @return string  the template with substituted markers
 	*/
 	public function processSetFixed (
+		$cObj,
+		$langObj,
+		$controlData,
 		$theTable,
+		$prefixId,
 		$uid,
 		$cmdKey,
 		&$markerArray,
@@ -100,10 +100,9 @@ class tx_srfeuserregister_setfixed {
 		&$feuData,
 		$token
 	) {
-
 		$row = $origArray;
 
-		if ($this->controlData->getSetfixedEnabled()) {
+		if ($controlData->getSetfixedEnabled()) {
 			$origUsergroup = $row['usergroup'];
 			$setfixedUsergroup = '';
 			$setfixedSuffix = $sFK = $feuData['sFK'];
@@ -122,7 +121,8 @@ class tx_srfeuserregister_setfixed {
 
 			if ($theTable == 'fe_users') {
 					// Determine if auto-login is requested
-				$autoLoginIsRequested = $this->controlData->getStorageSecurity()->getAutoLoginIsRequested($feuData, $row);
+				$autoLoginIsRequested =
+					$controlData->getStorageSecurity()->getAutoLoginIsRequested($feuData, $row);
 			}
 
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
@@ -143,13 +143,16 @@ class tx_srfeuserregister_setfixed {
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
 					$content = $this->display->editScreen(
 						$markerArray,
+						$cObj,
+						$langObj,
+						$controlData,
 						$theTable,
 						$dataArray,
 						$origArray,
 						$securedArray,
 						'setfixed',
 						$cmdKey,
-						$this->controlData->getMode(),
+						$controlData->getMode(),
 						$dataObj->inError,
 						$token
 					);
@@ -164,7 +167,7 @@ class tx_srfeuserregister_setfixed {
 						// If the record is fully deleted... then remove the image attached.
 						$dataObj->deleteFilesFromRecord($uid);
 					}
-					$res = $this->cObj->DBgetDelete(
+					$res = $cObj->DBgetDelete(
 						$theTable,
 						$uid,
 						TRUE
@@ -197,9 +200,9 @@ class tx_srfeuserregister_setfixed {
 
 						// Hook: first we initialize the hooks
 					$hookObjectsArr = array();
-					if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->controlData->getExtKey()][$this->controlData->getPrefixId()]['confirmRegistrationClass'])) {
-						foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->controlData->getExtKey()][$this->controlData->getPrefixId()]['confirmRegistrationClass'] as $classRef) {
-							$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
+					if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$controlData->getExtKey()][$prefixId]['confirmRegistrationClass'])) {
+						foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$controlData->getExtKey()][$prefixId]['confirmRegistrationClass'] as $classRef) {
+							$hookObjectsArr[] = t3lib_div::getUserObj($classRef);
 						}
 					}
 						// Hook: confirmRegistrationClass_preProcess
@@ -219,7 +222,7 @@ class tx_srfeuserregister_setfixed {
 						));
 					}
 					if ($sFK !== 'ENTER' && $newFieldList != '') {
-						$res = $this->cObj->DBgetUpdate(
+						$res = $cObj->DBgetUpdate(
 							$theTable,
 							$uid,
 							$row,
@@ -228,7 +231,7 @@ class tx_srfeuserregister_setfixed {
 						);
 					}
 					$currArr = $origArray;
-					$this->controlData->getStorageSecurity()->decryptPasswordForAutoLogin($currArr, $row);
+					$controlData->getStorageSecurity()->decryptPasswordForAutoLogin($currArr, $row);
 					$modArray = array();
 					$currArr = $this->tca->modifyTcaMMfields($currArr, $modArray);
 					$row = array_merge($row, $modArray);
@@ -250,7 +253,7 @@ class tx_srfeuserregister_setfixed {
 				if (
 					$theTable == 'fe_users' &&
 						// LOGIN is here only for an error case  ???
-					in_array($sFK, array('APPROVE','ENTER','LOGIN'))
+					in_array($sFK, array('APPROVE', 'ENTER', 'LOGIN'))
 				) {
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $row['by_invitation'] ? 'password' : 'login', $token);
 					if (!$row['by_invitation']) {
@@ -269,30 +272,44 @@ class tx_srfeuserregister_setfixed {
 						$row['by_invitation']
 					) {
 							// Auto-login
-						$loginSuccess = $pObj->login($currArr, FALSE);
+						$loginSuccess =
+							$pObj->login(
+								$langObj,
+								$controlData,
+								$currArr,
+								FALSE
+							);
 						if ($loginSuccess) {
 							$content = $this->display->editScreen(
 								$markerArray,
+								$cObj,
+								$langObj,
+								$controlData,
 								$theTable,
 								$dataArray,
 								$origArray,
 								$securedArray,
 								'password',
 								'password',
-								$this->controlData->getMode(),
+								$controlData->getMode(),
 								$dataObj->inError,
 								$token
 							);
 						} else {
 								// Login failed
-							$content = $this->display->getPlainTemplate(
-								$templateCode,
-								'###TEMPLATE_SETFIXED_FAILED###',
-								$markerArray,
-								$origArray,
-								'',
-								''
-							);
+							$content =
+								$this->display->getPlainTemplate(
+									$cObj,
+									$langObj,
+									$controlData,
+									$templateCode,
+									'###TEMPLATE_SETFIXED_FAILED###',
+									$markerArray,
+									$origArray,
+									$prefixId,
+									'',
+									''
+								);
 						}
 					}
 					if (
@@ -303,36 +320,51 @@ class tx_srfeuserregister_setfixed {
 					}
 					if (!$content) {
 						$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX . 'OK_' . $setfixedSuffix . '###';
-						$content = $this->display->getPlainTemplate(
-							$templateCode,
-							$subpartMarker,
-							$markerArray,
-							$origArray,
-							$row,
-							$securedArray,
-							FALSE
-						);
+						$content =
+							$this->display->getPlainTemplate(
+								$cObj,
+								$langObj,
+								$controlData,
+								$templateCode,
+								$subpartMarker,
+								$markerArray,
+								$origArray,
+								$prefixId,
+								$row,
+								$securedArray,
+								FALSE
+							);
 					}
 
 					if (!$content) {
 						$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX .'OK###';
-						$content = $this->display->getPlainTemplate(
-							$templateCode,
-							$subpartMarker,
-							$markerArray,
-							$origArray,
-							$row,
-							$securedArray
-						);
+						$content =
+							$this->display->getPlainTemplate(
+								$cObj,
+								$langObj,
+								$controlData,
+								$templateCode,
+								$subpartMarker,
+								$markerArray,
+								$origArray,
+								$prefixId,
+								$row,
+								$securedArray
+							);
 					}
 
 					if (
 						($this->conf['email.']['SETFIXED_REFUSE'] || $this->conf['enableEmailConfirmation'] || $this->conf['infomail'])
 					) {
+						$errorCode = '';
 							// Compiling email
 						$errorContent = $this->email->compile(
 							SETFIXED_PREFIX . $setfixedSuffix,
+							$cObj,
+							$langObj,
+							$controlData,
 							$theTable,
+							$prefixId,
 							array($row),
 							array($origArray),
 							$securedArray,
@@ -342,8 +374,14 @@ class tx_srfeuserregister_setfixed {
 							$cmdKey,
 							$templateCode,
 							$this->data->inError,
-							$this->conf['setfixed.']
+							$this->conf['setfixed.'],
+							$errorCode
 						);
+
+						if (is_array($errorCode)) {
+							$errorText = $this->langObj->getLL($errorCode['0']);
+							$errorContent = sprintf($errorText, $errorCode['1']);
+						}
 					}
 
 					if ($errorContent) {
@@ -351,9 +389,14 @@ class tx_srfeuserregister_setfixed {
 					} else if ($theTable == 'fe_users') {
 							// If applicable, send admin a request to review the registration request
 						if ($this->conf['enableAdminReview'] && $sFK == 'APPROVE' && !$row['by_invitation']) {
+							$errorCode = '';
 							$errorContent = $this->email->compile(
 								SETFIXED_PREFIX . 'REVIEW',
+								$cObj,
+								$langObj,
+								$controlData,
 								$theTable,
+								$prefixId,
 								array($row),
 								array($origArray),
 								$securedArray,
@@ -365,6 +408,11 @@ class tx_srfeuserregister_setfixed {
 								$this->data->inError,
 								$this->conf['setfixed.']
 							);
+
+							if (is_array($errorCode)) {
+								$errorText = $this->langObj->getLL($errorCode['0']);
+								$errorContent = sprintf($errorText, $errorCode['1']);
+							}
 						}
 						if ($errorContent) {
 							$content = $errorContent;
@@ -375,17 +423,26 @@ class tx_srfeuserregister_setfixed {
 							(($sFK === 'APPROVE' && !$this->conf['enableAdminReview']) || $sFK === 'ENTER') &&
 							$autoLoginIsRequested
 						) {
-							$loginSuccess = $pObj->login($currArr);
+							$loginSuccess =
+								$pObj->login(
+								$langObj,
+								$controlData,
+								$currArr
+							);
 							if ($loginSuccess) {
 									// Login was successful
 								exit;
 							} else {
 									// Login failed
 								$content = $this->display->getPlainTemplate(
+									$cObj,
+									$langObj,
+									$controlData,
 									$templateCode,
 									'###TEMPLATE_SETFIXED_FAILED###',
 									$markerArray,
 									$origArray,
+									$prefixId,
 									'',
 									''
 								);
@@ -395,10 +452,14 @@ class tx_srfeuserregister_setfixed {
 				}
 			} else {
 				$content = $this->display->getPlainTemplate(
+					$cObj,
+					$langObj,
+					$controlData,
 					$templateCode,
 					'###TEMPLATE_SETFIXED_FAILED###',
 					$markerArray,
 					$origArray,
+					$prefixId,
 					'',
 					''
 				);
@@ -414,14 +475,20 @@ class tx_srfeuserregister_setfixed {
 	* @param array  $markerArray: the input marker array
 	* @param array  $setfixed: the TS setup setfixed configuration
 	* @param array  $r: the record row
+	* @param array $controlData: the object of the control data
 	* @return void
 	*/
-	public function computeUrl ($cmdKey, &$markerArray, $setfixed, $r, $theTable) {
-
-		$prefixId = $this->controlData->getPrefixId();
-
-		if ($this->controlData->getSetfixedEnabled() && is_array($setfixed) ) {
-			$setfixedpiVars = array();
+	public function computeUrl (
+		$cmdKey,
+		$prefixId,
+		$cObj,
+		$controlData,
+		&$markerArray,
+		$setfixed,
+		$r,
+		$theTable
+	) {
+		if ($controlData->getSetfixedEnabled() && is_array($setfixed) ) {
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 			$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 			$addressObj = $tablesObj->get('address');
@@ -431,7 +498,7 @@ class tx_srfeuserregister_setfixed {
 				if (strstr($theKey, '.') ) {
 					$theKey = substr($theKey, 0, -1);
 				}
-				unset($setfixedpiVars);
+				$setfixedpiVars = array();
 
 				if ($theTable != 'fe_users' && $theKey == 'EDIT') {
 					$noFeusersEdit = TRUE;
@@ -459,7 +526,7 @@ class tx_srfeuserregister_setfixed {
 					}
 				} else {
 					$cmd = 'setfixed';
-					$pidCmd = ($this->controlData->getCmd() == 'invite' ? 'confirmInvitation' : 'confirm');
+					$pidCmd = ($controlData->getCmd() == 'invite' ? 'confirmInvitation' : 'confirm');
 					$setfixedpiVars[$prefixId . '%5BsFK%5D'] = $theKey;
 					$bSetfixedHash = TRUE;
 					if (isset($r['auto_login_key'])) {
@@ -477,7 +544,7 @@ class tx_srfeuserregister_setfixed {
 						$setfixedpiVars['fD%5B' . $fieldName . '%5D'] = rawurlencode($fieldValue);
 					}
 				}
-				$linkPID = $this->controlData->getPID($pidCmd);
+				$linkPID = $controlData->getPID($pidCmd);
 
 				if (t3lib_div::_GP('L') && !t3lib_div::inList($GLOBALS['TSFE']->config['config']['linkVars'], 'L')) {
 					$setfixedpiVars['L'] = t3lib_div::_GP('L');
@@ -497,16 +564,17 @@ class tx_srfeuserregister_setfixed {
 
 				$confirmType = ($bconfirmTypeIsInt ? intval($this->conf['confirmType']) : $GLOBALS['TSFE']->type);
 				$url =
-					tx_div2007_alpha::getTypoLink_URL_fh002(
-						$this->cObj,
+					tx_div2007_alpha5::getTypoLink_URL_fh003(
+						$cObj,
 						$linkPID . ',' . $confirmType,
 						$setfixedpiVars,
 						'',
 						$conf
 					);
+
 				$bIsAbsoluteURL = ((strncmp($url, 'http://', 7) == 0) || (strncmp($url, 'https://', 8) == 0));
-				$markerKey = '###SETFIXED_' . $this->cObj->caseshift($theKey, 'upper') . '_URL###';
-				$url = ($bIsAbsoluteURL ? '' : $this->controlData->getSiteUrl()) . ltrim($url,'/');
+				$markerKey = '###SETFIXED_' . $cObj->caseshift($theKey, 'upper') . '_URL###';
+				$url = ($bIsAbsoluteURL ? '' : $controlData->getSiteUrl()) . ltrim($url, '/');
 				$markerArray[$markerKey] = str_replace(array('[',']'), array('%5B', '%5D'), $url);
 			}	// foreach
 		}

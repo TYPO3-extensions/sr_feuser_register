@@ -105,6 +105,10 @@ class tx_srfeuserregister_data {
 			}
 			$this->setDataArray($feDataArray);
 		}
+
+
+			// Fetching the template file
+		$this->setTemplateCode($this->cObj->fileResource($this->conf['templateFile']));
 	}
 
 
@@ -128,7 +132,7 @@ class tx_srfeuserregister_data {
 	}
 
 
-	public function &getTemplateCode () {
+	public function getTemplateCode () {
 		return $this->templateCode;
 	}
 	/*
@@ -137,7 +141,7 @@ class tx_srfeuserregister_data {
 	 * @param string $templateCode: the source code
 	 * @return void
 	 */
-	public function setTemplateCode (&$templateCode) {
+	public function setTemplateCode ($templateCode) {
 		$this->templateCode = $templateCode;
 	}
 

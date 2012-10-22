@@ -56,23 +56,21 @@ class tx_srfeuserregister_control_main {
 	public $langObj; // object of type tx_srfeuserregister_lang
 	public $tca;  // object of type tx_srfeuserregister_tca
 	public $marker; // object of type tx_srfeuserregister_marker
-	public $pibaseObj;
 	public $extKey;
 
 
 	public function main (
 		$content,
 		&$conf,
-		&$pibaseObj,
+		$pibaseObj,
 		$theTable,
 		$adminFieldList = 'username,password,name,disable,usergroup,by_invitation,tx_srfeuserregister_password',
 		$buttonLabelsList = '',
 		$otherLabelsList = ''
 	) {
-
-		$this->pibaseObj = &$pibaseObj;
-		$this->extKey = $this->pibaseObj->extKey;
+		$this->extKey = $pibaseObj->extKey;
 		$success = $this->init(
+			$pibaseObj,
 			$conf,
 			$theTable,
 			$adminFieldList,
@@ -88,7 +86,10 @@ class tx_srfeuserregister_control_main {
 
 		if ($success !== FALSE)	{
 			$error_message = '';
-			$content = $this->control->doProcessing (
+			$content = $this->control->doProcessing(
+				$pibaseObj->cObj,
+				$this->langObj,
+				$this->controlData,
 				$theTable,
 				$cmd,
 				$cmdKey,
@@ -104,10 +105,10 @@ class tx_srfeuserregister_control_main {
 		return $content;
 	}
 
-
 	/**
 	* Creates and initializes all component classes
 	*
+	* @param object pi_base object
 	* @param array $conf: the configuration of the cObj
 	* @param string $theTable: the table in use
 	* @param string $adminFieldList: list of table fields that are considered reserved for administration purposes
@@ -116,13 +117,13 @@ class tx_srfeuserregister_control_main {
 	* @return boolean TRUE, if initialization was successful, FALSE otherwise
 	*/
 	public function init (
+		$pibaseObj,
 		&$conf,
 		$theTable,
 		$adminFieldList,
 		$buttonLabelsList,
 		$otherLabelsList
 	) {
-
 		$this->tca = &t3lib_div::getUserObj('&tx_srfeuserregister_tca');
 
 			// plugin initialization
@@ -143,20 +144,24 @@ class tx_srfeuserregister_control_main {
 		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 		$tablesObj->init($theTable);
 		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
-		$authObj->init($this->pibaseObj, $this->conf, $this->config);
+		$authObj->init($pibaseObj, $this->conf, $this->config);
 		$this->controlData = &t3lib_div::getUserObj('&tx_srfeuserregister_controldata');
 		$this->controlData->init(
 			$conf,
-			$this->pibaseObj->prefixId,
+			$pibaseObj->prefixId,
 			$this->extKey,
-			$this->pibaseObj->piVars,
+			$pibaseObj->piVars,
 			$theTable
 		);
 
 		if ($this->extKey != SR_FEUSER_REGISTER_EXTkey) {
 
 					// Static Methods for Extensions for fetching the texts of sr_feuser_register
-				tx_div2007_alpha5::loadLL_fh002($this->pibaseObj, 'EXT:' . SR_FEUSER_REGISTER_EXTkey . '/pi1/locallang.xml', FALSE);
+				tx_div2007_alpha5::loadLL_fh002(
+					$pibaseObj,
+					'EXT:' . SR_FEUSER_REGISTER_EXTkey . '/pi1/locallang.xml',
+					FALSE
+				);
 		} // otherwise the labels from sr_feuser_register need not be included, because this has been done in
 
 		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey)) {
@@ -180,25 +185,23 @@ class tx_srfeuserregister_control_main {
 		$this->urlObj->init ($this->controlData, $this->cObj);
 
 		$this->langObj->init(
-			$this->pibaseObj,
+			$pibaseObj,
 			$this->cObj,
 			$this->conf,
-			$this->pibaseObj->scriptRelPath,
+			$pibaseObj->scriptRelPath,
 			$this->extKey
 		);
 		$success = $this->langObj->loadLL();
 
 		if ($success !== FALSE) {
 			$this->tca->init2(
-				$this->pibaseObj,
 				$this->conf,
-				$this->controlData,
-				$this->langObj
+				$this->controlData
 			);
 
 			$this->control->init(
 				$this->langObj,
-				$this->pibaseObj->cObj,
+				$pibaseObj->cObj,
 				$this->controlData,
 				$this->display,
 				$this->marker,
@@ -209,7 +212,7 @@ class tx_srfeuserregister_control_main {
 			);
 
 			$this->data->init(
-				$this->pibaseObj,
+				$pibaseObj,
 				$this->conf,
 				$this->config,
 				$this->langObj,
@@ -229,7 +232,7 @@ class tx_srfeuserregister_control_main {
 			$uid = $this->data->getRecUid();
 
 			$this->marker->init(
-				$this->pibaseObj,
+				$pibaseObj,
 				$this->conf,
 				$this->config,
 				$this->data,
@@ -250,33 +253,26 @@ class tx_srfeuserregister_control_main {
 			}
 
 			$this->display->init(
-				$this->cObj,
 				$this->conf,
 				$this->config,
 				$this->data,
 				$this->marker,
-				$this->tca,
-				$this->control
+				$this->tca
 			);
 
 			$this->email->init(
-				$this->langObj,
-				$this->cObj,
 				$this->conf,
 				$this->config,
 				$this->display,
 				$this->data,
 				$this->marker,
 				$this->tca,
-				$this->controlData,
 				$this->setfixedObj
 			);
 
 			$this->setfixedObj->init(
-				$this->cObj,
 				$this->conf,
 				$this->config,
-				$this->controlData,
 				$this->tca,
 				$this->display,
 				$this->email,
