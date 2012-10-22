@@ -53,8 +53,8 @@ class tx_srfeuserregister_conf {
 		return $this->conf;
 	}
 
-	public function &setConf (&$dataArray, $k='') {
-		if ($k)	{
+	public function &setConf (array &$dataArray, $k = '') {
+		if ($k) {
 			$this->conf[$k] = $dataArray;
 		} else {
 			$this->conf = $dataArray;

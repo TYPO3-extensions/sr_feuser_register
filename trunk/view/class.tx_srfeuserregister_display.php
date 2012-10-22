@@ -48,40 +48,38 @@ class tx_srfeuserregister_display {
 	public $data;
 	public $marker;
 	public $tca;
-	public $control;
-	public $controlData;
-	public $cObj;
 
 
 	public function init (
-		&$cObj,
 		&$conf,
 		&$config,
 		&$data,
 		&$marker,
-		&$tca,
-		&$control
+		&$tca
 	) {
 		$this->conf = &$conf;
 		$this->config = &$config;
 		$this->data = &$data;
 		$this->marker = &$marker;
 		$this->tca = &$tca;
-		$this->control = &$control;
-		$this->controlData = &$control->controlData;
-		$this->cObj = &$cObj;
 	}
 
 
 	/**
 	* Displays the record update form
 	*
+	* @param array $cObj: the cObject
+	* @param array $langObj: the language object
+	* @param array $controlData: the object of the control data
 	* @param array  $origArray: the array coming from the database
 	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
 	* @return string  the template with substituted markers
 	*/
-	public function editForm (
+	protected function editForm (
 		&$markerArray,
+		$cObj,
+		$langObj,
+		$controlData,
 		$theTable,
 		$dataArray,
 		$origArray,
@@ -92,7 +90,7 @@ class tx_srfeuserregister_display {
 		$errorFieldArray,
 		$token
 	) {
-		$prefixId = $this->controlData->getPrefixId();
+		$prefixId = $controlData->getPrefixId();
 
 		if (isset($dataArray) && is_array($dataArray))	{
 			$currentArray = array_merge($origArray, $dataArray);
@@ -104,21 +102,21 @@ class tx_srfeuserregister_display {
 		} else {
 			$subpart = '###TEMPLATE_EDIT' . $this->marker->getPreviewLabel() . '###';
 		}
-		$templateCode = $this->cObj->getSubpart($this->data->getTemplateCode(), $subpart);
+		$templateCode = $cObj->getSubpart($this->data->getTemplateCode(), $subpart);
 
 		if (!$this->conf['linkToPID'] || !$this->conf['linkToPIDAddButton'] || !($mode == MODE_PREVIEW || !$this->conf[$cmd . '.']['preview'])) {
 			$templateCode =
-				$this->cObj->substituteSubpart(
+				$cObj->substituteSubpart(
 					$templateCode,
 					'###SUB_LINKTOPID_ADD_BUTTON###',
 					''
 				);
 		}
-		$failure = t3lib_div::_GP('noWarnings') ? '': $this->controlData->getFailure();
+		$failure = t3lib_div::_GP('noWarnings') ? '': $controlData->getFailure();
 
 		if (!$failure) {
 			$templateCode =
-				$this->cObj->substituteSubpart(
+				$cObj->substituteSubpart(
 					$templateCode,
 					'###SUB_REQUIRED_FIELDS_WARNING###',
 					''
@@ -127,6 +125,7 @@ class tx_srfeuserregister_display {
 		$this->marker->addPasswordTransmissionMarkers($markerArray);
 		$templateCode =
 			$this->removeRequired(
+				$controlData,
 				$templateCode,
 				$errorFieldArray,
 				$failure
@@ -142,20 +141,29 @@ class tx_srfeuserregister_display {
 		$this->marker->addStaticInfoMarkers($markerArray, $currentArray);
 		$this->tca->addTcaMarkers(
 			$markerArray,
+			$cObj,
+			$langObj,
+			$controlData,
 			$currentArray,
 			$origArray,
 			$cmd,
 			$cmdKey,
 			$theTable,
+			$prefixId,
 			TRUE
 		);
 		$this->tca->addTcaMarkers(
 			$markerArray,
+			$cObj,
+			$langObj,
+			$controlData,
 			$currentArray,
 			$origArray,
 			$cmd,
 			$cmdKey,
-			$theTable
+			$theTable,
+			$prefixId,
+			FALSE
 		);
 
 		$this->marker->addLabelMarkers(
@@ -165,7 +173,7 @@ class tx_srfeuserregister_display {
 			$origArray,
 			$securedArray,
 			array(),
-			$this->controlData->getRequiredArray(),
+			$controlData->getRequiredArray(),
 			$this->data->getFieldList(),
 			$this->tca->TCA['columns'],
 			FALSE
@@ -186,7 +194,7 @@ class tx_srfeuserregister_display {
 					$cmd,
 					$cmdKey,
 					$currentArray,
-					$this->controlData->getMode() == MODE_PREVIEW
+					$controlData->getMode() == MODE_PREVIEW
 				);
 			}
 		}
@@ -216,7 +224,7 @@ class tx_srfeuserregister_display {
 		$markerArray['###FIELD_password_again###'] = '';
 		$deleteUnusedMarkers = TRUE;
 		$content =
-			$this->cObj->substituteMarkerArray(
+			$cObj->substituteMarkerArray(
 				$templateCode,
 				$markerArray,
 				'',
@@ -228,13 +236,13 @@ class tx_srfeuserregister_display {
 			$form =
 				tx_div2007_alpha::getClassName(
 					$theTable . '_form',
-					$this->controlData->getPrefixId()
+					$controlData->getPrefixId()
 				);
 			$modData = $this->data->modifyDataArrForFormUpdate($currentArray, $cmdKey);
 			$fields = $this->data->getFieldList() . $this->data->getAdditionalUpdateFields();
-			$fields = $this->controlData->getOpenFields($fields);
+			$fields = $controlData->getOpenFields($fields);
 			$updateJS =
-				$this->cObj->getUpdateJS(
+				$cObj->getUpdateJS(
 					$modData,
 					$form,
 					'FE[' . $theTable . ']',
@@ -252,11 +260,17 @@ class tx_srfeuserregister_display {
 	* Generates the record creation form
 	* or the first link display to create or edit someone's data
 	*
+	* @param array $cObj: the cObject
+	* @param array $langObj: the language object
+	* @param array $controlData: the object of the control data
 	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
 	* @return string  the template with substituted markers
 	*/
 	public function createScreen (
 		&$markerArray,
+		$cObj,
+		$langObj,
+		$controlData,
 		$cmd,
 		$cmdKey,
 		$mode,
@@ -268,10 +282,9 @@ class tx_srfeuserregister_display {
 		$errorFieldArray,
 		$token
 	) {
-
 		$templateCode = $this->data->getTemplateCode();
-		$prefixId = $this->controlData->getPrefixId();
-		$extKey = $this->controlData->getExtKey();
+		$prefixId = $controlData->getPrefixId();
+		$extKey = $controlData->getExtKey();
 		$currentArray = array_merge($origArray, $dataArray);
 
 		if ($theTable == 'fe_users') {
@@ -288,7 +301,7 @@ class tx_srfeuserregister_display {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'] as $classRef) {
 					$hookObj= &t3lib_div::getUserObj($classRef);
 					if (method_exists($hookObj,'registrationProcess_beforeConfirmCreate')) {
-						$hookObj->registrationProcess_beforeConfirmCreate($dataArray, $this->controlData);
+						$hookObj->registrationProcess_beforeConfirmCreate($dataArray, $controlData);
 					}
 				}
 			}
@@ -311,11 +324,11 @@ class tx_srfeuserregister_display {
 				$this->marker->addPasswordTransmissionMarkers($markerArray);
 			}
 
-			$templateCode = $this->cObj->getSubpart($templateCode, $subpartKey);
-			$failure = t3lib_div::_GP('noWarnings') ? FALSE: $this->controlData->getFailure();
+			$templateCode = $cObj->getSubpart($templateCode, $subpartKey);
+			$failure = t3lib_div::_GP('noWarnings') ? FALSE: $controlData->getFailure();
 
 			if ($failure == FALSE) {
-				$templateCode = $this->cObj->substituteSubpart(
+				$templateCode = $cObj->substituteSubpart(
 					$templateCode,
 					'###SUB_REQUIRED_FIELDS_WARNING###',
 					''
@@ -324,6 +337,7 @@ class tx_srfeuserregister_display {
 
 			$templateCode =
 				$this->removeRequired(
+					$controlData,
 					$templateCode,
 					$errorFieldArray,
 					$failure
@@ -339,11 +353,15 @@ class tx_srfeuserregister_display {
 			$this->marker->addStaticInfoMarkers($markerArray, $dataArray);
 			$this->tca->addTcaMarkers(
 				$markerArray,
+				$cObj,
+				$langObj,
+				$controlData,
 				$dataArray,
 				$origArray,
 				$cmd,
 				$cmdKey,
-				$theTable
+				$theTable,
+				$prefixId
 			);
 
 			foreach ($this->tca->TCA['columns'] as $theField => $fieldConfig) {
@@ -360,7 +378,7 @@ class tx_srfeuserregister_display {
 						$cmd,
 						$cmdKey,
 						$dataArray,
-						$this->controlData->getMode() == MODE_PREVIEW
+						$controlData->getMode() == MODE_PREVIEW
 					);
 				}
 			}
@@ -372,7 +390,7 @@ class tx_srfeuserregister_display {
 				$origArray,
 				$securedArray,
 				array(),
-				$this->controlData->getRequiredArray(),
+				$controlData->getRequiredArray(),
 				$infoFields,
 				$this->tca->TCA['columns'],
 				FALSE
@@ -395,7 +413,7 @@ class tx_srfeuserregister_display {
 			$markerArray['###FIELD_password_again###'] = '';
 			$deleteUnusedMarkers = TRUE;
 			$content =
-				$this->cObj->substituteMarkerArray(
+				$cObj->substituteMarkerArray(
 					$templateCode,
 					$markerArray,
 					'',
@@ -404,15 +422,15 @@ class tx_srfeuserregister_display {
 				);
 			if ($mode != MODE_PREVIEW && $bNeedUpdateJS) {
 				$fields = $this->data->fieldList . $this->data->additionalUpdateFields;
-				$fields = $this->controlData->getOpenFields($fields);
+				$fields = $controlData->getOpenFields($fields);
 				$modData = $this->data->modifyDataArrForFormUpdate($dataArray, $cmdKey);
 				$form =
 					tx_div2007_alpha::getClassName(
 						$theTable . '_form',
-						$this->controlData->getPrefixId()
+						$controlData->getPrefixId()
 					);
 				$updateJS =
-					$this->cObj->getUpdateJS(
+					$cObj->getUpdateJS(
 						$modData,
 						$form,
 						'FE[' . $theTable . ']',
@@ -430,11 +448,17 @@ class tx_srfeuserregister_display {
 	/**
 	* Checks if the edit form may be displayed; if not, a link to login
 	*
+	* @param array $cObj: the cObject
+	* @param array $langObj: the language object
+	* @param array $controlData: the object of the control data
 	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
 	* @return string  the template with substituted markers
 	*/
 	public function editScreen (
 		&$markerArray,
+		$cObj,
+		$langObj,
+		$controlData,
 		$theTable,
 		$dataArray,
 		$origArray,
@@ -445,6 +469,8 @@ class tx_srfeuserregister_display {
 		$errorFieldArray,
 		$token
 	) {
+		$prefixId = $controlData->getPrefixId();
+
 			// If editing is enabled
 		if ($this->conf['edit']) {
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
@@ -486,7 +512,7 @@ class tx_srfeuserregister_display {
 				if (
 					!strcmp($authObj->authCode, $theCode) ||
 					$aCAuth ||
-					$this->cObj->DBmayFEUserEdit(
+					$cObj->DBmayFEUserEdit(
 						$theTable,
 						$origArray,
 						$GLOBALS['TSFE']->fe_user->user,
@@ -497,6 +523,9 @@ class tx_srfeuserregister_display {
 					// Display the form, if access granted.
 					$content = $this->editForm(
 						$markerArray,
+						$cObj,
+						$langObj,
+						$controlData,
 						$theTable,
 						$dataArray,
 						$origArray,
@@ -510,10 +539,14 @@ class tx_srfeuserregister_display {
 				} else {
 					// Else display error, that you could not edit that particular record...
 					$content = $this->getPlainTemplate(
+						$cObj,
+						$langObj,
+						$controlData,
 						$this->data->getTemplateCode(),
 						'###TEMPLATE_NO_PERMISSIONS###',
 						$markerArray,
 						$dataArray,
+						$prefixId,
 						$origArray,
 						$securedArray
 					);
@@ -521,10 +554,14 @@ class tx_srfeuserregister_display {
 			} else {
 				// This is if there is no login user. This must tell that you must login. Perhaps link to a page with create-user or login information.
 				$content = $this->getPlainTemplate(
+					$cObj,
+					$langObj,
+					$controlData,
 					$this->data->getTemplateCode(),
 					'###TEMPLATE_AUTH###',
 					$markerArray,
 					$dataArray,
+					$prefixId,
 					$this->data->getOrigArray(),
 					$securedArray
 				);
@@ -541,10 +578,16 @@ class tx_srfeuserregister_display {
 	/**
 	* This is basically the preview display of delete
 	*
+	* @param array $cObj: the cObject
+	* @param array $langObj: the language object
+	* @param array $controlData: the object of the control data
 	* @return string  the template with substituted markers
 	*/
 	public function deleteScreen (
 		$markerArray,
+		$cObj,
+		$langObj,
+		$controlData,
 		$theTable,
 		$dataArray,
 		$origArray,
@@ -553,7 +596,7 @@ class tx_srfeuserregister_display {
 	) {
 		if ($this->conf['delete']) {
 
-			$prefixId = $this->controlData->getPrefixId();
+			$prefixId = $controlData->getPrefixId();
 			$templateCode = $this->data->getTemplateCode();
 			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 
@@ -578,7 +621,7 @@ class tx_srfeuserregister_display {
 				// If the recUid selects a record.... (no check here)
 				if (is_array($origArray)) {
 					$bMayEdit =
-						$this->cObj->DBmayFEUserEdit(
+						$cObj->DBmayFEUserEdit(
 							$theTable,
 							$origArray,
 							$GLOBALS['TSFE']->fe_user->user,
@@ -598,46 +641,66 @@ class tx_srfeuserregister_display {
 						$this->marker->addFormToken($markerArray, $token);
 
 						$this->marker->setArray($markerArray);
-						$content = $this->getPlainTemplate(
-							$templateCode,
-							'###TEMPLATE_DELETE_PREVIEW###',
-							$markerArray,
-							$dataArray,
-							$origArray,
-							$securedArray
-						);
+						$content =
+							$this->getPlainTemplate(
+								$cObj,
+								$langObj,
+								$controlData,
+								$templateCode,
+								'###TEMPLATE_DELETE_PREVIEW###',
+								$markerArray,
+								$dataArray,
+								$prefixId,
+								$origArray,
+								$securedArray
+							);
 					} else {
 						// Else display error, that you could not edit that particular record...
-						$content = $this->getPlainTemplate(
-							$templateCode,
-							'###TEMPLATE_NO_PERMISSIONS###',
-							$markerArray,
-							$dataArray,
-							$origArray,
-							$securedArray
-						);
+						$content =
+							$this->getPlainTemplate(
+								$cObj,
+								$langObj,
+								$controlData,
+								$templateCode,
+								'###TEMPLATE_NO_PERMISSIONS###',
+								$markerArray,
+								$dataArray,
+								$prefixId,
+								$origArray,
+								$securedArray
+							);
 					}
 				}
 			} else {
 				// Finally this is if there is no login user. This must tell that you must login. Perhaps link to a page with create-user or login information.
 				if ( $theTable == 'fe_users' ) {
-					$content = $this->getPlainTemplate(
-						$templateCode,
-						'###TEMPLATE_AUTH###',
-						$markerArray,
-						$origArray,
-						'',
-						$securedArray
-					);
+					$content =
+						$this->getPlainTemplate(
+							$cObj,
+							$langObj,
+							$controlData,
+							$templateCode,
+							'###TEMPLATE_AUTH###',
+							$markerArray,
+							$origArray,
+							$prefixId,
+							'',
+							$securedArray
+						);
 				} else {
-					$content = $this->getPlainTemplate(
-						$templateCode,
-						'###TEMPLATE_NO_PERMISSIONS###',
-						$markerArray,
-						$origArray,
-						'',
-						$securedArray
-					);
+					$content =
+						$this->getPlainTemplate(
+							$cObj,
+							$langObj,
+							$controlData,
+							$templateCode,
+							'###TEMPLATE_NO_PERMISSIONS###',
+							$markerArray,
+							$origArray,
+							$prefixId,
+							'',
+							$securedArray
+						);
 				}
 			}
 		} else {
@@ -650,26 +713,34 @@ class tx_srfeuserregister_display {
 	/**
 	* Initializes a template, filling values for data and labels
 	*
+	* @param array $cObj: the cObject
+	* @param array $langObj: the language object
+	* @param array $controlData: the object of the control data
 	* @param string  $subpartMarker: the template subpart marker
 	* @param array  $row: the data array, if any
 	* @return string  the template with substituted parts and markers
 	*/
 	public function getPlainTemplate (
+		$cObj,
+		$langObj,
+		$controlData,
 		$templateCode,
 		$subpartMarker,
 		$markerArray,
 		$origArray,
+		$prefixId,
 		$row = '',
 		$securedArray,
 		$bCheckEmpty = TRUE,
 		$failure = ''
 	) {
-		$templateCode = $this->cObj->getSubpart($templateCode, $subpartMarker);
+		$templateCode = $cObj->getSubpart($templateCode, $subpartMarker);
 
 		if ($templateCode != '') {
 				// Remove non-included fields
 			$templateCode =
 				$this->removeRequired(
+					$controlData,
 					$templateCode,
 					explode(',', $failure),
 					$failure
@@ -682,16 +753,20 @@ class tx_srfeuserregister_display {
 					''
 				);
 			$this->marker->addStaticInfoMarkers($markerArray, $row);
-			$cmd = $this->controlData->getCmd();
-			$cmdKey = $this->controlData->getCmdKey();
-			$theTable = $this->controlData->getTable();
+			$cmd = $controlData->getCmd();
+			$cmdKey = $controlData->getCmdKey();
+			$theTable = $controlData->getTable();
 			$this->tca->addTcaMarkers(
 				$markerArray,
+				$cObj,
+				$langObj,
+				$controlData,
 				$row,
 				$origArray,
 				$cmd,
 				$cmdKey,
 				$theTable,
+				$prefixId,
 				TRUE
 			);
 			$this->marker->addLabelMarkers(
@@ -701,7 +776,7 @@ class tx_srfeuserregister_display {
 				$origArray,
 				$securedArray,
 				array(),
-				$this->controlData->getRequiredArray(),
+				$controlData->getRequiredArray(),
 				$this->data->getFieldList(),
 				$this->tca->TCA['columns'],
 				FALSE
@@ -716,7 +791,7 @@ class tx_srfeuserregister_display {
 			$markerArray['###FIELD_password_again###'] = '';
 			$deleteUnusedMarkers = TRUE;
 			$rc =
-				$this->cObj->substituteMarkerArray(
+				$cObj->substituteMarkerArray(
 					$templateCode,
 					$markerArray,
 					'',
@@ -724,7 +799,7 @@ class tx_srfeuserregister_display {
 					$deleteUnusedMarkers
 				);
 		} else if ($bCheckEmpty) {
-			$langObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lang');
+			$langObj = t3lib_div::getUserObj('&tx_srfeuserregister_lang');
 			$errorText = $langObj->getLL('internal_no_subtemplate');
 			$rc = sprintf($errorText, $subpartMarker);
 		}
@@ -741,22 +816,25 @@ class tx_srfeuserregister_display {
 	* - Subparts like ###SUB_ERROR_FIELD_".$theField."### are also removed if there is no error on the field
 	* - Remove also the parts of non-included fields, using a similar scheme!
 	*
+	* @param array $controlData: the object of the control data
 	* @param string  $templateCode: the content of the HTML template
 	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
 	* @param string  $failure: the list of fields with errors
 	* @return string  the template with susbstituted parts
 	*/
 	public function removeRequired (
+		$controlData,
 		$templateCode,
 		$errorFieldArray,
 		$failure = ''
 	) {
-		$cmdKey = $this->controlData->getCmdKey();
-		$requiredArray = $this->controlData->getRequiredArray();
+		$cObj = t3lib_div::getUserObj('&tx_div2007_cobj');
+		$cmdKey = $controlData->getCmdKey();
+		$requiredArray = $controlData->getRequiredArray();
 		$includedFields = t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1);
 
 		if (
-			$this->controlData->getFeUserData('preview') &&
+			$controlData->getFeUserData('preview') &&
 			!in_array('username', $includedFields)
 		) {
 			$includedFields[] = 'username';
@@ -789,14 +867,14 @@ class tx_srfeuserregister_display {
 			);
 		}
 
-		if (!$this->controlData->useCaptcha($cmdKey)) {
-			$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_captcha_response###', '');
+		if (!$controlData->useCaptcha($cmdKey)) {
+			$templateCode = $cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_captcha_response###', '');
 		}
 			// Honour Address List (tt_address) configuration setting
-		if ($this->controlData->getTable() === 'tt_address' && t3lib_extMgm::isLoaded('tt_address') && isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address'])) {
+		if ($controlData->getTable() === 'tt_address' && t3lib_extMgm::isLoaded('tt_address') && isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address'])) {
 			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address']);
 			if (is_array($extConf) && $extConf['disableCombinedNameField'] == '1') {
-				$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_name###', '');
+				$templateCode = $cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_name###', '');
 			}
 		}
 
@@ -805,20 +883,20 @@ class tx_srfeuserregister_display {
 			if (in_array(trim($theField), $requiredArray) ) {
 				if (!t3lib_div::inList($failure, $theField)) {
 					$templateCode =
-						$this->cObj->substituteSubpart(
+						$cObj->substituteSubpart(
 							$templateCode,
 							'###SUB_REQUIRED_FIELD_' . $theField . '###',
 							''
 						);
 					$templateCode =
-						$this->cObj->substituteSubpart(
+						$cObj->substituteSubpart(
 							$templateCode,
 							'###SUB_ERROR_FIELD_' . $theField . '###',
 							''
 						);
 				} else if (!$errorFieldArray[$theField]) {
 					$templateCode =
-						$this->cObj->substituteSubpart(
+						$cObj->substituteSubpart(
 							$templateCode,
 							'###SUB_ERROR_FIELD_' . $theField . '###',
 							''
@@ -828,15 +906,15 @@ class tx_srfeuserregister_display {
 					// Remove field included subpart, if field is not included and is not in failure list
 				if (!in_array(trim($theField), $includedFields) && !t3lib_div::inList($failure,  $theField)) {
 					$templateCode =
-						$this->cObj->substituteSubpart(
+						$cObj->substituteSubpart(
 							$templateCode,
 							'###SUB_INCLUDED_FIELD_' . $theField . '###',
 							''
 						);
 				} else {
-					$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_'.$theField.'###', '');
+					$templateCode = $cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_'.$theField.'###', '');
 					if (!t3lib_div::inList($failure, $theField)) {
-						$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_'.$theField.'###', '');
+						$templateCode = $cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_'.$theField.'###', '');
 					}
 
 					if (
@@ -852,7 +930,7 @@ class tx_srfeuserregister_display {
 									$positions = t3lib_div::trimExplode(';', $cmdParts[1]);
 									for($i = 0; $i < 10; $i++) {
 										if(!in_array($i, $positions)) {
-											$templateCode = $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_' . $theField . '_' . $i . '###', '');
+											$templateCode = $cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_' . $theField . '_' . $i . '###', '');
 										}
 									}
 								break;
@@ -889,7 +967,13 @@ class tx_srfeuserregister_display {
 	 *			$this->conf['enableAdminReview']
 	 * @return boolean or string
 	 */
-	public function getKeyAfterSave ($cmd, $cmdKey, $bCustomerConfirmsMode, $bSetfixed, $bCreateReview) {
+	public function getKeyAfterSave (
+		$cmd,
+		$cmdKey,
+		$bCustomerConfirmsMode,
+		$bSetfixed,
+		$bCreateReview
+	) {
 		$result = FALSE;
 		switch ($cmd) {
 			case 'delete':
@@ -926,13 +1010,19 @@ class tx_srfeuserregister_display {
 	* Displaying the page here that says, the record has been saved.
 	* You're able to include the saved values by markers.
 	*
+	* @param array $cObj: the cObject
+	* @param array $langObj: the language object
 	* @param string  $subpartMarker: the template subpart marker
 	* @param array  $row: the data array, if any
 	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
 	* @return string  the template with substituted parts and markers
 	*/
 	public function afterSave (
+		$cObj,
+		$langObj,
+		$controlData,
 		$theTable,
+		$prefixId,
 		$dataArray,
 		$origArray,
 		$securedArray,
@@ -940,21 +1030,21 @@ class tx_srfeuserregister_display {
 		$cmdKey,
 		$key,
 		$templateCode,
-		$markerArray,
+		&$markerArray,
 		$errorFieldArray,
 		&$content
 	) {
-
 		$errorContent = '';
 
 			// Display confirmation message
 		$subpartMarker = '###TEMPLATE_' . $key . '###';
-		$templateCode = $this->cObj->getSubpart($templateCode, $subpartMarker);
+		$templateCode = $cObj->getSubpart($templateCode, $subpartMarker);
 
 		if ($templateCode) {
 				// Remove non-included fields
 			$templateCode =
 				$this->removeRequired(
+					$controlData,
 					$templateCode,
 					$errorFieldArray
 				);
@@ -975,11 +1065,15 @@ class tx_srfeuserregister_display {
 
 			$this->tca->addTcaMarkers(
 				$markerArray,
+				$cObj,
+				$langObj,
+				$controlData,
 				$dataArray,
 				$origArray,
 				$cmd,
 				$cmdKey,
 				$theTable,
+				$prefixId,
 				TRUE
 			);
 
@@ -990,7 +1084,7 @@ class tx_srfeuserregister_display {
 				$origArray,
 				$securedArray,
 				array(),
-				$this->controlData->getRequiredArray(),
+				$controlData->getRequiredArray(),
 				$this->data->getFieldList(),
 				$this->tca->TCA['columns'],
 				FALSE
@@ -1004,6 +1098,9 @@ class tx_srfeuserregister_display {
 				if ($this->conf[$cmdKey . '.']['marker.']['computeUrl'] == '1') {
 					$this->setfixedObj->computeUrl(
 						$cmdKey,
+						$prefixId,
+						$cObj,
+						$controlData,
 						$markerArray,
 						$this->conf['setfixed.'],
 						$dataArray,
@@ -1011,9 +1108,10 @@ class tx_srfeuserregister_display {
 					);
 				}
 			}
+
 			$uppercase = FALSE;
 			$deleteUnusedMarkers = TRUE;
-			$content = $this->cObj->substituteMarkerArray(
+			$content = $cObj->substituteMarkerArray(
 				$templateCode,
 				$markerArray,
 				'',

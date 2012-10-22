@@ -72,9 +72,9 @@ class tx_srfeuserregister_marker {
 		&$config,
 		$data,
 		&$tca,
-		&$langObj,
+		$langObj,
 		&$controlData,
-		&$urlObj,
+		$urlObj,
 		$uid,
 		$token
 	) {
@@ -84,10 +84,10 @@ class tx_srfeuserregister_marker {
 		$this->config = &$config;
 		$this->data = &$data;
 		$this->tca = &$tca;
-		$this->langObj = &$langObj;
-		$this->cObj = &$pibase->cObj;
+		$this->langObj = $langObj;
+		$this->cObj = $pibase->cObj;
 		$this->controlData = &$controlData;
-		$this->urlObj = &$urlObj;
+		$this->urlObj = $urlObj;
 		$theTable = $this->controlData->getTable();
 
 		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey)) {
@@ -217,11 +217,15 @@ class tx_srfeuserregister_marker {
 					$theTable = $this->controlData->getTable();
 					$this->tca->addTcaMarkers(
 						$this->tmpTcaMarkers,
+						$this->cObj,
+						$this->langObj,
+						$this->controlData,
 						$row,
 						$this->data->getOrigArray(),
 						$cmd,
 						$cmdKey,
 						$theTable,
+						$this->pibase->prefixId,
 						TRUE,
 						'',
 						FALSE
@@ -747,7 +751,7 @@ class tx_srfeuserregister_marker {
 		if (!$markerArray) {
  			$markerArray = $this->getArray();
  		}
- 		if ($this->controlData->getTable() == 'fe_users') { 
+ 		if ($this->controlData->getTable() == 'fe_users') {
  			$this->controlData->getTransmissionSecurity()->getMarkers($markerArray);
  		}
 	}
@@ -1066,7 +1070,7 @@ class tx_srfeuserregister_marker {
 	 *
 	 * @param string $templateCode: the template source code
 	 * @param string $extKey: current extension key
-	 * @param string $fileName: name of template file	
+	 * @param string $fileName: name of template file
 	 * @return array error messages
 	 *
 	 * See: tx_srfeuserregister_pi1_base::checkDeprecatedMarkers
