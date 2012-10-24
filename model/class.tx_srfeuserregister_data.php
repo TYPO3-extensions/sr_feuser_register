@@ -984,7 +984,7 @@ class tx_srfeuserregister_data {
 								$otherFields = t3lib_div::trimExplode(';', $cmdParts[1], 1);
 								$hashArray = array();
 								foreach($otherFields as $fN) {
-									$vv = $this->dataArray[$fN];
+									$vv = $dataArray[$fN];
 									$vv = preg_replace('/\s+/', '', $vv);
 									$vv = preg_replace('/[^a-zA-Z0-9]/', '', $vv);
 									$vv = strtolower($vv);
