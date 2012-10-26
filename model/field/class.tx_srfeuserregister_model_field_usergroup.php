@@ -51,7 +51,7 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 	public function modifyConf (&$conf, $cmdKey) {
 			// Add usergroup to the list of fields and required fields if the user is allowed to select user groups
 			// Except when only updating password
-		if ($cmdKey !== 'password') {
+		if ($cmdKey != 'password') {
 			if ($conf[$cmdKey . '.']['allowUserGroupSelection']) {
 				$conf[$cmdKey . '.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'] . ',usergroup', 1)));
 				$conf[$cmdKey . '.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['required'] . ',usergroup', 1)));
@@ -62,7 +62,7 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 			}
 		}
 			// If inviting and administrative review is enabled, save original reserved user groups
-		if ($cmdKey === 'invite' && $conf['enableAdminReview']) {
+		if ($cmdKey == 'invite' && $conf['enableAdminReview']) {
 			$this->savedReservedValues = $this->getReservedValues();
 		}
 	}
@@ -74,7 +74,13 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 	 * @param string $cmdKey: the command key
 	 * @return void
 	 */
-	public function getAllowedValues ($conf, $cmdKey, &$allowedUserGroupArray, &$allowedSubgroupArray, &$deniedUserGroupArray) {
+	public function getAllowedValues (
+		$conf,
+		$cmdKey,
+		&$allowedUserGroupArray,
+		&$allowedSubgroupArray,
+		&$deniedUserGroupArray
+	) {
 		$allowedUserGroupArray = t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['allowedUserGroups'], 1);
 		$allowedSubgroupArray = t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['allowedSubgroups'], 1);
 		$deniedUserGroupArray = t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['deniedUserGroups'], 1);
@@ -86,8 +92,8 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 	 * @return array the reserved user groups
 	 */
 	public function getReservedValues () {
-		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_conf');
-		$conf = &$confObj->getConf();
+		$confObj = t3lib_div::getUserObj('&tx_srfeuserregister_conf');
+		$conf = $confObj->getConf();
 		$rc = array_merge(
 			t3lib_div::trimExplode(',', $conf['create.']['overrideValues.']['usergroup'], 1),
 			t3lib_div::trimExplode(',', $conf['invite.']['overrideValues.']['usergroup'], 1),
@@ -124,8 +130,11 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 		}
 	}
 
-	public function removeInvalidValues ($conf, $cmdKey, &$row) {
-
+	public function removeInvalidValues (
+		$conf,
+		$cmdKey,
+		&$row
+	) {
 		if (isset($row['usergroup']) && $conf[$cmdKey . '.']['allowUserGroupSelection']) {
 
 // Todo
@@ -134,11 +143,16 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 		}
 	}
 
-
-	public function getAllowedWhereClause ($theTable, $pid, $conf, $cmdKey, $bAllow = TRUE) {
+	public function getAllowedWhereClause (
+		$theTable,
+		$pid,
+		$conf,
+		$cmdKey,
+		$bAllow = TRUE
+	) {
 		$whereClause = '';
 		$subgroupWhereClauseArray = array();
-		$pidArray = array();		
+		$pidArray = array();
 		$tmpArray = t3lib_div::trimExplode(',', $conf['userGroupsPidList'], 1);
 		if (count($tmpArray)) {
 			foreach ($tmpArray as $value) {

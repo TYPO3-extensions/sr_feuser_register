@@ -57,7 +57,7 @@ class tx_srfeuserregister_captcha {
 			// Must be set to FALSE if it is not a test
 		$test = FALSE;
 		if (
-			trim($cmdParts[0]) === 'captcha' &&
+			trim($cmdParts[0]) == 'captcha' &&
 			t3lib_extMgm::isLoaded('captcha') &&
 			isset($dataArray[$theField])
 		) {
@@ -65,7 +65,7 @@ class tx_srfeuserregister_captcha {
 			$started = session_start();
 			if (isset($_SESSION['tx_captcha_string'])) {
 				$captchaString = $_SESSION['tx_captcha_string'];
-				if (empty($captchaString) || $dataArray['captcha_response'] !== $captchaString) {
+				if (empty($captchaString) || $dataArray['captcha_response'] != $captchaString) {
 					$errorField = $theField;
 				} else {
 					$_SESSION['tx_captcha_string'] = '';
@@ -77,7 +77,9 @@ class tx_srfeuserregister_captcha {
 		return $errorField;
 	}
 }
+
 if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/' . SR_FEUSER_REGISTER_EXTkey . '/hooks/captcha/class.tx_srfeuserregister_captcha.php'])) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/' . SR_FEUSER_REGISTER_EXTkey . '/hooks/captcha/class.tx_srfeuserregister_captcha.php']);
 }
+
 ?>

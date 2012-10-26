@@ -43,8 +43,6 @@
 
 
 class tx_srfeuserregister_setfixed {
-	public $conf = array();
-	public $config = array();
 	public $tca;
 	public $display;
 	public $email;
@@ -57,19 +55,15 @@ class tx_srfeuserregister_setfixed {
 
 
 	public function init (
-		&$conf,
-		&$config,
-		&$tca,
-		&$display,
-		&$email,
-		&$marker
+		$tca,
+		$display,
+		$email,
+		$marker
 	) {
-		$this->conf = &$conf;
-		$this->config = &$config;
-		$this->tca = &$tca;
-		$this->display = &$display;
-		$this->email = &$email;
-		$this->marker = &$marker;
+		$this->tca = $tca;
+		$this->display = $display;
+		$this->email = $email;
+		$this->marker = $marker;
 	}
 
 
@@ -83,6 +77,7 @@ class tx_srfeuserregister_setfixed {
 	* @return string  the template with substituted markers
 	*/
 	public function processSetFixed (
+		$conf,
 		$cObj,
 		$langObj,
 		$controlData,
@@ -95,8 +90,8 @@ class tx_srfeuserregister_setfixed {
 		&$dataArray,
 		&$origArray,
 		$securedArray,
-		&$pObj,
-		&$dataObj,
+		$pObj,
+		$dataObj,
 		&$feuData,
 		$token
 	) {
@@ -125,24 +120,28 @@ class tx_srfeuserregister_setfixed {
 					$controlData->getStorageSecurity()->getAutoLoginIsRequested($feuData, $row);
 			}
 
-			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
-			$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
+			$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
+			$tablesObj = t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 			$addressObj = $tablesObj->get('address');
 				// Calculate the setfixed hash from incoming data
 			$fieldList = $row['_FIELDLIST'];
 			$codeLength = strlen($authObj->getAuthCode());
 				// Let's try with a code length of 8 in case this link is coming from direct mail
-			if ($codeLength === 8 && in_array($sFK, array('DELETE', 'EDIT', 'UNSUBSCRIBE'))) {
+			if ($codeLength == 8 && in_array($sFK, array('DELETE', 'EDIT', 'UNSUBSCRIBE'))) {
 				$theCode = $authObj->setfixedHash($row, $fieldList, $codeLength);
 			} else {
 				$theCode = $authObj->setfixedHash($row, $fieldList);
 			}
 
-			if (!strcmp($authObj->getAuthCode(), $theCode) && !($sFK == 'APPROVE' && count($origArray) && $origArray['disable'] == '0')) {
+			if (
+				!strcmp($authObj->getAuthCode(), $theCode) &&
+				!($sFK == 'APPROVE' && count($origArray) && $origArray['disable'] == '0')
+			) {
 				if ($sFK == 'EDIT') {
 					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
 					$content = $this->display->editScreen(
 						$markerArray,
+						$conf,
 						$cObj,
 						$langObj,
 						$controlData,
@@ -162,7 +161,7 @@ class tx_srfeuserregister_setfixed {
 				) {
 					if (
 						!$this->tca->TCA['ctrl']['delete'] ||
-						$this->conf['forceFileDelete']
+						$conf['forceFileDelete']
 					) {
 						// If the record is fully deleted... then remove the image attached.
 						$dataObj->deleteFilesFromRecord($uid);
@@ -179,13 +178,13 @@ class tx_srfeuserregister_setfixed {
 					);
 				} else {
 					if ($theTable == 'fe_users') {
-						if ($this->conf['create.']['allowUserGroupSelection']) {
+						if ($conf['create.']['allowUserGroupSelection']) {
 							$originalGroups = is_array($origUsergroup)
 								? $origUsergroup
 								: t3lib_div::trimExplode(',', $origUsergroup, TRUE);
 							$overwriteGroups = t3lib_div::trimExplode(
 								',',
-								$this->conf['create.']['overrideValues.']['usergroup'],
+								$conf['create.']['overrideValues.']['usergroup'],
 								TRUE
 							);
 
@@ -215,10 +214,10 @@ class tx_srfeuserregister_setfixed {
 						t3lib_div::trimExplode(',', $dataObj->fieldList, 1),
 						t3lib_div::trimExplode(',', implode($fieldArr, ','), 1)
 					));
-					if ($sFK === 'UNSUBSCRIBE') {
+					if ($sFK == 'UNSUBSCRIBE') {
 						$newFieldList = implode(',', array_intersect(
 							t3lib_div::trimExplode(',', $newFieldList),
-							t3lib_div::trimExplode(',', $this->conf['unsubscribeAllowedFields'], 1)
+							t3lib_div::trimExplode(',', $conf['unsubscribeAllowedFields'], 1)
 						));
 					}
 					if ($sFK !== 'ENTER' && $newFieldList != '') {
@@ -235,9 +234,10 @@ class tx_srfeuserregister_setfixed {
 					$modArray = array();
 					$currArr = $this->tca->modifyTcaMMfields($currArr, $modArray);
 					$row = array_merge($row, $modArray);
-					$pObj->userProcess_alt(
-						$this->conf['setfixed.']['userFunc_afterSave'],
-						$this->conf['setfixed.']['userFunc_afterSave.'],
+					tx_div2007_alpha::userProcess_fh001(
+						$pObj,
+						$conf['setfixed.'],
+						'userFunc_afterSave',
 						array('rec' => $currArr, 'origRec' => $origArray)
 					);
 
@@ -267,38 +267,42 @@ class tx_srfeuserregister_setfixed {
 					// Nothing to do
 				} else {
 					if (
-						$theTable === 'fe_users' &&
-						($sFK === 'APPROVE' || $sFK === 'ENTER') &&
+						$theTable == 'fe_users' &&
+						($sFK == 'APPROVE' || $sFK == 'ENTER') &&
 						$row['by_invitation']
 					) {
 							// Auto-login
 						$loginSuccess =
 							$pObj->login(
+								$conf,
 								$langObj,
 								$controlData,
 								$currArr,
 								FALSE
 							);
 						if ($loginSuccess) {
-							$content = $this->display->editScreen(
-								$markerArray,
-								$cObj,
-								$langObj,
-								$controlData,
-								$theTable,
-								$dataArray,
-								$origArray,
-								$securedArray,
-								'password',
-								'password',
-								$controlData->getMode(),
-								$dataObj->inError,
-								$token
-							);
+							$content =
+								$this->display->editScreen(
+									$markerArray,
+									$conf,
+									$cObj,
+									$langObj,
+									$controlData,
+									$theTable,
+									$dataArray,
+									$origArray,
+									$securedArray,
+									'password',
+									'password',
+									$controlData->getMode(),
+									$dataObj->inError,
+									$token
+								);
 						} else {
 								// Login failed
 							$content =
 								$this->display->getPlainTemplate(
+									$conf,
 									$cObj,
 									$langObj,
 									$controlData,
@@ -313,8 +317,8 @@ class tx_srfeuserregister_setfixed {
 						}
 					}
 					if (
-						$this->conf['enableAdminReview'] &&
-						$sFK === 'APPROVE'
+						$conf['enableAdminReview'] &&
+						$sFK == 'APPROVE'
 					) {
 						$setfixedSuffix .= '_REVIEW';
 					}
@@ -322,6 +326,7 @@ class tx_srfeuserregister_setfixed {
 						$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX . 'OK_' . $setfixedSuffix . '###';
 						$content =
 							$this->display->getPlainTemplate(
+								$conf,
 								$cObj,
 								$langObj,
 								$controlData,
@@ -340,6 +345,7 @@ class tx_srfeuserregister_setfixed {
 						$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX .'OK###';
 						$content =
 							$this->display->getPlainTemplate(
+								$conf,
 								$cObj,
 								$langObj,
 								$controlData,
@@ -354,12 +360,13 @@ class tx_srfeuserregister_setfixed {
 					}
 
 					if (
-						($this->conf['email.']['SETFIXED_REFUSE'] || $this->conf['enableEmailConfirmation'] || $this->conf['infomail'])
+						($conf['email.']['SETFIXED_REFUSE'] || $conf['enableEmailConfirmation'] || $conf['infomail'])
 					) {
 						$errorCode = '';
 							// Compiling email
 						$errorContent = $this->email->compile(
 							SETFIXED_PREFIX . $setfixedSuffix,
+							$conf,
 							$cObj,
 							$langObj,
 							$controlData,
@@ -368,13 +375,13 @@ class tx_srfeuserregister_setfixed {
 							array($row),
 							array($origArray),
 							$securedArray,
-							$origArray[$this->conf['email.']['field']],
+							$origArray[$conf['email.']['field']],
 							$markerArray,
 							'setfixed',
 							$cmdKey,
 							$templateCode,
 							$this->data->inError,
-							$this->conf['setfixed.'],
+							$conf['setfixed.'],
 							$errorCode
 						);
 
@@ -388,10 +395,11 @@ class tx_srfeuserregister_setfixed {
 						$content = $errorContent;
 					} else if ($theTable == 'fe_users') {
 							// If applicable, send admin a request to review the registration request
-						if ($this->conf['enableAdminReview'] && $sFK == 'APPROVE' && !$row['by_invitation']) {
+						if ($conf['enableAdminReview'] && $sFK == 'APPROVE' && !$row['by_invitation']) {
 							$errorCode = '';
 							$errorContent = $this->email->compile(
 								SETFIXED_PREFIX . 'REVIEW',
+								$conf,
 								$cObj,
 								$langObj,
 								$controlData,
@@ -400,13 +408,13 @@ class tx_srfeuserregister_setfixed {
 								array($row),
 								array($origArray),
 								$securedArray,
-								$origArray[$this->conf['email.']['field']],
+								$origArray[$conf['email.']['field']],
 								$markerArray,
 								'setfixed',
 								$cmdKey,
 								$templateCode,
 								$this->data->inError,
-								$this->conf['setfixed.']
+								$conf['setfixed.']
 							);
 
 							if (is_array($errorCode)) {
@@ -418,23 +426,25 @@ class tx_srfeuserregister_setfixed {
 							$content = $errorContent;
 						} else if (
 								// Auto-login on confirmation
-							$this->conf['enableAutoLoginOnConfirmation'] &&
+							$conf['enableAutoLoginOnConfirmation'] &&
 							!$row['by_invitation'] &&
-							(($sFK === 'APPROVE' && !$this->conf['enableAdminReview']) || $sFK === 'ENTER') &&
+							(($sFK == 'APPROVE' && !$conf['enableAdminReview']) || $sFK == 'ENTER') &&
 							$autoLoginIsRequested
 						) {
 							$loginSuccess =
 								$pObj->login(
-								$langObj,
-								$controlData,
-								$currArr
-							);
+									$conf,
+									$langObj,
+									$controlData,
+									$currArr
+								);
 							if ($loginSuccess) {
 									// Login was successful
 								exit;
 							} else {
 									// Login failed
 								$content = $this->display->getPlainTemplate(
+									$conf,
 									$cObj,
 									$langObj,
 									$controlData,
@@ -452,6 +462,7 @@ class tx_srfeuserregister_setfixed {
 				}
 			} else {
 				$content = $this->display->getPlainTemplate(
+					$conf,
 					$cObj,
 					$langObj,
 					$controlData,
@@ -489,8 +500,8 @@ class tx_srfeuserregister_setfixed {
 		$theTable
 	) {
 		if ($controlData->getSetfixedEnabled() && is_array($setfixed) ) {
-			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
-			$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
+			$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
+			$tablesObj = t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 			$addressObj = $tablesObj->get('address');
 
 			foreach($setfixed as $theKey => $data) {
@@ -518,7 +529,7 @@ class tx_srfeuserregister_setfixed {
 
 				if ($noFeusersEdit) {
 					$cmd = $pidCmd = 'edit';
-					if( $this->conf['edit.']['setfixed'] ) {
+					if( $conf['edit.']['setfixed'] ) {
 						$bSetfixedHash = TRUE;
 					} else {
 						$bSetfixedHash = FALSE;
@@ -529,6 +540,7 @@ class tx_srfeuserregister_setfixed {
 					$pidCmd = ($controlData->getCmd() == 'invite' ? 'confirmInvitation' : 'confirm');
 					$setfixedpiVars[$prefixId . '%5BsFK%5D'] = $theKey;
 					$bSetfixedHash = TRUE;
+
 					if (isset($r['auto_login_key'])) {
 						$setfixedpiVars[$prefixId . '%5Bkey%5D'] = $r['auto_login_key'];
 					}
@@ -550,7 +562,7 @@ class tx_srfeuserregister_setfixed {
 					$setfixedpiVars['L'] = t3lib_div::_GP('L');
 				}
 
-				if ($this->conf['useShortUrls']) {
+				if ($conf['useShortUrls']) {
 					$thisHash = $this->storeFixedPiVars($setfixedpiVars);
 					$setfixedpiVars = array($prefixId . '%5BregHash%5D' => $thisHash);
 				}
@@ -558,11 +570,11 @@ class tx_srfeuserregister_setfixed {
 				$conf['disableGroupAccessCheck'] = TRUE;
 				$bconfirmTypeIsInt = (
 					class_exists('t3lib_utility_Math') ?
-						t3lib_utility_Math::canBeInterpretedAsInteger($this->conf['confirmType']) :
-						t3lib_div::testInt($this->conf['confirmType'])
+						t3lib_utility_Math::canBeInterpretedAsInteger($conf['confirmType']) :
+						t3lib_div::testInt($conf['confirmType'])
 				);
 
-				$confirmType = ($bconfirmTypeIsInt ? intval($this->conf['confirmType']) : $GLOBALS['TSFE']->type);
+				$confirmType = ($bconfirmTypeIsInt ? intval($conf['confirmType']) : $GLOBALS['TSFE']->type);
 				$url =
 					tx_div2007_alpha5::getTypoLink_URL_fh003(
 						$cObj,
@@ -579,6 +591,7 @@ class tx_srfeuserregister_setfixed {
 			}	// foreach
 		}
 	}	// computeUrl
+
 
 	/**
 	 *  Store the setfixed vars and return a replacement hash

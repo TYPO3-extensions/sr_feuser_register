@@ -83,10 +83,14 @@ class tx_srfeuserregister_controldata {
 		),
 	);
 
-
-	public function init (&$conf, $prefixId, $extKey, $piVars, $theTable) {
-
-		$this->conf = &$conf;
+	public function init (
+		$conf,
+		$prefixId,
+		$extKey,
+		$piVars,
+		$theTable
+	) {
+		$this->conf = $conf;
 		$this->site_url = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
 		if ($GLOBALS['TSFE']->absRefPrefix) {
 			if(strpos($GLOBALS['TSFE']->absRefPrefix, 'http://') === 0 || strpos($GLOBALS['TSFE']->absRefPrefix, 'https://') === 0) {
@@ -95,11 +99,11 @@ class tx_srfeuserregister_controldata {
 				$this->site_url = $this->site_url . ltrim($GLOBALS['TSFE']->absRefPrefix, '/');
 			}
 		}
-		$this->prefixId = $prefixId;
+		$this->setPrefixId($prefixId);
 		$this->extKey = $extKey;
 		$this->piVars = $piVars;
 		$this->setTable($theTable);
-		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
+		$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 
 			// Initialize array of installed captcha extensions
 		$this->setCaptchaExtensions();
@@ -116,34 +120,34 @@ class tx_srfeuserregister_controldata {
 		$pidRecord->init(0);
 		$pidRecord->sys_language_uid = $this->sys_language_content;
 		$row = $pidRecord->getPage($this->getPid());
-		$this->thePidTitle = trim($this->conf['pidTitleOverride']) ? trim($this->conf['pidTitleOverride']) : $row['title'];
+		$this->thePidTitle = trim($conf['pidTitleOverride']) ? trim($conf['pidTitleOverride']) : $row['title'];
 
 		$pidTypeArray = array('login', 'register', 'edit', 'infomail', 'confirm', 'confirmInvitation');
 		// set the pid's
 
 		foreach ($pidTypeArray as $k => $type) {
-			$this->setPid($type, $this->conf[$type.'PID']);
+			$this->setPid($type, $conf[$type . 'PID']);
 		}
 
 		if (
-			$this->conf['enableEmailConfirmation'] ||
-			($this->theTable == 'fe_users' && $this->conf['enableAdminReview']) ||
-			$this->conf['setfixed']
+			$conf['enableEmailConfirmation'] ||
+			($this->theTable == 'fe_users' && $conf['enableAdminReview']) ||
+			$conf['setfixed']
 		) {
 			$this->setSetfixedEnabled(1);
 		}
 			// Get hash variable if provided and if short url feature is enabled
-		$feUserData = t3lib_div::_GP($this->getPrefixId());
+		$feUserData = t3lib_div::_GP($prefixId);
 		$bSecureStartCmd = (count($feUserData) == 1 && in_array($feUserData['cmd'], array('create', 'edit', 'password')));
 		$bValidRegHash = FALSE;
-		if ($this->conf['useShortUrls']) {
+		if ($conf['useShortUrls']) {
 			$this->cleanShortUrlCache();
 			if (isset($feUserData) && is_array($feUserData)) {
 				$regHash = $feUserData['regHash'];
 			}
 
 			if (!$regHash) {
-				$getData = t3lib_div::_GET($this->getPrefixId());
+				$getData = t3lib_div::_GET($prefixId);
 
 				if (isset($getData) && is_array($getData)) {
 					$regHash = $getData['regHash'];
@@ -163,11 +167,11 @@ class tx_srfeuserregister_controldata {
 							$origFeuserData[$origDataField] = $feUserData[$origDataField];
 						}
 					}
-					$restoredFeUserData = $getVars[$this->getPrefixId()];
+					$restoredFeUserData = $getVars[$prefixId];
 
 					foreach ($getVars as $k => $v ) {
 						// restore former GET values for the url
-						t3lib_div::_GETset($v,$k);
+						t3lib_div::_GETset($v, $k);
 					}
 
 					if ($restoredFeUserData['rU'] > 0 && $restoredFeUserData['rU'] == $feUserData['rU']) {
@@ -200,7 +204,12 @@ class tx_srfeuserregister_controldata {
 		$aC = $this->getFeUserData('aC');
 		$authObj->setAuthCode($aC);
 			// Query variable &prefixId[cmd] overrides query variable &cmd, if not empty
-		if (isset($feUserData) && is_array($feUserData) && isset($feUserData['cmd']) && $feUserData['cmd'] != '') {
+		if (
+			isset($feUserData) &&
+			is_array($feUserData) &&
+			isset($feUserData['cmd']) &&
+			$feUserData['cmd'] != ''
+		) {
 			$value = htmlspecialchars($feUserData['cmd']);
 			$this->setFeUserData($value, 'cmd');
 		}
@@ -233,7 +242,7 @@ class tx_srfeuserregister_controldata {
 		) {
 				// Use the token from the FE user data
 			$token = $origArray['token'];
-		} else if ($cmd !== 'setfixed') {
+		} else if ($cmd != 'setfixed') {
 				// Get latest token from session data
 			$token = $this->readToken();
 		}
@@ -251,7 +260,11 @@ class tx_srfeuserregister_controldata {
 			$bRuIsInt &&
 				// When processing a setfixed link from other extensions,
 				// there might no token and no short url regHash, but there might be an authCode
-			($bValidRegHash || !$this->conf['useShortUrls'] || ($authObj->getAuthCode($aC) && !$bSecureStartCmd))
+			(
+				$bValidRegHash ||
+				!$conf['useShortUrls'] ||
+				($authObj->getAuthCode($aC) && !$bSecureStartCmd)
+			)
 		) {
 			if (
 				isset($getVars) &&
@@ -276,7 +289,10 @@ class tx_srfeuserregister_controldata {
 				$codeLength = strlen($authObj->getAuthCode());
 				$sFK = $this->getFeUserData('sFK');
 					// Let's try with a code length of 8 in case this link is coming from direct mail
-				if ($codeLength === 8 && in_array($sFK, array('DELETE', 'EDIT', 'UNSUBSCRIBE'))) {
+				if (
+					$codeLength == 8 &&
+					in_array($sFK, array('DELETE', 'EDIT', 'UNSUBSCRIBE'))
+				) {
 					$authCode = $authObj->setfixedHash($setFixedArray, $fieldList, $codeLength);
 				} else {
 					$authCode = $authObj->setfixedHash($setFixedArray, $fieldList);
@@ -304,21 +320,17 @@ class tx_srfeuserregister_controldata {
 		}
 	}
 
-
 	public function setRegHash ($regHash) {
 		$this->regHash = $regHash;
 	}
-
 
 	public function getRegHash () {
 		return $this->regHash;
 	}
 
-
 	public function setValidRegHash ($bValidRegHash) {
 		$this->bValidRegHash = $bValidRegHash;
 	}
-
 
 	public function getValidRegHash () {
 		return $this->bValidRegHash;
@@ -332,7 +344,7 @@ class tx_srfeuserregister_controldata {
 	public function getTransmissionSecurity () {
 		if (!is_object($this->transmissionSecurity)) {
 			/* tx_srfeuserregister_transmission_security */
-			$this->transmissionSecurity = &t3lib_div::getUserObj('&tx_srfeuserregister_transmission_security');
+			$this->transmissionSecurity = t3lib_div::getUserObj('&tx_srfeuserregister_transmission_security');
 		}
 		return $this->transmissionSecurity;
 	}
@@ -345,7 +357,7 @@ class tx_srfeuserregister_controldata {
 	public function getStorageSecurity () {
 		if (!is_object($this->storageSecurity)) {
 			/* tx_srfeuserregister_storage_security */
-			$this->storageSecurity = &t3lib_div::getUserObj('&tx_srfeuserregister_storage_security');
+			$this->storageSecurity = t3lib_div::getUserObj('&tx_srfeuserregister_storage_security');
 		}
 		return $this->storageSecurity;
 	}
@@ -386,6 +398,7 @@ class tx_srfeuserregister_controldata {
 		}
 		return $securedArray;
 	}
+
 	/**
 	* Gets the array of names of secured fields
 	*
@@ -394,6 +407,7 @@ class tx_srfeuserregister_controldata {
 	public function getSecuredFieldArray () {
 		return $this->securedFieldArray;
 	}
+
 	/**
 	* Sets the array of names of secured fields
 	*
@@ -409,15 +423,17 @@ class tx_srfeuserregister_controldata {
 	* PASSWORD HANDLING
 	*************************************/
 	/**
-	* Retreieves the password from session data and encrypt it for storage
+	* Retrieves the password from session data and encrypt it for storage
 	*
 	* @return	string	the encrypted password
     *           boolean FALSE in case of an error
 	*/
 	public function readPasswordForStorage () {
 		$password = $this->readPassword();
-		return $this->getStorageSecurity()->encryptPasswordForStorage($password);
+		$result = $this->getStorageSecurity()->encryptPasswordForStorage($password);
+		return $result;
 	}
+
 	/**
 	* Retrieves the password from session data
 	*
@@ -431,6 +447,7 @@ class tx_srfeuserregister_controldata {
 		}
 		return $password;
 	}
+
 	/**
 	* Writes the password to FE user session data
 	*
@@ -447,7 +464,7 @@ class tx_srfeuserregister_controldata {
 		foreach ($securedFieldArray as $securedField) {
 			if (isset($row[$securedField]) && !empty($row[$securedField])) {
 				$data[$securedField] = $row[$securedField];
-				if ($securedField === 'password' || $securedField === 'password_again') {
+				if ($securedField == 'password' || $securedField == 'password_again') {
 					unset($row[$securedField]);
 				}
 			}
@@ -457,6 +474,7 @@ class tx_srfeuserregister_controldata {
 			$this->writeSessionData($data);
 		}
 	}
+
 	/**
 	* Generates a value for the password and stores it the FE user session data
 	*
@@ -469,6 +487,7 @@ class tx_srfeuserregister_controldata {
 		$dataArray['password_again'] = $generatedPassword;
 		$this->writePassword($generatedPassword);
 	}
+
 	/**
 	* Writes the password to session data
 	*
@@ -497,6 +516,7 @@ class tx_srfeuserregister_controldata {
 	public function isTokenValid () {
 		return $this->isTokenValid;
 	}
+
 	/**
 	* Sets whether the token was found valid
 	*
@@ -506,6 +526,7 @@ class tx_srfeuserregister_controldata {
 	protected function setTokenValid ($valid) {
 		$this->isTokenValid = $valid;
 	}
+
 	/**
 	* Retrieves the token from FE user session data
 	*
@@ -519,6 +540,7 @@ class tx_srfeuserregister_controldata {
 		}
 		return $token;
 	}
+
 	/**
 	* Writes the token to FE user session data
 	*
@@ -534,6 +556,7 @@ class tx_srfeuserregister_controldata {
 		}
 		$this->writeSessionData($sessionData, FALSE);
 	}
+
 	/**
 	* Retrieves the redirectUrl from FE user session data
 	*
@@ -547,6 +570,7 @@ class tx_srfeuserregister_controldata {
 		}
 		return $redirectUrl;
 	}
+
 	/**
 	* Writes the redirectUrl to FE user session data
 	*
@@ -583,6 +607,7 @@ class tx_srfeuserregister_controldata {
 		}
 		return $sessionData;
 	}
+
 	/**
 	* Writes data to FE user session data
 	*
@@ -618,7 +643,7 @@ class tx_srfeuserregister_controldata {
 				$typo3Version = class_exists('t3lib_utility_VersionNumber') ? t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) : t3lib_div::int_from_ver(TYPO3_version);
 				if ($typo3Version < 4007000) {
 					foreach ($keys as $key) {
-						if ($data[$key] === '__UNSET') {
+						if ($data[$key] == '__UNSET') {
 							unset($data[$key]);
 							unset($allSessionData[$extKey][$key]);
 						}
@@ -634,6 +659,7 @@ class tx_srfeuserregister_controldata {
 			// The feuser session data shall not get lost when coming back from external scripts
 		$GLOBALS['TSFE']->fe_user->storeSessionData();
 	}
+
 	/**
 	* Deletes all session data except the token and possibly the redirectUrl
 	*
@@ -665,11 +691,9 @@ class tx_srfeuserregister_controldata {
 				$value = htmlspecialchars($value);
 			}
 		}
-
 		$rc = $value;
 		return $rc;
 	}
-
 
 	/**
 	* Changes potential malicious script code of the input to harmless HTML
@@ -737,17 +761,17 @@ class tx_srfeuserregister_controldata {
 	 * @param string $cmdKey: the cmdKey for which the check is requested
 	 * @return boolean TRUE, if the use of captcha is enabled
 	 */
-	public function useCaptcha ($cmdKey) {
+	public function useCaptcha ($conf, $cmdKey) {
 		$useCaptcha = FALSE;
 		if (
-			t3lib_div::inList($this->conf[$cmdKey . '.']['fields'], 'captcha_response') &&
-			is_array($this->conf[$cmdKey . '.']) &&
-			is_array($this->conf[$cmdKey . '.']['evalValues.'])
+			t3lib_div::inList($conf[$cmdKey . '.']['fields'], 'captcha_response') &&
+			is_array($conf[$cmdKey . '.']) &&
+			is_array($conf[$cmdKey . '.']['evalValues.'])
 		) {
 			$captchaExtensions = $this->getCaptchaExtensions();
 			foreach ($captchaExtensions as $captchaExtension) {
 				if (
-					$this->conf[$cmdKey . '.']['evalValues.']['captcha_response'] === $captchaExtension['evalRule']
+					$conf[$cmdKey . '.']['evalValues.']['captcha_response'] == $captchaExtension['evalRule']
 				) {
 					$useCaptcha = TRUE;
 					break;
@@ -758,77 +782,73 @@ class tx_srfeuserregister_controldata {
 	}
 
 	// example: plugin.tx_srfeuserregister_pi1.conf.sys_dmail_category.ALL.sys_language_uid = 0
-	public function getSysLanguageUid ($theCode, $theTable) {
+	public function getSysLanguageUid ($conf, $theCode, $theTable) {
 
 		if (
-			isset($this->conf['conf.']) &&
-			is_array($this->conf['conf.']) &&
-			isset($this->conf['conf.'][$theTable . '.']) &&
-			is_array($this->conf['conf.'][$theTable . '.']) &&
-			isset($this->conf['conf.'][$theTable . '.'][$theCode . '.']) &&
-			is_array($this->conf['conf.'][$theTable . '.'][$theCode . '.']) &&
+			is_array($conf) &&
+			isset($conf['conf.']) &&
+			is_array($conf['conf.']) &&
+			isset($conf['conf.'][$theTable . '.']) &&
+			is_array($conf['conf.'][$theTable . '.']) &&
+			isset($conf['conf.'][$theTable . '.'][$theCode . '.']) &&
+			is_array($conf['conf.'][$theTable . '.'][$theCode . '.']) &&
 			(
 				class_exists('t3lib_utility_Math') ?
-					t3lib_utility_Math::canBeInterpretedAsInteger($this->conf['conf.'][$theTable . '.'][$theCode . '.']['sys_language_uid']) :
-					t3lib_div::testInt($this->conf['conf.'][$theTable . '.'][$theCode . '.']['sys_language_uid'])
+					t3lib_utility_Math::canBeInterpretedAsInteger($conf['conf.'][$theTable . '.'][$theCode . '.']['sys_language_uid']) :
+					t3lib_div::testInt($conf['conf.'][$theTable . '.'][$theCode . '.']['sys_language_uid'])
 			)
 		)	{
-			$rc = $this->conf['conf.'][$theTable . '.'][$theCode . '.']['sys_language_uid'];
+			$rc = $conf['conf.'][$theTable . '.'][$theCode . '.']['sys_language_uid'];
 		} else {
 			$rc = $this->sys_language_content;
 		}
 		return $rc;
 	}
 
-
 	public function getPidTitle () {
 		return $this->thePidTitle;
 	}
-
 
 	public function getSiteUrl () {
 		return $this->site_url;
 	}
 
-
 	public function getPrefixId () {
 		return $this->prefixId;
 	}
 
+	public function setPrefixId ($prefixId) {
+		$this->prefixId = $prefixId;
+	}
 
 	public function getExtKey () {
 		return $this->extKey;
 	}
 
-
 	public function getPiVars () {
 		return $this->piVars;
 	}
-
 
 	public function setPiVars ($piVars) {
 		$this->piVars = $piVars;
 	}
 
-
 	public function getCmd () {
 		return $this->cmd;
 	}
-
 
 	public function setCmd ($cmd) {
 		$this->cmd = $cmd;
 	}
 
-
 	public function getCmdKey () {
 		return $this->cmdKey;
 	}
 
-
 	public function setCmdKey ($cmdKey) {
 		$this->cmdKey = $cmdKey;
 	}
+
 	/**
 	 * Gets the feUserData array or an index of the array
 	 *
@@ -843,6 +863,7 @@ class tx_srfeuserregister_controldata {
 		}
 		return $value;
 	}
+
 	/**
 	 * Sets the feUserData array or an index of the array
 	 *
@@ -862,31 +883,25 @@ class tx_srfeuserregister_controldata {
 		return $this->failure;
 	}
 
-
 	public function setFailure ($failure) {
 		$this->failure = $failure;
 	}
-
 
 	public function setSubmit ($bSubmit) {
 		$this->bSubmit = $bSubmit;
 	}
 
-
 	public function getSubmit () {
 		return $this->bSubmit;
 	}
-
 
 	public function setDoNotSave ($bParam) {
 		$this->bDoNotSave = $bParam;
 	}
 
-
 	public function getDoNotSave () {
 		return $this->bDoNotSave;
 	}
-
 
 	public function getPid ($type = '') {
 		if ($type) {
@@ -903,10 +918,8 @@ class tx_srfeuserregister_controldata {
 				);
 			$result = ($bPidIsInt ? intval($this->conf['pid']) : $GLOBALS['TSFE']->id);
 		}
-
 		return $result;
 	}
-
 
 	public function setPid ($type, $pid)	{
 
@@ -927,11 +940,9 @@ class tx_srfeuserregister_controldata {
 		$this->pid[$type] = $pid;
 	}
 
-
 	public function getMode () {
 		return $this->mode;
 	}
-
 
 	public function setMode ($mode) {
 		$this->mode = $mode;
@@ -945,32 +956,26 @@ class tx_srfeuserregister_controldata {
 		$this->theTable = $theTable;
 	}
 
-
 	public function getRequiredArray () {
 		return $this->requiredArray;
 	}
-
 
 	public function setRequiredArray ($requiredArray) {
 		$this->requiredArray = $requiredArray;
 	}
 
-
 	public function getSetfixedEnabled () {
 		return $this->setfixedEnabled;
 	}
-
 
 	public function setSetfixedEnabled ($setfixedEnabled) {
 		$this->setfixedEnabled = $setfixedEnabled;
 	}
 
-
 	public function getBackURL () {
 		$rc = rawurldecode($this->getFeUserData('backURL'));
 		return $rc;
 	}
-
 
 	/**
 	* Checks if preview display is on.
@@ -1025,18 +1030,16 @@ class tx_srfeuserregister_controldata {
 		return $retArray;
 	}	// getShortUrl
 
-
 	/**
 	*  Get the stored variables using the hash value to access the database
 	*/
 	public function deleteShortUrl ($regHash) {
 
-		if ($regHash != '')	{
+		if ($regHash != '') {
 			// get the serialised array from the DB based on the passed hash value
 			$GLOBALS['TYPO3_DB']->exec_DELETEquery('cache_md5params', 'md5hash=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($regHash, 'cache_md5params'));
 		}
 	}
-
 
 	/**
 	*  Clears obsolete hashes used for short url's

@@ -99,8 +99,8 @@ class tx_srfeuserregister_transmission_security {
 						$key = $storage->get();
 						if ($key != NULL) {
 							foreach ($fields as $field) {
-								if (isset($row[$field]) && $row[$field] !== '') {
-									if (substr($row[$field], 0, 4) === 'rsa:') {
+								if (isset($row[$field]) && $row[$field] != '') {
+									if (substr($row[$field], 0, 4) == 'rsa:') {
 											// Decode password
 										$result = $backend->decrypt($key, substr($row[$field], 4));
 										if ($result) {
@@ -136,7 +136,7 @@ class tx_srfeuserregister_transmission_security {
 				case 'normal':
 				default:
 						// Nothing to decrypt
-					break;	
+					break;
 			}
 		}
 		return $success;

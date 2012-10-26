@@ -43,25 +43,19 @@
 
 
 class tx_srfeuserregister_display {
-	public $conf = array();
-	public $config = array();
 	public $data;
 	public $marker;
 	public $tca;
 
 
 	public function init (
-		&$conf,
-		&$config,
-		&$data,
-		&$marker,
-		&$tca
+		$data,
+		$marker,
+		$tca
 	) {
-		$this->conf = &$conf;
-		$this->config = &$config;
-		$this->data = &$data;
-		$this->marker = &$marker;
-		$this->tca = &$tca;
+		$this->data = $data;
+		$this->marker = $marker;
+		$this->tca = $tca;
 	}
 
 
@@ -77,6 +71,7 @@ class tx_srfeuserregister_display {
 	*/
 	protected function editForm (
 		&$markerArray,
+		$conf,
 		$cObj,
 		$langObj,
 		$controlData,
@@ -97,14 +92,19 @@ class tx_srfeuserregister_display {
 		} else {
 			$currentArray = $origArray;
 		}
-		if ($cmdKey === 'password') {
+		if ($cmdKey == 'password') {
 			$subpart = '###TEMPLATE_SETFIXED_OK_APPROVE_INVITE###';
 		} else {
 			$subpart = '###TEMPLATE_EDIT' . $this->marker->getPreviewLabel() . '###';
 		}
 		$templateCode = $cObj->getSubpart($this->data->getTemplateCode(), $subpart);
 
-		if (!$this->conf['linkToPID'] || !$this->conf['linkToPIDAddButton'] || !($mode == MODE_PREVIEW || !$this->conf[$cmd . '.']['preview'])) {
+		if (
+			!$conf['linkToPID'] ||
+			!$conf['linkToPIDAddButton'] ||
+			!($mode == MODE_PREVIEW ||
+			!$conf[$cmd . '.']['preview'])
+		) {
 			$templateCode =
 				$cObj->substituteSubpart(
 					$templateCode,
@@ -125,6 +125,8 @@ class tx_srfeuserregister_display {
 		$this->marker->addPasswordTransmissionMarkers($markerArray);
 		$templateCode =
 			$this->removeRequired(
+				$conf,
+				$cObj,
 				$controlData,
 				$templateCode,
 				$errorFieldArray,
@@ -138,9 +140,14 @@ class tx_srfeuserregister_display {
 				'',
 				TRUE
 			);
-		$this->marker->addStaticInfoMarkers($markerArray, $currentArray);
+		$this->marker->addStaticInfoMarkers(
+			$markerArray,
+			$prefixId,
+			$currentArray
+		);
 		$this->tca->addTcaMarkers(
 			$markerArray,
+			$conf,
 			$cObj,
 			$langObj,
 			$controlData,
@@ -154,6 +161,7 @@ class tx_srfeuserregister_display {
 		);
 		$this->tca->addTcaMarkers(
 			$markerArray,
+			$conf,
 			$cObj,
 			$langObj,
 			$controlData,
@@ -168,6 +176,9 @@ class tx_srfeuserregister_display {
 
 		$this->marker->addLabelMarkers(
 			$markerArray,
+			$conf,
+			$cObj,
+			$controlData->getExtKey(),
 			$theTable,
 			$currentArray,
 			$origArray,
@@ -179,7 +190,7 @@ class tx_srfeuserregister_display {
 			FALSE
 		);
 
-		foreach ($this->tca->TCA['columns'] as $theField => $fieldConfig)	{
+		foreach ($this->tca->TCA['columns'] as $theField => $fieldConfig) {
 
 			if (
 				$fieldConfig['config']['internal_type'] == 'file' &&
@@ -207,8 +218,8 @@ class tx_srfeuserregister_display {
 		$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $theTable . '][uid]" value="' . $currentArray['uid'] . '" />';
 
 		if ($theTable != 'fe_users') {
-			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
-			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="' . $prefixId . '[aC]" value="' . $authObj->authCode($origArray, $this->conf['setfixed.']['EDIT.']['_FIELDLIST']) . '" />';
+			$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
+			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="' . $prefixId . '[aC]" value="' . $authObj->authCode($origArray, $conf['setfixed.']['EDIT.']['_FIELDLIST']) . '" />';
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="' . $prefixId . '[cmd]" value="edit" />';
 		}
 
@@ -268,6 +279,7 @@ class tx_srfeuserregister_display {
 	*/
 	public function createScreen (
 		&$markerArray,
+		$conf,
 		$cObj,
 		$langObj,
 		$controlData,
@@ -294,12 +306,12 @@ class tx_srfeuserregister_display {
 			$currentArray['password_again'] = $currentArray['password'];
 		}
 
-		if ($this->conf['create']) {
+		if ($conf['create']) {
 
 				// Call all beforeConfirmCreate hooks before the record has been shown and confirmed
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'] as $classRef) {
-					$hookObj= &t3lib_div::getUserObj($classRef);
+					$hookObj= t3lib_div::getUserObj($classRef);
 					if (method_exists($hookObj,'registrationProcess_beforeConfirmCreate')) {
 						$hookObj->registrationProcess_beforeConfirmCreate($dataArray, $controlData);
 					}
@@ -337,6 +349,8 @@ class tx_srfeuserregister_display {
 
 			$templateCode =
 				$this->removeRequired(
+					$conf,
+					$cObj,
 					$controlData,
 					$templateCode,
 					$errorFieldArray,
@@ -350,9 +364,14 @@ class tx_srfeuserregister_display {
 					'',
 					TRUE
 				);
-			$this->marker->addStaticInfoMarkers($markerArray, $dataArray);
+			$this->marker->addStaticInfoMarkers(
+				$markerArray,
+				$prefixId,
+				$dataArray
+			);
 			$this->tca->addTcaMarkers(
 				$markerArray,
+				$conf,
 				$cObj,
 				$langObj,
 				$controlData,
@@ -385,6 +404,9 @@ class tx_srfeuserregister_display {
 
 			$this->marker->addLabelMarkers(
 				$markerArray,
+				$conf,
+				$cObj,
+				$controlData->getExtKey(),
 				$theTable,
 				$dataArray,
 				$origArray,
@@ -456,6 +478,7 @@ class tx_srfeuserregister_display {
 	*/
 	public function editScreen (
 		&$markerArray,
+		$conf,
 		$cObj,
 		$langObj,
 		$controlData,
@@ -472,12 +495,12 @@ class tx_srfeuserregister_display {
 		$prefixId = $controlData->getPrefixId();
 
 			// If editing is enabled
-		if ($this->conf['edit']) {
-			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
+		if ($conf['edit']) {
+			$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 
 			if(
 				$theTable != 'fe_users' &&
-				$this->conf['setfixed.']['EDIT.']['_FIELDLIST']
+				$conf['setfixed.']['EDIT.']['_FIELDLIST']
 			) {
 				$fD = t3lib_div::_GP('fD', 1);
 				$fieldArr = array();
@@ -497,11 +520,11 @@ class tx_srfeuserregister_display {
 			if (is_array($origArray)) {
 				$origArray = $this->data->parseIncomingData($origArray);
 			}
-			$aCAuth = $authObj->aCAuth($origArray, $this->conf['setfixed.']['EDIT.']['_FIELDLIST']);
+			$aCAuth = $authObj->aCAuth($origArray, $conf['setfixed.']['EDIT.']['_FIELDLIST']);
 			if (
 				is_array($origArray) &&
 				(
-					($theTable === 'fe_users' && $GLOBALS['TSFE']->loginUser) ||
+					($theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) ||
 					$aCAuth ||
 					$theCode && !strcmp($authObj->authCode, $theCode)
 				)
@@ -516,13 +539,14 @@ class tx_srfeuserregister_display {
 						$theTable,
 						$origArray,
 						$GLOBALS['TSFE']->fe_user->user,
-						$this->conf['allowedGroups'],
-						$this->conf['fe_userEditSelf']
+						$conf['allowedGroups'],
+						$conf['fe_userEditSelf']
 					)
 				) {
 					// Display the form, if access granted.
 					$content = $this->editForm(
 						$markerArray,
+						$conf,
 						$cObj,
 						$langObj,
 						$controlData,
@@ -539,6 +563,7 @@ class tx_srfeuserregister_display {
 				} else {
 					// Else display error, that you could not edit that particular record...
 					$content = $this->getPlainTemplate(
+						$conf,
 						$cObj,
 						$langObj,
 						$controlData,
@@ -554,6 +579,7 @@ class tx_srfeuserregister_display {
 			} else {
 				// This is if there is no login user. This must tell that you must login. Perhaps link to a page with create-user or login information.
 				$content = $this->getPlainTemplate(
+					$conf,
 					$cObj,
 					$langObj,
 					$controlData,
@@ -567,7 +593,6 @@ class tx_srfeuserregister_display {
 				);
 			}
 		} else {
-			$langObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lang');
 			$content .= $langObj->getLL('internal_edit_option');
 		}
 
@@ -585,6 +610,7 @@ class tx_srfeuserregister_display {
 	*/
 	public function deleteScreen (
 		$markerArray,
+		$conf,
 		$cObj,
 		$langObj,
 		$controlData,
@@ -594,11 +620,12 @@ class tx_srfeuserregister_display {
 		$securedArray,
 		$token
 	) {
-		if ($this->conf['delete']) {
+		if ($conf['delete']) {
 
+			$extKey = $controlData->getExtKey();
 			$prefixId = $controlData->getPrefixId();
 			$templateCode = $this->data->getTemplateCode();
-			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
+			$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 
 			// If deleting is enabled
 			$origArray =
@@ -609,7 +636,7 @@ class tx_srfeuserregister_display {
 			$aCAuth =
 				$authObj->aCAuth(
 					$origArray,
-					$this->conf['setfixed.']['DELETE.']['_FIELDLIST']
+					$conf['setfixed.']['DELETE.']['_FIELDLIST']
 				);
 
 			if (
@@ -625,8 +652,8 @@ class tx_srfeuserregister_display {
 							$theTable,
 							$origArray,
 							$GLOBALS['TSFE']->fe_user->user,
-							$this->conf['allowedGroups'],
-							$this->conf['fe_userEditSelf']
+							$conf['allowedGroups'],
+							$conf['fe_userEditSelf']
 						);
 
 					if ($aCAuth || $bMayEdit) {
@@ -635,72 +662,77 @@ class tx_srfeuserregister_display {
 						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="rU" value="'.$this->data->getRecUid().'" />';
 
 						if ($theTable != 'fe_users') {
-							$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $prefixId . '[aC]" value="' . $authObj->authCode($origArray, $this->conf['setfixed.']['DELETE.']['_FIELDLIST']) . '" />';
+							$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $prefixId . '[aC]" value="' . $authObj->authCode($origArray, $conf['setfixed.']['DELETE.']['_FIELDLIST']) . '" />';
 						}
 						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $prefixId . '[cmd]" value="delete" />';
-						$this->marker->addFormToken($markerArray, $token);
+						$this->marker->addFormToken(
+							$markerArray,
+							$token,
+							$extKey,
+							$prefixId
+						);
 
 						$this->marker->setArray($markerArray);
-						$content =
-							$this->getPlainTemplate(
-								$cObj,
-								$langObj,
-								$controlData,
-								$templateCode,
-								'###TEMPLATE_DELETE_PREVIEW###',
-								$markerArray,
-								$dataArray,
-								$prefixId,
-								$origArray,
-								$securedArray
-							);
-					} else {
-						// Else display error, that you could not edit that particular record...
-						$content =
-							$this->getPlainTemplate(
-								$cObj,
-								$langObj,
-								$controlData,
-								$templateCode,
-								'###TEMPLATE_NO_PERMISSIONS###',
-								$markerArray,
-								$dataArray,
-								$prefixId,
-								$origArray,
-								$securedArray
-							);
-					}
-				}
-			} else {
-				// Finally this is if there is no login user. This must tell that you must login. Perhaps link to a page with create-user or login information.
-				if ( $theTable == 'fe_users' ) {
-					$content =
-						$this->getPlainTemplate(
+						$content = $this->getPlainTemplate(
+							$conf,
 							$cObj,
 							$langObj,
 							$controlData,
 							$templateCode,
-							'###TEMPLATE_AUTH###',
+							'###TEMPLATE_DELETE_PREVIEW###',
 							$markerArray,
-							$origArray,
+							$dataArray,
 							$prefixId,
-							'',
+							$origArray,
 							$securedArray
 						);
-				} else {
-					$content =
-						$this->getPlainTemplate(
+					} else {
+						// Else display error, that you could not edit that particular record...
+						$content = $this->getPlainTemplate(
+							$conf,
 							$cObj,
 							$langObj,
 							$controlData,
 							$templateCode,
 							'###TEMPLATE_NO_PERMISSIONS###',
 							$markerArray,
-							$origArray,
+							$dataArray,
 							$prefixId,
-							'',
+							$origArray,
 							$securedArray
 						);
+					}
+				}
+			} else {
+				// Finally this is if there is no login user. This must tell that you must login. Perhaps link to a page with create-user or login information.
+				if ( $theTable == 'fe_users' ) {
+					$content = $this->getPlainTemplate(
+						$conf,
+						$cObj,
+						$langObj,
+						$controlData,
+						$templateCode,
+						'###TEMPLATE_AUTH###',
+						$markerArray,
+						$origArray,
+						$prefixId,
+						'',
+						$securedArray
+					);
+				} else {
+					$content = $this->getPlainTemplate(
+						$conf,
+						$cObj,
+						$langObj,
+						$controlData,
+						$templateCode,
+						'###TEMPLATE_NO_PERMISSIONS###',
+						$markerArray,
+						$origArray,
+						$prefixId,
+						'',
+						$securedArray
+					);
 				}
 			}
 		} else {
@@ -721,6 +753,7 @@ class tx_srfeuserregister_display {
 	* @return string  the template with substituted parts and markers
 	*/
 	public function getPlainTemplate (
+		$conf,
 		$cObj,
 		$langObj,
 		$controlData,
@@ -740,6 +773,8 @@ class tx_srfeuserregister_display {
 				// Remove non-included fields
 			$templateCode =
 				$this->removeRequired(
+					$conf,
+					$cObj,
 					$controlData,
 					$templateCode,
 					explode(',', $failure),
@@ -752,12 +787,13 @@ class tx_srfeuserregister_display {
 					$securedArray,
 					''
 				);
-			$this->marker->addStaticInfoMarkers($markerArray, $row);
+			$this->marker->addStaticInfoMarkers($markerArray, $prefixId, $row);
 			$cmd = $controlData->getCmd();
 			$cmdKey = $controlData->getCmdKey();
 			$theTable = $controlData->getTable();
 			$this->tca->addTcaMarkers(
 				$markerArray,
+				$conf,
 				$cObj,
 				$langObj,
 				$controlData,
@@ -771,6 +807,9 @@ class tx_srfeuserregister_display {
 			);
 			$this->marker->addLabelMarkers(
 				$markerArray,
+				$conf,
+				$cObj,
+				$controlData->getExtKey(),
 				$theTable,
 				$row,
 				$origArray,
@@ -823,15 +862,16 @@ class tx_srfeuserregister_display {
 	* @return string  the template with susbstituted parts
 	*/
 	public function removeRequired (
+		$conf,
+		$cObj,
 		$controlData,
 		$templateCode,
 		$errorFieldArray,
 		$failure = ''
 	) {
-		$cObj = t3lib_div::getUserObj('&tx_div2007_cobj');
 		$cmdKey = $controlData->getCmdKey();
 		$requiredArray = $controlData->getRequiredArray();
-		$includedFields = t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1);
+		$includedFields = t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1);
 
 		if (
 			$controlData->getFeUserData('preview') &&
@@ -867,11 +907,11 @@ class tx_srfeuserregister_display {
 			);
 		}
 
-		if (!$controlData->useCaptcha($cmdKey)) {
+		if (!$controlData->useCaptcha($conf, $cmdKey)) {
 			$templateCode = $cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_captcha_response###', '');
 		}
 			// Honour Address List (tt_address) configuration setting
-		if ($controlData->getTable() === 'tt_address' && t3lib_extMgm::isLoaded('tt_address') && isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address'])) {
+		if ($controlData->getTable() == 'tt_address' && t3lib_extMgm::isLoaded('tt_address') && isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address'])) {
 			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address']);
 			if (is_array($extConf) && $extConf['disableCombinedNameField'] == '1') {
 				$templateCode = $cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_name###', '');
@@ -918,10 +958,10 @@ class tx_srfeuserregister_display {
 					}
 
 					if (
-						is_array($this->conf['parseValues.']) &&
-						strstr($this->conf['parseValues.'][$theField],'checkArray')
+						is_array($conf['parseValues.']) &&
+						strstr($conf['parseValues.'][$theField],'checkArray')
 					) {
-						$listOfCommands = t3lib_div::trimExplode(',', $this->conf['parseValues.'][$theField], 1);
+						$listOfCommands = t3lib_div::trimExplode(',', $conf['parseValues.'][$theField], 1);
 						foreach($listOfCommands as $cmd) {
 							$cmdParts = preg_split('/\[|\]/', $cmd); // Point is to enable parameters after each command enclosed in brackets [..]. These will be in position 1 in the array.
 							$theCmd = trim($cmdParts[0]);
@@ -952,19 +992,19 @@ class tx_srfeuserregister_display {
 	 * @param boolean $bCustomerConfirmsMode =
 	 * 			($cmd == '' || $cmd == 'create') &&
 	 *			($cmdKey != 'edit') &&
-	 *			$this->conf['enableAdminReview'] &&
-	 *			($this->conf['enableEmailConfirmation'] || $this->conf['infomail'])
+	 *			$conf['enableAdminReview'] &&
+	 *			($conf['enableEmailConfirmation'] || $conf['infomail'])
 	 * @param boolean $bSetfixed =
 	 *				This is the case where the user or admin has to confirm
-	 *			$this->conf['enableEmailConfirmation'] ||
-	 *			($this->theTable == 'fe_users' && $this->conf['enableAdminReview']) ||
-	 *			$this->conf['setfixed']
+	 *			$conf['enableEmailConfirmation'] ||
+	 *			($this->theTable == 'fe_users' && $conf['enableAdminReview']) ||
+	 *			$conf['setfixed']
 	 * @param boolean $bCreateReview =
 	 *				This is the case where the user does not have to confirm, but has to wait for admin review
 	 *				This applies only on create ($bDefaultMode) and to fe_users
 	 *				$bCreateReview implies $bSetfixed
-	 *			!$this->conf['enableEmailConfirmation'] &&
-	 *			$this->conf['enableAdminReview']
+	 *			!$conf['enableEmailConfirmation'] &&
+	 *			$conf['enableAdminReview']
 	 * @return boolean or string
 	 */
 	public function getKeyAfterSave (
@@ -1018,6 +1058,7 @@ class tx_srfeuserregister_display {
 	* @return string  the template with substituted parts and markers
 	*/
 	public function afterSave (
+		$conf,
 		$cObj,
 		$langObj,
 		$controlData,
@@ -1044,6 +1085,8 @@ class tx_srfeuserregister_display {
 				// Remove non-included fields
 			$templateCode =
 				$this->removeRequired(
+					$conf,
+					$cObj,
 					$controlData,
 					$templateCode,
 					$errorFieldArray
@@ -1060,11 +1103,13 @@ class tx_srfeuserregister_display {
 				);
 			$this->marker->addStaticInfoMarkers(
 				$markerArray,
+				$prefixId,
 				$dataArray
 			);
 
 			$this->tca->addTcaMarkers(
 				$markerArray,
+				$conf,
 				$cObj,
 				$langObj,
 				$controlData,
@@ -1079,6 +1124,9 @@ class tx_srfeuserregister_display {
 
 			$this->marker->addLabelMarkers(
 				$markerArray,
+				$conf,
+				$cObj,
+				$controlData->getExtKey(),
 				$theTable,
 				$dataArray,
 				$origArray,
@@ -1090,19 +1138,23 @@ class tx_srfeuserregister_display {
 				FALSE
 			);
 
-			if ($cmdKey === 'create' && !$this->conf['enableEmailConfirmation'] && !$this->conf['enableAutoLoginOnCreate']) {
+			if (
+				$cmdKey == 'create' &&
+				!$conf['enableEmailConfirmation'] &&
+				!$conf['enableAutoLoginOnCreate']
+			) {
 				$this->marker->addPasswordTransmissionMarkers($markerArray);
 			}
 
-			if (isset($this->conf[$cmdKey . '.']['marker.'])) {
-				if ($this->conf[$cmdKey . '.']['marker.']['computeUrl'] == '1') {
+			if (isset($conf[$cmdKey . '.']['marker.'])) {
+				if ($conf[$cmdKey . '.']['marker.']['computeUrl'] == '1') {
 					$this->setfixedObj->computeUrl(
 						$cmdKey,
 						$prefixId,
 						$cObj,
 						$controlData,
 						$markerArray,
-						$this->conf['setfixed.'],
+						$conf['setfixed.'],
 						$dataArray,
 						$theTable
 					);
@@ -1119,7 +1171,6 @@ class tx_srfeuserregister_display {
 				$deleteUnusedMarkers
 			);
 		} else {
-			$langObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lang');
 			$errorText = $langObj->getLL('internal_no_subtemplate');
 			$errorContent = sprintf($errorText, $subpartMarker);
 		}
@@ -1132,7 +1183,7 @@ class tx_srfeuserregister_display {
 	 * @param string $content: the input content
 	 * @return string the input content with HTML comment removed
 	 */
-	public function &removeHTMLComments ($content) {
+	public function removeHTMLComments ($content) {
 		$result = preg_replace('/<!(?:--[\s\S]*?--\s*)?>[\t\v\n\r\f]*/','', $content);
 		return $result;
 	}

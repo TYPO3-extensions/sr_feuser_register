@@ -43,15 +43,14 @@
 
 
 class tx_srfeuserregister_auth {
-	public $pibase;
 	public $conf = array();
 	public $config = array();
 	public $authCode;
 
-	public function init (&$pibase, &$conf, &$config) {
-		$this->pibase = &$pibase;
-		$this->conf = &$conf;
-		$this->config = &$config;
+
+	public function init ($confObj) {
+		$this->conf = $confObj->getConf();
+		$this->config = $confObj->getConfig();
 		$this->config['addKey'] = '';
 
 			// Setting the authCode length
@@ -67,16 +66,20 @@ class tx_srfeuserregister_auth {
 			if ($this->conf['authcodeFields.']['addKey']) {
 				$this->config['addKey'] = $this->conf['authcodeFields.']['addKey'];
 			}
+			$confObj->setConfig($this->config);
 		}
 	}
 
-	public function setAuthCode ($code)	{
+
+	public function setAuthCode ($code) {
 		$this->authCode = $code;
 	}
 
-	public function getAuthCode ()	{
+
+	public function getAuthCode () {
 		return $this->authCode;
 	}
+
 
 	/**
 	 * Computes the authentication code
@@ -134,6 +137,7 @@ class tx_srfeuserregister_auth {
 		return $authCode;
 	}
 
+
 	/**
 	 * Authenticates a record
 	 *
@@ -153,6 +157,7 @@ class tx_srfeuserregister_auth {
 		return $rc;
 	}
 
+
 	/**
 	 * Computes the setfixed hash
 	 * where record values need to be rawurldecoded
@@ -167,6 +172,7 @@ class tx_srfeuserregister_auth {
 		return $this->authCode ($record, $fields, '', $rawUrlDecode, $codeLength);
 	}
 
+
 	/**
 	* Generates a token for the form to secure agains Cross Site Request Forgery (CSRF)
 	*
@@ -180,6 +186,7 @@ class tx_srfeuserregister_auth {
 		return $rc;
 	}
 }
+
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_auth.php']) {
   include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_auth.php']);
 }
