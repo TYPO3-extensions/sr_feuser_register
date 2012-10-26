@@ -49,14 +49,14 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 		$this->pi_setPiVarDefaults();
 		$this->conf = &$conf;
 			// Check installation requirements
-		$content = $this->checkRequirements();
+		$content = $this->checkRequirements($conf);
 			// Check presence of deprecated markers
 		$content .= $this->checkDeprecatedMarkers($conf);
 			// If no error content, proceed
 		if (!$content) {
-			$mainObj = &t3lib_div::getUserObj('&tx_srfeuserregister_control_main');
-			$mainObj->cObj = &$this->cObj;
-			$content = &$mainObj->main($content, $conf, $this, 'fe_users');
+			$mainObj = t3lib_div::getUserObj('&tx_srfeuserregister_control_main');
+			$mainObj->cObj = $this->cObj;
+			$content = $mainObj->main($content, $conf, $this, 'fe_users');
 		}
 		return $content;
 	}
@@ -65,7 +65,7 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 	 *
 	 * @return string Error message, if error found, empty string otherwise
 	 */
-	protected function checkRequirements() {
+	protected function checkRequirements ($conf) {
 		$content = '';
 		$requiredExtensions = array();
 		$loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
@@ -75,7 +75,13 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 			$requiredExtensions = array_diff(array_keys($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['constraints']['depends']), array('php', 'typo3'));
 		}
 
-		if ($loginSecurityLevel == 'rsa') {
+		if (
+			$loginSecurityLevel == 'rsa' ||
+			(
+				$conf['enableAutoLoginOnConfirmation'] &&
+				!$conf['enableAutoLoginOnCreate']
+			)
+		) {
 			$requiredExtensions[] = 'rsaauth';
 		}
 
@@ -139,7 +145,7 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 	protected function checkDeprecatedMarkers() {
 		$content = '';
 		$templateCode = $this->cObj->fileResource($this->conf['templateFile']);
-		$marker = &t3lib_div::getUserObj('&tx_srfeuserregister_marker');
+		$marker = t3lib_div::getUserObj('&tx_srfeuserregister_marker');
 		$messages = $marker->checkDeprecatedMarkers($templateCode, $this->extKey, $this->conf['templateFile']);
 		foreach ($messages as $message) {
 			t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
