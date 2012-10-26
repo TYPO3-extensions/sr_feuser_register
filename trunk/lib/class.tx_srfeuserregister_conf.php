@@ -44,20 +44,37 @@ class tx_srfeuserregister_conf {
 	public $conf = array();
 	public $config = array();
 
-	public function init (&$conf) {
-		$this->conf = &$conf;
+
+	public function init ($conf) {
+		$this->conf = $conf;
 		$this->config = array();
 	}
 
-	public function &getConf () {
+
+	public function getConf () {
 		return $this->conf;
 	}
 
-	public function &setConf (array &$dataArray, $k = '') {
+
+	public function setConf (array $dataArray, $k = '') {
 		if ($k) {
 			$this->conf[$k] = $dataArray;
 		} else {
 			$this->conf = $dataArray;
+		}
+	}
+
+
+	public function getConfig () {
+		return $this->config;
+	}
+
+
+	public function setConfig (array $dataArray, $k = '') {
+		if ($k) {
+			$this->config[$k] = $dataArray;
+		} else {
+			$this->config = $dataArray;
 		}
 	}
 }

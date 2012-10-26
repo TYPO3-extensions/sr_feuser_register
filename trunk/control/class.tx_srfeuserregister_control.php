@@ -62,18 +62,18 @@ class tx_srfeuserregister_control {
 		$cObj,
 		$controlData,
 		$display,
-		&$marker,
-		&$email,
-		&$tca,
+		$marker,
+		$email,
+		$tca,
 		$setfixedObj,
 		$urlObj
 	) {
 		$this->langObj = $langObj;
-		$confObj = t3lib_div::getUserObj('&tx_srfeuserregister_conf');
 
-		$this->conf = $confObj->getConf();
+		$confObj = t3lib_div::getUserObj('&tx_srfeuserregister_conf');
+		$conf = $confObj->getConf();
 		$this->display = $display;
-		$this->marker = &$marker;
+		$this->marker = $marker;
 		$this->email = $email;
 		$this->tca = $tca;
 		$this->setfixedObj = $setfixedObj;
@@ -90,7 +90,7 @@ class tx_srfeuserregister_control {
 				$langObj,
 				'',
 				'',
-				$this->conf['defaultCODE'],
+				$conf['defaultCODE'],
 				$cObj->data['pi_flexform'],
 				'display_mode'
 			);
@@ -99,16 +99,18 @@ class tx_srfeuserregister_control {
 		$controlData->setCmd($cmd);
 	}
 
+	/* write the global $conf only here */
 	public function init2 (
+		$confObj,
 		$theTable,
 		$controlData,
 		&$data,
 		&$adminFieldList
 	) {
+		$conf = $confObj->getConf();
 		$this->data = &$data;
 
-		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_conf');
-		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
+		$tablesObj = t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 		$addressObj = $tablesObj->get('address');
 		$origArray = array();
 		$extKey = $controlData->getExtKey();
@@ -158,7 +160,7 @@ class tx_srfeuserregister_control {
 		$this->data->setOrigArray($origArray);
 
 			// Setting the list of fields allowed for editing and creation.
-		$tableTCA = &$this->tca->getTCA();
+		$tableTCA = $this->tca->getTCA();
 		$tcaFieldArray =
 			t3lib_div::trimExplode(
 				',',
@@ -169,109 +171,112 @@ class tx_srfeuserregister_control {
 		$fieldlist = implode(',', $tcaFieldArray);
 		$this->data->setFieldList($fieldlist);
 
-		if (trim($this->conf['addAdminFieldList'])) {
-			$adminFieldList .= ',' . trim($this->conf['addAdminFieldList']);
+		if (trim($conf['addAdminFieldList'])) {
+			$adminFieldList .= ',' . trim($conf['addAdminFieldList']);
 		}
 		$adminFieldList = implode(',', array_intersect( explode(',', $fieldlist), t3lib_div::trimExplode(',', $adminFieldList, 1)));
 		$this->data->setAdminFieldList($adminFieldList);
 
 		if (!t3lib_extMgm::isLoaded('direct_mail')) {
-			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1), array('module_sys_dmail_category, module_sys_dmail_newsletter')));
-			$this->conf[$cmdKey.'.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['required'], 1), array('module_sys_dmail_category, module_sys_dmail_newsletter')));
+			$conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey.'.']['fields'], 1), array('module_sys_dmail_category, module_sys_dmail_newsletter')));
+			$conf[$cmdKey.'.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey.'.']['required'], 1), array('module_sys_dmail_category, module_sys_dmail_newsletter')));
 		}
 
 		$fieldConfArray = array('fields', 'required');
 		foreach ($fieldConfArray as $k => $v) {
 			// make it ready for t3lib_div::inList which does not yet allow blanks
-			$this->conf[$cmdKey . '.'][$v] = implode(',',  array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.'][$v])));
+			$conf[$cmdKey . '.'][$v] = implode(',',  array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey . '.'][$v])));
 		}
 
 		$theTable = $controlData->getTable();
-		if ($theTable === 'fe_users') {
+		if ($theTable == 'fe_users') {
 				// When not in edit mode, add username to lists of fields and required fields unless explicitly disabled
-			if (empty($this->conf[$cmdKey.'.']['doNotEnforceUsername'])) {
+			if (empty($conf[$cmdKey.'.']['doNotEnforceUsername'])) {
 				if ($cmdKey != 'edit' && $cmdKey != 'password') {
-					$this->conf[$cmdKey . '.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'] . ',username', 1)));
-					$this->conf[$cmdKey . '.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['required'] . ',username', 1)));
+					$conf[$cmdKey . '.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'] . ',username', 1)));
+					$conf[$cmdKey . '.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['required'] . ',username', 1)));
 				}
 			}
-			if ($this->conf[$cmdKey . '.']['generateUsername'] || $cmdKey === 'password') {
-				$this->conf[$cmdKey . '.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), array('username')));
+			if ($conf[$cmdKey . '.']['generateUsername'] || $cmdKey == 'password') {
+				$conf[$cmdKey . '.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1), array('username')));
 			}
 
-			if ($cmdKey === 'invite') {
-				$this->conf[$cmdKey . '.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), array('password')));
+			if ($cmdKey == 'invite') {
+				$conf[$cmdKey . '.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1), array('password')));
 			}
 
-			if ($this->conf[$cmdKey . '.']['useEmailAsUsername']) {
-				$this->conf[$cmdKey . '.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), array('username')));
+			if ($conf[$cmdKey . '.']['useEmailAsUsername']) {
+				$conf[$cmdKey . '.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1), array('username')));
 				if ($cmdKey == 'create' || $cmdKey == 'invite') {
-					$this->conf[$cmdKey . '.']['fields'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'] . ',email', 1));
-					$this->conf[$cmdKey . '.']['required'] = implode(',', t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['required'] . ',email', 1));
+					$conf[$cmdKey . '.']['fields'] = implode(',', t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'] . ',email', 1));
+					$conf[$cmdKey . '.']['required'] = implode(',', t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['required'] . ',email', 1));
 				}
-				if (($cmdKey === 'edit' || $cmdKey === 'password') && $controlData->getSetfixedEnabled()) {
-					$this->conf[$cmdKey . '.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), array('email')));
+				if (
+					($cmdKey == 'edit' || $cmdKey == 'password') &&
+					$controlData->getSetfixedEnabled()
+				) {
+					$conf[$cmdKey . '.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1), array('email')));
 				}
 			}
-			$userGroupObj = &$addressObj->getFieldObj('usergroup');
+			$userGroupObj = $addressObj->getFieldObj('usergroup');
 
 			if (is_object($userGroupObj)) {
-				$userGroupObj->modifyConf($this->conf, $cmdKey);
+				$userGroupObj->modifyConf($conf, $cmdKey);
 			}
 
-			if ($cmdKey === 'invite') {
-				if ($this->conf['enableAdminReview']) {
+			if ($cmdKey == 'invite') {
+				if ($conf['enableAdminReview']) {
 					if (
 						$controlData->getSetfixedEnabled() &&
-						is_array($this->conf['setfixed.']['ACCEPT.']) &&
-						is_array($this->conf['setfixed.']['APPROVE.'])
+						is_array($conf['setfixed.']['ACCEPT.']) &&
+						is_array($conf['setfixed.']['APPROVE.'])
 					) {
-						$this->conf['setfixed.']['APPROVE.'] = $this->conf['setfixed.']['ACCEPT.'];
+						$conf['setfixed.']['APPROVE.'] = $conf['setfixed.']['ACCEPT.'];
 					}
 				}
 			}
-			if ($cmdKey === 'create') {
-				if ($this->conf['enableAdminReview'] && !$this->conf['enableEmailConfirmation']) {
-					$this->conf['create.']['defaultValues.']['disable'] = '1';
-					$this->conf['create.']['overrideValues.']['disable'] = '1';
+			if ($cmdKey == 'create') {
+				if ($conf['enableAdminReview'] && !$conf['enableEmailConfirmation']) {
+					$conf['create.']['defaultValues.']['disable'] = '1';
+					$conf['create.']['overrideValues.']['disable'] = '1';
 				}
 			}
 				// Infomail does not apply to fe_users
-			$this->conf['infomail'] = 0;
+			$conf['infomail'] = 0;
 		}
 			// Honour Address List (tt_address) configuration setting
-		if ($theTable === 'tt_address' && t3lib_extMgm::isLoaded('tt_address') && isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address'])) {
+		if ($theTable == 'tt_address' && t3lib_extMgm::isLoaded('tt_address') && isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address'])) {
 			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address']);
 			if (is_array($extConf) && $extConf['disableCombinedNameField'] == '1') {
-				$this->conf[$cmdKey . '.']['fields'] = t3lib_div::rmFromList('name', $this->conf[$cmdKey . '.']['fields']);
+				$conf[$cmdKey . '.']['fields'] = t3lib_div::rmFromList('name', $conf[$cmdKey . '.']['fields']);
 			}
 		}
 			// Adjust some evaluation settings
-		if (is_array($this->conf[$cmdKey . '.']['evalValues.'])) {
+		if (is_array($conf[$cmdKey . '.']['evalValues.'])) {
 				// Do not evaluate any password when inviting
-			if ($cmdKey === 'invite') {
-				unset($this->conf[$cmdKey . '.']['evalValues.']['password']);
+			if ($cmdKey == 'invite') {
+				unset($conf[$cmdKey . '.']['evalValues.']['password']);
 			}
 				// Do not evaluate the username if it is generated or if email is used
 			if (
-				$this->conf[$cmdKey . '.']['useEmailAsUsername'] ||
-				($this->conf[$cmdKey . '.']['generateUsername'] && $cmdKey != 'edit' && $cmdKey != 'password')
+				$conf[$cmdKey . '.']['useEmailAsUsername'] ||
+				($conf[$cmdKey . '.']['generateUsername'] && $cmdKey != 'edit' && $cmdKey != 'password')
 			) {
-				unset($this->conf[$cmdKey . '.']['evalValues.']['username']);
+				unset($conf[$cmdKey . '.']['evalValues.']['username']);
 			}
 		}
-		$confObj->setConf($this->conf);
+		$confObj->setConf($conf);
 
 			// Setting requiredArr to the fields in "required" fields list intersected with the total field list in order to remove invalid fields.
 		$requiredArray = array_intersect(
 			t3lib_div::trimExplode(
 				',',
-				$this->conf[$cmdKey . '.']['required'],
+				$conf[$cmdKey . '.']['required'],
 				1
 			),
 			t3lib_div::trimExplode(
 				',',
-				$this->conf[$cmdKey . '.']['fields'],
+				$conf[$cmdKey . '.']['fields'],
 				1
 			)
 		);
@@ -297,11 +302,14 @@ class tx_srfeuserregister_control {
 		$templateCode,
 		&$error_message
 	) {
+		$confObj = t3lib_div::getUserObj('&tx_srfeuserregister_conf');
+		$conf = $confObj->getConf();
+
 		$prefixId = $controlData->getPrefixId();
 		$controlData->setMode(MODE_NORMAL);
 
 			// Commands with which the data will not be saved by $this->data->save
-		$noSaveCommands = array('infomail','login','delete');
+		$noSaveCommands = array('infomail', 'login', 'delete');
 
 		$uid = $this->data->getRecUid();
 		$securedArray = array();
@@ -309,7 +317,7 @@ class tx_srfeuserregister_control {
 		if (
 			!$controlData->isTokenValid() ||
 			(
-				$theTable === 'fe_users' &&
+				$theTable == 'fe_users' &&
 				(
 					!$GLOBALS['TSFE']->loginUser ||
 					($uid > 0 && $GLOBALS['TSFE']->fe_user->user['uid'] != $uid)
@@ -323,7 +331,7 @@ class tx_srfeuserregister_control {
 			$this->data->resetDataArray();
 			$finalDataArray = $dataArray;
 		} else if ($this->data->bNewAvailable()) {
-			if ($theTable === 'fe_users') {
+			if ($theTable == 'fe_users') {
 				$securedArray = $controlData->readSecuredArray();
 			}
 			$finalDataArray = t3lib_div::array_merge_recursive_overrule(
@@ -370,12 +378,22 @@ class tx_srfeuserregister_control {
 					$controlData->getRequiredArray()
 				);
 					// If the two password fields are not equal, clear session data
-				if (is_array($evalErrors['password']) && in_array('twice', $evalErrors['password'])) {
+				if (
+					is_array($evalErrors['password']) &&
+					in_array('twice', $evalErrors['password'])
+				) {
 					$controlData->clearSessionData();
 				}
-				if ($this->conf['evalFunc'] ) {
+				if ($conf['evalFunc']) {
 					$this->marker->setArray($markerArray);
-					$finalDataArray = $this->userProcess('evalFunc', $finalDataArray);
+
+					$finalDataArray =
+						tx_div2007_alpha::userProcess_fh001(
+							$this,
+							$conf,
+							'evalFunc',
+							$finalDataArray
+						);
 					$markerArray = $this->marker->getArray();
 				}
 			} else {
@@ -401,14 +419,21 @@ class tx_srfeuserregister_control {
 
 			if ($controlData->getFailure() == '' && !$controlData->getFeUserData('preview') && !$bDoNotSave) {
 				$password = '';
-				if ($theTable === 'fe_users') {
+				if ($theTable == 'fe_users') {
 					$controlData->getStorageSecurity()->initializeAutoLoginPassword($finalDataArray);
 						// We generate an interim password in the case of an invitation
-					if ($cmdKey === 'invite') {
+					if ($cmdKey == 'invite') {
 						$controlData->generatePassword($finalDataArray);
 					}
 						// If inviting or if auto-login will be required on confirmation, we store an encrypted version of the password
-					if ($cmdKey === 'invite' || ($cmdKey === 'create' && $this->conf['enableAutoLoginOnConfirmation'] && !$this->conf['enableAutoLoginOnCreate'])) {
+					if (
+						$cmdKey == 'invite' ||
+						(
+							$cmdKey == 'create' &&
+							$conf['enableAutoLoginOnConfirmation'] &&
+							!$conf['enableAutoLoginOnCreate']
+						)
+					) {
 						$controlData->getStorageSecurity()->encryptPasswordForAutoLogin($finalDataArray);
 					}
 					$password = $controlData->readPasswordForStorage();
@@ -438,7 +463,7 @@ class tx_srfeuserregister_control {
 					$controlData->clearSessionData();
 				}
 			}
-		} else if ($cmd === 'infomail') {
+		} else if ($cmd == 'infomail') {
 			if ($bSubmit) {
 				$fetch = $controlData->getFeUserData('fetch');
 				$finalDataArray['email'] = $fetch;
@@ -497,23 +522,23 @@ class tx_srfeuserregister_control {
 			if (
 				$bDefaultMode
 				&& ($cmdKey != 'edit')
-				&& $this->conf['enableAdminReview']
-				&& ($this->conf['enableEmailConfirmation'] || $this->conf['infomail'])
+				&& $conf['enableAdminReview']
+				&& ($conf['enableEmailConfirmation'] || $conf['infomail'])
 			) {
 				$bCustomerConfirmsMode = TRUE;
 			}
 				// This is the case where the user or admin has to confirm
-				// $this->conf['enableEmailConfirmation'] ||
-				// ($this->theTable == 'fe_users' && $this->conf['enableAdminReview']) ||
-				// $this->conf['setfixed']
+				// $conf['enableEmailConfirmation'] ||
+				// ($this->theTable == 'fe_users' && $conf['enableAdminReview']) ||
+				// $conf['setfixed']
 			$bSetfixed = $controlData->getSetfixedEnabled();
 				// This is the case where the user does not have to confirm, but has to wait for admin review
 				// This applies only on create ($bDefaultMode) and to fe_users
 				// $bCreateReview implies $bSetfixed
 			$bCreateReview =
-				($theTable === 'fe_users') &&
-				!$this->conf['enableEmailConfirmation'] &&
-				$this->conf['enableAdminReview'];
+				($theTable == 'fe_users') &&
+				!$conf['enableEmailConfirmation'] &&
+				$conf['enableAdminReview'];
 			$key =
 				$this->display->getKeyAfterSave(
 					$cmd,
@@ -525,6 +550,7 @@ class tx_srfeuserregister_control {
 
 			$errorContent =
 				$this->display->afterSave(
+					$conf,
 					$cObj,
 					$langObj,
 					$controlData,
@@ -546,11 +572,12 @@ class tx_srfeuserregister_control {
 				$markerArray = $this->marker->getArray(); // uses its own markerArray
 				$errorCode = '';
 
-				if ($this->conf['enableAdminReview'] && $bDefaultMode && !$bCustomerConfirmsMode) {
+				if ($conf['enableAdminReview'] && $bDefaultMode && !$bCustomerConfirmsMode) {
 						// Send admin the confirmation email
 						// The user will not confirm in this mode
 					$errorContent = $this->email->compile(
 						SETFIXED_PREFIX . 'REVIEW',
+						$conf,
 						$cObj,
 						$langObj,
 						$controlData,
@@ -559,26 +586,27 @@ class tx_srfeuserregister_control {
 						array($dataArray),
 						array($origArray),
 						$securedArray,
-						$this->conf['email.']['admin'],
+						$conf['email.']['admin'],
 						$markerArray,
 						'setfixed',
 						$cmdKey,
 						$templateCode,
 						$errorFieldArray,
-						$this->conf['setfixed.'],
+						$conf['setfixed.'],
 						$errorCode
 					);
 				} else if (
 					$cmdKey == 'create' ||
 					$cmdKey == 'invite' ||
-					$this->conf['email.']['EDIT_SAVED'] ||
-					$this->conf['email.']['DELETE_SAVED']
+					$conf['email.']['EDIT_SAVED'] ||
+					$conf['email.']['DELETE_SAVED']
 				) {
-					$emailField = $this->conf['email.']['field'];
+					$emailField = $conf['email.']['field'];
 					$recipient = (isset($finalDataArray) && is_array($finalDataArray) && $finalDataArray[$emailField]) ? $finalDataArray[$emailField] : $origArray[$emailField];
 					// Send email message(s)
 					$errorContent = $this->email->compile(
 						$key,
+						$conf,
 						$cObj,
 						$langObj,
 						$controlData,
@@ -593,7 +621,7 @@ class tx_srfeuserregister_control {
 						$cmdKey,
 						$templateCode,
 						$errorFieldArray,
-						$this->conf['setfixed.'],
+						$conf['setfixed.'],
 						$errorCode
 					);
 				}
@@ -610,22 +638,29 @@ class tx_srfeuserregister_control {
 
 					// Link to on edit save
 					// backURL may link back to referring process
-				if ($theTable === 'fe_users' &&
-					($cmd === 'edit' || $cmd === 'password') &&
-					($controlData->getBackURL() || ($this->conf['linkToPID'] && ($controlData->getFeUserData('linkToPID') || !$this->conf['linkToPIDAddButton']))) ) {
-					$destUrl = ($controlData->getBackURL() ? $controlData->getBackURL() : $cObj->getTypoLink_URL($this->conf['linkToPID'] . ',' . $GLOBALS['TSFE']->type));
+				if ($theTable == 'fe_users' &&
+					($cmd == 'edit' || $cmd == 'password') &&
+					($controlData->getBackURL() || ($conf['linkToPID'] && ($controlData->getFeUserData('linkToPID') || !$conf['linkToPIDAddButton']))) ) {
+					$destUrl = ($controlData->getBackURL() ? $controlData->getBackURL() : $cObj->getTypoLink_URL($conf['linkToPID'] . ',' . $GLOBALS['TSFE']->type));
 					header('Location: '.t3lib_div::locationHeaderUrl($destUrl));
 					exit;
 				}
 
 					// Auto-login on create
-				if ($theTable === 'fe_users' && $cmd === 'create' && !$controlData->getSetfixedEnabled() && $this->conf['enableAutoLoginOnCreate']) {
+				if (
+					$theTable == 'fe_users' &&
+					$cmd == 'create' &&
+					!$controlData->getSetfixedEnabled() &&
+					$conf['enableAutoLoginOnCreate']
+				) {
 					$loginSuccess =
 						$this->login(
+							$conf,
 							$langObj,
 							$controlData,
 							$finalDataArray
 						);
+
 					if ($loginSuccess) {
 							// Login was successful
 						exit;
@@ -644,6 +679,9 @@ class tx_srfeuserregister_control {
 			$templateCode = $cObj->getSubpart($templateCode, $this->data->getError());
 			$this->marker->addLabelMarkers(
 				$markerArray,
+				$conf,
+				$cObj,
+				$controlData->getExtKey(),
 				$theTable,
 				$finalDataArray,
 				$this->data->getOrigArray(),
@@ -667,7 +705,7 @@ class tx_srfeuserregister_control {
 			}
 			switch ($cmd) {
 				case 'setfixed':
-					if ($this->conf['infomail']) {
+					if ($conf['infomail']) {
 						$controlData->setSetfixedEnabled(1);
 					}
 					$feuData = $controlData->getFeUserData();
@@ -676,6 +714,7 @@ class tx_srfeuserregister_control {
 					}
 
 					$content = $this->setfixedObj->processSetFixed(
+						$conf,
 						$cObj,
 						$langObj,
 						$controlData,
@@ -695,8 +734,12 @@ class tx_srfeuserregister_control {
 					);
 					break;
 				case 'infomail':
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
-					if ($this->conf['infomail']) {
+					$this->marker->addGeneralHiddenFieldsMarkers(
+						$markerArray,
+						$cmd,
+						$token
+					);
+					if ($conf['infomail']) {
 						$controlData->setSetfixedEnabled(1);
 					}
 					if (is_array($origArray)) {
@@ -704,6 +747,7 @@ class tx_srfeuserregister_control {
 					}
 					$errorCode = '';
 					$content = $this->email->sendInfo(
+						$conf,
 						$cObj,
 						$langObj,
 						$controlData,
@@ -723,9 +767,14 @@ class tx_srfeuserregister_control {
 					}
 					break;
 				case 'delete':
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
+					$this->marker->addGeneralHiddenFieldsMarkers(
+						$markerArray,
+						$cmd,
+						$token
+					);
 					$content = $this->display->deleteScreen(
 						$markerArray,
+						$conf,
 						$cObj,
 						$langObj,
 						$controlData,
@@ -738,9 +787,14 @@ class tx_srfeuserregister_control {
 					break;
 				case 'edit':
 				case 'password':
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
+					$this->marker->addGeneralHiddenFieldsMarkers(
+						$markerArray,
+						$cmd,
+						$token
+					);
 					$content = $this->display->editScreen(
 						$markerArray,
+						$conf,
 						$cObj,
 						$langObj,
 						$controlData,
@@ -764,6 +818,7 @@ class tx_srfeuserregister_control {
 					);
 					$content = $this->display->createScreen(
 						$markerArray,
+						$conf,
 						$cObj,
 						$langObj,
 						$controlData,
@@ -783,9 +838,14 @@ class tx_srfeuserregister_control {
 					// nothing. The login parameters are processed by TYPO3 Core
 					break;
 				default:
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
+					$this->marker->addGeneralHiddenFieldsMarkers(
+						$markerArray,
+						$cmd,
+						$token
+					);
 					$content = $this->display->createScreen(
 						$markerArray,
+						$conf,
 						$cObj,
 						$langObj,
 						$controlData,
@@ -804,17 +864,17 @@ class tx_srfeuserregister_control {
 			}
 
 			if (
-				($cmd != 'setfixed' || $cmdKey != 'edit' || $cmdKey != 'password')
-				&& !$errorContent
-				&& !$controlData->getFeUserData('preview')
+				($cmd != 'setfixed' || $cmdKey != 'edit' || $cmdKey != 'password') &&
+				!$errorContent &&
+				!$controlData->getFeUserData('preview')
 			) {
 				$bDeleteRegHash = TRUE;
 			}
 		}
 
 		if (
-			$bDeleteRegHash
-			&& $controlData->getValidRegHash()
+			$bDeleteRegHash &&
+			$controlData->getValidRegHash()
 		) {
 			$regHash = $controlData->getRegHash();
 			$controlData->deleteShortUrl($regHash);
@@ -830,6 +890,7 @@ class tx_srfeuserregister_control {
 	 * @return boolean TRUE, if login was successful, FALSE otherwise
 	 */
 	public function login (
+		$conf,
 		$langObj,
 		$controlData,
 		array $row,
@@ -848,7 +909,12 @@ class tx_srfeuserregister_control {
 			// Get authentication info array
 		$authInfo = $GLOBALS['TSFE']->fe_user->getAuthInfoArray();
 			// Get user info
-		$user = $GLOBALS['TSFE']->fe_user->fetchUserRecord($authInfo['db_user'], $loginData['uname']);
+		$user =
+			$GLOBALS['TSFE']->fe_user->fetchUserRecord(
+				$authInfo['db_user'],
+				$loginData['uname']
+			);
+
 		if (is_array($user)) {
 				// Get the appropriate authentication service
 			$authServiceObj = t3lib_div::makeInstanceService('auth', 'authUserFE');
@@ -869,15 +935,16 @@ class tx_srfeuserregister_control {
 						$regHash = $controlData->getRegHash();
 						$controlData->deleteShortUrl($regHash);
 					}
+
 					if ($redirect) {
 							// Redirect to configured page, if any
 						$redirectUrl = $controlData->readRedirectUrl();
 						if (!$redirectUrl) {
-							$redirectUrl = trim($this->conf['autoLoginRedirect_url']);
+							$redirectUrl = trim($conf['autoLoginRedirect_url']);
 						}
 						if (!$redirectUrl) {
-							if ($this->conf['loginPID']) {
-								$redirectUrl = $this->urlObj->get('', $this->conf['loginPID']);
+							if ($conf['loginPID']) {
+								$redirectUrl = $this->urlObj->get('', $conf['loginPID']);
 							} else {
 								$redirectUrl = $controlData->getSiteUrl();
 							}
@@ -901,43 +968,9 @@ class tx_srfeuserregister_control {
 			$controlData->clearSessionData(FALSE);
 			$result = FALSE;
 		}
+
 		return $result;
 	}
-
-	/**
-	* Invokes a user process
-	*
-	* @param array  $mConfKey: the configuration array of the user process
-	* @param array  $passVar: the array of variables to be passed to the user process
-	* @return array  the updated array of passed variables
-	*/
-	public function userProcess ($mConfKey, &$passVar) {
-
-		if ($this->conf[$mConfKey]) {
-			$funcConf = $this->conf[$mConfKey . '.'];
-			$funcConf['parentObj'] = &$this;
-			$passVar = $GLOBALS['TSFE']->cObj->callUserFunction($this->conf[$mConfKey], $funcConf, $passVar);
-		}
-		return $passVar;
-	}	// userProcess
-
-	/**
-	* Invokes a user process
-	*
-	* @param string  $confVal: the name of the process to be invoked
-	* @param array  $mConfKey: the configuration array of the user process
-	* @param array  $passVar: the array of variables to be passed to the user process
-	* @return array  the updated array of passed variables
-	*/
-	public function userProcess_alt ($confVal, $confArr, $passVar) {
-
-		if ($confVal) {
-			$funcConf = $confArr;
-			$funcConf['parentObj'] = &$this;
-			$passVar = $GLOBALS['TSFE']->cObj->callUserFunction($confVal, $funcConf, $passVar);
-		}
-		return $passVar;
-	}	// userProcess_alt
 }
 
 

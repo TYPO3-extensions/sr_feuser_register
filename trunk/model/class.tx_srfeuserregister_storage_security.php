@@ -82,8 +82,9 @@ class tx_srfeuserregister_storage_security {
     *           boolean FALSE in case of an error
 	*/
 	public function encryptPasswordForStorage ($password) {
+
 		$encryptedPassword = $password;
-		if ($password !== '') {
+		if ($password != '') {
 			switch ($this->getStorageSecurityLevel()) {
 				case 'salted':
 					$objSalt = tx_saltedpasswords_salts_factory::getSaltingInstance(NULL);

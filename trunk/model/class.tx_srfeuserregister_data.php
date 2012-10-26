@@ -41,9 +41,7 @@
  *
  */
 class tx_srfeuserregister_data {
-	public $pibase;
 	public $conf = array();
-	public $config = array();
 	public $lang;
 	public $tca;
 	public $freeCap; // object of type tx_srfreecap_pi2
@@ -68,26 +66,23 @@ class tx_srfeuserregister_data {
 
 
 	public function init (
-		&$pibase,
-		&$conf,
-		&$config,
-		&$lang,
-		&$tca,
-		&$control,
+		$cObj,
+		$conf,
+		$lang,
+		$tca,
+		$control,
 		$theTable,
-		&$controlData
+		$controlData
 	) {
-		$this->pibase = &$pibase;
-		$this->conf = &$conf;
-		$this->config = &$config;
-		$this->lang = &$lang;
-		$this->tca = &$tca;
-		$this->control = &$control;
-		$this->controlData = &$controlData;
-		$this->cObj = &$pibase->cObj;
+		$this->conf = $conf;
+		$this->lang = $lang;
+		$this->tca = $tca;
+		$this->control = $control;
+		$this->controlData = $controlData;
+		$this->cObj = $cObj;
 		$this->fileFunc = t3lib_div::makeInstance('t3lib_basicFileFunctions');
 
-		$captchaExtensions = $this->controlData->getCaptchaExtensions();
+		$captchaExtensions = $controlData->getCaptchaExtensions();
 		if (!empty($captchaExtensions)) {
 			$this->setSpecialFieldList('captcha_response');
 		}
@@ -98,17 +93,17 @@ class tx_srfeuserregister_data {
 		if (isset($fe) && is_array($fe) && $this->controlData->isTokenValid()) {
 			$feDataArray = $fe[$theTable];
 			$bHtmlSpecialChars = FALSE;
-			$this->controlData->secureInput($feDataArray, $bHtmlSpecialChars);
+			$controlData->secureInput($feDataArray, $bHtmlSpecialChars);
 			$this->tca->modifyRow($feDataArray, FALSE);
-			if ($theTable === 'fe_users') {
-				$this->controlData->securePassword($feDataArray);
+			if ($theTable == 'fe_users') {
+				$controlData->securePassword($feDataArray);
 			}
 			$this->setDataArray($feDataArray);
 		}
 
 
 			// Fetching the template file
-		$this->setTemplateCode($this->cObj->fileResource($this->conf['templateFile']));
+		$this->setTemplateCode($cObj->fileResource($conf['templateFile']));
 	}
 
 
@@ -243,11 +238,13 @@ class tx_srfeuserregister_data {
 		return $this->origArr;
 	}
 
+
 	public function bNewAvailable () {
 		$dataArray = $this->getDataArray();
 		$rc = ($dataArray['username'] != '' || $dataArray['email'] != '');
 		return $rc;
 	}
+
 
 	/**
 	* Overrides field values as specified by TS setup
@@ -255,6 +252,8 @@ class tx_srfeuserregister_data {
 	* @return void  all overriding done directly on array $this->dataArray
 	*/
 	public function overrideValues (array &$dataArray, $cmdKey) {
+
+		$cObj = t3lib_div::getUserObj('&tx_div2007_cobj');
 
 		// Addition of overriding values
 		if (is_array($this->conf[$cmdKey . '.']['overrideValues.'])) {
@@ -270,7 +269,7 @@ class tx_srfeuserregister_data {
 				} else {
 					$stdWrap = $this->conf[$cmdKey . '.']['overrideValues.'][$theField.'.'];
 					if ($stdWrap) {
-						$dataValue = $this->cObj->stdWrap($theValue, $stdWrap);
+						$dataValue = $cObj->stdWrap($theValue, $stdWrap);
 					} else if (isset($this->conf[$cmdKey . '.']['overrideValues.'][$theField])) {
 						$dataValue = $this->conf[$cmdKey . '.']['overrideValues.'][$theField];
 					} else {
@@ -396,7 +395,7 @@ class tx_srfeuserregister_data {
 	) {
 		$failureMsg = array();
 		$displayFieldArray = t3lib_div::trimExplode(',', $this->conf[$cmdKey.'.']['fields'], 1);
-		if ($this->controlData->useCaptcha($cmdKey)) {
+		if ($this->controlData->useCaptcha($this->conf, $cmdKey)) {
 			$displayFieldArray = array_merge($displayFieldArray, array('captcha_response'));
 		}
 
@@ -407,7 +406,7 @@ class tx_srfeuserregister_data {
 			$bIsMissing = FALSE;
 
 			if (isset($dataArray[$theField])) {
-				if (empty($dataArray[$theField]) && $dataArray[$theField] !== '0') {
+				if (empty($dataArray[$theField]) && $dataArray[$theField] != '0') {
 					$bIsMissing = TRUE;
 				}
 			} else {
@@ -703,7 +702,7 @@ class tx_srfeuserregister_data {
 									if (
 										$urlParts === FALSE ||
 										!t3lib_div::isValidUrl($dataArray[$theField]) ||
-										($urlParts['scheme'] !== 'http' && $urlParts['scheme'] !== 'https') ||
+										($urlParts['scheme'] != 'http' && $urlParts['scheme'] != 'https') ||
 										$urlParts['user'] ||
 										$urlParts['pass']
 									) {
@@ -875,7 +874,9 @@ class tx_srfeuserregister_data {
 	*
 	* @return void  all parsing done directly on input array $dataArray
 	*/
-	public function parseValues ($theTable, array &$dataArray, array &$origArray, $cmdKey) {
+	public function parseValues ($theTable, array &$dataArray, array $origArray, $cmdKey) {
+
+		$cObj = t3lib_div::getUserObj('&tx_div2007_cobj');
 
 		if (is_array($this->conf['parseValues.'])) {
 
@@ -910,7 +911,7 @@ class tx_srfeuserregister_data {
 							break;
 							case 'lower':
 							case 'upper':
-								$dataValue = $this->cObj->caseshift($dataValue, $theCmd);
+								$dataValue = $cObj->caseshift($dataValue, $theCmd);
 							break;
 							case 'nospace':
 								$dataValue = str_replace(' ', '', $dataValue);
@@ -1161,7 +1162,7 @@ class tx_srfeuserregister_data {
 			case 'password':
 				$theUid = $dataArray['uid'];
 				$rc = $theUid;
-				$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
+				$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 				$aCAuth = $authObj->aCAuth($origArray, $this->conf['setfixed.']['EDIT.']['_FIELDLIST']);
 
 					// Fetch the original record to check permissions
@@ -1231,9 +1232,10 @@ class tx_srfeuserregister_data {
 						$newRow = $this->parseIncomingData($outGoingData);
 						$this->tca->modifyRow($newRow, FALSE);
 						$newRow = array_merge($origArray, $newRow);
-						$this->control->userProcess_alt(
-							$this->conf['edit.']['userFunc_afterSave'],
-							$this->conf['edit.']['userFunc_afterSave.'],
+						tx_div2007_alpha::userProcess_fh001(
+							$this->control,
+							$this->conf['edit.'],
+							'userFunc_afterSave',
 							array('rec' => $newRow, 'origRec' => $origArray)
 						);
 
@@ -1278,7 +1280,7 @@ class tx_srfeuserregister_data {
 							$origArray
 						);
 
-					if ($theTable === 'fe_users') {
+					if ($theTable == 'fe_users') {
 						$parsedArray['password'] = $password;
 					}
 					if (isset($GLOBALS['TCA'][$theTable]['ctrl']['token'])) {
@@ -1345,10 +1347,12 @@ class tx_srfeuserregister_data {
 							// Post-create processing: call user functions and hooks
 						$newRow = $this->parseIncomingData($newRow);
 						$this->tca->modifyRow($newRow, TRUE);
-						$this->control->userProcess_alt(
-							$this->conf['create.']['userFunc_afterSave'],
-							$this->conf['create.']['userFunc_afterSave.'],
-							array('rec' => $newRow)
+
+						tx_div2007_alpha::userProcess_fh001(
+							$this->control,
+							$this->conf['create.'],
+							'userFunc_afterSave',
+							array('rec' => $newRow, 'origRec' => $origArray)
 						);
 
 						// Call all afterSaveCreate hooks after the record has been created and saved
@@ -1379,6 +1383,7 @@ class tx_srfeuserregister_data {
 				}
 			break;
 		}
+
 		return $rc;
 	}	// save
 
@@ -1398,8 +1403,8 @@ class tx_srfeuserregister_data {
 		if ($this->conf['delete']) {
 			// If deleting is enabled
 
-			$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
-			$aCAuth = $authObj->aCAuth($origArray,$this->conf['setfixed.']['DELETE.']['_FIELDLIST']);
+			$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
+			$aCAuth = $authObj->aCAuth($origArray, $this->conf['setfixed.']['DELETE.']['_FIELDLIST']);
 
 			if ($GLOBALS['TSFE']->loginUser || $aCAuth) {
 				// Must be logged in OR be authenticated by the aC code in order to delete
@@ -1675,10 +1680,12 @@ class tx_srfeuserregister_data {
 				}
 			}
 		}
+
 		$inputArr =
-			$this->control->userProcess_alt(
-				$this->conf['userFunc_updateArray'],
-				$this->conf['userFunc_updateArray.'],
+			tx_div2007_alpha::userProcess_fh001(
+				$this->control,
+				$this->conf,
+				'userFunc_updateArray',
 				$inputArr
 			);
 
@@ -1694,6 +1701,7 @@ class tx_srfeuserregister_data {
 
 		return $inputArr;
 	}	// modifyDataArrForFormUpdate
+
 
 	/**
 	* Moves first, middle and last name into name
@@ -1733,6 +1741,7 @@ class tx_srfeuserregister_data {
 		}
 	}
 
+
 	/**
 	* Moves email into username if useEmailAsUsername is set
 	*
@@ -1743,6 +1752,7 @@ class tx_srfeuserregister_data {
 			$dataArray['username'] = trim($dataArray['email']);
 		}
 	}
+
 
 	/**
 	* Transforms incoming timestamps into dates
@@ -1919,7 +1929,6 @@ class tx_srfeuserregister_data {
 				}
 			}
 		}
-
 		return $parsedArray;
 	}	// parseOutgoingData
 
@@ -1953,6 +1962,7 @@ class tx_srfeuserregister_data {
 	public function getInError () {
 		return $this->inError;
 	}
+
 
 	/*
 	 * Sets the index $theField of the incoming data array to empty value depending on type of $theField
@@ -1999,7 +2009,8 @@ class tx_srfeuserregister_data {
 	}
 }
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_data.php'])  {
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_data.php']) {
   include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_data.php']);
 }
 ?>

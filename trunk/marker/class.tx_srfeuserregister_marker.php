@@ -47,9 +47,7 @@ define('SETFIXED_PREFIX', 'SETFIXED_');
 
 
 class tx_srfeuserregister_marker {
-	public $pibase;
 	public $conf = array();
-	public $config = array();
 	public $data;
 	public $control;
 	public $controlData;
@@ -59,17 +57,13 @@ class tx_srfeuserregister_marker {
 	public $previewLabel;
 	public $staticInfo;
 	public $markerArray = array();
-	public $cObj;
 	public $buttonLabelsList;
 	public $otherLabelsList;
 	public $dataArray; // temporary array of data
 	private $urlMarkerArray;
 
-
 	public function init (
-		&$pibase,
-		&$conf,
-		&$config,
+		$confObj,
 		$data,
 		&$tca,
 		$langObj,
@@ -78,15 +72,11 @@ class tx_srfeuserregister_marker {
 		$uid,
 		$token
 	) {
-
-		$this->pibase = &$pibase;
-		$this->conf = &$conf;
-		$this->config = &$config;
-		$this->data = &$data;
-		$this->tca = &$tca;
+		$this->conf = $confObj->getConf();
+		$this->data = $data;
+		$this->tca = $tca;
 		$this->langObj = $langObj;
-		$this->cObj = $pibase->cObj;
-		$this->controlData = &$controlData;
+		$this->controlData = $controlData;
 		$this->urlObj = $urlObj;
 		$theTable = $this->controlData->getTable();
 
@@ -102,7 +92,15 @@ class tx_srfeuserregister_marker {
 		$markerArray['###PREFIXID###'] = $prefixId;
 
 			// Setting URL, HIDDENFIELDS and signature markers
-		$urlMarkerArray = $this->generateURLMarkers($this->controlData->getBackURL(), $uid, $token, $theTable);
+		$urlMarkerArray =
+			$this->generateURLMarkers(
+				$this->controlData->getBackURL(),
+				$uid,
+				$token,
+				$theTable,
+				$extKey,
+				$prefixId
+			);
 		$this->setUrlMarkerArray($urlMarkerArray);
 		$markerArray = array_merge($markerArray, $urlMarkerArray);
 		$this->setArray($markerArray);
@@ -199,8 +197,17 @@ class tx_srfeuserregister_marker {
 
 
 	// enables the usage of {data:<field>}, {tca:<field>} and {meta:<stuff>} in the label markers
-	public function replaceVariables ($matches) {
+	public function replaceVariables (
+		$matches
+	) {
+		$confObj = t3lib_div::getUserObj('&tx_srfeuserregister_conf');
+		$cObj = t3lib_div::getUserObj('&tx_div2007_cobj');
+		$conf = $confObj->getConf();
+		$langObj = t3lib_div::getUserObj('&tx_srfeuserregister_lang');
+		$controlData = t3lib_div::getUserObj('&tx_srfeuserregister_controldata');
+
 		$rc = '';
+
 		switch ($matches[1]) {
 			case 'data':
 				$dataArray = $this->getReplaceData();
@@ -212,20 +219,21 @@ class tx_srfeuserregister_marker {
 					$this->tmpTcaMarkers = array();
 					$dataArray = $this->getReplaceData();
 					$row = $dataArray['row'];
-					$cmd = $this->controlData->getCmd();
-					$cmdKey = $this->controlData->getCmdKey();
-					$theTable = $this->controlData->getTable();
+					$cmd = $controlData->getCmd();
+					$cmdKey = $controlData->getCmdKey();
+					$theTable = $controlData->getTable();
 					$this->tca->addTcaMarkers(
 						$this->tmpTcaMarkers,
-						$this->cObj,
-						$this->langObj,
-						$this->controlData,
+						$conf,
+						$cObj,
+						$langObj,
+						$controlData,
 						$row,
 						$this->data->getOrigArray(),
 						$cmd,
 						$cmdKey,
 						$theTable,
-						$this->pibase->prefixId,
+						$controlData->getPrefixId(),
 						TRUE,
 						'',
 						FALSE
@@ -235,7 +243,7 @@ class tx_srfeuserregister_marker {
 			break;
 			case 'meta':
 				if ($matches[2] == 'title') {
-					$rc = $this->controlData->getPidTitle();
+					$rc = $controlData->getPidTitle();
 				}
 			break;
 		}
@@ -298,6 +306,9 @@ class tx_srfeuserregister_marker {
 	*/
 	public function addLabelMarkers (
 		&$markerArray,
+		$conf,
+		$cObj,
+		$extKey,
 		$theTable,
 		$row,
 		$origRow,
@@ -308,7 +319,6 @@ class tx_srfeuserregister_marker {
 		&$tcaColumns,
 		$bChangesOnly = FALSE
 	) {
-
 		$formUrlMarkerArray = $this->generateFormURLMarkers();
 		$urlMarkerArray = $this->getUrlMarkerArray();
 		$formUrlMarkerArray = array_merge($urlMarkerArray, $formUrlMarkerArray);
@@ -334,7 +344,7 @@ class tx_srfeuserregister_marker {
 		}
 
 		foreach($infoFieldArray as $theField) {
-			$markerkey = $this->cObj->caseshift($theField, 'upper');
+			$markerkey = $cObj->caseshift($theField, 'upper');
 			$bValueChanged = FALSE;
 
 			if (isset($row[$theField]) && isset($origRow[$theField])) {
@@ -384,9 +394,9 @@ class tx_srfeuserregister_marker {
 				$markerArray['###FIELD_' . $markerkey . '_CHECKED###'] = ($row[$theField]) ? 'checked' : '';
 				$markerArray['###LABEL_' . $markerkey . '_CHECKED###'] = ($row[$theField]) ? $this->langObj->getLL('yes') : $this->langObj->getLL('no');
 			}
-			if (in_array(trim($theField), $requiredArray)) {
 
-				$markerArray['###REQUIRED_' . $markerkey . '###'] = $this->cObj->cObjGetSingle($this->conf['displayRequired'], $this->conf['displayRequired.'], $this->pibase->extKey); // default: '<span>*</span>';
+			if (in_array(trim($theField), $requiredArray)) {
+				$markerArray['###REQUIRED_' . $markerkey . '###'] = $cObj->cObjGetSingle($conf['displayRequired'], $conf['displayRequired.'], $extKey); // default: '<span>*</span>';
 				$key = 'missing_' . $theField;
 				$label = $this->langObj->getLL($key);
 				if ($label == '') {
@@ -412,27 +422,27 @@ class tx_srfeuserregister_marker {
 				$attributes = '';
 
 				if (
-					isset($this->conf['button.'])
-					&& isset($this->conf['button.'][$buttonKey . '.'])
-					&& isset($this->conf['button.'][$buttonKey . '.']['attribute.'])
+					isset($conf['button.'])
+					&& isset($conf['button.'][$buttonKey . '.'])
+					&& isset($conf['button.'][$buttonKey . '.']['attribute.'])
 				)	{
 					$attributesArray = array();
-					foreach ($this->conf['button.'][$buttonKey . '.']['attribute.'] as $key => $value) {
+					foreach ($conf['button.'][$buttonKey . '.']['attribute.'] as $key => $value) {
 						$attributesArray[] = $key . '="' . $value . '"';
 					}
 					$attributes = implode(' ', $attributesArray);
-					$attributes = $this->cObj->substituteMarkerArray($attributes, $formUrlMarkerArray);
+					$attributes = $cObj->substituteMarkerArray($attributes, $formUrlMarkerArray);
 				}
 				$markerArray['###ATTRIBUTE_BUTTON_' . $buttonKey . '###'] = $attributes;
 			}
 		}
 			// Assemble the name to be substituted in the labels
 		$name = '';
-		if ($this->conf['salutation'] == 'informal' && $row['first_name'] != '') {
+		if ($conf['salutation'] == 'informal' && $row['first_name'] != '') {
 			$name = $row['first_name'];
 		} else {
 				// Honour Address List (tt_address) configuration settings
-			if ($theTable === 'tt_address' && t3lib_extMgm::isLoaded('tt_address') && isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address'])) {
+			if ($theTable == 'tt_address' && t3lib_extMgm::isLoaded('tt_address') && isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address'])) {
 				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address']);
 				if (is_array($extConf)) {
 					$nameFormat = '';
@@ -468,8 +478,8 @@ class tx_srfeuserregister_marker {
 		$this->tmpTcaMarkers = NULL; // reset function replaceVariables
 		$otherLabelsList = $this->getOtherLabelsList();
 
-		if (isset($this->conf['extraLabels']) && $this->conf['extraLabels'] != '') {
-			$otherLabelsList .= ',' . $this->conf['extraLabels'];
+		if (isset($conf['extraLabels']) && $conf['extraLabels'] != '') {
+			$otherLabelsList .= ',' . $conf['extraLabels'];
 		}
 		$otherLabels = t3lib_div::trimExplode(',', $otherLabelsList, 1);
 		$dataArray = array();
@@ -501,8 +511,8 @@ class tx_srfeuserregister_marker {
 					// No clear-text password
 				''
 			);
-			$label = preg_replace_callback('/{([a-z_]+):([a-zA-Z0-9_]+)}/', array(&$this, 'replaceVariables'), $label);
-			$markerkey = $this->cObj->caseshift($value, 'upper');
+			$label = preg_replace_callback('/{([a-z_]+):([a-zA-Z0-9_]+)}/', array($this, 'replaceVariables'), $label);
+			$markerkey = $cObj->caseshift($value, 'upper');
 			$markerArray['###LABEL_' . $markerkey . '###'] = $label;
 		}
 	}	// addLabelMarkers
@@ -524,10 +534,16 @@ class tx_srfeuserregister_marker {
 	* @param string auth code
 	* @return void
 	*/
-	public function generateURLMarkers ($backUrl, $uid, $token, $theTable) {
-
+	public function generateURLMarkers (
+		$backUrl,
+		$uid,
+		$token,
+		$theTable,
+		$extKey,
+		$prefixId
+	) {
 		$markerArray = array();
-		$this->checkToken($token);
+		$this->checkToken($token, $extKey);
 		$vars = array();
 		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,rU,aC,sFK,doNotSave,preview';
 		$unsetVars = t3lib_div::trimExplode(',', $unsetVarsList);
@@ -538,7 +554,8 @@ class tx_srfeuserregister_marker {
 
 		unset($unsetVars['cmd']);
 		$markerArray['###FORM_URL###'] = $formUrl;
-		$form = $this->pibase->pi_getClassName($theTable . '_form');
+		$form = tx_div2007_alpha5::getClassName_fh001($theTable . '_form', $prefixId);
+
 		$markerArray['###FORM_NAME###'] = $form; // $this->conf['formName'];
 
 		$ac = $this->controlData->getFeUserData('aC');
@@ -636,19 +653,28 @@ class tx_srfeuserregister_marker {
 	* @param string auth code
 	* @return void
 	*/
-	public function addGeneralHiddenFieldsMarkers (&$markerArray, $cmd, $token) {
-
+	public function addGeneralHiddenFieldsMarkers (
+		&$markerArray,
+		$cmd,
+		$token
+	) {
 		$localMarkerArray = array();
-		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
+		$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 		$authCode = $authObj->getAuthCode();
 
-		$prefixId = $this->controlData->getPrefixId();
 		$backUrl = $this->controlData->getBackURL();
+		$extKey = $this->controlData->getExtKey();
+		$prefixId = $this->controlData->getPrefixId();
 
 		$localMarkerArray['###HIDDENFIELDS###'] = $markerArray['###HIDDENFIELDS###'] . ($cmd ? '<input type="hidden" name="' . $prefixId . '[cmd]" value="' . $cmd . '" />':'');
 		$localMarkerArray['###HIDDENFIELDS###'] .= chr(10) . ($authCode?'<input type="hidden" name="' . $prefixId . '[aC]" value="' . $authCode . '" />':'');
 		$localMarkerArray['###HIDDENFIELDS###'] .= chr(10) . ($backUrl?'<input type="hidden" name="' . $prefixId . '[backURL]" value="' . htmlspecialchars($backUrl) . '" />':'');
-		$this->addFormToken($localMarkerArray, $token);
+		$this->addFormToken(
+			$localMarkerArray,
+			$token,
+			$extKey,
+			$prefixId
+		);
 
 		$markerArray = array_merge($markerArray, $localMarkerArray);
 	}
@@ -660,7 +686,12 @@ class tx_srfeuserregister_marker {
 	* @param array  $row: the table record
 	* @return void
 	*/
-	public function addStaticInfoMarkers (&$markerArray, $row = '', $viewOnly = FALSE) {
+	public function addStaticInfoMarkers (
+		&$markerArray,
+		$prefixId,
+		$row = '',
+		$viewOnly = FALSE
+	) {
 		if (!$markerArray) {
 			$markerArray = $this->getArray();
 		}
@@ -676,11 +707,11 @@ class tx_srfeuserregister_marker {
 				}
 				$markerArray['###FIELD_language###'] = $this->staticInfo->getStaticInfoName('LANGUAGES',  is_array($row) ? $row['language'] : '');
 			} else {
-				$idCountry = $this->pibase->pi_getClassName('static_info_country');
+				$idCountry = tx_div2007_alpha5::getClassName_fh001('static_info_country', $prefixId);
 				$titleCountry = $this->langObj->getLL('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'static_info_country');
-				$idZone = $this->pibase->pi_getClassName('zone');
+				$idZone = tx_div2007_alpha5::getClassName_fh001('zone', $prefixId);
 				$titleZone = $this->langObj->getLL('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'zone');
-				$idLanguage = $this->pibase->pi_getClassName('language');
+				$idLanguage = tx_div2007_alpha5::getClassName_fh001('language', $prefixId);
 				$titleLanguage = $this->langObj->getLL('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'language');
 				$selected = (is_array($row) && isset($row['static_info_country']) ? $row['static_info_country'] : array());
 				$where = '';
@@ -771,7 +802,7 @@ class tx_srfeuserregister_marker {
 		$cmd,
 		$cmdKey,
 		$filenameArray,
-		$prefix,
+		$prefixId,
 		$viewOnly = FALSE,
 		$activity = '',
 		$bHtml = TRUE
@@ -796,17 +827,29 @@ class tx_srfeuserregister_marker {
 						$HTMLContent .= chr(13) . chr(10);
 					}
 				} else if ($bHtml) {
-					$HTMLContent .= '<a href="' . $dir . '/' . $filenameArray[$i] . '"' . $this->pibase->pi_classParam('file-view') . ' target="_blank" title="' . $this->langObj->getLL('file_view') . '">' . $this->langObj->getLL('file_view') . '</a><br />';
+					$HTMLContent .= '<a href="' . $dir . '/' . $filenameArray[$i] . '"' .
+					tx_div2007_alpha5::classParam_fh001('file-view', '', $prefixId) .
+					' target="_blank" title="' . $this->langObj->getLL('file_view') . '">' . $this->langObj->getLL('file_view') . '</a><br />';
 				}
 			}
 		} else {
 			for($i = 0; $i < sizeof($filenameArray); $i++) {
-				$HTMLContent .= $filenameArray[$i] . '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="' . $prefix . '[' . $theField . '][' . $i . '][submit_delete]" value="1" title="' . $this->langObj->getLL('icon_delete') . '" alt="' . $this->langObj->getLL('icon_delete') . '"' . $this->pibase->pi_classParam('delete-icon') . ' onclick=\'if(confirm("' . $this->langObj->getLL('confirm_file_delete') . '")) return true; else return false;\' />'
-					. '<a href="' . $dir . '/' . $filenameArray[$i] . '" ' . $this->pibase->pi_classParam('file-view') . ' target="_blank" title="' . $this->langObj->getLL('file_view') . '">' . $this->langObj->getLL('file_view') . '</a><br />';
-				$HTMLContent .= '<input type="hidden" name="' . $prefix . '[' . $theField . '][' . $i . '][name]' . '" value="' . $filenameArray[$i] . '" />';
+				$HTMLContent .=
+					$filenameArray[$i] . '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="' . $prefixId . '[' . $theField . '][' . $i . '][submit_delete]" value="1" title="' . $this->langObj->getLL('icon_delete') . '" alt="' . $this->langObj->getLL('icon_delete') . '"' .
+					tx_div2007_alpha5::classParam_fh001('delete-view', '', $prefixId) .
+					' onclick=\'if(confirm("' . $this->langObj->getLL('confirm_file_delete') . '")) return true; else return false;\' />'
+					. '<a href="' . $dir . '/' . $filenameArray[$i] . '" ' .
+					tx_div2007_alpha5::classParam_fh001('file-view', '', $prefixId) .
+					' target="_blank" title="' . $this->langObj->getLL('file_view') . '">' .
+					$this->langObj->getLL('file_view') . '</a><br />';
+				$HTMLContent .= '<input type="hidden" name="' . $prefixId . '[' . $theField . '][' . $i . '][name]' . '" value="' . $filenameArray[$i] . '" />';
 			}
 			for ($i = sizeof($filenameArray); $i < $number + sizeof($filenameArray); $i++) {
-				$HTMLContent .= '<input id="' . $this->pibase->pi_getClassName($theField) . '-' . ($i-sizeof($filenameArray)) . '" name="' . $prefix . '[' . $theField . '][' . $i . ']" title="' . $this->langObj->getLL('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'image') . '" size="40" type="file" ' . $this->pibase->pi_classParam('uploader') . ' /><br />';
+				$HTMLContent .= '<input id="' .
+				tx_div2007_alpha5::getClassName_fh001($theField, $prefixId) .
+				'-' . ($i-sizeof($filenameArray)) . '" name="' . $prefixId . '[' . $theField . '][' . $i . ']" title="' . $this->langObj->getLL('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'image') . '" size="40" type="file" ' .
+				tx_div2007_alpha5::classParam_fh001('uploader-view', '', $prefixId) .
+				' /><br />';
 			}
 		}
 		return $HTMLContent;
@@ -874,7 +917,7 @@ class tx_srfeuserregister_marker {
 	}	// addFileUploadMarkers
 
 
-	public function checkToken ($token) {
+	public function checkToken ($token, $extKey) {
 		$tokenError = '';
 		if ($token == '') {
 			$tokenError = $this->langObj->getLL('internal_token_empty');
@@ -883,7 +926,7 @@ class tx_srfeuserregister_marker {
 		}
 
 		if ($tokenError != '') {
-			exit($this->pibase->extKey . ': ' . $tokenError);
+			exit($extKey . ': ' . $tokenError);
 		}
 	}
 
@@ -893,10 +936,13 @@ class tx_srfeuserregister_marker {
 	*
 	* @param array  $markerArray: the token is added to the '###HIDDENFIELDS###' marker
 	*/
-	public function addFormToken (&$markerArray, $token) {
-
-		$this->checkToken($token);
-		$prefixId = $this->controlData->getPrefixId();
+	public function addFormToken (
+		&$markerArray,
+		$token,
+		$extKey,
+		$prefixId
+	) {
+		$this->checkToken($token, $extKey);
 
 		$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="' . $prefixId . '[token]" value="' . $token . '" />';
 	}
@@ -913,6 +959,7 @@ class tx_srfeuserregister_marker {
 			$markerArray = $this->getArray();
 		}
 		$theTable = $this->controlData->getTable();
+		$extKey = $this->controlData->getExtKey();
 		$prefixId = $this->controlData->getPrefixId();
 
 		if ($this->conf[$cmdKey.'.']['preview'] && $mode != MODE_PREVIEW) {
@@ -955,8 +1002,8 @@ class tx_srfeuserregister_marker {
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $theTable . '][' . $theField . ']" value="' . $value . '" />';
 			}
 		} else if (
-				($theTable === 'fe_users') &&
-				($cmdKey === 'edit' || $cmdKey === 'password') &&
+				($theTable == 'fe_users') &&
+				($cmdKey == 'edit' || $cmdKey == 'password') &&
 				!in_array('email', $fieldArray) &&
 				!in_array('username', $fieldArray)
 			) {
@@ -966,7 +1013,12 @@ class tx_srfeuserregister_marker {
 			$markerArray['###HIDDENFIELDS###'] .= LF . '<input type="hidden" name="FE[' . $theTable . '][' . $theField . ']" value="' . $value . '" />';
 		}
 
-		$this->addFormToken($markerArray, $token);
+		$this->addFormToken(
+			$markerArray,
+			$token,
+			$extKey,
+			$prefixId
+		);
 	}	// addHiddenFieldsMarkers
 
 
@@ -982,17 +1034,19 @@ class tx_srfeuserregister_marker {
 		&$markerArray,
 		$viewOnly = FALSE
 	) {
+		$cObj = t3lib_div::getUserObj('&tx_div2007_cobj');
+
 		if (!$markerArray) {
 			$markerArray = $this->getArray();
 		}
 
 		if ($this->controlData->getMode() == MODE_PREVIEW || $viewOnly) {
 			if (!$markerArray['###FIELD_zone###']) {
-				return $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_zone###', '');
+				return $cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_zone###', '');
 			}
 		} else {
 			if (!$markerArray['###SELECTOR_ZONE###']) {
-				return $this->cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_zone###', '');
+				return $cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_zone###', '');
 			}
 		}
 		return $templateCode;
@@ -1078,7 +1132,7 @@ class tx_srfeuserregister_marker {
 	public function checkDeprecatedMarkers ($templateCode, $extKey, $fileName) {
 		$messages = array();
 			// These changes apply only to sr_feuser_register
-		if ($extKey === 'sr_feuser_register') {
+		if ($extKey == 'sr_feuser_register') {
 				// Version 3: no clear-text passwords in templates
 				// Remove any ###FIELD_password###, ###FIELD_password_again### markers
 				// Remove markers ###TEMPLATE_INFOMAIL###, ###TEMPLATE_INFOMAIL_SENT### and ###EMAIL_TEMPLATE_INFOMAIL###
@@ -1126,6 +1180,7 @@ class tx_srfeuserregister_marker {
 		return $messages;
 	}
 }
+
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/marker/class.tx_srfeuserregister_marker.php']) {
   include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/marker/class.tx_srfeuserregister_marker.php']);
 }

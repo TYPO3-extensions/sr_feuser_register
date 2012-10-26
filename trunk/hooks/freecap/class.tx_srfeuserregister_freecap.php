@@ -22,7 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 if (t3lib_extMgm::isLoaded('sr_freecap')) {
-	require_once(t3lib_extMgm::extPath('sr_freecap').'pi2/class.tx_srfreecap_pi2.php');
+	require_once(t3lib_extMgm::extPath('sr_freecap') . 'pi2/class.tx_srfreecap_pi2.php');
 }
 /**
  * Hook for captcha image marker when extension 'fsr_freecap' is used
@@ -62,7 +62,7 @@ class tx_srfeuserregister_freecap {
 			// Must be set to FALSE if it is not a test
 		$test = FALSE;
 		if (
-			trim($cmdParts[0]) === 'freecap' &&
+			trim($cmdParts[0]) == 'freecap' &&
 			t3lib_extMgm::isLoaded('sr_freecap') &&
 			isset($dataArray[$theField])
 		) {
@@ -85,6 +85,7 @@ class tx_srfeuserregister_freecap {
 		return $errorField;
 	}
 }
+
 if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/' . SR_FEUSER_REGISTER_EXTkey . '/hooks/freecap/class.tx_srfeuserregister_freecap.php'])) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/' . SR_FEUSER_REGISTER_EXTkey . '/hooks/freecap/class.tx_srfeuserregister_freecap.php']);
 }
