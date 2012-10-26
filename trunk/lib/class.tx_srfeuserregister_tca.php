@@ -41,7 +41,7 @@
  *
  */
 
-
+//
 
 class tx_srfeuserregister_tca {
 	public $TCA = array();
@@ -71,11 +71,9 @@ class tx_srfeuserregister_tca {
 		$this->controlData = $controlData;
 	}
 
-
 	public function getTCA () {
 		return $this->TCA;
 	}
-
 
 	/**
 	 * Fix contents of $GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList']
@@ -93,7 +91,6 @@ class tx_srfeuserregister_tca {
 		}
 	}
 
-
 	public function getForeignTable ($colName) {
 
 		$result = FALSE;
@@ -110,7 +107,6 @@ class tx_srfeuserregister_tca {
 		}
 		return $result;
 	}
-
 
 	/**
 	* Adds the fields coming from other tables via MM tables
@@ -247,7 +243,6 @@ class tx_srfeuserregister_tca {
 		}
 	} // modifyRow
 
-
 	/**
 	* Replaces the markers in the foreign table where clause
 	*
@@ -288,7 +283,6 @@ class tx_srfeuserregister_tca {
 
 		return $whereClause;
 	}
-
 
 	/**
 	* Adds form element markers from the Table Configuration Array to a marker array
@@ -498,6 +492,7 @@ class tx_srfeuserregister_tca {
 									$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',', $mrow[$colName]);
 									$textSchema = $theTable . '.' . $colName . '.I.';
 									$itemArray = $langObj->getItemsLL($textSchema, TRUE);
+
 									if (!count($itemArray)) {
 										if ($colConfig['itemsProcFunc']) {
 											$itemArray = t3lib_div::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this, '');
@@ -584,7 +579,12 @@ class tx_srfeuserregister_tca {
 								$bUseTCA = FALSE;
 								if (!count($itemArray))	{
 									if (in_array($type, array('radio', 'select')) && $colConfig['itemsProcFunc']) {
-										$itemArray = t3lib_div::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this, '');
+										$itemArray = t3lib_div::callUserFunction(
+											$colConfig['itemsProcFunc'],
+											$colConfig,
+											$this,
+											''
+										);
 									}
 									$itemArray = $colConfig['items'];
 									$bUseTCA = TRUE;

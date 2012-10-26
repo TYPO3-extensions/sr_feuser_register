@@ -95,12 +95,12 @@ class tx_srfeuserregister_data {
 			$bHtmlSpecialChars = FALSE;
 			$controlData->secureInput($feDataArray, $bHtmlSpecialChars);
 			$this->tca->modifyRow($feDataArray, FALSE);
+
 			if ($theTable == 'fe_users') {
 				$controlData->securePassword($feDataArray);
 			}
 			$this->setDataArray($feDataArray);
 		}
-
 
 			// Fetching the template file
 		$this->setTemplateCode($cObj->fileResource($conf['templateFile']));
@@ -130,6 +130,8 @@ class tx_srfeuserregister_data {
 	public function getTemplateCode () {
 		return $this->templateCode;
 	}
+
+
 	/*
 	 * Sets the source code of the HTML template
 	 *
@@ -214,12 +216,13 @@ class tx_srfeuserregister_data {
 	}
 
 
-	public function getDataArray ($k=0) {
-		if ($k)	{
+	public function getDataArray ($k = 0) {
+		if ($k) {
 			$rc = $this->dataArray[$k];
 		} else {
 			$rc = $this->dataArray;
 		}
+
 		return $rc;
 	}
 

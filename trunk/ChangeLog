@@ -1,3 +1,6 @@
+2012-10-26 Franz Holzinger  <franz@ttproducts.de>
+	* replace auto_login_key from dataArray into its own variable
+
 2012-10-22 Franz Holzinger  <franz@ttproducts.de>
 	* restructuring
 

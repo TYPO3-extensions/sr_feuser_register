@@ -140,6 +140,7 @@ class tx_srfeuserregister_controldata {
 		$feUserData = t3lib_div::_GP($prefixId);
 		$bSecureStartCmd = (count($feUserData) == 1 && in_array($feUserData['cmd'], array('create', 'edit', 'password')));
 		$bValidRegHash = FALSE;
+
 		if ($conf['useShortUrls']) {
 			$this->cleanShortUrlCache();
 			if (isset($feUserData) && is_array($feUserData)) {
@@ -153,6 +154,7 @@ class tx_srfeuserregister_controldata {
 					$regHash = $getData['regHash'];
 				}
 			}
+
 				// Check and process for short URL if the regHash GET parameter exists
 			if ($regHash) {
 				$getVars = $this->getShortUrl($regHash);
@@ -193,6 +195,7 @@ class tx_srfeuserregister_controldata {
 		if (isset($feUserData) && is_array($feUserData)) {
 			$this->setFeUserData($feUserData);
 		}
+
 			// Establishing compatibility with Direct Mail extension
 		$piVarArray = array('rU', 'aC', 'cmd', 'sFK');
 		foreach ($piVarArray as $pivar) {
