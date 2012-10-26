@@ -41,9 +41,9 @@ class tx_srfeuserregister_lib_tables {
 	public $tableClassArray = array();
 	public $tablename;
 
-	public function init($tablename) {
+	public function init ($tablename) {
 
-		$this->tablename = &$tablename;
+		$this->tablename = $tablename;
 		if ($tablename == 'fe_users') {
 			$this->tableClassArray['address'] = 'tx_srfeuserregister_model_feusers';
 		} else {
@@ -51,11 +51,11 @@ class tx_srfeuserregister_lib_tables {
 		}
 	}	// init
 
-	public function getTableClassArray() {
+	public function getTableClassArray () {
 		return $this->tableClassArray;
 	}
 
-	public function setTableClassArray($tableClassArray) {
+	public function setTableClassArray ($tableClassArray) {
 		$this->tableClassArray = $tableClassArray;
 	}
 
@@ -67,7 +67,7 @@ class tx_srfeuserregister_lib_tables {
 		return $rc;
 	}
 
-	public function &get($functablename, $bView = FALSE) {
+	public function get ($functablename, $bView = FALSE) {
 		$classNameArray = array();
 		$tableObjArray = array();
 

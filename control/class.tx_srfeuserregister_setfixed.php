@@ -73,6 +73,9 @@ class tx_srfeuserregister_setfixed {
 	* @param array $cObj: the cObject
 	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
+	* @param string $theTable: the table in use
+	* @param array $autoLoginKey: the auto-login key
+	* @param string $prefixId: the extension prefix id
 	* @param array  Array with key/values being marker-strings/substitution values.
 	* @return string  the template with substituted markers
 	*/
@@ -82,22 +85,24 @@ class tx_srfeuserregister_setfixed {
 		$langObj,
 		$controlData,
 		$theTable,
+		$autoLoginKey,
 		$prefixId,
 		$uid,
 		$cmdKey,
-		&$markerArray,
-		&$templateCode,
-		&$dataArray,
-		&$origArray,
+		$markerArray,
+		$templateCode,
+		$dataArray,
+		$origArray,
 		$securedArray,
 		$pObj,
 		$dataObj,
-		&$feuData,
+		$feuData,
 		$token
 	) {
 		$row = $origArray;
 
 		if ($controlData->getSetfixedEnabled()) {
+			$autoLoginIsRequested = FALSE;
 			$origUsergroup = $row['usergroup'];
 			$setfixedUsergroup = '';
 			$setfixedSuffix = $sFK = $feuData['sFK'];
@@ -114,10 +119,16 @@ class tx_srfeuserregister_setfixed {
 				}
 			}
 
+			$autoLoginKey = '';
 			if ($theTable == 'fe_users') {
+
 					// Determine if auto-login is requested
 				$autoLoginIsRequested =
-					$controlData->getStorageSecurity()->getAutoLoginIsRequested($feuData, $row);
+					$controlData->getStorageSecurity()
+						->getAutoLoginIsRequested(
+							$feuData,
+							$autoLoginKey
+						);
 			}
 
 			$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
@@ -220,7 +231,7 @@ class tx_srfeuserregister_setfixed {
 							t3lib_div::trimExplode(',', $conf['unsubscribeAllowedFields'], 1)
 						));
 					}
-					if ($sFK !== 'ENTER' && $newFieldList != '') {
+					if ($sFK != 'ENTER' && $newFieldList != '') {
 						$res = $cObj->DBgetUpdate(
 							$theTable,
 							$uid,
@@ -230,9 +241,16 @@ class tx_srfeuserregister_setfixed {
 						);
 					}
 					$currArr = $origArray;
-					$controlData->getStorageSecurity()->decryptPasswordForAutoLogin($currArr, $row);
+					if ($autoLoginIsRequested) {
+						$controlData->getStorageSecurity()
+							->decryptPasswordForAutoLogin(
+								$currArr['tx_srfeuserregister_password'],
+								$autoLoginKey
+							);
+					}
 					$modArray = array();
 					$currArr = $this->tca->modifyTcaMMfields($currArr, $modArray);
+
 					$row = array_merge($row, $modArray);
 					tx_div2007_alpha::userProcess_fh001(
 						$pObj,
@@ -280,6 +298,7 @@ class tx_srfeuserregister_setfixed {
 								$currArr,
 								FALSE
 							);
+
 						if ($loginSuccess) {
 							$content =
 								$this->display->editScreen(
@@ -316,6 +335,7 @@ class tx_srfeuserregister_setfixed {
 								);
 						}
 					}
+
 					if (
 						$conf['enableAdminReview'] &&
 						$sFK == 'APPROVE'
@@ -360,7 +380,9 @@ class tx_srfeuserregister_setfixed {
 					}
 
 					if (
-						($conf['email.']['SETFIXED_REFUSE'] || $conf['enableEmailConfirmation'] || $conf['infomail'])
+						$conf['email.']['SETFIXED_REFUSE'] ||
+						$conf['enableEmailConfirmation'] ||
+						$conf['infomail']
 					) {
 						$errorCode = '';
 							// Compiling email
@@ -371,6 +393,7 @@ class tx_srfeuserregister_setfixed {
 							$langObj,
 							$controlData,
 							$theTable,
+							$autoLoginKey,
 							$prefixId,
 							array($row),
 							array($origArray),
@@ -395,7 +418,11 @@ class tx_srfeuserregister_setfixed {
 						$content = $errorContent;
 					} else if ($theTable == 'fe_users') {
 							// If applicable, send admin a request to review the registration request
-						if ($conf['enableAdminReview'] && $sFK == 'APPROVE' && !$row['by_invitation']) {
+						if (
+							$conf['enableAdminReview'] &&
+							$sFK == 'APPROVE' &&
+							!$row['by_invitation']
+						) {
 							$errorCode = '';
 							$errorContent = $this->email->compile(
 								SETFIXED_PREFIX . 'REVIEW',
@@ -404,6 +431,7 @@ class tx_srfeuserregister_setfixed {
 								$langObj,
 								$controlData,
 								$theTable,
+								$autoLoginKey,
 								$prefixId,
 								array($row),
 								array($origArray),
@@ -438,6 +466,7 @@ class tx_srfeuserregister_setfixed {
 									$controlData,
 									$currArr
 								);
+
 							if ($loginSuccess) {
 									// Login was successful
 								exit;
@@ -487,6 +516,7 @@ class tx_srfeuserregister_setfixed {
 	* @param array  $setfixed: the TS setup setfixed configuration
 	* @param array  $r: the record row
 	* @param array $controlData: the object of the control data
+	* @param array $autoLoginKey: the auto-login key
 	* @return void
 	*/
 	public function computeUrl (
@@ -497,7 +527,10 @@ class tx_srfeuserregister_setfixed {
 		&$markerArray,
 		$setfixed,
 		$r,
-		$theTable
+		$theTable,
+		$useShortUrls,
+		$editSetfixed,
+		$autoLoginKey
 	) {
 		if ($controlData->getSetfixedEnabled() && is_array($setfixed) ) {
 			$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
@@ -529,11 +562,15 @@ class tx_srfeuserregister_setfixed {
 
 				if ($noFeusersEdit) {
 					$cmd = $pidCmd = 'edit';
-					if( $conf['edit.']['setfixed'] ) {
+					if($editSetfixed) {
 						$bSetfixedHash = TRUE;
 					} else {
 						$bSetfixedHash = FALSE;
-						$setfixedpiVars[$prefixId . '%5BaC%5D'] = $authObj->authCode($r, $fieldList);
+						$setfixedpiVars[$prefixId . '%5BaC%5D'] =
+							$authObj->authCode(
+								$r,
+								$fieldList
+							);
 					}
 				} else {
 					$cmd = 'setfixed';
@@ -541,8 +578,11 @@ class tx_srfeuserregister_setfixed {
 					$setfixedpiVars[$prefixId . '%5BsFK%5D'] = $theKey;
 					$bSetfixedHash = TRUE;
 
-					if (isset($r['auto_login_key'])) {
-						$setfixedpiVars[$prefixId . '%5Bkey%5D'] = $r['auto_login_key'];
+					if (
+						$useShortUrls &&
+						$autoLoginKey != ''
+					) {
+						$setfixedpiVars[$prefixId . '%5Bkey%5D'] = $autoLoginKey;
 					}
 				}
 
@@ -562,7 +602,7 @@ class tx_srfeuserregister_setfixed {
 					$setfixedpiVars['L'] = t3lib_div::_GP('L');
 				}
 
-				if ($conf['useShortUrls']) {
+				if ($useShortUrls) {
 					$thisHash = $this->storeFixedPiVars($setfixedpiVars);
 					$setfixedpiVars = array($prefixId . '%5BregHash%5D' => $thisHash);
 				}
@@ -597,6 +637,7 @@ class tx_srfeuserregister_setfixed {
 	 *  Store the setfixed vars and return a replacement hash
 	 */
 	public function storeFixedPiVars ($vars) {
+
 			// Create a unique hash value
 		if (class_exists('t3lib_cacheHash')) {
 			$cacheHash = t3lib_div::makeInstance('t3lib_cacheHash');
@@ -633,6 +674,7 @@ class tx_srfeuserregister_setfixed {
 			);
 		}
 		$GLOBALS['TYPO3_DB']->sql_free_result($res);
+
 		return $regHash_calc;
 	}
 }

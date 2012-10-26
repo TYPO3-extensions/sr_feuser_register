@@ -1052,6 +1052,9 @@ class tx_srfeuserregister_display {
 	*
 	* @param array $cObj: the cObject
 	* @param array $langObj: the language object
+	* @param array $controlData: the object of the control data
+	* @param string $theTable: the table in use
+	* @param array $autoLoginKey: the auto-login key
 	* @param string  $subpartMarker: the template subpart marker
 	* @param array  $row: the data array, if any
 	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
@@ -1063,6 +1066,7 @@ class tx_srfeuserregister_display {
 		$langObj,
 		$controlData,
 		$theTable,
+		$autoLoginKey,
 		$prefixId,
 		$dataArray,
 		$origArray,
@@ -1156,7 +1160,10 @@ class tx_srfeuserregister_display {
 						$markerArray,
 						$conf['setfixed.'],
 						$dataArray,
-						$theTable
+						$theTable,
+						$conf['useShortUrls'],
+						$conf['edit.']['setfixed'],
+						$autoLoginKey
 					);
 				}
 			}

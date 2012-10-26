@@ -118,7 +118,7 @@ class tx_srfeuserregister_control {
 		$dataArray = $this->data->getDataArray();
 		$feUserdata = $controlData->getFeUserData();
 
-		$theUid = ($dataArray['uid'] ? $dataArray['uid'] : ($feUserdata['rU'] ? $feUserdata['rU'] : (!in_array($cmd,$this->noLoginCommands) ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0 )));
+		$theUid = ($dataArray['uid'] ? $dataArray['uid'] : ($feUserdata['rU'] ? $feUserdata['rU'] : (!in_array($cmd, $this->noLoginCommands) ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0 )));
 
 		if ($theUid) {
 			$this->data->setRecUid($theUid);
@@ -131,6 +131,7 @@ class tx_srfeuserregister_control {
 		}
 			// Set the command key
 		$cmdKey = '';
+
 		if ($cmd == 'edit' || $cmd == 'invite' || $cmd == 'password' || $cmd == 'infomail') {
 			$cmdKey = $cmd;
 		} else {
@@ -308,10 +309,14 @@ class tx_srfeuserregister_control {
 		$prefixId = $controlData->getPrefixId();
 		$controlData->setMode(MODE_NORMAL);
 
+		$password = '';
+		$cryptedPassword = '';
+		$autoLoginKey = '';
+
 			// Commands with which the data will not be saved by $this->data->save
 		$noSaveCommands = array('infomail', 'login', 'delete');
-
 		$uid = $this->data->getRecUid();
+
 		$securedArray = array();
 			// Check for valid token
 		if (
@@ -363,6 +368,7 @@ class tx_srfeuserregister_control {
 			$this->data->setName($finalDataArray, $cmdKey, $theTable);
 			$this->data->parseValues($theTable, $finalDataArray, $origArray, $cmdKey);
 			$this->data->overrideValues($finalDataArray, $cmdKey);
+
 			if (
 				$bSubmit ||
 				$bDoNotSave ||
@@ -377,6 +383,7 @@ class tx_srfeuserregister_control {
 					$cmdKey,
 					$controlData->getRequiredArray()
 				);
+
 					// If the two password fields are not equal, clear session data
 				if (
 					is_array($evalErrors['password']) &&
@@ -398,6 +405,7 @@ class tx_srfeuserregister_control {
 				}
 			} else {
 					// This is either a country change submitted through the onchange event or a file deletion already processed by the parsing function
+					// You come here after a click on the text "Not a member yet? click here to register."
 					// We are going to redisplay
 				$evalErrors = $this->data->evalValues(
 					$theTable,
@@ -408,38 +416,55 @@ class tx_srfeuserregister_control {
 					$controlData->getRequiredArray()
 				);
 					// If the two password fields are not equal, clear session data
-				if (is_array($evalErrors['password']) && in_array('twice', $evalErrors['password'])) {
+				if (
+					is_array($evalErrors['password']) &&
+					in_array('twice', $evalErrors['password'])
+				) {
 					$controlData->clearSessionData();
 				}
 				$this->marker->setArray($markerArray);
-				$controlData->setFailure('submit');
+				$controlData->setFailure('submit'); // internal error simulation needed in order not to save in the next step
 			}
 			$this->data->setUsername($theTable, $finalDataArray, $cmdKey);
 			$this->data->setDataArray($finalDataArray);
 
-			if ($controlData->getFailure() == '' && !$controlData->getFeUserData('preview') && !$bDoNotSave) {
-				$password = '';
+			if (
+				$controlData->getFailure() == '' &&
+				!$controlData->getFeUserData('preview') &&
+				!$bDoNotSave
+			) {
 				if ($theTable == 'fe_users') {
 					$controlData->getStorageSecurity()->initializeAutoLoginPassword($finalDataArray);
 						// We generate an interim password in the case of an invitation
 					if ($cmdKey == 'invite') {
 						$controlData->generatePassword($finalDataArray);
 					}
+
 						// If inviting or if auto-login will be required on confirmation, we store an encrypted version of the password
+					$password = $controlData->readPasswordForStorage();
+
 					if (
 						$cmdKey == 'invite' ||
-						(
-							$cmdKey == 'create' &&
-							$conf['enableAutoLoginOnConfirmation'] &&
-							!$conf['enableAutoLoginOnCreate']
-						)
+						$cmdKey == 'create' &&
+							(
+								$conf['enableAutoLoginOnConfirmation'] &&
+								!$conf['enableAutoLoginOnCreate']
+							)
 					) {
-						$controlData->getStorageSecurity()->encryptPasswordForAutoLogin($finalDataArray);
+						$bEncrypted =
+							$controlData->getStorageSecurity()
+								->encryptPasswordForAutoLogin(
+									$password,
+									$cryptedPassword,
+									$autoLoginKey
+								);
+
+						if ($bEncrypted) {
+							$finalDataArray['tx_srfeuserregister_password'] = base64_encode($cryptedPassword);
+						}
 					}
-					$password = $controlData->readPasswordForStorage();
 				}
 				$extKey = $controlData->getExtKey();
-
 				$newDataArray = array();
 				$theUid = $this->data->save(
 					$theTable,
@@ -456,7 +481,6 @@ class tx_srfeuserregister_control {
 
 				if ($newDataArray) {
 					$dataArray = $newDataArray;
-					$dataArray['auto_login_key'] = $finalDataArray['auto_login_key'];
 				}
 
 				if ($this->data->getSaved()) {
@@ -555,6 +579,7 @@ class tx_srfeuserregister_control {
 					$langObj,
 					$controlData,
 					$theTable,
+					$autoLoginKey,
 					$prefixId,
 					$dataArray,
 					$origArray,
@@ -582,6 +607,7 @@ class tx_srfeuserregister_control {
 						$langObj,
 						$controlData,
 						$theTable,
+						$autoLoginKey,
 						$prefixId,
 						array($dataArray),
 						array($origArray),
@@ -603,6 +629,7 @@ class tx_srfeuserregister_control {
 				) {
 					$emailField = $conf['email.']['field'];
 					$recipient = (isset($finalDataArray) && is_array($finalDataArray) && $finalDataArray[$emailField]) ? $finalDataArray[$emailField] : $origArray[$emailField];
+
 					// Send email message(s)
 					$errorContent = $this->email->compile(
 						$key,
@@ -611,6 +638,7 @@ class tx_srfeuserregister_control {
 						$langObj,
 						$controlData,
 						$theTable,
+						$autoLoginKey,
 						$prefixId,
 						array($dataArray),
 						array($origArray),
@@ -719,6 +747,7 @@ class tx_srfeuserregister_control {
 						$langObj,
 						$controlData,
 						$theTable,
+						$autoLoginKey,
 						$prefixId,
 						$uid,
 						$cmdKey,
@@ -752,6 +781,7 @@ class tx_srfeuserregister_control {
 						$langObj,
 						$controlData,
 						$theTable,
+						$autoLoginKey,
 						$prefixId,
 						$origArray,
 						$securedArray,
@@ -879,6 +909,7 @@ class tx_srfeuserregister_control {
 			$regHash = $controlData->getRegHash();
 			$controlData->deleteShortUrl($regHash);
 		}
+
 		return $content;
 	}
 

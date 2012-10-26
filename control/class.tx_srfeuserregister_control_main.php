@@ -42,7 +42,6 @@
  */
 class tx_srfeuserregister_control_main {
 	public $config = array();
-
 	public $incomingData = FALSE;
 	public $nc = ''; // "&no_cache=1" if you want that parameter sent.
 	public $additionalUpdateFields = '';

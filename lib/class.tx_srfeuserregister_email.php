@@ -75,13 +75,16 @@ class tx_srfeuserregister_email {
 		}
 	}
 
-
 	/**
 	* Sends info mail to subscriber or displays a screen to update or delete the membership
 	*
 	* @param array $cObj: the cObject
 	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
+	* @param array $controlData: the object of the control data
+	* @param string $theTable: the table in use
+	* @param array $autoLoginKey: the auto-login key
+	* @param string $prefixId: the extension prefix id
 	* @param array  Array with key/values being marker-strings/substitution values.
 	* @return	string		HTML content message
 	* @see init(),compile(), send()
@@ -92,6 +95,7 @@ class tx_srfeuserregister_email {
 		$langObj,
 		$controlData,
 		$theTable,
+		$autoLoginKey,
 		$prefixId,
 		$origArr,
 		$securedArray,
@@ -134,6 +138,7 @@ class tx_srfeuserregister_email {
 						$langObj,
 						$controlData,
 						$theTable,
+						$autoLoginKey,
 						$prefixId,
 						$DBrows,
 						$DBrows,
@@ -156,6 +161,7 @@ class tx_srfeuserregister_email {
 						$langObj,
 						$controlData,
 						$theTable,
+						$autoLoginKey,
 						$prefixId,
 						$fetchArray,
 						$fetchArray,
@@ -240,7 +246,6 @@ class tx_srfeuserregister_email {
 		return $content;
 	}
 
-
 	/**
 	* Prepares an email message
 	*
@@ -249,6 +254,7 @@ class tx_srfeuserregister_email {
 	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
 	* @param string $theTable: the table in use
+	* @param array $autoLoginKey: the auto-login key
 	* @param string $prefixId: the extension prefix id
 	* @param array  $DBrows: invoked with just one row of fe_users
 	* @param string  $recipient: an email or the id of a front user
@@ -264,6 +270,7 @@ class tx_srfeuserregister_email {
 		$langObj,
 		$controlData,
 		$theTable,
+		$autoLoginKey,
 		$prefixId,
 		array $DBrows,
 		array $origRows,
@@ -329,7 +336,7 @@ class tx_srfeuserregister_email {
 			$subpartMarker = '###' . $this->emailMarkPrefix . $key . '###';
 			$content['user']['all'] = trim($cObj->getSubpart($templateCode,  $subpartMarker));
 
-			if ($content['user']['all'] == '')	{
+			if ($content['user']['all'] == '') {
 				$missingSubpartArray[] = $subpartMarker;
 			} else {
 				$content['user']['all'] =
@@ -496,7 +503,10 @@ class tx_srfeuserregister_email {
 				$markerArray,
 				$setFixedConfig,
 				$currentRow,
-				$theTable
+				$theTable,
+				$conf['useShortUrls'],
+				$conf['edit.']['setfixed'],
+				$autoLoginKey
 			);
 
 			$this->marker->addStaticInfoMarkers(
@@ -688,7 +698,6 @@ class tx_srfeuserregister_email {
 		}
 	} // compile
 
-
 	/**
 	* Dispatches the email messsage
 	*
@@ -750,7 +759,6 @@ class tx_srfeuserregister_email {
 			);
 		}
 	}
-
 
 	/**
 	* Adds CSS styles marker to a marker array for substitution in an HTML email message
@@ -865,7 +873,6 @@ class tx_srfeuserregister_email {
 		}
 	}
 
-
 	/**
 	 * Embeds media into the mail message
 	 *
@@ -904,7 +911,6 @@ class tx_srfeuserregister_email {
 		return $substitutedHtmlContent;
 	}
 
-
 	/**
 	 * Creates a regular expression out of an array of tags
 	 *
@@ -918,7 +924,6 @@ class tx_srfeuserregister_email {
 		}
 		return '/' . implode('|', $regexpArray) . '/i';
 	}
-
 
 	/**
 	 * This function analyzes a HTML tag

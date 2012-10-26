@@ -113,20 +113,19 @@ class tx_srfeuserregister_storage_security {
 	*/
 	public function initializeAutoLoginPassword (array &$dataArray) {
 		$dataArray['tx_srfeuserregister_password'] = '';
-		unset($dataArray['auto_login_key']);
 	}
 
 	/**
 	* Determines if auto login should be attempted
 	*
 	* @param array $feuData: incoming fe_users parameters
-	* @param array $dataArray: fe_users row
+	* @param string &$autoLoginKey: returns auto-login key
 	* @return boolean TRUE, if auto-login should be attempted
 	*/
-	public function getAutoLoginIsRequested (array $feuData, array &$dataArray) {
+	public function getAutoLoginIsRequested (array $feuData, &$autoLoginKey) {
 		$autoLoginIsRequested = FALSE;
 		if (isset($feuData['key']) && $feuData['key'] !== '') {
-			$dataArray['auto_login_key'] = $feuData['key'];
+			$autoLoginKey = $feuData['key'];
 			$autoLoginIsRequested = TRUE;
 		}
 		return $autoLoginIsRequested;
@@ -135,42 +134,52 @@ class tx_srfeuserregister_storage_security {
 	/**
 	* Encrypts the password for auto-login on confirmation
 	*
-	* @param	array	$dataArray: array containing the password to be encrypted
-	* @return	void
+	* @param	string	$password: the password to be encrypted
+	* @param	string	$cryptedPassword: returns the encrypted password
+	* @param	string	$autoLoginKey: returns the auto-login key
+	* @return	boolean  TRUE if the crypted password and auto-login key are filled in
 	*/
-	public function encryptPasswordForAutoLogin (array &$dataArray) {
-		$password = $dataArray['password'];
+	public function encryptPasswordForAutoLogin (
+		$password,
+		&$cryptedPassword,
+		&$autoLoginKey
+	) {
+		$result = FALSE;
 		$privateKey = '';
 		$cryptedPassword = '';
-		if ($password !== '') {
+		if ($password != '') {
 				// Create the keypair
 			$keyPair = openssl_pkey_new();
+
 				// Get private key
 			openssl_pkey_export($keyPair, $privateKey);
 				// Get public key
 			$keyDetails = openssl_pkey_get_details($keyPair);
 			$publicKey = $keyDetails['key'];
 			if (@openssl_public_encrypt($password, $cryptedPassword, $publicKey)) {
-				$dataArray['tx_srfeuserregister_password'] = base64_encode($cryptedPassword);
-				$dataArray['auto_login_key'] = $privateKey;
+				$autoLoginKey = $privateKey;
+				$result = TRUE;
 			}
 		}
+		return $result;
 	}
 
 	/**
 	* Decrypts the password for auto-login on confirmation or invitation acceptation
 	*
-	* @param array $dataArray: table row containing the password to be decrypted
-	* @param array $row: incoming data containing the auto-login private key
-	* @return void
+	* @param	string	$password: the password to be decrypted
+	* @param	string	$autoLoginKey: the auto-login private key
+	* @return	boolean  TRUE if decryption is successfull or no rsaauth is used
 	*/
-	public function decryptPasswordForAutoLogin (array &$dataArray, array $row) {
+	public function decryptPasswordForAutoLogin (
+		&$password,
+		$autoLoginKey
+	) {
 		$result = TRUE;
-		if (isset($row['auto_login_key'])) {
-			$privateKey = $row['auto_login_key'];
-			if ($privateKey !== '') {
-				$password = $dataArray['tx_srfeuserregister_password'];
-				if ($password !== '' && t3lib_extMgm::isLoaded('rsaauth')) {
+		if ($autoLoginKey != '') {
+			$privateKey = $autoLoginKey;
+			if ($privateKey != '') {
+				if ($password != '' && t3lib_extMgm::isLoaded('rsaauth')) {
 					$backend = tx_rsaauth_backendfactory::getBackend();
 					if (is_object($backend) && $backend->isAvailable()) {
 						$decryptedPassword = $backend->decrypt($privateKey, $password);
