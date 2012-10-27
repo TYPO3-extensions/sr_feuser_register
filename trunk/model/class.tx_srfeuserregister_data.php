@@ -614,14 +614,19 @@ class tx_srfeuserregister_data {
 								}
 							break;
 							case 'upload':
-								if ($dataArray[$theField] && is_array($this->tca->TCA['columns'][$theField]['config']) ) {
+								if (
+									$dataArray[$theField] &&
+									is_array($GLOBALS['TCA'][$theTable]['columns'][$theField]['config'])
+								) {
+									$colSettings = $GLOBALS['TCA'][$theTable]['columns'][$theField];
+									$colConfig = $colSettings['config'];
 									if (
-										$this->tca->TCA['columns'][$theField]['config']['type'] == 'group' &&
-										$this->tca->TCA['columns'][$theField]['config']['internal_type'] == 'file'
+										$colConfig['type'] == 'group' &&
+										$colConfig['internal_type'] == 'file'
 									) {
-										$uploadPath = $this->tca->TCA['columns'][$theField]['config']['uploadfolder'];
-										$allowedExtArray = t3lib_div::trimExplode(',', $this->tca->TCA['columns'][$theField]['config']['allowed'], 1);
-										$maxSize = $this->tca->TCA['columns'][$theField]['config']['max_size'];
+										$uploadPath = $colConfig['uploadfolder'];
+										$allowedExtArray = t3lib_div::trimExplode(',', $colConfig['allowed'], 1);
+										$maxSize = $colConfig['max_size'];
 										$fileNameArray = $dataArray[$theField];
 										$newFileNameArray = array();
 
@@ -893,7 +898,7 @@ class tx_srfeuserregister_data {
 				if (in_array('setEmptyIfAbsent', $listOfCommands)) {
 					$this->setEmptyIfAbsent($theTable, $theField, $dataArray);
 				}
-				$internalType = $this->tca->TCA['columns'][$theField]['config']['internal_type'];
+				$internalType = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config']['internal_type'];
 
 				if (
 					isset($dataArray[$theField]) ||
@@ -1092,8 +1097,8 @@ class tx_srfeuserregister_data {
 	*/
 	public function processFiles ($theTable, $theField, array $fieldDataArray, $cmdKey) {
 
-		if (is_array($this->tca->TCA['columns'][$theField])) {
-			$uploadPath = $this->tca->TCA['columns'][$theField]['config']['uploadfolder'];
+		if (is_array($GLOBALS['TCA'][$theTable]['columns'][$theField])) {
+			$uploadPath = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config']['uploadfolder'];
 		}
 		$fileNameArray = array();
 
@@ -1443,7 +1448,7 @@ class tx_srfeuserregister_data {
 						}
 							// </Ries van Twisk added registrationProcess hooks>
 
-						if (!$this->tca->TCA['ctrl']['delete'] || $this->conf['forceFileDelete']) {
+						if (!$GLOBALS['TCA'][$theTable]['ctrl']['delete'] || $this->conf['forceFileDelete']) {
 								// If the record is being fully deleted... then remove the images or files attached.
 							$this->deleteFilesFromRecord($this->getRecUid());
 						}
@@ -1478,7 +1483,7 @@ class tx_srfeuserregister_data {
 	public function deleteFilesFromRecord ($uid) {
 		$rec = $GLOBALS['TSFE']->sys_page->getRawRecord($this->controlData->getTable(), $uid);
 		$updateFields = array();
-		foreach($this->tca->TCA['columns'] as $field => $conf) {
+		foreach($GLOBALS['TCA'][$theTable]['columns'] as $field => $conf) {
 			if ($conf['config']['type'] == 'group' && $conf['config']['internal_type'] == 'file') {
 				$updateFields[$field] = '';
 				$res =
@@ -1591,7 +1596,7 @@ class tx_srfeuserregister_data {
 
 			// update the MM relation
 		$fieldsList = array_keys($row);
-		foreach ($this->tca->TCA['columns'] as $colName => $colSettings) {
+		foreach ($GLOBALS['TCA'][$theTable]['columns'] as $colName => $colSettings) {
 
 			if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
 				$valuesArray = $row[$colName];
@@ -1620,7 +1625,7 @@ class tx_srfeuserregister_data {
 	public function deleteMMRelations ($table, $uid, array $row = array()) {
 			// update the MM relation
 		$fieldsList = array_keys($row);
-		foreach ($this->tca->TCA['columns'] as $colName => $colSettings) {
+		foreach ($GLOBALS['TCA'][$theTable]['columns'] as $colName => $colSettings) {
 			if (
 				in_array($colName, $fieldsList) &&
 				$colSettings['config']['type'] == 'select' &&
@@ -1863,7 +1868,7 @@ class tx_srfeuserregister_data {
 							}
 							break;
 						case 'deleteUnreferencedFiles':
-							$fieldConfig = $this->tca->TCA['columns'][$theField]['config'];
+							$fieldConfig = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config'];
 							if (
 								is_array($fieldConfig) &&
 								$fieldConfig['type'] === 'group' &&
@@ -1898,10 +1903,10 @@ class tx_srfeuserregister_data {
 
 			// update the MM relation count field
 		$fieldsList = array_keys($parsedArray);
-		foreach ($this->tca->TCA['columns'] as $colName => $colSettings) {
+		foreach ($GLOBALS['TCA'][$theTable]['columns'] as $colName => $colSettings) {
 			if (isset($parsedArray[$colName])) {
 
-				$fieldObj = &$addressObj->getFieldObj($colName);
+				$fieldObj = $addressObj->getFieldObj($colName);
 				if (isset($fieldObj) && is_object($fieldObj)) {
 
 					$foreignTable =
@@ -1986,7 +1991,7 @@ class tx_srfeuserregister_data {
 	 */
 	protected function setEmptyIfAbsent ($theTable, $theField, array &$dataArray) {
 		if (!isset($dataArray[$theField])) {
-			$fieldConfig = $this->tca->TCA['columns'][$theField]['config'];
+			$fieldConfig = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config'];
 			if (is_array($fieldConfig)) {
 				$type = $fieldConfig['type'];
 				switch ($type) {

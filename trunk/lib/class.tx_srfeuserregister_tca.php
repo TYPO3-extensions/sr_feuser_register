@@ -41,11 +41,7 @@
  *
  */
 
-//
-
 class tx_srfeuserregister_tca {
-	public $TCA = array();
-
 
 	public function init ($extKey, $theTable) {
 
