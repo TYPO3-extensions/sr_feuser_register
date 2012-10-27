@@ -125,7 +125,7 @@ class tx_srfeuserregister_control {
 			$newOrigArray = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $theUid);
 
 			if (isset($newOrigArray) && is_array($newOrigArray)) {
-				$this->tca->modifyRow($newOrigArray, TRUE);
+				$this->tca->modifyRow($theTable, $newOrigArray, TRUE);
 				$origArray = $newOrigArray;
 			}
 		}
@@ -161,11 +161,10 @@ class tx_srfeuserregister_control {
 		$this->data->setOrigArray($origArray);
 
 			// Setting the list of fields allowed for editing and creation.
-		$tableTCA = $this->tca->getTCA();
 		$tcaFieldArray =
 			t3lib_div::trimExplode(
 				',',
-				$tableTCA['feInterface']['fe_admin_fieldList'],
+				$GLOBALS['TCA'][$theTable]['feInterface']['fe_admin_fieldList'],
 				1
 			);
 		$tcaFieldArray = array_unique($tcaFieldArray);

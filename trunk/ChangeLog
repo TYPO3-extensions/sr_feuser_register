@@ -1,3 +1,7 @@
+
+2012-10-27 Franz Holzinger  <franz@ttproducts.de>
+	* use global $GLOBALS['TCA'][$theTable] instead of internal $this->TCA variable
+
 2012-10-26 Franz Holzinger  <franz@ttproducts.de>
 	* replace auto_login_key from dataArray into its own variable
 
