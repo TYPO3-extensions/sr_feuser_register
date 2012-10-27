@@ -186,11 +186,11 @@ class tx_srfeuserregister_display {
 			array(),
 			$controlData->getRequiredArray(),
 			$this->data->getFieldList(),
-			$this->tca->TCA['columns'],
+			$GLOBALS['TCA'][$theTable]['columns'],
 			FALSE
 		);
 
-		foreach ($this->tca->TCA['columns'] as $theField => $fieldConfig) {
+		foreach ($GLOBALS['TCA'][$theTable]['columns'] as $theField => $fieldConfig) {
 
 			if (
 				$fieldConfig['config']['internal_type'] == 'file' &&
@@ -294,6 +294,13 @@ class tx_srfeuserregister_display {
 		$errorFieldArray,
 		$token
 	) {
+		if (
+			!is_array($GLOBALS['TCA'][$theTable]) ||
+			!is_array($GLOBALS['TCA'][$theTable]['columns'])
+		) {
+			return FALSE;
+		}
+
 		$templateCode = $this->data->getTemplateCode();
 		$prefixId = $controlData->getPrefixId();
 		$extKey = $controlData->getExtKey();
@@ -383,7 +390,7 @@ class tx_srfeuserregister_display {
 				$prefixId
 			);
 
-			foreach ($this->tca->TCA['columns'] as $theField => $fieldConfig) {
+			foreach ($GLOBALS['TCA'][$theTable]['columns'] as $theField => $fieldConfig) {
 				if (
 					$fieldConfig['config']['internal_type'] == 'file' &&
 					$fieldConfig['config']['allowed'] != '' &&
@@ -414,7 +421,7 @@ class tx_srfeuserregister_display {
 				array(),
 				$controlData->getRequiredArray(),
 				$infoFields,
-				$this->tca->TCA['columns'],
+				$GLOBALS['TCA'][$theTable]['columns'],
 				FALSE
 			);
 
@@ -492,6 +499,13 @@ class tx_srfeuserregister_display {
 		$errorFieldArray,
 		$token
 	) {
+		if (
+			!is_array($GLOBALS['TCA'][$theTable]) ||
+			!is_array($GLOBALS['TCA'][$theTable]['columns'])
+		) {
+			return FALSE;
+		}
+
 		$prefixId = $controlData->getPrefixId();
 
 			// If editing is enabled
@@ -767,6 +781,13 @@ class tx_srfeuserregister_display {
 		$bCheckEmpty = TRUE,
 		$failure = ''
 	) {
+		if (
+			!is_array($GLOBALS['TCA'][$theTable]) ||
+			!is_array($GLOBALS['TCA'][$theTable]['columns'])
+		) {
+			return FALSE;
+		}
+
 		$templateCode = $cObj->getSubpart($templateCode, $subpartMarker);
 
 		if ($templateCode != '') {
@@ -817,7 +838,7 @@ class tx_srfeuserregister_display {
 				array(),
 				$controlData->getRequiredArray(),
 				$this->data->getFieldList(),
-				$this->tca->TCA['columns'],
+				$GLOBALS['TCA'][$theTable]['columns'],
 				FALSE
 			);
 			$templateCode =
@@ -1138,7 +1159,7 @@ class tx_srfeuserregister_display {
 				array(),
 				$controlData->getRequiredArray(),
 				$this->data->getFieldList(),
-				$this->tca->TCA['columns'],
+				$GLOBALS['TCA'][$theTable]['columns'],
 				FALSE
 			);
 

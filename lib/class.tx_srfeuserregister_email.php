@@ -456,7 +456,7 @@ class tx_srfeuserregister_email {
 			$keepFields,
 			$controlData->getRequiredArray(),
 			$this->data->getFieldList(),
-			$this->tca->TCA['columns'],
+			$GLOBALS['TCA'][$theTable]['columns'],
 			$bChangesOnly
 		);
 		$content['user']['all'] = $cObj->substituteMarkerArray($content['user']['all'], $markerArray);
@@ -516,7 +516,7 @@ class tx_srfeuserregister_email {
 				$viewOnly
 			);
 
-			foreach ($this->tca->TCA['columns'] as $theField => $fieldConfig) {
+			foreach ($GLOBALS['TCA'][$theTable]['columns'] as $theField => $fieldConfig) {
 
 				if (
 					$fieldConfig['config']['internal_type'] == 'file' &&
@@ -550,7 +550,7 @@ class tx_srfeuserregister_email {
 				$keepFields,
 				$controlData->getRequiredArray(),
 				$this->data->getFieldList(),
-				$this->tca->TCA['columns'],
+				$GLOBALS['TCA'][$theTable]['columns'],
 				$bChangesOnly
 			);
 

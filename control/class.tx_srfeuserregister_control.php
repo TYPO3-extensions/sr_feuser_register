@@ -716,7 +716,7 @@ class tx_srfeuserregister_control {
 				array(),
 				$controlData->getRequiredArray(),
 				$this->data->getFieldList(),
-				$this->tca->TCA['columns'],
+				$GLOBALS['TCA'][$theTable]['columns'],
 				FALSE
 			);
 			$this->marker->setArray($markerArray);

@@ -171,7 +171,7 @@ class tx_srfeuserregister_setfixed {
 					$sFK == 'REFUSE'
 				) {
 					if (
-						!$this->tca->TCA['ctrl']['delete'] ||
+						!$GLOBALS['TCA'][$theTable]['ctrl']['delete'] ||
 						$conf['forceFileDelete']
 					) {
 						// If the record is fully deleted... then remove the image attached.
