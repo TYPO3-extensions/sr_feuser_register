@@ -29,7 +29,7 @@
  *
  * data store functions
  *
- * $Id$
+ * $Id: class.tx_srfeuserregister_data.php 67451 2012-10-26 18:55:50Z franzholz $
  *
  * @author	Kasper Skaarhoj <kasper2008@typo3.com>
  * @author	Stanislas Rolland <typo3(arobas)sjbr.ca>
@@ -94,7 +94,7 @@ class tx_srfeuserregister_data {
 			$feDataArray = $fe[$theTable];
 			$bHtmlSpecialChars = FALSE;
 			$controlData->secureInput($feDataArray, $bHtmlSpecialChars);
-			$this->tca->modifyRow($feDataArray, FALSE);
+			$this->tca->modifyRow($theTable, $feDataArray, FALSE);
 
 			if ($theTable == 'fe_users') {
 				$controlData->securePassword($feDataArray);
@@ -205,7 +205,11 @@ class tx_srfeuserregister_data {
 	}
 
 
-	public function setDataArray (array $dataArray, $k = '', $bOverrride = TRUE) {
+	public function setDataArray (
+		array $dataArray,
+		$k = '',
+		$bOverrride = TRUE
+	) {
 		if ($k != '') {
 			if ($bOverrride || !isset($this->dataArray[$k])) {
 				$this->dataArray[$k] = $dataArray;
@@ -1233,7 +1237,7 @@ class tx_srfeuserregister_data {
 						$this->updateMMRelations($dataArray);
 						$this->setSaved(TRUE);
 						$newRow = $this->parseIncomingData($outGoingData);
-						$this->tca->modifyRow($newRow, FALSE);
+						$this->tca->modifyRow($theTable, $newRow, FALSE);
 						$newRow = array_merge($origArray, $newRow);
 						tx_div2007_alpha::userProcess_fh001(
 							$this->control,
@@ -1349,7 +1353,7 @@ class tx_srfeuserregister_data {
 					if (is_array($newRow)) {
 							// Post-create processing: call user functions and hooks
 						$newRow = $this->parseIncomingData($newRow);
-						$this->tca->modifyRow($newRow, TRUE);
+						$this->tca->modifyRow($theTable, $newRow, TRUE);
 
 						tx_div2007_alpha::userProcess_fh001(
 							$this->control,
@@ -1900,7 +1904,11 @@ class tx_srfeuserregister_data {
 				$fieldObj = &$addressObj->getFieldObj($colName);
 				if (isset($fieldObj) && is_object($fieldObj)) {
 
-					$foreignTable = $this->tca->getForeignTable($colName);
+					$foreignTable =
+						$this->tca->getForeignTable(
+							$theTable,
+							$colName
+						);
 					$fieldObj->parseOutgoingData(
 						$theTable,
 						$colName,
@@ -1976,7 +1984,7 @@ class tx_srfeuserregister_data {
 	 * @param array $dataArray: the incoming data array
 	 * @return void
 	 */
-	protected function setEmptyIfAbsent($theTable, $theField, array &$dataArray) {
+	protected function setEmptyIfAbsent ($theTable, $theField, array &$dataArray) {
 		if (!isset($dataArray[$theField])) {
 			$fieldConfig = $this->tca->TCA['columns'][$theField]['config'];
 			if (is_array($fieldConfig)) {

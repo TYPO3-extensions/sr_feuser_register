@@ -249,7 +249,12 @@ class tx_srfeuserregister_setfixed {
 							);
 					}
 					$modArray = array();
-					$currArr = $this->tca->modifyTcaMMfields($currArr, $modArray);
+					$currArr =
+						$this->tca->modifyTcaMMfields(
+							$theTable,
+							$currArr,
+							$modArray
+						);
 
 					$row = array_merge($row, $modArray);
 					tx_div2007_alpha::userProcess_fh001(

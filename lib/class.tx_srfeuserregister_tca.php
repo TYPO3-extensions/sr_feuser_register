@@ -59,20 +59,11 @@ class tx_srfeuserregister_tca {
 		}
 		tx_div2007_alpha::loadTcaAdditions_fh001($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['extendingTCA']);
 		$this->fixAddressFeAdminFieldList();
-
-		$this->TCA = $GLOBALS['TCA'][$theTable];
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['uploadFolder']) {
-			$this->TCA[$theTable]['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['uploadFolder'];
-		}
 	}
 
 	public function init2 ($controlData) {
 
 		$this->controlData = $controlData;
-	}
-
-	public function getTCA () {
-		return $this->TCA;
 	}
 
 	/**
@@ -82,7 +73,10 @@ class tx_srfeuserregister_tca {
 	 * @return void
 	 */
 	protected function fixAddressFeAdminFieldList () {
-		if (t3lib_extMgm::isLoaded('tt_address') && isset($GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList'])) {
+		if (
+			t3lib_extMgm::isLoaded('tt_address') &&
+			isset($GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList'])
+		) {
 			$fieldArray = array_unique(t3lib_div::trimExplode(',', $GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList'], 1));
 			$fieldArray = array_diff($fieldArray, array('middle_first_name', 'last_first_name'));
 			$fieldList = implode(',', $fieldArray);
@@ -91,15 +85,16 @@ class tx_srfeuserregister_tca {
 		}
 	}
 
-	public function getForeignTable ($colName) {
+	public function getForeignTable ($theTable, $colName) {
 
 		$result = FALSE;
 
 		if (
-			isset($this->TCA['columns'][$colName]) &&
-			is_array($this->TCA['columns'][$colName])
+			is_array($GLOBALS['TCA'][$theTable]) &&
+			is_array($GLOBALS['TCA'][$theTable]['columns'] &&
+			is_array($GLOBALS['TCA'][$theTable]['columns'][$colName])
 		) {
-			$colSettings = $this->TCA['columns'][$colName];
+			$colSettings = $GLOBALS['TCA'][$theTable]['columns'][$colName];
 			$colConfig = $colSettings['config'];
 			if ($colConfig['foreign_table']) {
 				$result = $colConfig['foreign_table'];
@@ -114,11 +109,18 @@ class tx_srfeuserregister_tca {
 	* @param array  $dataArray: the record array
 	* @return array  the modified data array
 	*/
-	public function modifyTcaMMfields ($dataArray, &$modArray) {
+	public function modifyTcaMMfields ($theTable, $dataArray, &$modArray) {
+
+		if (
+			!is_array($GLOBALS['TCA'][$theTable]) ||
+			!is_array($GLOBALS['TCA'][$theTable]['columns'])
+		) {
+			return FALSE;
+		}
 
 		$rcArray = $dataArray;
 
-		foreach ($this->TCA['columns'] as $colName => $colSettings) {
+		foreach ($GLOBALS['TCA'][$theTable]['columns'] as $colName => $colSettings) {
 			$colConfig = $colSettings['config'];
 
 			// Configure preview based on input type
@@ -142,6 +144,7 @@ class tx_srfeuserregister_tca {
 					break;
 			}
 		}
+
 		return $rcArray;
 	}
 
@@ -154,11 +157,20 @@ class tx_srfeuserregister_tca {
 	* @param array  $dataArray: the input data array will be changed
 	* @return void
 	*/
-	public function modifyRow (&$dataArray, $bColumnIsCount = TRUE) {
+	public function modifyRow ($theTable, &$dataArray, $bColumnIsCount = TRUE) {
 
-		if (isset($dataArray) && is_array($dataArray)) {
+		if (
+			!is_array($GLOBALS['TCA'][$theTable]) ||
+			!is_array($GLOBALS['TCA'][$theTable]['columns'])
+		) {
+			return FALSE;
+		}
+
+		if (
+			is_array($dataArray) &&
+		) {
 			$fieldsList = array_keys($dataArray);
-			foreach ($this->TCA['columns'] as $colName => $colSettings) {
+			foreach ($GLOBALS['TCA'][$theTable]['columns'] as $colName => $colSettings) {
 				$colConfig = $colSettings['config'];
 				if (!$colConfig || !is_array($colConfig)) {
 					continue;
@@ -232,8 +244,11 @@ class tx_srfeuserregister_tca {
 				}
 			}
 
-			if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey) && $dataArray['static_info_country']) {
-				$staticInfoObj = &t3lib_div::getUserObj('&tx_staticinfotables_pi1');
+			if (
+				t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey) &&
+				$dataArray['static_info_country']
+			) {
+				$staticInfoObj = t3lib_div::getUserObj('&tx_staticinfotables_pi1');
 					// empty zone if it does not fit to the provided country
 				$zoneArray = $staticInfoObj->initCountrySubdivisions($dataArray['static_info_country']);
 				if (!isset($zoneArray[$dataArray['zone']])) {
@@ -256,7 +271,7 @@ class tx_srfeuserregister_tca {
 
 		if ($foreignWhere) {
 			$pageTSConfig = $GLOBALS['TSFE']->getPagesTSconfig();
-			$TSconfig = $pageTSConfig['TCEFORM.'][$theTable.'.'][$colName.'.'];
+			$TSconfig = $pageTSConfig['TCEFORM.'][$theTable . '.'][$colName . '.'];
 
 			if ($TSconfig) {
 
@@ -320,6 +335,13 @@ class tx_srfeuserregister_tca {
 		$bChangesOnly = FALSE,
 		$HSC = TRUE
 	) {
+		if (
+			!is_array($GLOBALS['TCA'][$theTable]) ||
+			!is_array($GLOBALS['TCA'][$theTable]['columns'])
+		) {
+			return FALSE;
+		}
+
 		$charset = $GLOBALS['TSFE']->renderCharset ? $GLOBALS['TSFE']->renderCharset : 'utf-8';
 		$mode = $this->controlData->getMode();
 		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
@@ -349,7 +371,7 @@ class tx_srfeuserregister_tca {
 			$activity = 'input';
 		}
 
-		foreach ($this->TCA['columns'] as $colName => $colSettings) {
+		foreach ($GLOBALS['TCA'][$theTable]['columns'] as $colName => $colSettings) {
 
 			if (t3lib_div::inList($fields, $colName)) {
 
@@ -741,7 +763,7 @@ class tx_srfeuserregister_tca {
 
 									if (isset($userGroupObj) && is_object($userGroupObj)) {
 										$reservedValues = $userGroupObj->getReservedValues();
-										$foreignTable = $this->getForeignTable($colName);
+										$foreignTable = $this->getForeignTable($theTable, $colName);
 										$whereClause = $userGroupObj->getAllowedWhereClause(
 											$foreignTable,
 											$this->controlData->getPid(),
