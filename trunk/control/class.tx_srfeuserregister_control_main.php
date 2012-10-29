@@ -183,7 +183,6 @@ class tx_srfeuserregister_control_main {
 		$this->email = t3lib_div::getUserObj('&tx_srfeuserregister_email');
 		$this->control = t3lib_div::getUserObj('&tx_srfeuserregister_control');
 
-
 		$this->urlObj->init(
 			$this->controlData,
 			$cObj
@@ -199,10 +198,6 @@ class tx_srfeuserregister_control_main {
 		$success = $this->langObj->loadLL();
 
 		if ($success !== FALSE) {
-			$this->tca->init2(
-				$this->controlData
-			);
-
 			$this->control->init(
 				$this->langObj,
 				$cObj,
@@ -266,13 +261,6 @@ class tx_srfeuserregister_control_main {
 				$this->marker,
 				$this->tca,
 				$this->setfixedObj
-			);
-
-			$this->setfixedObj->init(
-				$this->tca,
-				$this->display,
-				$this->email,
-				$this->marker
 			);
 		}
 

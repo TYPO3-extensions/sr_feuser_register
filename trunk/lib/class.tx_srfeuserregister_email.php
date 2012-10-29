@@ -62,7 +62,6 @@ class tx_srfeuserregister_email {
 		$tca,
 		$setfixedObj
 	) {
-		$this->langObj = $langObj;
 		$this->display = $display;
 		$this->data = $data;
 		$this->marker = $marker;
@@ -191,6 +190,7 @@ class tx_srfeuserregister_email {
 							$subpartkey,
 							$markerArray,
 							$origArr,
+							$theTable,
 							$prefixId,
 							(is_array($DBrows) ? $DBrows[0] : (is_array($fetchArray) ? $fetchArray[0] : '')),
 							$securedArray,
@@ -209,6 +209,7 @@ class tx_srfeuserregister_email {
 								$subpartkey,
 								$markerArray,
 								$origArr,
+								$theTable,
 								$prefixId,
 								(is_array($DBrows) ? $DBrows[0] : (is_array($fetchArray) ? $fetchArray[0] : '')),
 								$securedArray
@@ -232,6 +233,7 @@ class tx_srfeuserregister_email {
 						$subpartkey,
 						$markerArray,
 						$origArr,
+						$theTable,
 						$prefixId,
 						'',
 						$securedArray,
@@ -597,7 +599,7 @@ class tx_srfeuserregister_email {
 							$content[$index]['rec'],
 							$markerArray
 						);
-					if ($emailType === 'text') {
+					if ($emailType == 'text') {
 						$content[$index]['accum'] = htmlSpecialChars_decode($content[$index]['accum'], ENT_QUOTES);
 					}
 				}
