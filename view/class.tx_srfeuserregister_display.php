@@ -490,6 +490,7 @@ class tx_srfeuserregister_display {
 		$langObj,
 		$controlData,
 		$theTable,
+		$prefixId,
 		$dataArray,
 		$origArray,
 		$securedArray,
@@ -505,8 +506,6 @@ class tx_srfeuserregister_display {
 		) {
 			return FALSE;
 		}
-
-		$prefixId = $controlData->getPrefixId();
 
 			// If editing is enabled
 		if ($conf['edit']) {
@@ -585,6 +584,7 @@ class tx_srfeuserregister_display {
 						'###TEMPLATE_NO_PERMISSIONS###',
 						$markerArray,
 						$dataArray,
+						$theTable,
 						$prefixId,
 						$origArray,
 						$securedArray
@@ -601,6 +601,7 @@ class tx_srfeuserregister_display {
 					'###TEMPLATE_AUTH###',
 					$markerArray,
 					$dataArray,
+					$theTable,
 					$prefixId,
 					$this->data->getOrigArray(),
 					$securedArray
@@ -696,6 +697,7 @@ class tx_srfeuserregister_display {
 							'###TEMPLATE_DELETE_PREVIEW###',
 							$markerArray,
 							$dataArray,
+							$theTable,
 							$prefixId,
 							$origArray,
 							$securedArray
@@ -711,6 +713,7 @@ class tx_srfeuserregister_display {
 							'###TEMPLATE_NO_PERMISSIONS###',
 							$markerArray,
 							$dataArray,
+							$theTable,
 							$prefixId,
 							$origArray,
 							$securedArray
@@ -729,6 +732,7 @@ class tx_srfeuserregister_display {
 						'###TEMPLATE_AUTH###',
 						$markerArray,
 						$origArray,
+						$theTable,
 						$prefixId,
 						'',
 						$securedArray
@@ -743,6 +747,7 @@ class tx_srfeuserregister_display {
 						'###TEMPLATE_NO_PERMISSIONS###',
 						$markerArray,
 						$origArray,
+						$theTable,
 						$prefixId,
 						'',
 						$securedArray
@@ -775,6 +780,7 @@ class tx_srfeuserregister_display {
 		$subpartMarker,
 		$markerArray,
 		$origArray,
+		$theTable,
 		$prefixId,
 		$row = '',
 		$securedArray,
@@ -808,7 +814,11 @@ class tx_srfeuserregister_display {
 					$securedArray,
 					''
 				);
-			$this->marker->addStaticInfoMarkers($markerArray, $prefixId, $row);
+			$this->marker->addStaticInfoMarkers(
+				$markerArray,
+				$prefixId,
+				$row
+			);
 			$cmd = $controlData->getCmd();
 			$cmdKey = $controlData->getCmdKey();
 			$theTable = $controlData->getTable();
@@ -846,11 +856,13 @@ class tx_srfeuserregister_display {
 					$templateCode,
 					$markerArray
 				);
+
 				// Avoid cleartext password in HTML source
 			$markerArray['###FIELD_password###'] = '';
 			$markerArray['###FIELD_password_again###'] = '';
 			$deleteUnusedMarkers = TRUE;
-			$rc =
+
+			$result =
 				$cObj->substituteMarkerArray(
 					$templateCode,
 					$markerArray,
@@ -861,9 +873,9 @@ class tx_srfeuserregister_display {
 		} else if ($bCheckEmpty) {
 			$langObj = t3lib_div::getUserObj('&tx_srfeuserregister_lang');
 			$errorText = $langObj->getLL('internal_no_subtemplate');
-			$rc = sprintf($errorText, $subpartMarker);
+			$result = sprintf($errorText, $subpartMarker);
 		}
-		return $rc;
+		return $result;
 	}	// getPlainTemplate
 
 

@@ -57,11 +57,6 @@ class tx_srfeuserregister_tca {
 		$this->fixAddressFeAdminFieldList();
 	}
 
-	public function init2 ($controlData) {
-
-		$this->controlData = $controlData;
-	}
-
 	/**
 	 * Fix contents of $GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList']
 	 * The list gets broken when EXT:tt_address/tca.php is included twice
@@ -87,7 +82,7 @@ class tx_srfeuserregister_tca {
 
 		if (
 			is_array($GLOBALS['TCA'][$theTable]) &&
-			is_array($GLOBALS['TCA'][$theTable]['columns'] &&
+			is_array($GLOBALS['TCA'][$theTable]['columns']) &&
 			is_array($GLOBALS['TCA'][$theTable]['columns'][$colName])
 		) {
 			$colSettings = $GLOBALS['TCA'][$theTable]['columns'][$colName];
@@ -123,7 +118,7 @@ class tx_srfeuserregister_tca {
 			switch ($colConfig['type']) {
 				case 'select':
 					if ($colConfig['MM'] && $colConfig['foreign_table']) {
-						$where = 'uid_local = '.$dataArray['uid'];
+						$where = 'uid_local = ' . $dataArray['uid'];
 						$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 							'uid_foreign',
 							$colConfig['MM'],
@@ -157,101 +152,99 @@ class tx_srfeuserregister_tca {
 
 		if (
 			!is_array($GLOBALS['TCA'][$theTable]) ||
-			!is_array($GLOBALS['TCA'][$theTable]['columns'])
+			!is_array($GLOBALS['TCA'][$theTable]['columns']) ||
+			!is_array($dataArray)
 		) {
 			return FALSE;
 		}
 
-		if (
-			is_array($dataArray) &&
-		) {
-			$fieldsList = array_keys($dataArray);
-			foreach ($GLOBALS['TCA'][$theTable]['columns'] as $colName => $colSettings) {
-				$colConfig = $colSettings['config'];
-				if (!$colConfig || !is_array($colConfig)) {
-					continue;
-				}
-
-				if ($colConfig['maxitems'] > 1) {
-					$bMultipleValues = TRUE;
-				} else {
-					$bMultipleValues = FALSE;
-				}
-
-				switch ($colConfig['type']) {
-					case 'group':
-						$bMultipleValues = TRUE;
-						break;
-					case 'select':
-						$value = $dataArray[$colName];
-						if ($value == 'Array') {	// checkbox from which nothing has been selected
-							$dataArray[$colName] = $value = '';
-						}
-						if (in_array($colName, $fieldsList) && $colConfig['MM'] && isset($value)) {
-
-							if ($value == '' || is_array($value)) {
-								// the values from the mm table are already available as an array
-							} else if ($bColumnIsCount) {
-								$valuesArray = array();
-								$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-									'uid_local,uid_foreign,sorting',
-									$colConfig['MM'],
-									'uid_local=' . intval($dataArray['uid']),
-									'',
-									'sorting'
-								);
-								while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-									$valuesArray[] = $row['uid_foreign'];
-								}
-								$dataArray[$colName] = $valuesArray;
-							} else {
-								$dataArray[$colName] = t3lib_div::trimExplode (',', $value, 1);
-							}
-						}
-						break;
-					case 'check':
-						if (is_array($colConfig['items'])) {
-							$value = $dataArray[$colName];
-							if(is_array($value)) {
-								$dataArray[$colName] = 0;
-								foreach ($value AS $dec) {  // Combine values to one hexidecimal number
-									$dataArray[$colName] |= (1 << $dec);
-								}
-							}
-						} else if (isset($dataArray[$colName])) {
-							if ($dataArray[$colName] != '0') {
-								$dataArray[$colName] = '1';
-							} else {
-								$dataArray[$colName] = '0';
-							}
-						}
-						break;
-					default:
-						// nothing
-						break;
-				}
-
-				if ($bMultipleValues) {
-					$value = $dataArray[$colName];
-
-					if (isset($value) && !is_array($value)) {
-						$dataArray[$colName] = t3lib_div::trimExplode (',', $value, 1);
-					}
-				}
+		$fieldsList = array_keys($dataArray);
+		foreach ($GLOBALS['TCA'][$theTable]['columns'] as $colName => $colSettings) {
+			$colConfig = $colSettings['config'];
+			if (!$colConfig || !is_array($colConfig)) {
+				continue;
 			}
 
-			if (
-				t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey) &&
-				$dataArray['static_info_country']
-			) {
-				$staticInfoObj = t3lib_div::getUserObj('&tx_staticinfotables_pi1');
-					// empty zone if it does not fit to the provided country
-				$zoneArray = $staticInfoObj->initCountrySubdivisions($dataArray['static_info_country']);
-				if (!isset($zoneArray[$dataArray['zone']])) {
-					$dataArray['zone'] = '';
+			if ($colConfig['maxitems'] > 1) {
+				$bMultipleValues = TRUE;
+			} else {
+				$bMultipleValues = FALSE;
+			}
+
+			switch ($colConfig['type']) {
+				case 'group':
+					$bMultipleValues = TRUE;
+					break;
+				case 'select':
+					$value = $dataArray[$colName];
+					if ($value == 'Array') {	// checkbox from which nothing has been selected
+						$dataArray[$colName] = $value = '';
+					}
+					if (in_array($colName, $fieldsList) && $colConfig['MM'] && isset($value)) {
+
+						if ($value == '' || is_array($value)) {
+							// the values from the mm table are already available as an array
+						} else if ($bColumnIsCount) {
+							$valuesArray = array();
+							$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+								'uid_local,uid_foreign,sorting',
+								$colConfig['MM'],
+								'uid_local=' . intval($dataArray['uid']),
+								'',
+								'sorting'
+							);
+							while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+								$valuesArray[] = $row['uid_foreign'];
+							}
+							$dataArray[$colName] = $valuesArray;
+						} else {
+							$dataArray[$colName] = t3lib_div::trimExplode (',', $value, 1);
+						}
+					}
+					break;
+				case 'check':
+					if (is_array($colConfig['items'])) {
+						$value = $dataArray[$colName];
+						if(is_array($value)) {
+							$dataArray[$colName] = 0;
+							foreach ($value AS $dec) {  // Combine values to one hexidecimal number
+								$dataArray[$colName] |= (1 << $dec);
+							}
+						}
+					} else if (isset($dataArray[$colName])) {
+						if ($dataArray[$colName] != '0') {
+							$dataArray[$colName] = '1';
+						} else {
+							$dataArray[$colName] = '0';
+						}
+					}
+					break;
+				default:
+					// nothing
+					break;
+			}
+
+			if ($bMultipleValues) {
+				$value = $dataArray[$colName];
+
+				if (isset($value) && !is_array($value)) {
+					$dataArray[$colName] = t3lib_div::trimExplode (',', $value, 1);
 				}
 			}
 		}
+
+		if (
+			t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey) &&
+			$dataArray['static_info_country']
+		) {
+			$staticInfoObj = t3lib_div::getUserObj('&tx_staticinfotables_pi1');
+				// empty zone if it does not fit to the provided country
+			$zoneArray = $staticInfoObj->initCountrySubdivisions($dataArray['static_info_country']);
+			if (!isset($zoneArray[$dataArray['zone']])) {
+				$dataArray['zone'] = '';
+			}
+		}
+
 	} // modifyRow
 
 	/**
@@ -339,7 +332,7 @@ class tx_srfeuserregister_tca {
 		}
 
 		$charset = $GLOBALS['TSFE']->renderCharset ? $GLOBALS['TSFE']->renderCharset : 'utf-8';
-		$mode = $this->controlData->getMode();
+		$mode = $controlData->getMode();
 		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 		$addressObj = $tablesObj->get('address');
 
@@ -550,7 +543,7 @@ class tx_srfeuserregister_tca {
 												$colConfig['foreign_table'],
 												$where
 											);
-											$languageUid = $this->controlData->getSysLanguageUid(
+											$languageUid = $controlData->getSysLanguageUid(
 												$conf,
 												'ALL',
 												$colConfig['foreign_table']
@@ -558,7 +551,7 @@ class tx_srfeuserregister_tca {
 											if (is_array($foreignRows) && count($foreignRows) > 0) {
 												for ($i = 0; $i < count($foreignRows); $i++) {
 													if ($theTable == 'fe_users' && $colName == 'usergroup') {
-														$foreignRows[$i] = $this->getUsergroupOverlay($conf, $foreignRows[$i]);
+														$foreignRows[$i] = $this->getUsergroupOverlay($conf, $controlData, $foreignRows[$i]);
 													} else if ($localizedRow = $GLOBALS['TSFE']->sys_page->getRecordOverlay($colConfig['foreign_table'], $foreignRows[$i], $languageUid)) {
 														$foreignRows[$i] = $localizedRow;
 													}
@@ -645,7 +638,11 @@ class tx_srfeuserregister_tca {
 										$uidText .= '-' . $mrow['uid'];
 									}
 									$colContent = '<ul id="' . $uidText . '" class="tx-srfeuserregister-multiple-checkboxes">';
-									if ($this->controlData->getSubmit() || $this->controlData->getDoNotSave() || $cmd == 'edit') {
+									if (
+										$this->controlData->getSubmit() ||
+										$controlData->getDoNotSave() ||
+										$cmd == 'edit'
+									) {
 										$startVal = $mrow[$colName];
 									} else {
 										$startVal = $colConfig['default'];
@@ -669,7 +666,11 @@ class tx_srfeuserregister_tca {
 								break;
 
 							case 'radio':
-								if ($this->controlData->getSubmit() || $this->controlData->getDoNotSave() || $cmd == 'edit') {
+								if (
+									$controlData->getSubmit() ||
+									$controlData->getDoNotSave() ||
+									$cmd == 'edit'
+								) {
 									$startVal = $mrow[$colName];
 								} else {
 									$startVal = $colConfig['default'];
@@ -762,7 +763,7 @@ class tx_srfeuserregister_tca {
 										$foreignTable = $this->getForeignTable($theTable, $colName);
 										$whereClause = $userGroupObj->getAllowedWhereClause(
 											$foreignTable,
-											$this->controlData->getPid(),
+											$controlData->getPid(),
 											$conf,
 											$cmdKey
 										);
@@ -783,7 +784,7 @@ class tx_srfeuserregister_tca {
 										$conf['module_sys_dmail_category_PIDLIST']
 									) {
 										$languageUid =
-											$this->controlData->getSysLanguageUid(
+											$controlData->getSysLanguageUid(
 												$conf,
 												'ALL',
 												$colConfig['foreign_table']
@@ -805,7 +806,7 @@ class tx_srfeuserregister_tca {
 									$whereClause = $this->replaceForeignWhereMarker($whereClause,  $colConfig);
 									$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $colConfig['foreign_table'], $whereClause, '', $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['sortby']);
 
-									if (!in_array($colName, $this->controlData->getRequiredArray())) {
+									if (!in_array($colName, $controlData->getRequiredArray())) {
 										if ($colConfig['renderMode'] == 'checkbox' || $colContent) {
 											// nothing
 										} else {
@@ -818,7 +819,7 @@ class tx_srfeuserregister_tca {
 											// Handle usergroup case
 										if ($colName == 'usergroup' && isset($userGroupObj) && is_object($userGroupObj)) {
 											if (!in_array($row2['uid'], $reservedValues)) {
-												$row2 = $this->getUsergroupOverlay($conf, $row2);
+												$row2 = $this->getUsergroupOverlay($conf, $controlData, $row2);
 												$titleText = htmlspecialchars($row2[$titleField], ENT_QUOTES, $charset);
 												$selected = (in_array($row2['uid'], $valuesArray) ? ' selected="selected"' : '');
 												if (!$conf['allowMultipleUserGroupSelection'] && $selectedValue) {
@@ -835,7 +836,7 @@ class tx_srfeuserregister_tca {
 												}
 											}
 										} else {
-											$languageUid = $this->controlData->getSysLanguageUid(
+											$languageUid = $controlData->getSysLanguageUid(
 												$conf,
 												'ALL',
 												$colConfig['foreign_table']
@@ -914,17 +915,23 @@ class tx_srfeuserregister_tca {
 
 
 	/**
-		* Returns the relevant usergroup overlay record fields
-		* Adapted from t3lib_page.php
-		*
-		* @param	mixed		If $usergroup is an integer, it's the uid of the usergroup overlay record and thus the usergroup overlay record is returned. If $usergroup is an array, it's a usergroup record and based on this usergroup record the language overlay record is found and gespeichert.OVERLAYED before the usergroup record is returned.
-		* @param	integer		Language UID if you want to set an alternative value to $this->controlData->sys_language_content which is default. Should be >=0
-		* @return	array		usergroup row which is overlayed with language_overlay record (or the overlay record alone)
-		*/
-	public function getUsergroupOverlay ($conf, $usergroup, $languageUid = '') {
+	* Returns the relevant usergroup overlay record fields
+	* Adapted from t3lib_page.php
+	*
+	* @param array $controlData: the object of the control data
+	* @param	mixed		If $usergroup is an integer, it's the uid of the usergroup overlay record and thus the usergroup overlay record is returned. If $usergroup is an array, it's a usergroup record and based on this usergroup record the language overlay record is found and gespeichert.OVERLAYED before the usergroup record is returned.
+	* @param	integer		Language UID if you want to set an alternative value to $this->controlData->sys_language_content which is default. Should be >=0
+	* @return	array		usergroup row which is overlayed with language_overlay record (or the overlay record alone)
+	*/
+	public function getUsergroupOverlay ($conf, $controlData, $usergroup, $languageUid = '') {
 		// Initialize:
 		if ($languageUid == '') {
-			$languageUid = $this->controlData->getSysLanguageUid($conf, 'ALL', 'fe_groups_language_overlay');
+			$languageUid =
+				$controlData->getSysLanguageUid(
+					$conf,
+					'ALL',
+					'fe_groups_language_overlay'
+				);
 		}
 
 		// If language UID is different from zero, do overlay:

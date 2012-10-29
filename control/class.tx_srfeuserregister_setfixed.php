@@ -43,28 +43,11 @@
 
 
 class tx_srfeuserregister_setfixed {
-	public $tca;
-	public $display;
-	public $email;
-	public $marker;
 	public $previewLabel;
 	public $setfixedEnabled;
 	public $cObj;
 	public $buttonLabelsList;
 	public $otherLabelsList;
-
-
-	public function init (
-		$tca,
-		$display,
-		$email,
-		$marker
-	) {
-		$this->tca = $tca;
-		$this->display = $display;
-		$this->email = $email;
-		$this->marker = $marker;
-	}
 
 
 	/**
@@ -84,12 +67,16 @@ class tx_srfeuserregister_setfixed {
 		$cObj,
 		$langObj,
 		$controlData,
+		$tcaObj,
 		$theTable,
 		$autoLoginKey,
 		$prefixId,
 		$uid,
 		$cmdKey,
+		$marker,
 		$markerArray,
+		$display,
+		$emailObj,
 		$templateCode,
 		$dataArray,
 		$origArray,
@@ -149,8 +136,8 @@ class tx_srfeuserregister_setfixed {
 				!($sFK == 'APPROVE' && count($origArray) && $origArray['disable'] == '0')
 			) {
 				if ($sFK == 'EDIT') {
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
-					$content = $this->display->editScreen(
+					$marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
+					$content = $display->editScreen(
 						$markerArray,
 						$conf,
 						$cObj,
@@ -250,7 +237,7 @@ class tx_srfeuserregister_setfixed {
 					}
 					$modArray = array();
 					$currArr =
-						$this->tca->modifyTcaMMfields(
+						$tcaObj->modifyTcaMMfields(
 							$theTable,
 							$currArr,
 							$modArray
@@ -278,13 +265,13 @@ class tx_srfeuserregister_setfixed {
 						// LOGIN is here only for an error case  ???
 					in_array($sFK, array('APPROVE', 'ENTER', 'LOGIN'))
 				) {
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, $row['by_invitation'] ? 'password' : 'login', $token);
+					$marker->addGeneralHiddenFieldsMarkers($markerArray, $row['by_invitation'] ? 'password' : 'login', $token);
 					if (!$row['by_invitation']) {
-						$this->marker->addPasswordTransmissionMarkers($markerArray);
-						$this->marker->setArray($markerArray);
+						$marker->addPasswordTransmissionMarkers($markerArray);
+						$marker->setArray($markerArray);
 					}
 				} else {
-					$this->marker->addGeneralHiddenFieldsMarkers($markerArray, 'setfixed', $token);
+					$marker->addGeneralHiddenFieldsMarkers($markerArray, 'setfixed', $token);
 				}
 				if ($sFK == 'EDIT') {
 					// Nothing to do
@@ -306,7 +293,7 @@ class tx_srfeuserregister_setfixed {
 
 						if ($loginSuccess) {
 							$content =
-								$this->display->editScreen(
+								$display->editScreen(
 									$markerArray,
 									$conf,
 									$cObj,
@@ -325,7 +312,7 @@ class tx_srfeuserregister_setfixed {
 						} else {
 								// Login failed
 							$content =
-								$this->display->getPlainTemplate(
+								$display->getPlainTemplate(
 									$conf,
 									$cObj,
 									$langObj,
@@ -334,6 +321,7 @@ class tx_srfeuserregister_setfixed {
 									'###TEMPLATE_SETFIXED_FAILED###',
 									$markerArray,
 									$origArray,
+									$theTable,
 									$prefixId,
 									'',
 									''
@@ -350,7 +338,7 @@ class tx_srfeuserregister_setfixed {
 					if (!$content) {
 						$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX . 'OK_' . $setfixedSuffix . '###';
 						$content =
-							$this->display->getPlainTemplate(
+							$display->getPlainTemplate(
 								$conf,
 								$cObj,
 								$langObj,
@@ -359,6 +347,7 @@ class tx_srfeuserregister_setfixed {
 								$subpartMarker,
 								$markerArray,
 								$origArray,
+								$theTable,
 								$prefixId,
 								$row,
 								$securedArray,
@@ -369,7 +358,7 @@ class tx_srfeuserregister_setfixed {
 					if (!$content) {
 						$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX .'OK###';
 						$content =
-							$this->display->getPlainTemplate(
+							$display->getPlainTemplate(
 								$conf,
 								$cObj,
 								$langObj,
@@ -378,6 +367,7 @@ class tx_srfeuserregister_setfixed {
 								$subpartMarker,
 								$markerArray,
 								$origArray,
+								$theTable,
 								$prefixId,
 								$row,
 								$securedArray
@@ -391,7 +381,7 @@ class tx_srfeuserregister_setfixed {
 					) {
 						$errorCode = '';
 							// Compiling email
-						$errorContent = $this->email->compile(
+						$errorContent = $emailObj->compile(
 							SETFIXED_PREFIX . $setfixedSuffix,
 							$conf,
 							$cObj,
@@ -429,7 +419,7 @@ class tx_srfeuserregister_setfixed {
 							!$row['by_invitation']
 						) {
 							$errorCode = '';
-							$errorContent = $this->email->compile(
+							$errorContent = $emailObj->compile(
 								SETFIXED_PREFIX . 'REVIEW',
 								$conf,
 								$cObj,
@@ -477,7 +467,7 @@ class tx_srfeuserregister_setfixed {
 								exit;
 							} else {
 									// Login failed
-								$content = $this->display->getPlainTemplate(
+								$content = $display->getPlainTemplate(
 									$conf,
 									$cObj,
 									$langObj,
@@ -486,6 +476,7 @@ class tx_srfeuserregister_setfixed {
 									'###TEMPLATE_SETFIXED_FAILED###',
 									$markerArray,
 									$origArray,
+									$theTable,
 									$prefixId,
 									'',
 									''
@@ -495,7 +486,7 @@ class tx_srfeuserregister_setfixed {
 					}
 				}
 			} else {
-				$content = $this->display->getPlainTemplate(
+				$content = $display->getPlainTemplate(
 					$conf,
 					$cObj,
 					$langObj,
@@ -504,6 +495,7 @@ class tx_srfeuserregister_setfixed {
 					'###TEMPLATE_SETFIXED_FAILED###',
 					$markerArray,
 					$origArray,
+					$theTable,
 					$prefixId,
 					'',
 					''

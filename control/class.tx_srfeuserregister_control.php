@@ -730,6 +730,7 @@ class tx_srfeuserregister_control {
 			if ($cmd == '' && $controlData->getFeUserData('preview')) {
 				$cmd = $cmdKey;
 			}
+
 			switch ($cmd) {
 				case 'setfixed':
 					if ($conf['infomail']) {
@@ -745,12 +746,16 @@ class tx_srfeuserregister_control {
 						$cObj,
 						$langObj,
 						$controlData,
+						$this->tca,
 						$theTable,
 						$autoLoginKey,
 						$prefixId,
 						$uid,
 						$cmdKey,
+						$this->marker,
 						$markerArray,
+						$this->display,
+						$this->email,
 						$templateCode,
 						$finalDataArray,
 						$origArray,
@@ -828,6 +833,7 @@ class tx_srfeuserregister_control {
 						$langObj,
 						$controlData,
 						$theTable,
+						$prefixId,
 						$finalDataArray,
 						$origArray,
 						$securedArray,
@@ -837,6 +843,7 @@ class tx_srfeuserregister_control {
 						$this->data->inError,
 						$token
 					);
+
 					break;
 				case 'invite':
 				case 'create':
