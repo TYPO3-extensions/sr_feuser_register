@@ -924,7 +924,7 @@ class tx_srfeuserregister_controldata {
 		return $result;
 	}
 
-	public function setPid ($type, $pid)	{
+	public function setPid ($type, $pid) {
 
 		if (!intval($pid)) {
 			switch ($type) {

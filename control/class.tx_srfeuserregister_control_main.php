@@ -248,20 +248,6 @@ class tx_srfeuserregister_control_main {
 			if ($otherLabelsList != '') {
 				$this->marker->addOtherLabelsList($otherLabelsList);
 			}
-
-			$this->display->init(
-				$this->data,
-				$this->marker,
-				$this->tca
-			);
-
-			$this->email->init(
-				$this->display,
-				$this->data,
-				$this->marker,
-				$this->tca,
-				$this->setfixedObj
-			);
 		}
 
 		return $success;

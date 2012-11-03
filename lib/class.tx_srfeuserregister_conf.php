@@ -44,17 +44,10 @@ class tx_srfeuserregister_conf {
 	public $conf = array();
 	public $config = array();
 
-
 	public function init ($conf) {
 		$this->conf = $conf;
 		$this->config = array();
 	}
-
-
-	public function getConf () {
-		return $this->conf;
-	}
-
 
 	public function setConf (array $dataArray, $k = '') {
 		if ($k) {
@@ -64,11 +57,9 @@ class tx_srfeuserregister_conf {
 		}
 	}
 
-
-	public function getConfig () {
-		return $this->config;
+	public function getConf () {
+		return $this->conf;
 	}
-
 
 	public function setConfig (array $dataArray, $k = '') {
 		if ($k) {
@@ -76,6 +67,10 @@ class tx_srfeuserregister_conf {
 		} else {
 			$this->config = $dataArray;
 		}
+	}
+
+	public function getConfig () {
+		return $this->config;
 	}
 }
 

@@ -24,6 +24,7 @@
 if (t3lib_extMgm::isLoaded('sr_freecap')) {
 	require_once(t3lib_extMgm::extPath('sr_freecap') . 'pi2/class.tx_srfreecap_pi2.php');
 }
+
 /**
  * Hook for captcha image marker when extension 'fsr_freecap' is used
  */
@@ -34,7 +35,7 @@ class tx_srfeuserregister_freecap {
 	public function addGlobalMarkers (&$markerArray, $markerObject) {
 		$cmdKey = $markerObject->controlData->getCmdKey();
 		if (t3lib_extMgm::isLoaded('sr_freecap') && $markerObject->conf[$cmdKey . '.']['evalValues.']['captcha_response'] == 'freecap') {
-			$freeCap = &t3lib_div::getUserObj('&tx_srfreecap_pi2');
+			$freeCap = t3lib_div::getUserObj('&tx_srfreecap_pi2');
 			$captchaMarkerArray = $freeCap->makeCaptcha();
 		} else {
 			$captchaMarkerArray = array('###SR_FREECAP_NOTICE###' => '', '###SR_FREECAP_CANT_READ###' => '', '###SR_FREECAP_IMAGE###' => '', '###SR_FREECAP_ACCESSIBLE###' => '');
@@ -66,7 +67,7 @@ class tx_srfeuserregister_freecap {
 			t3lib_extMgm::isLoaded('sr_freecap') &&
 			isset($dataArray[$theField])
 		) {
-			$freeCap = &t3lib_div::getUserObj('&tx_srfreecap_pi2');
+			$freeCap = t3lib_div::getUserObj('&tx_srfreecap_pi2');
 				// Save the sr_freecap word_hash
 				// sr_freecap will invalidate the word_hash after calling checkWord
 			$sessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_' . $freeCap->extKey);
