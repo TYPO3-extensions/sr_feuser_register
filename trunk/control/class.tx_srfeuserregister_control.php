@@ -104,11 +104,11 @@ class tx_srfeuserregister_control {
 		$confObj,
 		$theTable,
 		$controlData,
-		&$data,
+		$data,
 		&$adminFieldList
 	) {
 		$conf = $confObj->getConf();
-		$this->data = &$data;
+		$this->data = $data;
 
 		$tablesObj = t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 		$addressObj = $tablesObj->get('address');
@@ -414,6 +414,7 @@ class tx_srfeuserregister_control {
 					$cmdKey,
 					$controlData->getRequiredArray()
 				);
+
 					// If the two password fields are not equal, clear session data
 				if (
 					is_array($evalErrors['password']) &&
@@ -577,6 +578,10 @@ class tx_srfeuserregister_control {
 					$cObj,
 					$langObj,
 					$controlData,
+					$this->tca,
+					$this->marker,
+					$this->data,
+					$this->setfixedObj,
 					$theTable,
 					$autoLoginKey,
 					$prefixId,
@@ -605,6 +610,11 @@ class tx_srfeuserregister_control {
 						$cObj,
 						$langObj,
 						$controlData,
+						$this->tca,
+						$this->marker,
+						$this->data,
+						$this->display,
+						$this->setfixedObj.
 						$theTable,
 						$autoLoginKey,
 						$prefixId,
@@ -627,7 +637,14 @@ class tx_srfeuserregister_control {
 					$conf['email.']['DELETE_SAVED']
 				) {
 					$emailField = $conf['email.']['field'];
-					$recipient = (isset($finalDataArray) && is_array($finalDataArray) && $finalDataArray[$emailField]) ? $finalDataArray[$emailField] : $origArray[$emailField];
+					$recipient =
+						(
+							isset($finalDataArray) &&
+							is_array($finalDataArray) &&
+							$finalDataArray[$emailField]
+						) ?
+						$finalDataArray[$emailField] :
+						$origArray[$emailField];
 
 					// Send email message(s)
 					$errorContent = $this->email->compile(
@@ -636,6 +653,11 @@ class tx_srfeuserregister_control {
 						$cObj,
 						$langObj,
 						$controlData,
+						$this->tca,
+						$this->marker,
+						$this->data,
+						$this->display,
+						$this->setfixedObj,
 						$theTable,
 						$autoLoginKey,
 						$prefixId,
@@ -747,12 +769,13 @@ class tx_srfeuserregister_control {
 						$langObj,
 						$controlData,
 						$this->tca,
+						$this->marker,
+						$this->data,
 						$theTable,
 						$autoLoginKey,
 						$prefixId,
 						$uid,
 						$cmdKey,
-						$this->marker,
 						$markerArray,
 						$this->display,
 						$this->email,
@@ -761,7 +784,6 @@ class tx_srfeuserregister_control {
 						$origArray,
 						$securedArray,
 						$this,
-						$this->data,
 						$feuData,
 						$token
 					);
@@ -784,6 +806,11 @@ class tx_srfeuserregister_control {
 						$cObj,
 						$langObj,
 						$controlData,
+						$this->tca,
+						$this->marker,
+						$this->data,
+						$this->display,
+						$this->setfixedObj,
 						$theTable,
 						$autoLoginKey,
 						$prefixId,
@@ -796,6 +823,7 @@ class tx_srfeuserregister_control {
 						$controlData->getFailure(),
 						$errorCode
 					);
+
 					if (is_array($errorCode)) {
 						$content = $langObj->getLL($errorCode['0']);
 					}
@@ -812,6 +840,9 @@ class tx_srfeuserregister_control {
 						$cObj,
 						$langObj,
 						$controlData,
+						$this->tca,
+						$this->marker,
+						$this->data,
 						$theTable,
 						$finalDataArray,
 						$origArray,
@@ -832,6 +863,9 @@ class tx_srfeuserregister_control {
 						$cObj,
 						$langObj,
 						$controlData,
+						$this->tca,
+						$this->marker,
+						$this->data,
 						$theTable,
 						$prefixId,
 						$finalDataArray,
@@ -858,6 +892,9 @@ class tx_srfeuserregister_control {
 						$cObj,
 						$langObj,
 						$controlData,
+						$this->tca,
+						$this->marker,
+						$this->data,
 						$cmd,
 						$cmdKey,
 						$controlData->getMode(),
@@ -885,6 +922,9 @@ class tx_srfeuserregister_control {
 						$cObj,
 						$langObj,
 						$controlData,
+						$this->tca,
+						$this->marker,
+						$this->data,
 						$cmd,
 						$cmdKey,
 						$controlData->getMode(),
@@ -986,7 +1026,7 @@ class tx_srfeuserregister_control {
 								$redirectUrl = $controlData->getSiteUrl();
 							}
 						}
-						header('Location: '.t3lib_div::locationHeaderUrl($redirectUrl));
+						header('Location: ' . t3lib_div::locationHeaderUrl($redirectUrl));
 					}
 				} else {
 						// Login failed...

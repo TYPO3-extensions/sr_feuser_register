@@ -43,9 +43,9 @@ class tx_srfeuserregister_pi1 {
 
 	public function main($content, $conf) {
 
-		$pibaseObj = &t3lib_div::getUserObj('&tx_srfeuserregister_pi1_base');
-		$pibaseObj->cObj = &$this->cObj;
-		$content = &$pibaseObj->main($content, $conf);
+		$pibaseObj = t3lib_div::getUserObj('&tx_srfeuserregister_pi1_base');
+		$pibaseObj->cObj = $this->cObj;
+		$content = $pibaseObj->main($content, $conf);
 		return $content;
 	}
 }

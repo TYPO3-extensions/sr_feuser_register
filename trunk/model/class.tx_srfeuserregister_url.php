@@ -47,9 +47,9 @@ class tx_srfeuserregister_url {
 	public $cObj;
 
 
-	public function init (&$controlData, &$cObj) {
-		$this->controlData = &$controlData;
-		$this->cObj = &$cObj;
+	public function init ($controlData, $cObj) {
+		$this->controlData = $controlData;
+		$this->cObj = $cObj;
 	}
 
 

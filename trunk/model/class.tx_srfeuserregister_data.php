@@ -860,7 +860,7 @@ class tx_srfeuserregister_data {
 		}
 
 		if ($this->missing['zone'] && t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey)) {
-			$staticInfoObj = &t3lib_div::getUserObj('&tx_staticinfotables_pi1');
+			$staticInfoObj = t3lib_div::getUserObj('&tx_staticinfotables_pi1');
 				// empty zone if there is not zone for the provided country
 			$zoneArray = $staticInfoObj->initCountrySubdivisions($dataArray['static_info_country']);
 
@@ -1824,7 +1824,7 @@ class tx_srfeuserregister_data {
 		array $dataArray,
 		array $origArray
 	) {
-		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
+		$tablesObj = t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 		$addressObj = $tablesObj->get('address');
 		$parsedArray = $dataArray;
 

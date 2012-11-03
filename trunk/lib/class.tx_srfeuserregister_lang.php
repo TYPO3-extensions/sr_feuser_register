@@ -40,18 +40,15 @@
  *
  */
 
-require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha_language_base.php');
+// require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha_language_base.php');
 
 
 class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
-	public $pibase;
 	public $allowedSuffixes = array('formal', 'informal'); // list of allowed suffixes
 
 
 // 	public function init (&$pibase, &$conf, $LLkey)	{
 	public function init ($pObj, $cObj, $conf, $scriptRelPath, $extKey) {
-
-		$this->pibase = $pObj;
 
 		parent::init(
 			$cObj,
@@ -72,8 +69,7 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 		}
 	}
 
-
-	public function getLLFromString ($string, $bForce=TRUE) {
+	public function getLLFromString ($string, $bForce = TRUE) {
 		global $LOCAL_LANG, $TSFE;
 
 		$rc = '';
@@ -92,7 +88,6 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 
 		return $rc;
 	}	// getLLFromString
-
 
 	/**
 	* Get the item array for a select if configured via TypoScript
@@ -185,7 +180,6 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 		return $localizedLabel;
 	}
 
-
 	public function loadLL () {
 		$rc = TRUE;
 
@@ -244,7 +238,6 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 		return $rc;
 	}	// loadLL
 } // class tx_srfeuserregister_lang
-
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_lang.php']) {
   include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_lang.php']);

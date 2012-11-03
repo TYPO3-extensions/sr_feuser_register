@@ -96,7 +96,7 @@ class tx_srfeuserregister_lib_tables {
 				}
 				$classRef = 'class.' . $className;
 				$classRef = $path . $k . '/' . $classRef . '.php:&' . $className;
-				$tableObj[$k] = &t3lib_div::getUserObj($classRef);	// fetch and store it as persistent object
+				$tableObj[$k] = t3lib_div::getUserObj($classRef);	// fetch and store it as persistent object
 			}
 		}
 
@@ -123,6 +123,7 @@ class tx_srfeuserregister_lib_tables {
 		return ($bView ? $tableObj['view'] : $tableObj['model']);
 	}
 }
+
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_lib_tables.php']) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_lib_tables.php']);
 }

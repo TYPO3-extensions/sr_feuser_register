@@ -68,21 +68,21 @@ class tx_srfeuserregister_setfixed {
 		$langObj,
 		$controlData,
 		$tcaObj,
+		$markerObj,
+		$dataObj,
 		$theTable,
 		$autoLoginKey,
 		$prefixId,
 		$uid,
 		$cmdKey,
-		$marker,
 		$markerArray,
-		$display,
+		$displayObj,
 		$emailObj,
 		$templateCode,
 		$dataArray,
 		$origArray,
 		$securedArray,
 		$pObj,
-		$dataObj,
 		$feuData,
 		$token
 	) {
@@ -136,13 +136,16 @@ class tx_srfeuserregister_setfixed {
 				!($sFK == 'APPROVE' && count($origArray) && $origArray['disable'] == '0')
 			) {
 				if ($sFK == 'EDIT') {
-					$marker->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
-					$content = $display->editScreen(
+					$markerObj->addGeneralHiddenFieldsMarkers($markerArray, $cmd, $token);
+					$content = $displayObj->editScreen(
 						$markerArray,
 						$conf,
 						$cObj,
 						$langObj,
 						$controlData,
+						$tcaObj,
+						$markerObj,
+						$dataObj,
 						$theTable,
 						$dataArray,
 						$origArray,
@@ -265,13 +268,13 @@ class tx_srfeuserregister_setfixed {
 						// LOGIN is here only for an error case  ???
 					in_array($sFK, array('APPROVE', 'ENTER', 'LOGIN'))
 				) {
-					$marker->addGeneralHiddenFieldsMarkers($markerArray, $row['by_invitation'] ? 'password' : 'login', $token);
+					$markerObj->addGeneralHiddenFieldsMarkers($markerArray, $row['by_invitation'] ? 'password' : 'login', $token);
 					if (!$row['by_invitation']) {
-						$marker->addPasswordTransmissionMarkers($markerArray);
-						$marker->setArray($markerArray);
+						$markerObj->addPasswordTransmissionMarkers($markerArray);
+						$markerObj->setArray($markerArray);
 					}
 				} else {
-					$marker->addGeneralHiddenFieldsMarkers($markerArray, 'setfixed', $token);
+					$markerObj->addGeneralHiddenFieldsMarkers($markerArray, 'setfixed', $token);
 				}
 				if ($sFK == 'EDIT') {
 					// Nothing to do
@@ -293,12 +296,15 @@ class tx_srfeuserregister_setfixed {
 
 						if ($loginSuccess) {
 							$content =
-								$display->editScreen(
+								$displayObj->editScreen(
 									$markerArray,
 									$conf,
 									$cObj,
 									$langObj,
 									$controlData,
+									$tcaObj,
+									$markerObj,
+									$dataObj,
 									$theTable,
 									$dataArray,
 									$origArray,
@@ -312,11 +318,14 @@ class tx_srfeuserregister_setfixed {
 						} else {
 								// Login failed
 							$content =
-								$display->getPlainTemplate(
+								$displayObj->getPlainTemplate(
 									$conf,
 									$cObj,
 									$langObj,
 									$controlData,
+									$tcaObj,
+									$markerObj,
+									$dataObj,
 									$templateCode,
 									'###TEMPLATE_SETFIXED_FAILED###',
 									$markerArray,
@@ -338,11 +347,14 @@ class tx_srfeuserregister_setfixed {
 					if (!$content) {
 						$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX . 'OK_' . $setfixedSuffix . '###';
 						$content =
-							$display->getPlainTemplate(
+							$displayObj->getPlainTemplate(
 								$conf,
 								$cObj,
 								$langObj,
 								$controlData,
+								$tcaObj,
+								$markerObj,
+								$dataObj,
 								$templateCode,
 								$subpartMarker,
 								$markerArray,
@@ -358,11 +370,14 @@ class tx_srfeuserregister_setfixed {
 					if (!$content) {
 						$subpartMarker = '###TEMPLATE_' . SETFIXED_PREFIX .'OK###';
 						$content =
-							$display->getPlainTemplate(
+							$displayObj->getPlainTemplate(
 								$conf,
 								$cObj,
 								$langObj,
 								$controlData,
+								$tcaObj,
+								$markerObj,
+								$dataObj,
 								$templateCode,
 								$subpartMarker,
 								$markerArray,
@@ -387,6 +402,11 @@ class tx_srfeuserregister_setfixed {
 							$cObj,
 							$langObj,
 							$controlData,
+							$tcaObj,
+							$markerObj,
+							$dataObj,
+							$displayObj,
+							$this,
 							$theTable,
 							$autoLoginKey,
 							$prefixId,
@@ -425,6 +445,11 @@ class tx_srfeuserregister_setfixed {
 								$cObj,
 								$langObj,
 								$controlData,
+								$tcaObj,
+								$markerObj,
+								$dataObj,
+								$displayObj,
+								$this,
 								$theTable,
 								$autoLoginKey,
 								$prefixId,
@@ -467,11 +492,14 @@ class tx_srfeuserregister_setfixed {
 								exit;
 							} else {
 									// Login failed
-								$content = $display->getPlainTemplate(
+								$content = $displayObj->getPlainTemplate(
 									$conf,
 									$cObj,
 									$langObj,
 									$controlData,
+									$tcaObj,
+									$markerObj,
+									$dataObj,
 									$templateCode,
 									'###TEMPLATE_SETFIXED_FAILED###',
 									$markerArray,
@@ -486,11 +514,14 @@ class tx_srfeuserregister_setfixed {
 					}
 				}
 			} else {
-				$content = $display->getPlainTemplate(
+				$content = $displayObj->getPlainTemplate(
 					$conf,
 					$cObj,
 					$langObj,
 					$controlData,
+					$tcaObj,
+					$markerObj,
+					$dataObj,
 					$templateCode,
 					'###TEMPLATE_SETFIXED_FAILED###',
 					$markerArray,

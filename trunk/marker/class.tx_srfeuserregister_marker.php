@@ -79,7 +79,7 @@ class tx_srfeuserregister_marker {
 		$theTable = $this->controlData->getTable();
 
 		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey)) {
-			$this->staticInfo = &t3lib_div::getUserObj('&tx_staticinfotables_pi1');
+			$this->staticInfo = t3lib_div::getUserObj('&tx_staticinfotables_pi1');
 		}
 		$markerArray = array();
 
@@ -576,7 +576,7 @@ class tx_srfeuserregister_marker {
 		$vars['cmd'] = 'create';
 
 		$unsetVars[] = 'regHash';
-		$url = $urlObj->get('', $this->controlData->getPid('register').','.$GLOBALS['TSFE']->type, $vars, $unsetVars);
+		$url = $urlObj->get('', $this->controlData->getPid('register') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
 		$markerArray['###REGISTER_URL###'] = $url;
 
 		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,doNotSave,preview';
@@ -951,30 +951,33 @@ class tx_srfeuserregister_marker {
 
 	public function addHiddenFieldsMarkers (
 		&$markerArray,
+		$theTable,
+		$extKey,
+		$prefixId,
 		$cmdKey,
 		$mode,
 		$token,
+		$bUseEmailAsUsername,
+		$cmdKeyFields,
 		$dataArray = array()
 	) {
 		if (!$markerArray) {
 			$markerArray = $this->getArray();
 		}
-		$theTable = $this->controlData->getTable();
-		$extKey = $this->controlData->getExtKey();
-		$prefixId = $this->controlData->getPrefixId();
 
 		if ($this->conf[$cmdKey.'.']['preview'] && $mode != MODE_PREVIEW) {
 			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="' . $prefixId .  '[preview]" value="1" />';
 			if (
 				$theTable == 'fe_users' &&
 				$cmdKey == 'edit' &&
-				$this->conf[$cmdKey.'.']['useEmailAsUsername']
+				$bUseEmailAsUsername
 			) {
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $theTable . '][username]" value="' . htmlspecialchars($dataArray['username']) . '" />';
 				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $theTable . '][email]" value="' . htmlspecialchars($dataArray['email']) . '" />';
 			}
 		}
-		$fieldArray = t3lib_div::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1);
+		$fieldArray = t3lib_div::trimExplode(',', $cmdKeyFields, 1);
+
 		if ($mode == MODE_PREVIEW) {
 			$fieldArray = array_diff($fieldArray, array('hidden', 'disable'));
 
@@ -1111,7 +1114,7 @@ class tx_srfeuserregister_marker {
 		$prefixId = $this->controlData->getPrefixId();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'] as $classRef) {
-				$hookObj= &t3lib_div::getUserObj($classRef);
+				$hookObj= t3lib_div::getUserObj($classRef);
 				if (method_exists($hookObj, 'addGlobalMarkers')) {
 					$hookObj->addGlobalMarkers($markerArray, $this);
 				}

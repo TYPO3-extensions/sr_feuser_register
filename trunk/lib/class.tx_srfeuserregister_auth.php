@@ -92,7 +92,13 @@ class tx_srfeuserregister_auth {
 	 * @param integer $codeLength: The length of the code, if different than configured
 	 * @return string MD5 hash (default length of 8 for compatibility with Direct Mail)
 	 */
-	public function authCode (array $record, $fields = '', $extra = '', $rawUrlDecode = FALSE, $codeLength = 0) {
+	public function authCode (
+		array $record,
+		$fields = '',
+		$extra = '',
+		$rawUrlDecode = FALSE,
+		$codeLength = 0
+	) {
 		if ($codeLength == 0) {
 			$codeLength = intval($this->config['codeLength']) ? intval($this->config['codeLength']) : 8;
 		}
@@ -167,9 +173,20 @@ class tx_srfeuserregister_auth {
 	 * @param integer $codeLength: The length of the code, if different than configured
 	 * @return string  the hash value
 	 */
-	public function setfixedHash (array $record, $fields = '', $codeLength = 0) {
+	public function setfixedHash (
+		array $record,
+		$fields = '',
+		$codeLength = 0
+	) {
 		$rawUrlDecode = TRUE;
-		return $this->authCode ($record, $fields, '', $rawUrlDecode, $codeLength);
+		$result = $this->authCode(
+			$record,
+			$fields,
+			'',
+			$rawUrlDecode,
+			$codeLength
+		);
+		return $result;
 	}
 
 

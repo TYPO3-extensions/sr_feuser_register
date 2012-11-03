@@ -52,7 +52,7 @@ class tx_srfeuserregister_model_table_base {
 		$this->bHasBeenInitialised = TRUE;
 	}
 
-	public function needsInit() {
+	public function needsInit () {
 		return !$this->bHasBeenInitialised;
 	}
 
@@ -79,7 +79,7 @@ class tx_srfeuserregister_model_table_base {
 		return $rc;
 	}
 
-	public function &getFieldObj ($fieldname) {
+	public function getFieldObj ($fieldname) {
 		$classAndPath = $this->getFieldClassAndPath($fieldname);
 
 		if ($classAndPath['class']) {
@@ -88,14 +88,14 @@ class tx_srfeuserregister_model_table_base {
 		return $rc;
 	}
 
-	public function &getObj ($classArray) {
+	public function getObj ($classArray) {
 
 		$className = $classArray['class'];
 		$classNameView = $className . '_view';
 		$path = $classArray['path'];
 
 		include_once ($path . 'model/field/class.' . $className . '.php');
-		$fieldObj = &t3lib_div::getUserObj('&' . $className);	// fetch and store it as persistent object
+		$fieldObj = t3lib_div::getUserObj('&' . $className);	// fetch and store it as persistent object
 		if ($fieldObj->needsInit()) {
 			$fieldObj->init($this->cObj);
 		}
@@ -123,5 +123,4 @@ class tx_srfeuserregister_model_table_base {
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_model_table_base.php']) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_model_table_base.php']);
 }
-
 ?>
