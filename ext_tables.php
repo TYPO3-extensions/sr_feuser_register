@@ -201,17 +201,46 @@ $TCA['fe_users']['ctrl']['thumbnail'] = 'image';
 	// fe_users modified
 if (!t3lib_extMgm::isLoaded('direct_mail')) {
 	$tempCols = Array(
-		'module_sys_dmail_html' => Array(
-			'label'=>'LLL:EXT:'.$_EXTKEY.'/locallang_db.xml:fe_users.module_sys_dmail_html',
+		'module_sys_dmail_newsletter' => Array(
+			'label' => 'LLL:EXT:' . $_EXTKEY . '/locallang_db.xml:fe_users.module_sys_dmail_newsletter',
 			'exclude' => '1',
 			'config'=>Array(
 				'type'=>'check'
 				)
+			),
+		'module_sys_dmail_category' => Array(
+			'label' => 'LLL:EXT:' . $_EXTKEY . '/locallang_db.xml:fe_users.module_sys_dmail_category',
+			'exclude' => '1',
+			'config' => Array (
+				'type' => 'select',
+				'foreign_table' => 'sys_dmail_category',
+				'foreign_table_where' => 'AND sys_dmail_category.l18n_parent=0 AND sys_dmail_category.pid IN (###PAGE_TSCONFIG_IDLIST###) ORDER BY sys_dmail_category.uid',
+				'itemsProcFunc' => 'tx_directmail_select_categories->get_localized_categories',
+				'itemsProcFunc_config' => array (
+					'table' => 'sys_dmail_category',
+					'indexField' => 'uid',
+				),
+				'size' => 5,
+				'minitems' => 0,
+				'maxitems' => 60,
+				'renderMode' => 'checkbox',
+				'MM' => 'sys_dmail_feuser_category_mm',
 			)
+		),
+		'module_sys_dmail_html' => Array(
+			'label' => 'LLL:EXT:' . $_EXTKEY . '/locallang_db.xml:fe_users.module_sys_dmail_html',
+			'exclude' => '1',
+			'config'=>Array(
+				'type'=>'check'
+			)
+		)
 	);
-	t3lib_extMgm::addTCAcolumns('fe_users',$tempCols);
-	$TCA['fe_users']['feInterface']['fe_admin_fieldList'].=',module_sys_dmail_html';
-	t3lib_extMgm::addToAllTCATypes('fe_users','--div--;Direct mail,module_sys_dmail_html;;;;1-1-1');
+
+	t3lib_extMgm::addTCAcolumns('fe_users', $tempCols);
+
+	$TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',module_sys_dmail_newsletter,module_sys_dmail_category,module_sys_dmail_html';
+
+	t3lib_extMgm::addToAllTCATypes('fe_users','--div--;Direct mail,module_sys_dmail_newsletter;;;;1-1-1,module_sys_dmail_category,module_sys_dmail_html');
 }
 
 $TCA['fe_groups_language_overlay'] = Array (
