@@ -978,7 +978,11 @@ class tx_srfeuserregister_display {
 			$templateCode = $cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_captcha_response###', '');
 		}
 			// Honour Address List (tt_address) configuration setting
-		if ($controlData->getTable() == 'tt_address' && t3lib_extMgm::isLoaded('tt_address') && isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address'])) {
+		if (
+			$controlData->getTable() == 'tt_address' &&
+			t3lib_extMgm::isLoaded('tt_address') &&
+			isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address'])
+		) {
 			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_address']);
 			if (is_array($extConf) && $extConf['disableCombinedNameField'] == '1') {
 				$templateCode = $cObj->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_name###', '');
@@ -986,6 +990,7 @@ class tx_srfeuserregister_display {
 		}
 
 		foreach ($infoFields as $k => $theField) {
+
 				// Remove field required subpart, if field is not required
 			if (in_array(trim($theField), $requiredArray) ) {
 				if (!t3lib_div::inList($failure, $theField)) {
@@ -1011,7 +1016,10 @@ class tx_srfeuserregister_display {
 				}
 			} else {
 					// Remove field included subpart, if field is not included and is not in failure list
-				if (!in_array(trim($theField), $includedFields) && !t3lib_div::inList($failure,  $theField)) {
+				if (
+					!in_array(trim($theField), $includedFields) &&
+					!t3lib_div::inList($failure, $theField)
+				) {
 					$templateCode =
 						$cObj->substituteSubpart(
 							$templateCode,
@@ -1019,14 +1027,14 @@ class tx_srfeuserregister_display {
 							''
 						);
 				} else {
-					$templateCode = $cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_'.$theField.'###', '');
+					$templateCode = $cObj->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_' . $theField . '###', '');
 					if (!t3lib_div::inList($failure, $theField)) {
-						$templateCode = $cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_'.$theField.'###', '');
+						$templateCode = $cObj->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_' . $theField . '###', '');
 					}
 
 					if (
 						is_array($conf['parseValues.']) &&
-						strstr($conf['parseValues.'][$theField],'checkArray')
+						strstr($conf['parseValues.'][$theField], 'checkArray')
 					) {
 						$listOfCommands = t3lib_div::trimExplode(',', $conf['parseValues.'][$theField], 1);
 						foreach($listOfCommands as $cmd) {

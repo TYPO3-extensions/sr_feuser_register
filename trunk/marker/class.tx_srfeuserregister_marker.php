@@ -270,7 +270,10 @@ class tx_srfeuserregister_marker {
 	* @param array  Array with key/values being marker-strings/substitution values.
 	* @return void  all initialization done directly on array $this->dataArray
 	*/
-	public function setNoError ($cmdKey, &$markContentArray) {
+	public function setNoError (
+		$cmdKey,
+		&$markContentArray
+	) {
 		if (is_array($this->conf[$cmdKey . '.']['evalValues.'])) {
 			foreach($this->conf[$cmdKey . '.']['evalValues.'] as $theField => $theValue) {
 				$markContentArray['###EVAL_ERROR_FIELD_' . $theField . '###'] = '<!--no error-->';
@@ -315,7 +318,7 @@ class tx_srfeuserregister_marker {
 		$keepFields,
 		$requiredArray,
 		$infoFields,
-		&$tcaColumns,
+		$tcaColumns,
 		$bChangesOnly = FALSE
 	) {
 		$urlObj = t3lib_div::getUserObj('&tx_srfeuserregister_url');
@@ -1035,7 +1038,7 @@ class tx_srfeuserregister_marker {
 	*/
 	public function removeStaticInfoSubparts (
 		$templateCode,
-		&$markerArray,
+		$markerArray,
 		$viewOnly = FALSE
 	) {
 		$cObj = t3lib_div::getUserObj('&tx_div2007_cobj');
@@ -1069,7 +1072,7 @@ class tx_srfeuserregister_marker {
 	 * @return	array		The modified $markContentArray
 	 */
 	public function fillInMarkerArray (
-		$markerArray,
+		&$markerArray,
 		$row,
 		$securedArray,
 		$fieldList = '',

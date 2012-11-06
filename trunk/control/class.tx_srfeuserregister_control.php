@@ -178,8 +178,8 @@ class tx_srfeuserregister_control {
 		$this->data->setAdminFieldList($adminFieldList);
 
 		if (!t3lib_extMgm::isLoaded('direct_mail')) {
-			$conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey.'.']['fields'], 1), array('module_sys_dmail_category, module_sys_dmail_newsletter')));
-			$conf[$cmdKey.'.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey.'.']['required'], 1), array('module_sys_dmail_category, module_sys_dmail_newsletter')));
+			$conf[$cmdKey.'.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1), array('module_sys_dmail_category,module_sys_dmail_newsletter')));
+			$conf[$cmdKey . '.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['required'], 1), array('module_sys_dmail_category, module_sys_dmail_newsletter')));
 		}
 
 		$fieldConfArray = array('fields', 'required');
