@@ -304,7 +304,6 @@ class tx_srfeuserregister_email {
 		$missingSubpartArray = array();
 		$userSubpartsFound = 0;
 		$adminSubpartsFound = 0;
-
 		$bHTMLMailEnabled = $this->isHTMLMailEnabled($conf);
 
 		if (!isset($DBrows[0]) || !is_array($DBrows[0])) {
@@ -630,6 +629,7 @@ class tx_srfeuserregister_email {
 			// Substitute the markers and eliminate HTML markup from plain text versions
 		if ($content['user']['all']) {
 			$content['user']['final'] = $cObj->substituteSubpart($content['user']['all'], '###SUB_RECORD###', $content['user']['accum']);
+
 			$content['user']['final'] = $displayObj->removeHTMLComments($content['user']['final']);
 			$content['user']['final'] = $displayObj->replaceHTMLBr($content['user']['final']);
 			$content['user']['final'] = $displayObj->removeHtmlTags($content['user']['final']);
@@ -654,6 +654,7 @@ class tx_srfeuserregister_email {
 				// Remove erroneous \n from locallang file
 			$content['userhtml']['final'] = str_replace('\n', '', $content['userhtml']['final']);
 		}
+
 
 		if ($content['admin']['all']) {
 			$content['admin']['final'] = $cObj->substituteSubpart($content['admin']['all'], '###SUB_RECORD###', $content['admin']['accum']);

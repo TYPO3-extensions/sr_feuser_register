@@ -53,6 +53,7 @@ class tx_srfeuserregister_tca {
 			tx_div2007_alpha::loadTcaAdditions_fh001(array('direct_mail'));
 			$this->fixAddressFeAdminFieldList();
 		}
+
 		tx_div2007_alpha::loadTcaAdditions_fh001($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['extendingTCA']);
 		$this->fixAddressFeAdminFieldList();
 	}
@@ -100,8 +101,11 @@ class tx_srfeuserregister_tca {
 	* @param array  $dataArray: the record array
 	* @return array  the modified data array
 	*/
-	public function modifyTcaMMfields ($theTable, $dataArray, &$modArray) {
-
+	public function modifyTcaMMfields (
+		$theTable,
+		$dataArray,
+		&$modArray
+	) {
 		if (
 			!is_array($GLOBALS['TCA'][$theTable]) ||
 			!is_array($GLOBALS['TCA'][$theTable]['columns'])
@@ -135,10 +139,8 @@ class tx_srfeuserregister_tca {
 					break;
 			}
 		}
-
 		return $rcArray;
 	}
-
 
 	/**
 	* Modifies the incoming data row
@@ -148,8 +150,11 @@ class tx_srfeuserregister_tca {
 	* @param array  $dataArray: the input data array will be changed
 	* @return void
 	*/
-	public function modifyRow ($theTable, &$dataArray, $bColumnIsCount = TRUE) {
-
+	public function modifyRow (
+		$theTable,
+		&$dataArray,
+		$bColumnIsCount = TRUE
+	) {
 		if (
 			!is_array($GLOBALS['TCA'][$theTable]) ||
 			!is_array($GLOBALS['TCA'][$theTable]['columns']) ||
@@ -350,7 +355,8 @@ class tx_srfeuserregister_tca {
 		} else {
 			$mrow = $row;
 		}
-		$fields = $conf[$cmdKey.'.']['fields'];
+
+		$fields = $conf[$cmdKey . '.']['fields'];
 
 		if ($mode == MODE_PREVIEW) {
 			if ($activity == '') {
@@ -393,7 +399,7 @@ class tx_srfeuserregister_tca {
 					// any list wraps set?
 					if (is_array($conf[$type . '.']) && is_array($conf[$type . '.'][$activity.'.']) &&
 						is_array($conf[$type . '.'][$activity . '.'][$colName . '.']) &&
-						is_array($conf[$type . '.'][$activity . '.'][$colName . '.']['list.']))	{
+						is_array($conf[$type . '.'][$activity . '.'][$colName . '.']['list.'])) {
 						$listWrap = $conf[$type . '.'][$activity . '.'][$colName . '.']['list.'];
 						$bListWrap = TRUE;
 					} else {
@@ -556,7 +562,7 @@ class tx_srfeuserregister_tca {
 														$foreignRows[$i] = $localizedRow;
 													}
 													$text = $foreignRows[$i][$titleField];
-													if ($HSC)	{
+													if ($HSC) {
 														$text = htmlspecialchars($text, ENT_QUOTES, $charset);
 													}
 													$colContent .= (($bNotLast || $i < count($foreignRows) - 1 ) ?  $cObj->stdWrap($text, $stdWrap) : $text);
@@ -601,6 +607,7 @@ class tx_srfeuserregister_tca {
 									$bUseTCA = TRUE;
 								}
 						}
+
 						switch ($type) {
 
 							case 'input':
@@ -752,7 +759,10 @@ class tx_srfeuserregister_tca {
 									}
 								}
 
-								if ($colConfig['foreign_table']) {
+								if (
+									$colConfig['foreign_table'] &&
+									isset($GLOBALS['TCA'][$colConfig['foreign_table']])
+								) {
 									t3lib_div::loadTCA($colConfig['foreign_table']);
 									$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
 									$reservedValues = array();
@@ -859,7 +869,7 @@ class tx_srfeuserregister_tca {
 												<dd><label for="' . tx_div2007_alpha5::getClassName_fh001($colName, $prefixId) . '-' . $row2['uid'] . '">' . $titleText . '</label></dd>';
 
 											} else {
-												$colContent .= '<option value="'.$row2['uid'].'"' . (in_array($row2['uid'], $valuesArray) ? 'selected="selected"' : '') . '>' . $titleText . '</option>';
+												$colContent .= '<option value="' . $row2['uid'] . '"' . (in_array($row2['uid'], $valuesArray) ? 'selected="selected"' : '') . '>' . $titleText . '</option>';
 											}
 										}
 									}
@@ -895,7 +905,6 @@ class tx_srfeuserregister_tca {
 		}
 	}
 
-
 	/**
 	* Transfers the item array to one where the key corresponds to the value
 	* @param	array	array of selectable items like found in TCA
@@ -913,7 +922,6 @@ class tx_srfeuserregister_tca {
 		return $rc;
 	}	// getItemKeyArray
 
-
 	/**
 	* Returns the relevant usergroup overlay record fields
 	* Adapted from t3lib_page.php
@@ -923,7 +931,12 @@ class tx_srfeuserregister_tca {
 	* @param	integer		Language UID if you want to set an alternative value to $this->controlData->sys_language_content which is default. Should be >=0
 	* @return	array		usergroup row which is overlayed with language_overlay record (or the overlay record alone)
 	*/
-	public function getUsergroupOverlay ($conf, $controlData, $usergroup, $languageUid = '') {
+	public function getUsergroupOverlay (
+		$conf,
+		$controlData,
+		$usergroup,
+		$languageUid = ''
+	) {
 		// Initialize:
 		if ($languageUid == '') {
 			$languageUid =

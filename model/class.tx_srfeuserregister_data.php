@@ -1239,7 +1239,7 @@ class tx_srfeuserregister_data {
 								$newFieldList,
 								TRUE
 							);
-						$this->updateMMRelations($dataArray);
+						$this->updateMMRelations($theTable, $dataArray);
 						$this->setSaved(TRUE);
 						$newRow = $this->parseIncomingData($outGoingData);
 						$this->tca->modifyRow($theTable, $newRow, FALSE);
@@ -1350,7 +1350,7 @@ class tx_srfeuserregister_data {
 						}
 					}
 					$dataArray['uid'] = $newId;
-					$this->updateMMRelations($dataArray);
+					$this->updateMMRelations($theTable, $dataArray);
 					$this->setSaved(TRUE);
 
 					$newRow = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $newId);
@@ -1592,16 +1592,24 @@ class tx_srfeuserregister_data {
 	*
 	* @return void
 	*/
-	public function updateMMRelations (array $row) {
+	public function updateMMRelations ($theTable, array $row) {
 
 			// update the MM relation
 		$fieldsList = array_keys($row);
 		foreach ($GLOBALS['TCA'][$theTable]['columns'] as $colName => $colSettings) {
 
-			if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
+			if (
+				in_array($colName, $fieldsList) &&
+				$colSettings['config']['type'] == 'select' &&
+				$colSettings['config']['MM']
+			) {
 				$valuesArray = $row[$colName];
 				if (isset($valuesArray) && is_array($valuesArray)) {
-					$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery($colSettings['config']['MM'], 'uid_local='.intval($row['uid']));
+					$res =
+						$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+							$colSettings['config']['MM'],
+							'uid_local=' . intval($row['uid'])
+						);
 					$insertFields = array();
 					$insertFields['uid_local'] = intval($row['uid']);
 					$insertFields['tablenames'] = '';
@@ -1609,7 +1617,11 @@ class tx_srfeuserregister_data {
 					foreach($valuesArray as $theValue) {
 						$insertFields['uid_foreign'] = intval($theValue);
 						$insertFields['sorting']++;
-						$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery($colSettings['config']['MM'], $insertFields);
+						$res =
+							$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+								$colSettings['config']['MM'],
+								$insertFields
+							);
 					}
 				}
 			}
