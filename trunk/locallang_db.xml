@@ -25,6 +25,8 @@
             <label index="fe_users.language">Language:</label>
             <label index="fe_users.first_name">First Name:</label>
             <label index="fe_users.last_name">Last Name:</label>
+            <label index="fe_users.module_sys_dmail_newsletter">Activate Newsletter</label>
+            <label index="fe_users.module_sys_dmail_category">Subscribe to categories</label>
             <label index="fe_users.module_sys_dmail_html">Receive emails in HTML format?</label>
             <label index="fe_users.date_of_birth">Date of birth:</label>
             <label index="fe_users.gender">Mr/Ms:</label>
