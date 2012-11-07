@@ -50,7 +50,6 @@ $EM_CONF[$_EXTKEY] = array(
 			'cc_random_image' => ''
 		),
 		'suggests' => array(
-			'addons_feusers' => '',
 			'felogin' => '',
 			'rsaauth' => '',
 			'saltedpasswords' => '',
