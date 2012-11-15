@@ -200,6 +200,8 @@
 			<label index="missing_title_informal">Please enter your title!</label>
 			<label index="missing_invitation_title">Please enter a title!</label>
 			<label index="missing_invitation_title_informal">Please enter a title!</label>
+			<label index="terms_acknowledged">Do you acknowledge the terms?</label>
+			<label index="terms_acknowledged_informal">Do you acknowledge the terms?</label>
 			<label index="company">Company</label>
 			<label index="tooltip_company">Enter the name of your company or organization.</label>
 			<label index="tooltip_company_informal">Enter the name of your company or organization.</label>
