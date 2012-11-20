@@ -27,7 +27,7 @@
 			<label index="tooltip_invitation_password_informal">Enter a password for the invited person.</label>
 			<label index="tooltip_login_password">Enter your password.</label>
 			<label index="tooltip_login_password_informal">Enter your password.</label>
-			<label index="password_again">Repeat</label>
+			<label index="password_again">Repeat Password</label>
 			<label index="tooltip_password_again">Enter the same password a second time.</label>
 			<label index="tooltip_password_again_informal">Enter the same password a second time.</label>
 			<label index="tooltip_invitation_password_again">Enter the same password a second time.</label>
@@ -200,8 +200,8 @@
 			<label index="missing_title_informal">Please enter your title!</label>
 			<label index="missing_invitation_title">Please enter a title!</label>
 			<label index="missing_invitation_title_informal">Please enter a title!</label>
-			<label index="terms_acknowledged">Do you acknowledge the terms?</label>
-			<label index="terms_acknowledged_informal">Do you acknowledge the terms?</label>
+			<label index="terms_acknowledged">I acknowledge and agree to terms</label>
+			<label index="terms_acknowledged_informal">I acknowledge and agree to terms:</label>
 			<label index="company">Company</label>
 			<label index="tooltip_company">Enter the name of your company or organization.</label>
 			<label index="tooltip_company_informal">Enter the name of your company or organization.</label>
@@ -258,11 +258,11 @@
 			<label index="click_here_to_see_terms_informal">Click here to see the terms.</label>
 			<label index="tooltip_click_here_to_see_terms">Opens a page or file which shows the terms.</label>
 			<label index="tooltip_click_here_to_see_terms_informal">Opens a page or file which shows the terms.</label>
-			<label index="enter_account_info">Please fill in the information of your membership.</label>
-			<label index="enter_account_info_informal">Please fill in the information of your membership.</label>
-			<label index="enter_invitation_account_info">Please fill in the information of the account for the invited person.</label>
-			<label index="enter_invitation_account_info_informal">Please fill in the information of the account for the invited person.</label>
-			<label index="required_info_notice">Please make sure that you fill in your details for the fields marked *</label>
+			<label index="enter_account_info">Please complete the information for your membership.</label>
+			<label index="enter_account_info_informal">Please complete the information for your membership.</label>
+			<label index="enter_invitation_account_info">Please complete the information of the account for the invited person.</label>
+			<label index="enter_invitation_account_info_informal">Please complete the information of the account for the invited person.</label>
+			<label index="required_info_notice">Please complete all required fields *</label>
 			<label index="copy_paste_link">Or copy and paste it into your browser.&lt;br /&gt;</label>
 			<label index="copy_paste_link_informal">Or copy and paste it into your browser.&lt;br /&gt;</label>
 			<label index="excuse_us">Please forgive us for any inconvenience we may have caused you.&lt;br /&gt;&lt;br /&gt;</label>
