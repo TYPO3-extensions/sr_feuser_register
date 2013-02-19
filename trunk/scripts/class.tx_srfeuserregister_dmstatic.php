@@ -35,7 +35,7 @@
  * @package 	TYPO3
  * @subpackage	tx_directmail
  *
- * @version 	$Id: class.tx_directmail_static.php 30936 2010-03-09 18:43:37Z ivankartolo $
+ * @version 	$Id$
  */
 
 

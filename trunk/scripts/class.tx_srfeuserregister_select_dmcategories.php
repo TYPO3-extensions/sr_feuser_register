@@ -30,7 +30,7 @@
  *
  * @package 	TYPO3
  * @subpackage sr_feuser_register
- * @version		$Id: class.tx_directmail_select_categories.php 6012 2007-07-23 12:54:25Z ivankartolo $
+ * @version		$Id$
  */
 
 /**
