@@ -836,6 +836,7 @@ class tx_srfeuserregister_email {
 			(trim($HTMLContent) || trim($PLAINContent))
 		) {
 			$typo3Version = class_exists('t3lib_utility_VersionNumber') ? t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) : t3lib_div::int_from_ver(TYPO3_version);
+
 			if (
 				$typo3Version >= 4007000 ||
 				(
@@ -860,7 +861,6 @@ class tx_srfeuserregister_email {
 					$subject = trim($parts[0]) ? trim($parts[0]) : $defaultSubject;
 					$PLAINContent = trim($parts[1]);
 				}
-
 				$mail = t3lib_div::makeInstance('t3lib_mail_Message');
 				$mail->setSubject($subject);
 				$mail->setFrom(array($fromEmail => $fromName));
