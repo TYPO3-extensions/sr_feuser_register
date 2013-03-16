@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  (c) 2007-2013 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -119,8 +119,6 @@ class tx_srfeuserregister_setfixed {
 			}
 
 			$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
-			$tablesObj = t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
-			$addressObj = $tablesObj->get('address');
 				// Calculate the setfixed hash from incoming data
 			$fieldList = $row['_FIELDLIST'];
 			$codeLength = strlen($authObj->getAuthCode());
@@ -215,12 +213,14 @@ class tx_srfeuserregister_setfixed {
 						t3lib_div::trimExplode(',', $dataObj->fieldList, 1),
 						t3lib_div::trimExplode(',', implode($fieldArr, ','), 1)
 					));
+
 					if ($sFK == 'UNSUBSCRIBE') {
 						$newFieldList = implode(',', array_intersect(
 							t3lib_div::trimExplode(',', $newFieldList),
 							t3lib_div::trimExplode(',', $conf['unsubscribeAllowedFields'], 1)
 						));
 					}
+
 					if ($sFK != 'ENTER' && $newFieldList != '') {
 						$res = $cObj->DBgetUpdate(
 							$theTable,
@@ -276,6 +276,7 @@ class tx_srfeuserregister_setfixed {
 				} else {
 					$markerObj->addGeneralHiddenFieldsMarkers($markerArray, 'setfixed', $token);
 				}
+
 				if ($sFK == 'EDIT') {
 					// Nothing to do
 				} else {
@@ -542,7 +543,7 @@ class tx_srfeuserregister_setfixed {
 	*
 	* @param array  $markerArray: the input marker array
 	* @param array  $setfixed: the TS setup setfixed configuration
-	* @param array  $r: the record row
+	* @param array  $record: the record row
 	* @param array $controlData: the object of the control data
 	* @param array $autoLoginKey: the auto-login key
 	* @return void
@@ -554,20 +555,17 @@ class tx_srfeuserregister_setfixed {
 		$controlData,
 		&$markerArray,
 		$setfixed,
-		$r,
+		array $record,
 		$theTable,
 		$useShortUrls,
 		$editSetfixed,
 		$autoLoginKey
 	) {
-		if ($controlData->getSetfixedEnabled() && is_array($setfixed) ) {
+		if ($controlData->getSetfixedEnabled() && is_array($setfixed)) {
 			$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
-			$tablesObj = t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
-			$addressObj = $tablesObj->get('address');
 
 			foreach($setfixed as $theKey => $data) {
-
-				if (strstr($theKey, '.') ) {
+				if (strstr($theKey, '.')) {
 					$theKey = substr($theKey, 0, -1);
 				}
 				$setfixedpiVars = array();
@@ -578,13 +576,32 @@ class tx_srfeuserregister_setfixed {
 					$noFeusersEdit = FALSE;
 				}
 
-				$setfixedpiVars[$prefixId . '%5BrU%5D'] = $r['uid'];
+				$setfixedpiVars[$prefixId . '%5BrU%5D'] = $record['uid'];
 				$fieldList = $data['_FIELDLIST'];
 				$fieldListArray = t3lib_div::trimExplode(',', $fieldList);
 
 				foreach ($fieldListArray as $fieldname) {
 					if (isset($data[$fieldname])) {
-						$r[$fieldname] = $data[$fieldname];
+						$fieldValue = $data[$fieldname];
+
+						if ($fieldname == 'usergroup' && $data['usergroup.']) {
+							$tablesObj = t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
+							$addressObj = $tablesObj->get('address');
+							$userGroupObj = $addressObj->getFieldObj('usergroup');
+
+							if (is_object($userGroupObj)) {
+								$fieldValue =
+									$userGroupObj->getExtendedValue(
+										$controlData->getExtKey(),
+										$fieldValue,
+										$data['usergroup.'],
+										$record
+									);
+
+								$data[$fieldname] = $fieldValue;
+							}
+						}
+						$record[$fieldname] = $fieldValue;
 					}
 				}
 
@@ -596,7 +613,7 @@ class tx_srfeuserregister_setfixed {
 						$bSetfixedHash = FALSE;
 						$setfixedpiVars[$prefixId . '%5BaC%5D'] =
 							$authObj->authCode(
-								$r,
+								$record,
 								$fieldList
 							);
 					}
@@ -615,15 +632,19 @@ class tx_srfeuserregister_setfixed {
 				}
 
 				if ($bSetfixedHash) {
-					$setfixedpiVars[$prefixId . '%5BaC%5D'] = $authObj->setfixedHash($r, $fieldList);
+					$setfixedpiVars[$prefixId . '%5BaC%5D'] = $authObj->setfixedHash($record, $fieldList);
 				}
 				$setfixedpiVars[$prefixId . '%5Bcmd%5D'] = $cmd;
 
 				if (is_array($data) ) {
-					foreach($data as $fieldName => $fieldValue) {
-						$setfixedpiVars['fD%5B' . $fieldName . '%5D'] = rawurlencode($fieldValue);
+					foreach($data as $fieldname => $fieldValue) {
+						if (strpos($fieldname, '.') !== FALSE) {
+							continue;
+						}
+						$setfixedpiVars['fD%5B' . $fieldname . '%5D'] = rawurlencode($fieldValue);
 					}
 				}
+
 				$linkPID = $controlData->getPID($pidCmd);
 
 				if (t3lib_div::_GP('L') && !t3lib_div::inList($GLOBALS['TSFE']->config['config']['linkVars'], 'L')) {
