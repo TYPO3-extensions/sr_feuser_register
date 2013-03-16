@@ -345,7 +345,6 @@ class tx_srfeuserregister_control {
 		} else {
 			$finalDataArray = $dataArray;
 		}
-
 		$submitData = $controlData->getFeUserData('submit');
 
 		if ($submitData != '') {
@@ -466,6 +465,7 @@ class tx_srfeuserregister_control {
 				}
 				$extKey = $controlData->getExtKey();
 				$newDataArray = array();
+
 				$theUid = $this->data->save(
 					$theTable,
 					$finalDataArray,
