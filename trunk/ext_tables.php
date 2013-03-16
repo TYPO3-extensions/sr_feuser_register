@@ -198,8 +198,12 @@ $TCA['fe_users']['palettes']['2']['showitem'] = 'gender,--linebreak--,' . $TCA['
 
 $TCA['fe_users']['ctrl']['thumbnail'] = 'image';
 
+
 	// fe_users modified
-if (!t3lib_extMgm::isLoaded('direct_mail')) {
+if (
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['enableDirectMail'] &&
+	!t3lib_extMgm::isLoaded('direct_mail')
+) {
 	$tempCols = Array(
 		'module_sys_dmail_newsletter' => Array(
 			'label' => 'LLL:EXT:' . $_EXTKEY . '/locallang_db.xml:fe_users.module_sys_dmail_newsletter',
@@ -215,7 +219,7 @@ if (!t3lib_extMgm::isLoaded('direct_mail')) {
 				'type' => 'select',
 				'foreign_table' => 'sys_dmail_category',
 				'foreign_table_where' => 'AND sys_dmail_category.l18n_parent=0 AND sys_dmail_category.pid IN (###PAGE_TSCONFIG_IDLIST###) ORDER BY sys_dmail_category.uid',
-				'itemsProcFunc' => 'tx_directmail_select_categories->get_localized_categories',
+				'itemsProcFunc' => 'tx_srfeuserregister_select_dmcategories->get_localized_categories',
 				'itemsProcFunc_config' => array (
 					'table' => 'sys_dmail_category',
 					'indexField' => 'uid',

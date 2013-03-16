@@ -291,6 +291,7 @@ class tx_srfeuserregister_controldata {
 				$setFixedArray = array_merge($origArray, $fdArray);
 				$codeLength = strlen($authObj->getAuthCode());
 				$sFK = $this->getFeUserData('sFK');
+
 					// Let's try with a code length of 8 in case this link is coming from direct mail
 				if (
 					$codeLength == 8 &&
@@ -300,6 +301,7 @@ class tx_srfeuserregister_controldata {
 				} else {
 					$authCode = $authObj->setfixedHash($setFixedArray, $fieldList);
 				}
+
 				if (!strcmp($authObj->getAuthCode(), $authCode)) {
 						// We use the valid authCode in place of token
 					$this->setFeUserData($authCode, 'token');

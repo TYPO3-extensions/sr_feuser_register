@@ -1,3 +1,8 @@
+2013-03-16 Franz Holzinger  <franz@ttproducts.de>
+	* new feature: control the user group generation by comparing of the entries in a XML file
+
+2013-02-19 Franz Holzinger  <franz@ttproducts.de>
+	* support for DirectMail fields even if it is not installed any more
 
 2012-10-27 Franz Holzinger  <franz@ttproducts.de>
 	* use global $GLOBALS['TCA'][$theTable] instead of internal $this->TCA variable

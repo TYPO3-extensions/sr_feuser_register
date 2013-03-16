@@ -273,6 +273,111 @@ class tx_srfeuserregister_model_field_usergroup  extends tx_srfeuserregister_mod
 			$parsedArray[$fieldname] = $dataArray[$fieldname];
 		}
 	}
+
+
+	public function getExtendedValue ($extKey, $value, $config, $row) {
+
+		if (isset($config) && is_array($config) && isset($row['cnum'])) {
+			foreach ($config as $key => $lineConfig) {
+				if (
+					isset($lineConfig) &&
+					is_array($lineConfig) &&
+					isset($lineConfig['uid']) &&
+					isset($lineConfig['file'])
+				) {
+					$dataFilename = $GLOBALS['TSFE']->tmpl->getFileName($lineConfig['file']);
+					$absFilename = t3lib_div::getFileAbsFileName($dataFilename);
+					$handle = fopen($absFilename, 'rt');
+					if ($handle === FALSE) {
+						throw new Exception($extKey . ': File not found ("' . $absFilename . '")');
+					} else {
+						// Dateityp bestimmen
+						$basename = basename($dataFilename);
+						$posFileExtension = strrpos($basename, '.');
+						$fileExtension = substr($basename, $posFileExtension + 1);
+
+						if ($fileExtension == 'xml') {
+							$objDom = new domDocument();
+							$objDom->encoding = 'utf-8';
+							$resultLoad = $objDom->load($absFilename, LIBXML_COMPACT);
+
+							if ($resultLoad) {
+
+								$bRowFits = FALSE;
+								$objRows = $objDom->getElementsByTagName('Row');
+
+								foreach ($objRows as $myRow) {
+									$tag = $myRow->nodeName;
+									if ($tag == 'Row') {
+										$objRowDetails = $myRow->childNodes;
+										$xmlRow = array();
+										$count = 0;
+
+										foreach ($objRowDetails as $rowDetail) {
+											$count++;
+											$detailValue = '';
+											$detailTag = $rowDetail->nodeName;
+
+											if ($detailTag != '#text') {
+												$detailValue = trim($rowDetail->nodeValue);
+												$xmlRow[$detailTag] = $detailValue;
+											}
+											if ($count > 30) {
+												break;
+											}
+										}
+
+										// strip off leading zeros
+										$cnumInput = preg_replace('@^(0*)@', '', $row['cnum']);
+										$cnumXml = preg_replace('@^(0*)@', '', $xmlRow['cnum']);
+
+										if (
+											$cnumInput != '' &&
+											$cnumInput == $cnumXml
+										) {
+											$textArray = array($row['last_name'], $xmlRow['last_name']);
+											$nameArray = array();
+											foreach ($textArray as $text) {
+												$text = strtolower($text);
+												$text = preg_replace('@\x{00e4}@u', 'ae', $text); // umlaut ä => ae
+												$text = preg_replace('@\x{00f6}@u', 'oe', $text); // umlaut ö => oe
+												$text = preg_replace('@\x{00fc}@u', 'ue', $text); // umlaut ü => ue
+												$nameArray[] = $text;
+											}
+
+											if ($row['email'] == $xmlRow['email']) {
+												$bRowFits = TRUE;
+											} else if (
+												$nameArray['0'] == $nameArray['1'] &&
+												$row['zip'] == $xmlRow['zip']
+											) {
+												$bRowFits = TRUE;
+											}
+										}
+
+										if ($bRowFits) {
+											break;
+										}
+									}
+								}
+								if ($bRowFits) {
+									$value = intval($lineConfig['uid']);
+									break;
+								}
+							} else {
+								throw new Exception($extKey . ': The file "' . $absFilename . '" is not XML valid.');
+							}
+						} else {
+							throw new Exception($extKey . ': The file "' . $absFilename . '" has an invalid extension.');
+						}
+					}
+				}
+			}
+		}
+
+
+		return $value;
+	}
 }
 
 
