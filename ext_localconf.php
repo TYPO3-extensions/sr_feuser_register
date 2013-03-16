@@ -2,11 +2,11 @@
 if (!defined ('TYPO3_MODE')) die ('Access denied.');
 
 if (!defined ('SR_FEUSER_REGISTER_EXTkey')) {
-	define('SR_FEUSER_REGISTER_EXTkey',$_EXTKEY);
+	define('SR_FEUSER_REGISTER_EXTkey', $_EXTKEY);
 }
 
 if (!defined ('DIV2007_EXTkey')) {
-	define('DIV2007_EXTkey','div2007');
+	define('DIV2007_EXTkey', 'div2007');
 }
 
 if (!defined ('PATH_BE_srfeuserregister')) {
@@ -35,6 +35,8 @@ $_EXTCONF = unserialize($_EXTCONF);    // unserializing the configuration so we 
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['uploadfolder'] = $_EXTCONF['uploadFolder'] ? $_EXTCONF['uploadFolder'] : 'uploads/tx_srfeuserregister';
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageMaxSize'] = $_EXTCONF['imageMaxSize'] ? $_EXTCONF['imageMaxSize'] : 250;
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['imageTypes'] = $_EXTCONF['imageTypes'] ? $_EXTCONF['imageTypes'] : 'png,jpeg,jpg,gif,tif,tiff';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXTkey]['enableDirectMail'] = $_EXTCONF['enableDirectMail'] ? $_EXTCONF['enableDirectMail'] : 0;
+
 
 	/* Example of configuration of hooks */
 /*

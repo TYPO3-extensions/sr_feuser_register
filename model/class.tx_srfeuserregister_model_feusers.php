@@ -29,7 +29,7 @@
  *
  * base class for all database table classes
  *
- * $Id: class.tx_srfeuserregister_model_feusers.php 60023 2012-03-29 06:33:57Z stan $
+ * $Id$
  *
  * @author	Franz Holzinger <franz@ttproducts.de>
  * @maintainer	Franz Holzinger <franz@ttproducts.de>

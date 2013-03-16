@@ -29,7 +29,7 @@
  *
  * data store functions
  *
- * $Id: class.tx_srfeuserregister_data.php 67451 2012-10-26 18:55:50Z franzholz $
+ * $Id$
  *
  * @author	Kasper Skaarhoj <kasper2008@typo3.com>
  * @author	Stanislas Rolland <typo3(arobas)sjbr.ca>

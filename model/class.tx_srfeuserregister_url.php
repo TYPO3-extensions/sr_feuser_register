@@ -29,7 +29,7 @@
  *
  * url functions
  *
- * $Id: class.tx_srfeuserregister_url.php 54218 2011-11-15 21:13:15Z franzholz $
+ * $Id$
  *
  * @author	Kasper Skaarhoj <kasper2007@typo3.com>
  * @author	Stanislas Rolland <stanislas.rolland(arobas)fructifor.ca>

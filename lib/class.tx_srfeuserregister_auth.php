@@ -118,7 +118,12 @@ class tx_srfeuserregister_auth {
 				}
 			}
 		} else {
-			$recordCopy = $record;
+			foreach ($record as $key => $value) {
+				if (is_array($value)) {
+					$value = implode(',', $value);
+				}
+				$recordCopy[$key] = $value;
+			}
 		}
 		$preKey = implode('|', $recordCopy);
 			// Non-standard extra fields
@@ -140,6 +145,7 @@ class tx_srfeuserregister_auth {
 			// In t3lib_div::stdAuthCode, $extras is empty
 		$authCode = $preKey . '|' . $extras . '|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
 		$authCode = substr(md5($authCode), 0, $codeLength);
+
 		return $authCode;
 	}
 
@@ -147,20 +153,23 @@ class tx_srfeuserregister_auth {
 	/**
 	 * Authenticates a record
 	 *
-	 * @param array  $r: the record
+	 * @param array  $record: the record
 	 * @return boolean  true if the record is authenticated
 	 */
-	public function aCAuth ($r, $fields) {
-		$rc = FALSE;
+	public function aCAuth (
+		array $record,
+		$fields
+	) {
+		$result = FALSE;
 
 		if ($this->authCode) {
-			$authCode = $this->authCode($r, $fields);
+			$authCode = $this->authCode($record, $fields);
 
 			if (!strcmp($this->authCode, $authCode)) {
-				$rc = TRUE;
+				$result = TRUE;
 			}
 		}
-		return $rc;
+		return $result;
 	}
 
 
