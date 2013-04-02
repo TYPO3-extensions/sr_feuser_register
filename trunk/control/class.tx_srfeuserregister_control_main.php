@@ -154,12 +154,12 @@ class tx_srfeuserregister_control_main {
 			$theTable
 		);
 
-		if ($this->extKey != SR_FEUSER_REGISTER_EXTkey) {
+		if ($this->extKey != SR_FEUSER_REGISTER_EXT) {
 
 					// Static Methods for Extensions for fetching the texts of sr_feuser_register
 				tx_div2007_alpha5::loadLL_fh002(
 					$pibaseObj,
-					'EXT:' . SR_FEUSER_REGISTER_EXTkey . '/pi1/locallang.xml',
+					'EXT:' . SR_FEUSER_REGISTER_EXT . '/pi1/locallang.xml',
 					FALSE
 				);
 		} // otherwise the labels from sr_feuser_register need not be included, because this has been done in

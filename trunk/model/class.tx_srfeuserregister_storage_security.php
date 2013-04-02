@@ -40,7 +40,7 @@
  */
 class tx_srfeuserregister_storage_security {
 		// Extension key
-	protected $extKey = SR_FEUSER_REGISTER_EXTkey;
+	protected $extKey = SR_FEUSER_REGISTER_EXT;
 		// The storage security level: normal or salted
 	protected $storageSecurityLevel = 'normal';
 

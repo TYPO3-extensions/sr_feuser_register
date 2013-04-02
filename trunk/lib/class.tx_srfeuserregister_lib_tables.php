@@ -77,7 +77,7 @@ class tx_srfeuserregister_lib_tables {
 		}
 
 		if (!$classNameArray['model'] || $bView && !$classNameArray['model']) {
-			debug('Error in ' . SR_FEUSER_REGISTER_EXTkey . '. No class found after calling function tx_srfeuserregister_lib_tables::get with parameters "' . $functablename . '", ' . $bView . '.', 'internal error', __LINE__, __FILE__);
+			debug('Error in ' . SR_FEUSER_REGISTER_EXT . '. No class found after calling function tx_srfeuserregister_lib_tables::get with parameters "' . $functablename . '", ' . $bView . '.', 'internal error', __LINE__, __FILE__);
 			return 'ERROR';
 		}
 
@@ -89,7 +89,7 @@ class tx_srfeuserregister_lib_tables {
 					list($extKey, $className) = t3lib_div::trimExplode(':', $className, TRUE);
 
 					if (!t3lib_extMgm::isLoaded($extKey)) {
-						debug('Error in ' . SR_FEUSER_REGISTER_EXTkey . '. No extension "' . $extKey . '" has been loaded to use class class.' . $className . '.','internal error');
+						debug('Error in ' . SR_FEUSER_REGISTER_EXT . '. No extension "' . $extKey . '" has been loaded to use class class.' . $className . '.','internal error');
 						continue;
 					}
 					$path = t3lib_extMgm::extPath($extKey);
@@ -108,7 +108,7 @@ class tx_srfeuserregister_lib_tables {
 				);
 			}
 		} else {
-			debug ('Object for \'' . $functablename . '\' has not been found.', 'internal error in ' . SR_FEUSER_REGISTER_EXTkey);
+			debug ('Object for \'' . $functablename . '\' has not been found.', 'internal error in ' . SR_FEUSER_REGISTER_EXT);
 		}
 
 		if (

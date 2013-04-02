@@ -31,18 +31,17 @@
  *
  * $Id$
  *
- * @author	Franz Holzinger <contact@fholzinger.com>
- * @maintainer	Franz Holzinger <contact@fholzinger.com>
+ * @author	Franz Holzinger <franz@ttproducts.de>
+ * @maintainer	Franz Holzinger <franz@ttproducts.de>
  * @package TYPO3
  * @subpackage sr_feuser_register
  *
  *
  */
 
-require_once(PATH_BE_div2007.'hooks/class.tx_div2007_hooks_cms.php');
 
 class tx_srfeuserregister_hooks_cms extends tx_div2007_hooks_cms {
-	public $extKey = SR_FEUSER_REGISTER_EXTkey;
+	public $extKey = SR_FEUSER_REGISTER_EXT;
 
 }
 

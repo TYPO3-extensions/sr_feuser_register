@@ -40,7 +40,7 @@
  */
 class tx_srfeuserregister_transmission_security {
 		// Extension key
-	protected $extKey = SR_FEUSER_REGISTER_EXTkey;
+	protected $extKey = SR_FEUSER_REGISTER_EXT;
 		// The storage security level: normal or rsa
 	protected $transmissionSecurityLevel = 'normal';
 
