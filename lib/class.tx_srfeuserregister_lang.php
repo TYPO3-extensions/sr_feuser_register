@@ -40,8 +40,6 @@
  *
  */
 
-// require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha_language_base.php');
-
 
 class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 	public $allowedSuffixes = array('formal', 'informal'); // list of allowed suffixes

@@ -43,7 +43,7 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 		// Plugin initialization variables
 	public $prefixId = 'tx_srfeuserregister_pi1';		// Should be same as classname of the plugin, used for CSS classes, variables
 	public $scriptRelPath = 'pi1/class.tx_srfeuserregister_pi1_base.php'; // Path to this script relative to the extension dir.
-	public $extKey = SR_FEUSER_REGISTER_EXTkey;		// Extension key.
+	public $extKey = SR_FEUSER_REGISTER_EXT;		// Extension key.
 
 	public function main ($content, $conf) {
 		$this->pi_setPiVarDefaults();

@@ -1,3 +1,7 @@
+2013-04-02 Franz Holzinger  <franz@ttproducts.de>
+	* replace PHP constant SR_FEUSER_REGISTER_EXTkey by SR_FEUSER_REGISTER_EXT
+	* remove constants from div2007
+
 2013-03-16 Franz Holzinger  <franz@ttproducts.de>
 	* new feature: control the user group generation by comparing of the entries in a XML file
 
