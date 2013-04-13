@@ -164,8 +164,7 @@ class tx_srfeuserregister_control_main {
 				);
 		} // otherwise the labels from sr_feuser_register need not be included, because this has been done in
 
-		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey)) {
-			include_once(PATH_BE_static_info_tables . 'pi1/class.tx_staticinfotables_pi1.php');
+		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXT)) {
 
 				// Initialise static info library
 			$staticInfoObj = t3lib_div::getUserObj('&tx_staticinfotables_pi1');

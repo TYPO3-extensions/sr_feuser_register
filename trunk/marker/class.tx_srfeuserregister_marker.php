@@ -78,7 +78,7 @@ class tx_srfeuserregister_marker {
 		$this->controlData = $controlData;
 		$theTable = $this->controlData->getTable();
 
-		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey)) {
+		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXT)) {
 			$this->staticInfo = t3lib_div::getUserObj('&tx_staticinfotables_pi1');
 		}
 		$markerArray = array();

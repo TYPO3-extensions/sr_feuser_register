@@ -859,7 +859,7 @@ class tx_srfeuserregister_data {
 			$markContentArray['###EVAL_ERROR_saved###'] = '';
 		}
 
-		if ($this->missing['zone'] && t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey)) {
+		if ($this->missing['zone'] && t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXT)) {
 			$staticInfoObj = t3lib_div::getUserObj('&tx_staticinfotables_pi1');
 				// empty zone if there is not zone for the provided country
 			$zoneArray = $staticInfoObj->initCountrySubdivisions($dataArray['static_info_country']);
