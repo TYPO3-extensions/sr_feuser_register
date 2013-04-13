@@ -17,6 +17,10 @@ if (!defined ('PATH_FE_srfeuserregister_rel')) {
 	define('PATH_FE_srfeuserregister_rel', t3lib_extMgm::siteRelPath(SR_FEUSER_REGISTER_EXT));
 }
 
+if (!defined(STATIC_INFO_TABLES_EXT)) {
+	define('STATIC_INFO_TABLES_EXT', 'static_info_tables');
+}
+
 	// Add Status Report
 $typo3Version = class_exists('t3lib_utility_VersionNumber') ? t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) : t3lib_div::int_from_ver(TYPO3_version);
 if ($typo3Version >= 4006000) {
