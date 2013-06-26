@@ -60,7 +60,7 @@ class tx_srfeuserregister_storage_security {
 	*/
 	protected function setStorageSecurityLevel () {
 		$this->storageSecurityLevel = 'normal';
-		if (t3lib_extMgm::isLoaded('saltedpasswords') && tx_saltedpasswords_div::isUsageEnabled('FE')) {
+		if (tx_saltedpasswords_div::isUsageEnabled('FE')) {
 			$this->storageSecurityLevel = 'salted';
 		}
 	}
@@ -79,7 +79,6 @@ class tx_srfeuserregister_storage_security {
 	*
 	* @param	string	$password: password to encrypt
 	* @return	string	encrypted password
-    *           boolean FALSE in case of an error
 	*/
 	public function encryptPasswordForStorage ($password) {
 
@@ -91,7 +90,6 @@ class tx_srfeuserregister_storage_security {
 					if (is_object($objSalt)) {
 						$encryptedPassword = $objSalt->getHashedPassword($password);
 					} else {
-						$encryptedPassword = FALSE;
 						// Could not get a salting instance from saltedpasswords
 						// Should not happen: checked in tx_srfeuserregister_pi1_base::checkRequirements
 					}

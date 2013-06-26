@@ -431,7 +431,6 @@ class tx_srfeuserregister_controldata {
 	* Retrieves the password from session data and encrypt it for storage
 	*
 	* @return	string	the encrypted password
-    *           boolean FALSE in case of an error
 	*/
 	public function readPasswordForStorage () {
 		$password = $this->readPassword();
