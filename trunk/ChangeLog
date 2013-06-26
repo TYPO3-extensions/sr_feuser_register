@@ -1,3 +1,6 @@
+2016-06-26 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Revert Revision 66556: Require saltedpasswords to be installed
+
 2013-04-02 Franz Holzinger  <franz@ttproducts.de>
 	* replace PHP constant SR_FEUSER_REGISTER_EXTkey by SR_FEUSER_REGISTER_EXT
 	* remove constants from div2007
