@@ -37,6 +37,9 @@ $EM_CONF[$_EXTKEY] = array(
 			'php' => '5.2.0-0.0.0',
 			'typo3' => '4.4.0-6.0.99',
 			'cms' => '',
+			'felogin' => '',
+			'rsaauth' => '',
+			'saltedpasswords' => '',
 			'static_info_tables' => '2.3.0-',
 			'div2007' => '0.10.1-',
 		),
@@ -50,9 +53,6 @@ $EM_CONF[$_EXTKEY] = array(
 			'cc_random_image' => ''
 		),
 		'suggests' => array(
-			'felogin' => '',
-			'rsaauth' => '',
-			'saltedpasswords' => '',
 			'sr_freecap' => '1.5.3-',
 		),
 	),
