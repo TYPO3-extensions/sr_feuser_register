@@ -57,7 +57,6 @@ class tx_srfeuserregister_setfixed {
 	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
 	* @param string $theTable: the table in use
-	* @param array $autoLoginKey: the auto-login key
 	* @param string $prefixId: the extension prefix id
 	* @param array  Array with key/values being marker-strings/substitution values.
 	* @return string  the template with substituted markers
@@ -71,7 +70,6 @@ class tx_srfeuserregister_setfixed {
 		$markerObj,
 		$dataObj,
 		$theTable,
-		$autoLoginKey,
 		$prefixId,
 		$uid,
 		$cmdKey,
@@ -106,16 +104,9 @@ class tx_srfeuserregister_setfixed {
 				}
 			}
 
-			$autoLoginKey = '';
 			if ($theTable == 'fe_users') {
-
 					// Determine if auto-login is requested
-				$autoLoginIsRequested =
-					$controlData->getStorageSecurity()
-						->getAutoLoginIsRequested(
-							$feuData,
-							$autoLoginKey
-						);
+				$autoLoginIsRequested = $controlData->getStorageSecurity()->getAutoLoginIsRequested($feuData, $row);
 			}
 
 			$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
@@ -163,7 +154,7 @@ class tx_srfeuserregister_setfixed {
 						$conf['forceFileDelete']
 					) {
 						// If the record is fully deleted... then remove the image attached.
-						$dataObj->deleteFilesFromRecord($uid);
+						$dataObj->deleteFilesFromRecord($theTable, $uid);
 					}
 					$res = $cObj->DBgetDelete(
 						$theTable,
@@ -232,11 +223,7 @@ class tx_srfeuserregister_setfixed {
 					}
 					$currArr = $origArray;
 					if ($autoLoginIsRequested) {
-						$controlData->getStorageSecurity()
-							->decryptPasswordForAutoLogin(
-								$currArr['tx_srfeuserregister_password'],
-								$autoLoginKey
-							);
+						$controlData->getStorageSecurity()->decryptPasswordForAutoLogin($currArr, $row);
 					}
 					$modArray = array();
 					$currArr =
@@ -307,6 +294,7 @@ class tx_srfeuserregister_setfixed {
 									$markerObj,
 									$dataObj,
 									$theTable,
+									$prefixId,
 									$dataArray,
 									$origArray,
 									$securedArray,
@@ -409,7 +397,6 @@ class tx_srfeuserregister_setfixed {
 							$displayObj,
 							$this,
 							$theTable,
-							$autoLoginKey,
 							$prefixId,
 							array($row),
 							array($origArray),
@@ -452,7 +439,6 @@ class tx_srfeuserregister_setfixed {
 								$displayObj,
 								$this,
 								$theTable,
-								$autoLoginKey,
 								$prefixId,
 								array($row),
 								array($origArray),
@@ -487,7 +473,6 @@ class tx_srfeuserregister_setfixed {
 									$controlData,
 									$currArr
 								);
-
 							if ($loginSuccess) {
 									// Login was successful
 								exit;
@@ -545,7 +530,6 @@ class tx_srfeuserregister_setfixed {
 	* @param array  $setfixed: the TS setup setfixed configuration
 	* @param array  $record: the record row
 	* @param array $controlData: the object of the control data
-	* @param array $autoLoginKey: the auto-login key
 	* @return void
 	*/
 	public function computeUrl (
@@ -558,8 +542,7 @@ class tx_srfeuserregister_setfixed {
 		array $record,
 		$theTable,
 		$useShortUrls,
-		$editSetfixed,
-		$autoLoginKey
+		$editSetfixed
 	) {
 		if ($controlData->getSetfixedEnabled() && is_array($setfixed)) {
 			$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
@@ -622,12 +605,8 @@ class tx_srfeuserregister_setfixed {
 					$pidCmd = ($controlData->getCmd() == 'invite' ? 'confirmInvitation' : 'confirm');
 					$setfixedpiVars[$prefixId . '%5BsFK%5D'] = $theKey;
 					$bSetfixedHash = TRUE;
-
-					if (
-						$useShortUrls &&
-						$autoLoginKey != ''
-					) {
-						$setfixedpiVars[$prefixId . '%5Bkey%5D'] = $autoLoginKey;
+					if (isset($record['auto_login_key'])) {
+						$setfixedpiVars[$prefixId . '%5Bkey%5D'] = $record['auto_login_key'];
 					}
 				}
 

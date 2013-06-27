@@ -60,7 +60,7 @@ class tx_srfeuserregister_storage_security {
 	*/
 	protected function setStorageSecurityLevel () {
 		$this->storageSecurityLevel = 'normal';
-		if (tx_saltedpasswords_div::isUsageEnabled('FE')) {
+		if (t3lib_extMgm::isLoaded('saltedpasswords') && tx_saltedpasswords_div::isUsageEnabled('FE')) {
 			$this->storageSecurityLevel = 'salted';
 		}
 	}
@@ -79,6 +79,7 @@ class tx_srfeuserregister_storage_security {
 	*
 	* @param	string	$password: password to encrypt
 	* @return	string	encrypted password
+    *           boolean FALSE in case of an error
 	*/
 	public function encryptPasswordForStorage ($password) {
 
@@ -90,6 +91,7 @@ class tx_srfeuserregister_storage_security {
 					if (is_object($objSalt)) {
 						$encryptedPassword = $objSalt->getHashedPassword($password);
 					} else {
+						$encryptedPassword = FALSE;
 						// Could not get a salting instance from saltedpasswords
 						// Should not happen: checked in tx_srfeuserregister_pi1_base::checkRequirements
 					}
@@ -111,19 +113,20 @@ class tx_srfeuserregister_storage_security {
 	*/
 	public function initializeAutoLoginPassword (array &$dataArray) {
 		$dataArray['tx_srfeuserregister_password'] = '';
+		unset($dataArray['auto_login_key']);
 	}
 
 	/**
 	* Determines if auto login should be attempted
 	*
 	* @param array $feuData: incoming fe_users parameters
-	* @param string &$autoLoginKey: returns auto-login key
+	* @param array $dataArray: fe_users row
 	* @return boolean TRUE, if auto-login should be attempted
 	*/
-	public function getAutoLoginIsRequested (array $feuData, &$autoLoginKey) {
+	public function getAutoLoginIsRequested (array $feuData, array &$dataArray) {
 		$autoLoginIsRequested = FALSE;
 		if (isset($feuData['key']) && $feuData['key'] !== '') {
-			$autoLoginKey = $feuData['key'];
+			$dataArray['auto_login_key'] = $feuData['key'];
 			$autoLoginIsRequested = TRUE;
 		}
 		return $autoLoginIsRequested;
@@ -132,17 +135,11 @@ class tx_srfeuserregister_storage_security {
 	/**
 	* Encrypts the password for auto-login on confirmation
 	*
-	* @param	string	$password: the password to be encrypted
-	* @param	string	$cryptedPassword: returns the encrypted password
-	* @param	string	$autoLoginKey: returns the auto-login key
-	* @return	boolean  TRUE if the crypted password and auto-login key are filled in
+	* @param	array	$dataArray: array containing the password to be encrypted
+	* @return	void
 	*/
-	public function encryptPasswordForAutoLogin (
-		$password,
-		&$cryptedPassword,
-		&$autoLoginKey
-	) {
-		$result = FALSE;
+	public function encryptPasswordForAutoLogin (array &$dataArray) {
+		$password = $dataArray['password'];
 		$privateKey = '';
 		$cryptedPassword = '';
 		if ($password != '') {
@@ -155,48 +152,42 @@ class tx_srfeuserregister_storage_security {
 			$keyDetails = openssl_pkey_get_details($keyPair);
 			$publicKey = $keyDetails['key'];
 			if (@openssl_public_encrypt($password, $cryptedPassword, $publicKey)) {
-				$autoLoginKey = $privateKey;
-				$result = TRUE;
+				$dataArray['tx_srfeuserregister_password'] = base64_encode($cryptedPassword);
+				$dataArray['auto_login_key'] = $privateKey;
 			}
 		}
-		return $result;
 	}
 
 	/**
 	* Decrypts the password for auto-login on confirmation or invitation acceptation
 	*
-	* @param	string	$password: the password to be decrypted
-	* @param	string	$autoLoginKey: the auto-login private key
-	* @return	boolean  TRUE if decryption is successfull or no rsaauth is used
+	* @param array $dataArray: table row containing the password to be decrypted
+	* @param array $row: incoming data containing the auto-login private key
+	* @return void
 	*/
-	public function decryptPasswordForAutoLogin (
-		&$password,
-		$autoLoginKey
-	) {
-		$result = TRUE;
-		if ($autoLoginKey != '') {
-			$privateKey = $autoLoginKey;
-			if ($privateKey != '') {
-				if ($password != '' && t3lib_extMgm::isLoaded('rsaauth')) {
+	public function decryptPasswordForAutoLogin (array &$dataArray, array $row) {
+		if (isset($row['auto_login_key'])) {
+			$privateKey = $row['auto_login_key'];
+			if ($privateKey !== '') {
+				$password = $dataArray['tx_srfeuserregister_password'];
+				if ($password != '') {
 					$backend = tx_rsaauth_backendfactory::getBackend();
 					if (is_object($backend) && $backend->isAvailable()) {
 						$decryptedPassword = $backend->decrypt($privateKey, $password);
 						if ($decryptedPassword) {
 							$dataArray['password'] = $decryptedPassword;
 						} else {
-								// Failed to decrypt auto login password
+							// Failed to decrypt auto login password
 							$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_decrypt_auto_login_failed');
 							t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 						}
 					} else {
 						// Required RSA auth backend not available
 						// Should not happen: checked in tx_srfeuserregister_pi1_base::checkRequirements
-						$result = FALSE;
 					}
 				}
 			}
 		}
-		return $result;
 	}
 }
 

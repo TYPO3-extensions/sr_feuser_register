@@ -67,7 +67,6 @@ class tx_srfeuserregister_email {
 	* @param array $controlData: the object of the control data
 	* @param array $controlData: the object of the control data
 	* @param string $theTable: the table in use
-	* @param array $autoLoginKey: the auto-login key
 	* @param string $prefixId: the extension prefix id
 	* @param array  Array with key/values being marker-strings/substitution values.
 	* @return	string		HTML content message
@@ -84,7 +83,6 @@ class tx_srfeuserregister_email {
 		$displayObj,
 		$setfixedObj,
 		$theTable,
-		$autoLoginKey,
 		$prefixId,
 		$origArr,
 		$securedArray,
@@ -132,7 +130,6 @@ class tx_srfeuserregister_email {
 						$displayObj,
 						$setfixedObj,
 						$theTable,
-						$autoLoginKey,
 						$prefixId,
 						$DBrows,
 						$DBrows,
@@ -160,7 +157,6 @@ class tx_srfeuserregister_email {
 						$displayObj,
 						$setfixedObj,
 						$theTable,
-						$autoLoginKey,
 						$prefixId,
 						$fetchArray,
 						$fetchArray,
@@ -266,7 +262,6 @@ class tx_srfeuserregister_email {
 	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
 	* @param string $theTable: the table in use
-	* @param array $autoLoginKey: the auto-login key
 	* @param string $prefixId: the extension prefix id
 	* @param array  $DBrows: invoked with just one row of fe_users
 	* @param string  $recipient: an email or the id of a front user
@@ -287,7 +282,6 @@ class tx_srfeuserregister_email {
 		$displayObj,
 		$setfixedObj,
 		$theTable,
-		$autoLoginKey,
 		$prefixId,
 		array $DBrows,
 		array $origRows,
@@ -527,8 +521,7 @@ class tx_srfeuserregister_email {
 				$currentRow,
 				$theTable,
 				$conf['useShortUrls'],
-				$conf['edit.']['setfixed'],
-				$autoLoginKey
+				$conf['edit.']['setfixed']
 			);
 
 			$markerObj->addStaticInfoMarkers(

@@ -1,3 +1,6 @@
+2016-06-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Revert Revision 67451: Do not expose autologin private key
+
 2016-06-26 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Revert Revision 66556: Require saltedpasswords to be installed
 	* Revert Revision 66559: Require felogin, rsaauth and saltedpasswords

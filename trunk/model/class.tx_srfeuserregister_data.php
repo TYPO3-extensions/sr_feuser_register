@@ -58,7 +58,7 @@ class tx_srfeuserregister_data {
 	public $error;
 	public $additionalUpdateFields;
 	public $fieldList; // List of fields from fe_admin_fieldList
-	public $specialfieldlist; // list of special fields like captcha
+	public $specialfieldlist = ''; // list of special fields like captcha
 	public $recUid = 0;
 	public $missing = array(); // array of required missing fields
 	public $inError = array(); // array of fields with eval errors other than absence
@@ -446,6 +446,9 @@ class tx_srfeuserregister_data {
 				$thePid = $this->controlData->getPid();
 				$recordTestPid = $thePid ? $thePid :
 				(method_exists('\TYPO3\CMS\Core\Utility\MathUtility', 'convertToPositiveInteger') ? \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($pid) : t3lib_div::intval_positive($pid));
+			}
+			if ($cmdKey == 'invite') {
+				unset($this->conf[$cmdKey . '.']['evalValues.']['password']);
 			}
 			$countArray = array();
 			$countArray['hook'] = array();
@@ -1450,7 +1453,7 @@ class tx_srfeuserregister_data {
 
 						if (!$GLOBALS['TCA'][$theTable]['ctrl']['delete'] || $this->conf['forceFileDelete']) {
 								// If the record is being fully deleted... then remove the images or files attached.
-							$this->deleteFilesFromRecord($this->getRecUid());
+							$this->deleteFilesFromRecord($theTable, $this->getRecUid());
 						}
 						$res =
 							$this->cObj->DBgetDelete(
@@ -1480,7 +1483,7 @@ class tx_srfeuserregister_data {
 	 * @param string  $uid: record id
 	 * @return void
 	 */
-	public function deleteFilesFromRecord ($uid) {
+	public function deleteFilesFromRecord ($theTable, $uid) {
 		$rec = $GLOBALS['TSFE']->sys_page->getRawRecord($this->controlData->getTable(), $uid);
 		$updateFields = array();
 		foreach($GLOBALS['TCA'][$theTable]['columns'] as $field => $conf) {
@@ -1634,7 +1637,7 @@ class tx_srfeuserregister_data {
 	*
 	* @return void
 	*/
-	public function deleteMMRelations ($table, $uid, array $row = array()) {
+	public function deleteMMRelations ($theTable, $uid, array $row = array()) {
 			// update the MM relation
 		$fieldsList = array_keys($row);
 		foreach ($GLOBALS['TCA'][$theTable]['columns'] as $colName => $colSettings) {
