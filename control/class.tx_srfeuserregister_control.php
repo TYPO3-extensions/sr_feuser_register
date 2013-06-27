@@ -131,7 +131,6 @@ class tx_srfeuserregister_control {
 		}
 			// Set the command key
 		$cmdKey = '';
-
 		if ($cmd == 'edit' || $cmd == 'invite' || $cmd == 'password' || $cmd == 'infomail') {
 			$cmdKey = $cmd;
 		} else {
@@ -203,6 +202,7 @@ class tx_srfeuserregister_control {
 
 			if ($cmdKey == 'invite') {
 				$conf[$cmdKey . '.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1), array('password')));
+				$conf[$cmdKey . '.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['required'], 1), array('password')));
 			}
 
 			if ($conf[$cmdKey . '.']['useEmailAsUsername']) {
@@ -308,10 +308,6 @@ class tx_srfeuserregister_control {
 		$prefixId = $controlData->getPrefixId();
 		$controlData->setMode(MODE_NORMAL);
 
-		$password = '';
-		$cryptedPassword = '';
-		$autoLoginKey = '';
-
 			// Commands with which the data will not be saved by $this->data->save
 		$noSaveCommands = array('infomail', 'login', 'delete');
 		$uid = $this->data->getRecUid();
@@ -381,7 +377,6 @@ class tx_srfeuserregister_control {
 					$cmdKey,
 					$controlData->getRequiredArray()
 				);
-
 					// If the two password fields are not equal, clear session data
 				if (
 					is_array($evalErrors['password']) &&
@@ -432,6 +427,7 @@ class tx_srfeuserregister_control {
 				!$controlData->getFeUserData('preview') &&
 				!$bDoNotSave
 			) {
+				$password = '';
 				if ($theTable == 'fe_users') {
 					$controlData->getStorageSecurity()->initializeAutoLoginPassword($finalDataArray);
 						// We generate an interim password in the case of an invitation
@@ -440,8 +436,6 @@ class tx_srfeuserregister_control {
 					}
 
 						// If inviting or if auto-login will be required on confirmation, we store an encrypted version of the password
-					$password = $controlData->readPasswordForStorage();
-
 					if (
 						$cmdKey == 'invite' ||
 						$cmdKey == 'create' &&
@@ -450,18 +444,9 @@ class tx_srfeuserregister_control {
 								!$conf['enableAutoLoginOnCreate']
 							)
 					) {
-						$bEncrypted =
-							$controlData->getStorageSecurity()
-								->encryptPasswordForAutoLogin(
-									$password,
-									$cryptedPassword,
-									$autoLoginKey
-								);
-
-						if ($bEncrypted) {
-							$finalDataArray['tx_srfeuserregister_password'] = base64_encode($cryptedPassword);
-						}
+						$controlData->getStorageSecurity()->encryptPasswordForAutoLogin($finalDataArray);
 					}
+					$password = $controlData->readPasswordForStorage();
 				}
 				$extKey = $controlData->getExtKey();
 				$newDataArray = array();
@@ -481,6 +466,7 @@ class tx_srfeuserregister_control {
 
 				if ($newDataArray) {
 					$dataArray = $newDataArray;
+					$dataArray['auto_login_key'] = $finalDataArray['auto_login_key'];
 				}
 
 				if ($this->data->getSaved()) {
@@ -583,7 +569,6 @@ class tx_srfeuserregister_control {
 					$this->data,
 					$this->setfixedObj,
 					$theTable,
-					$autoLoginKey,
 					$prefixId,
 					$dataArray,
 					$origArray,
@@ -616,7 +601,6 @@ class tx_srfeuserregister_control {
 						$this->display,
 						$this->setfixedObj.
 						$theTable,
-						$autoLoginKey,
 						$prefixId,
 						array($dataArray),
 						array($origArray),
@@ -659,7 +643,6 @@ class tx_srfeuserregister_control {
 						$this->display,
 						$this->setfixedObj,
 						$theTable,
-						$autoLoginKey,
 						$prefixId,
 						array($dataArray),
 						array($origArray),
@@ -723,7 +706,6 @@ class tx_srfeuserregister_control {
 				$content = $errorContent;
 			}
 		} else if ($this->data->getError()) {
-
 				// If there was an error, we return the template-subpart with the error message
 			$templateCode = $cObj->getSubpart($templateCode, $this->data->getError());
 			$this->marker->addLabelMarkers(
@@ -748,7 +730,6 @@ class tx_srfeuserregister_control {
 				// That is either preview or just displaying an empty or not correctly filled form
 			$this->marker->setArray($markerArray);
 			$token = $controlData->readToken();
-
 			if ($cmd == '' && $controlData->getFeUserData('preview')) {
 				$cmd = $cmdKey;
 			}
@@ -772,7 +753,6 @@ class tx_srfeuserregister_control {
 						$this->marker,
 						$this->data,
 						$theTable,
-						$autoLoginKey,
 						$prefixId,
 						$uid,
 						$cmdKey,
@@ -812,7 +792,6 @@ class tx_srfeuserregister_control {
 						$this->display,
 						$this->setfixedObj,
 						$theTable,
-						$autoLoginKey,
 						$prefixId,
 						$origArray,
 						$securedArray,
@@ -981,31 +960,27 @@ class tx_srfeuserregister_control {
 			'uident_text' => $row['password'],
 			'status' => 'login',
 		);
-			// Do not use a particular page id
-		$GLOBALS['TSFE']->fe_user->checkPid = 0;
-			// Get authentication info array
+		// Set pid of users records
+		$GLOBALS['TSFE']->fe_user->checkPid = $conf['pid'] ? TRUE : FALSE;
+		$GLOBALS['TSFE']->fe_user->checkPid_value = $conf['pid'] ? $conf['pid'] : '';
+		// Get authentication info array
 		$authInfo = $GLOBALS['TSFE']->fe_user->getAuthInfoArray();
-			// Get user info
-		$user =
-			$GLOBALS['TSFE']->fe_user->fetchUserRecord(
-				$authInfo['db_user'],
-				$loginData['uname']
-			);
-
+		// Get user info
+		$user = $GLOBALS['TSFE']->fe_user->fetchUserRecord($authInfo['db_user'], $loginData['uname']);
 		if (is_array($user)) {
-				// Get the appropriate authentication service
+			// Get the appropriate authentication service
 			$authServiceObj = t3lib_div::makeInstanceService('auth', 'authUserFE');
-				// Check authentication
+			// Check authentication
 			if (is_object($authServiceObj)) {
 				$ok = $authServiceObj->compareUident($user, $loginData);
 				if ($ok) {
-						// Login successfull: create user session
+					// Login successfull: create user session
 					$GLOBALS['TSFE']->fe_user->createUserSession($user);
+					$GLOBALS['TSFE']->initUserGroups();
 					$GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession();
-					$GLOBALS['TSFE']->fe_user->fetchGroupData();
 					$GLOBALS['TSFE']->loginUser = 1;
-					$GLOBALS['TSFE']->gr_list = '0,-2';
-						// Delete regHash
+
+					// Delete regHash
 					if (
 						$controlData->getValidRegHash()
 					) {

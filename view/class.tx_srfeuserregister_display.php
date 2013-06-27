@@ -547,7 +547,7 @@ class tx_srfeuserregister_display {
 				(
 					($theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) ||
 					$aCAuth ||
-					$theCode && !strcmp($authObj->authCode, $theCode)
+					($theCode && !strcmp($authObj->authCode, $theCode))
 				)
 			) {
 				$markerObj->setArray($markerArray);
@@ -1129,7 +1129,6 @@ class tx_srfeuserregister_display {
 	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
 	* @param string $theTable: the table in use
-	* @param array $autoLoginKey: the auto-login key
 	* @param string  $subpartMarker: the template subpart marker
 	* @param array  $row: the data array, if any
 	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
@@ -1145,7 +1144,6 @@ class tx_srfeuserregister_display {
 		$dataObj,
 		$setfixedObj,
 		$theTable,
-		$autoLoginKey,
 		$prefixId,
 		$dataArray,
 		$origArray,
@@ -1242,8 +1240,7 @@ class tx_srfeuserregister_display {
 						$dataArray,
 						$theTable,
 						$conf['useShortUrls'],
-						$conf['edit.']['setfixed'],
-						$autoLoginKey
+						$conf['edit.']['setfixed']
 					);
 				}
 			}
