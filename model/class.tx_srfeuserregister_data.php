@@ -445,7 +445,7 @@ class tx_srfeuserregister_data {
 			} else {
 				$thePid = $this->controlData->getPid();
 				$recordTestPid = $thePid ? $thePid :
-				t3lib_div::intval_positive($pid);
+				(method_exists('\TYPO3\CMS\Core\Utility\MathUtility', 'convertToPositiveInteger') ? \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($pid) : t3lib_div::intval_positive($pid));
 			}
 			$countArray = array();
 			$countArray['hook'] = array();
