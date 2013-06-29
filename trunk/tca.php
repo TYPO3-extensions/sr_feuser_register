@@ -1,9 +1,10 @@
 <?php
+if (!defined ('TYPO3_MODE')) {
+	die ('Access denied.');
+}
 
-if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
-
-$TCA['fe_groups_language_overlay'] = Array (
-	'ctrl' => $TCA['fe_groups_language_overlay']['ctrl'],
+$GLOBALS['TCA']['fe_groups_language_overlay'] = Array (
+	'ctrl' => $GLOBALS['TCA']['fe_groups_language_overlay']['ctrl'],
 	'interface' => Array (
 		'showRecordFieldList' => 'hidden,fe_group,sys_language_uid,title'
 	),
@@ -38,8 +39,8 @@ $TCA['fe_groups_language_overlay'] = Array (
 			'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_groups_language_overlay.title',
 			'config' => Array (
 				'type' => 'input',	
-				'size' => '20',
-				'max' => '20',
+				'size' => '30',
+				'max' => '70',
 				'eval' => 'trim,required',
 			)
 		),
