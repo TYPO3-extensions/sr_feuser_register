@@ -385,13 +385,19 @@ class tx_srfeuserregister_marker {
 				$markerArray['###FIELD_' . $markerkey . '_CHECKED###'] = '';
 				$markerArray['###LABEL_' . $markerkey . '_CHECKED###'] = '';
 				$markerArray['###POSTVARS_' . $markerkey . '###'] = '';
-				$fieldArray = t3lib_div::trimExplode(',', $row[$theField]);
-				foreach ($fieldArray as $key => $value) {
-					$label = $this->langObj->getLLFromString($colConfig['items'][$value][0]);
-					$markerArray['###FIELD_' . $markerkey . '_CHECKED###'] .= '- ' . $label . '<br />';
-					$label = $this->langObj->getLLFromString($colConfig['items'][$value][0]);
-					$markerArray['###LABEL_' . $markerkey . '_CHECKED###'] .= '- ' . $label . '<br />';
-					$markerArray['###POSTVARS_' . $markerkey.'###'] .= chr(10) . '	<input type="hidden" name="FE[fe_users][' . $theField . '][' . $key . ']" value ="' . $value . '" />';
+				if (isset($row[$theField])) {
+					if (is_array($row[$theField])) {
+						$fieldArray = $row[$theField];
+					} else {
+						$fieldArray = t3lib_div::trimExplode(',', $row[$theField]);
+					}
+					foreach ($fieldArray as $key => $value) {
+						$label = $this->langObj->getLLFromString($colConfig['items'][$value][0]);
+						$markerArray['###FIELD_' . $markerkey . '_CHECKED###'] .= '- ' . $label . '<br />';
+						$label = $this->langObj->getLLFromString($colConfig['items'][$value][0]);
+						$markerArray['###LABEL_' . $markerkey . '_CHECKED###'] .= '- ' . $label . '<br />';
+						$markerArray['###POSTVARS_' . $markerkey.'###'] .= chr(10) . '	<input type="hidden" name="FE[fe_users][' . $theField . '][' . $key . ']" value ="' . $value . '" />';
+					}
 				}
 			} else if ($colConfig['type'] == 'check') {
 				$markerArray['###FIELD_' . $markerkey . '_CHECKED###'] = ($row[$theField]) ? 'checked' : '';
