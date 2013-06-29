@@ -1,5 +1,6 @@
 2016-06-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #46080: BE log error after change PHP5.2 -> PHP5.3
+	* Fix bug #41799: Title in fe_groups_language_overlay is too short
 
 2016-06-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Revert Revision 67451: Do not expose autologin private key
