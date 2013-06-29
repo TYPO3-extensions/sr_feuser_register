@@ -56,8 +56,8 @@ class tx_srfeuserregister_data {
 	public $fileFunc = ''; // Set to a basic_filefunc object for file uploads
 
 	public $error;
-	public $additionalUpdateFields;
-	public $fieldList; // List of fields from fe_admin_fieldList
+	public $additionalUpdateFields = '';
+	public $fieldList = ''; // List of fields from fe_admin_fieldList
 	public $specialfieldlist = ''; // list of special fields like captcha
 	public $recUid = 0;
 	public $missing = array(); // array of required missing fields
