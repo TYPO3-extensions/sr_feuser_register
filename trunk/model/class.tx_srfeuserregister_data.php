@@ -1244,9 +1244,11 @@ class tx_srfeuserregister_data {
 							);
 						$this->updateMMRelations($theTable, $dataArray);
 						$this->setSaved(TRUE);
-						$newRow = $this->parseIncomingData($outGoingData);
-						$this->tca->modifyRow($theTable, $newRow, FALSE);
-						$newRow = array_merge($origArray, $newRow);
+
+						$newRow = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $theUid);
+						$newRow = $this->parseIncomingData($newRow);
+						$this->tca->modifyRow($theTable, $newRow, TRUE);
+
 						tx_div2007_alpha::userProcess_fh001(
 							$this->control,
 							$this->conf['edit.'],
@@ -1589,7 +1591,6 @@ class tx_srfeuserregister_data {
 		return $rc;
 	}	// evalDate
 
-
 	/**
 	* Update MM relations
 	*
@@ -1840,6 +1841,7 @@ class tx_srfeuserregister_data {
 		array $origArray
 	) {
 		$tablesObj = t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
+		//$tablesObj->init($theTable);
 		$addressObj = $tablesObj->get('address');
 		$parsedArray = $dataArray;
 
