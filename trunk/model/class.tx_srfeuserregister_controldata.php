@@ -314,15 +314,16 @@ class tx_srfeuserregister_controldata {
 			$this->setValidRegHash($bValidRegHash);
 			$this->setFeUserData($feUserData);
 			$this->writeRedirectUrl();
-				// Generate a new token for the next created forms
-			$token = $authObj->generateToken();
-			$this->writeToken($token);
 		} else {
-				// Erase all FE user data when the token is not valid
+			// Erase all FE user data when the token is not valid
 			$this->setFeUserData(array());
-				// Erase any stored password
+			// Erase any stored password
 			$this->writePassword('');
 		}
+		// Generate a new token for the next created forms
+		$token = $authObj->generateToken();
+		$this->writeToken($token);
+		$this->setTokenValid(TRUE);
 	}
 
 	public function setRegHash ($regHash) {
