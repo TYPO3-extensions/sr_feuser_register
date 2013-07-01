@@ -3,6 +3,7 @@
 	* Fix bug #44151: ###BACK_URL### not working, looses Parameters and possible wrong character encoding
 	* Fix bug #41321: Clicking cancel on the account deletion confirmation pages causes a 404 error with internet explorer
 	* Fix bug #46429: Empty Form after cancelling delete Form
+	* Fix issue #49426: addGlobalMarkers: wrong conditions
 
 2016-06-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #46080: BE log error after change PHP5.2 -> PHP5.3
