@@ -693,18 +693,8 @@ class tx_srfeuserregister_display {
 					if ($aCAuth || $bMayEdit) {
 						$markerArray = $markerObj->getArray();
 						// Display the form, if access granted.
-						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="rU" value="' .  $dataObj->getRecUid() . '" />';
-
-						if ($theTable != 'fe_users') {
-							$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $prefixId . '[aC]" value="' . $authObj->authCode($origArray, $conf['setfixed.']['DELETE.']['_FIELDLIST']) . '" />';
-						}
-						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $prefixId . '[cmd]" value="delete" />';
-						$markerObj->addFormToken(
-							$markerArray,
-							$token,
-							$extKey,
-							$prefixId
-						);
+						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $prefixId . '[rU]" value="' .  $dataObj->getRecUid() . '" />';
+						$markerObj->addGeneralHiddenFieldsMarkers ($markerArray, 'delete', $token);
 
 						$markerObj->setArray($markerArray);
 						$content = $this->getPlainTemplate(

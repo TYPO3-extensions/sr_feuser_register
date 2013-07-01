@@ -574,14 +574,13 @@ class tx_srfeuserregister_marker {
 		}
 		$vars['cmd'] = $this->controlData->getCmd();
 		$vars['token'] = $token;
-		$vars['backURL'] = rawurlencode($urlObj->get('', $GLOBALS['TSFE']->id . ',' . $GLOBALS['TSFE']->type, $vars));
+		$vars['backURL'] = rawurlencode($formUrl);
 		$vars['cmd'] = 'delete';
 		$vars['rU'] = $uid;
 		$vars['preview'] = '1';
 
 		$markerArray['###DELETE_URL###'] = $urlObj->get('', $this->controlData->getPid('edit') . ',' . $GLOBALS['TSFE']->type, $vars);
 
-		$vars['backURL'] = rawurlencode($formUrl);
 		$vars['cmd'] = 'create';
 
 		$unsetVars[] = 'regHash';
