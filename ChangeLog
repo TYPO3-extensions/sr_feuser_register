@@ -13,6 +13,7 @@
 	* Correction to the manual
 	* Fix issue #40548: Show password_again as required field on registration form
 	* Fix issue #39560: Added single checkbox always checked
+	* Follow-up to issue #39560: Added single checkbox always checked
 
 2016-06-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #46080: BE log error after change PHP5.2 -> PHP5.3
