@@ -189,12 +189,16 @@ class tx_srfeuserregister_control {
 
 		$theTable = $controlData->getTable();
 		if ($theTable == 'fe_users') {
-				// When not in edit mode, add username to lists of fields and required fields unless explicitly disabled
+			// When not in edit mode, add username to lists of fields and required fields unless explicitly disabled
 			if (empty($conf[$cmdKey.'.']['doNotEnforceUsername'])) {
 				if ($cmdKey != 'edit' && $cmdKey != 'password') {
 					$conf[$cmdKey . '.']['fields'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'] . ',username', 1)));
 					$conf[$cmdKey . '.']['required'] = implode(',', array_unique(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['required'] . ',username', 1)));
 				}
+			}
+			// When in edit mode, remove password from required fields
+			if ($cmdKey == 'edit') {
+				$conf[$cmdKey . '.']['required'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['required'], 1), array('password')));
 			}
 			if ($conf[$cmdKey . '.']['generateUsername'] || $cmdKey == 'password') {
 				$conf[$cmdKey . '.']['fields'] = implode(',', array_diff(t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1), array('username')));
