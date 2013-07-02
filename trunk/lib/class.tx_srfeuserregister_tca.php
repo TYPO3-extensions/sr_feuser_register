@@ -222,6 +222,8 @@ class tx_srfeuserregister_tca {
 						} else {
 							$dataArray[$colName] = '0';
 						}
+					} else {
+						$dataArray[$colName] = '0';
 					}
 					break;
 				default:
