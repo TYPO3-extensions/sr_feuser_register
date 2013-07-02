@@ -445,7 +445,7 @@ class tx_srfeuserregister_data {
 			} else {
 				$thePid = $this->controlData->getPid();
 				$recordTestPid = $thePid ? $thePid :
-				(method_exists('\TYPO3\CMS\Core\Utility\MathUtility', 'convertToPositiveInteger') ? \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($pid) : t3lib_div::intval_positive($pid));
+				(method_exists('TYPO3\\CMS\\Core\\Utility\\MathUtility', 'convertToPositiveInteger') ? \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($pid) : t3lib_div::intval_positive($pid));
 			}
 			if ($cmdKey == 'invite') {
 				unset($this->conf[$cmdKey . '.']['evalValues.']['password']);
