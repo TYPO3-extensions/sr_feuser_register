@@ -625,7 +625,7 @@ class tx_srfeuserregister_setfixed {
 					}
 				}
 
-				$linkPID = $controlData->getPID($pidCmd);
+				$linkPID = $controlData->getPid($pidCmd);
 
 				if (t3lib_div::_GP('L') && !t3lib_div::inList($GLOBALS['TSFE']->config['config']['linkVars'], 'L')) {
 					$setfixedpiVars['L'] = t3lib_div::_GP('L');

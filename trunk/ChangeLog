@@ -7,6 +7,7 @@
 	* Fix issue #37022: Empty form security token
 	* Fix issue #39069: Check pid of fe-users in function login (Thanks to Georg Schönweger)
 	* Fix issue with confirmType in setfixed url
+	* Correct function name in tx_srfeuserregister_setfixed->computeUrl
 
 2016-06-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #46080: BE log error after change PHP5.2 -> PHP5.3
