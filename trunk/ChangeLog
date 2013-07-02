@@ -1,4 +1,7 @@
-2016-07-01 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+2013-07-02 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix dates in change log
+
+2013-07-01 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #41827: enableAdminNotifyOnUpdate=1 produces wrong dmailCategories values in E-Mail
 	* Fix bug #44151: ###BACK_URL### not working, looses Parameters and possible wrong character encoding
 	* Fix bug #41321: Clicking cancel on the account deletion confirmation pages causes a 404 error with internet explorer
@@ -15,14 +18,14 @@
 	* Fix issue #39560: Added single checkbox always checked
 	* Follow-up to issue #39560: Added single checkbox always checked
 
-2016-06-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+2013-06-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #46080: BE log error after change PHP5.2 -> PHP5.3
 	* Fix bug #41799: Title in fe_groups_language_overlay is too short
 
-2016-06-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+2013-06-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Revert Revision 67451: Do not expose autologin private key
 
-2016-06-26 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+2013-06-26 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Revert Revision 66556: Require saltedpasswords to be installed
 	* Revert Revision 66559: Require felogin, rsaauth and saltedpasswords
 	* Revert Revision 66567: Always check for required rsaauth
