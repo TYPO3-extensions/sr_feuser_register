@@ -1230,7 +1230,8 @@ class tx_srfeuserregister_display {
 						$dataArray,
 						$theTable,
 						$conf['useShortUrls'],
-						$conf['edit.']['setfixed']
+						$conf['edit.']['setfixed'],
+						$conf['confirmType']
 					);
 				}
 			}

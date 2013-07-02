@@ -542,7 +542,8 @@ class tx_srfeuserregister_setfixed {
 		array $record,
 		$theTable,
 		$useShortUrls,
-		$editSetfixed
+		$editSetfixed,
+		$confirmType
 	) {
 		if ($controlData->getSetfixedEnabled() && is_array($setfixed)) {
 			$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
@@ -634,22 +635,22 @@ class tx_srfeuserregister_setfixed {
 					$thisHash = $this->storeFixedPiVars($setfixedpiVars);
 					$setfixedpiVars = array($prefixId . '%5BregHash%5D' => $thisHash);
 				}
-				$conf = array();
-				$conf['disableGroupAccessCheck'] = TRUE;
+				$urlConf = array();
+				$urlConf['disableGroupAccessCheck'] = TRUE;
 				$bconfirmTypeIsInt = (
 					class_exists('t3lib_utility_Math') ?
-						t3lib_utility_Math::canBeInterpretedAsInteger($conf['confirmType']) :
-						t3lib_div::testInt($conf['confirmType'])
+						t3lib_utility_Math::canBeInterpretedAsInteger($confirmType) :
+						t3lib_div::testInt($confirmType)
 				);
 
-				$confirmType = ($bconfirmTypeIsInt ? intval($conf['confirmType']) : $GLOBALS['TSFE']->type);
+				$confirmType = ($bconfirmTypeIsInt ? intval($confirmType) : $GLOBALS['TSFE']->type);
 				$url =
 					tx_div2007_alpha5::getTypoLink_URL_fh003(
 						$cObj,
 						$linkPID . ',' . $confirmType,
 						$setfixedpiVars,
 						'',
-						$conf
+						$urlConf
 					);
 
 				$bIsAbsoluteURL = ((strncmp($url, 'http://', 7) == 0) || (strncmp($url, 'https://', 8) == 0));
