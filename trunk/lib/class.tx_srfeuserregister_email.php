@@ -521,7 +521,8 @@ class tx_srfeuserregister_email {
 				$currentRow,
 				$theTable,
 				$conf['useShortUrls'],
-				$conf['edit.']['setfixed']
+				$conf['edit.']['setfixed'],
+				$conf['confirmType']
 			);
 
 			$markerObj->addStaticInfoMarkers(
