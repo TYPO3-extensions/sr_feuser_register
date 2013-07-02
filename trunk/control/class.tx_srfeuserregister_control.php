@@ -960,9 +960,11 @@ class tx_srfeuserregister_control {
 			'uident_text' => $row['password'],
 			'status' => 'login',
 		);
-		// Set pid of users records
-		$GLOBALS['TSFE']->fe_user->checkPid = $conf['pid'] ? TRUE : FALSE;
-		$GLOBALS['TSFE']->fe_user->checkPid_value = $conf['pid'] ? $conf['pid'] : '';
+
+		// Check against configured pid (defaulting to current page)
+		$GLOBALS['TSFE']->fe_user->checkPid = TRUE;
+		$GLOBALS['TSFE']->fe_user->checkPid_value = $this->controlData->getPid();
+
 		// Get authentication info array
 		$authInfo = $GLOBALS['TSFE']->fe_user->getAuthInfoArray();
 		// Get user info
