@@ -1,5 +1,6 @@
 2013-07-02 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix dates in change log
+	* Follow-up to t3lib_div::intval_positive not available in TYPO3 6.0 in tx_srfeuserregister_data
 
 2013-07-01 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #41827: enableAdminNotifyOnUpdate=1 produces wrong dmailCategories values in E-Mail
