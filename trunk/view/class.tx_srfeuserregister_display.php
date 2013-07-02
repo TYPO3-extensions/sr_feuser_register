@@ -245,7 +245,8 @@ class tx_srfeuserregister_display {
 					$controlData->getPrefixId()
 				);
 			$modData = $dataObj->modifyDataArrForFormUpdate($currentArray, $cmdKey);
-			$fields = $dataObj->getFieldList() . $dataObj->getAdditionalUpdateFields();
+			$fields = $dataObj->getFieldList() . ',' . $dataObj->getAdditionalUpdateFields();
+			$fields = implode(',', array_intersect(explode(',', $fields), t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1)));
 			$fields = $controlData->getOpenFields($fields);
 			$updateJS =
 				$cObj->getUpdateJS(
@@ -456,7 +457,8 @@ class tx_srfeuserregister_display {
 				);
 
 			if ($mode != MODE_PREVIEW && $bNeedUpdateJS) {
-				$fields = $dataObj->fieldList . $dataObj->additionalUpdateFields;
+				$fields = $dataObj->getFieldList() . ',' . $dataObj->getAdditionalUpdateFields();
+				$fields = implode(',', array_intersect(explode(',', $fields), t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1)));	
 				$fields = $controlData->getOpenFields($fields);
 				$modData = $dataObj->modifyDataArrForFormUpdate($dataArray, $cmdKey);
 				$form =
