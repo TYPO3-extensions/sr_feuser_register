@@ -152,7 +152,7 @@ class tx_srfeuserregister_control {
 		$controlData->setCmdKey($cmdKey);
 
 		if (!$theUid) {
-			if (!count($dataArray)) {
+			if (!is_array($dataArray) || !count($dataArray)) {
 				$dataArray = $this->data->defaultValues($cmdKey);
 				$this->data->setDataArray($dataArray);
 			}
@@ -362,7 +362,7 @@ class tx_srfeuserregister_control {
 		$markerArray = $this->marker->getArray();
 
 			// Evaluate incoming data
-		if (count($finalDataArray) && !in_array($cmd, $noSaveCommands)) {
+		if (is_array($finalDataArray) && count($finalDataArray) && !in_array($cmd, $noSaveCommands)) {
 			$this->data->setName($finalDataArray, $cmdKey, $theTable);
 			$this->data->parseValues($theTable, $finalDataArray, $origArray, $cmdKey);
 			$this->data->overrideValues($finalDataArray, $cmdKey);
@@ -390,14 +390,16 @@ class tx_srfeuserregister_control {
 				}
 				if ($conf['evalFunc']) {
 					$this->marker->setArray($markerArray);
-
-					$finalDataArray =
+					$userProcessedDataArray =
 						tx_div2007_alpha::userProcess_fh001(
 							$this,
 							$conf,
 							'evalFunc',
 							$finalDataArray
 						);
+					if (is_array($userProcessedDataArray)) {
+						$finalDataArray = $userProcessedDataArray;
+					}
 					$markerArray = $this->marker->getArray();
 				}
 			} else {
