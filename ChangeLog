@@ -1,3 +1,6 @@
+2013-07-04 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Revert fix issue #39429: usergroups outside pid not saved in edit / invite mode
+
 2013-07-02 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix dates in change log
 	* Follow-up to t3lib_div::intval_positive not available in TYPO3 6.0 in tx_srfeuserregister_data
