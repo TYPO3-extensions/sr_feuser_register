@@ -213,9 +213,15 @@ class tx_srfeuserregister_data {
 		if ($k != '') {
 			if ($bOverrride || !isset($this->dataArray[$k])) {
 				$this->dataArray[$k] = $dataArray;
+				if (isset($this->dataArray[$k]['uid'])) {
+					$this->dataArray[$k]['uid'] = intval($this->dataArray[$k]['uid']);
+				}
 			}
 		} else {
 			$this->dataArray = $dataArray;
+			if (isset($this->dataArray['uid'])) {
+				$this->dataArray['uid'] = intval($this->dataArray['uid']);
+			}
 		}
 	}
 

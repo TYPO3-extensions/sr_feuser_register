@@ -1,5 +1,6 @@
 2013-08-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix text in static template constants
+	* Fix issue #50934: Security Ticket #2013011810000038
 
 2013-07-04 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Revert fix issue #39429: usergroups outside pid not saved in edit / invite mode
