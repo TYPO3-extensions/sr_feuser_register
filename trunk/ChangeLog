@@ -1,3 +1,6 @@
+2013-08-11 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #50607: sr_freecap Captcha might not be accepted after submission (Thanks to Roland Schenke)
+
 2013-08-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix text in static template constants
 	* Fix issue #50934: Security Ticket #2013011810000038
