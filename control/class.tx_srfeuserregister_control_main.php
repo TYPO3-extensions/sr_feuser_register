@@ -56,6 +56,7 @@ class tx_srfeuserregister_control_main {
 	public $tca;  // object of type tx_srfeuserregister_tca
 	public $marker; // object of type tx_srfeuserregister_marker
 	public $extKey;
+	protected $errorMessage = '';
 
 
 	public function main (
@@ -84,7 +85,7 @@ class tx_srfeuserregister_control_main {
 		$templateCode = $this->data->getTemplateCode();
 
 		if ($success !== FALSE)	{
-			$error_message = '';
+			$this->errorMessage = '';
 			$content = $this->control->doProcessing(
 				$pibaseObj->cObj,
 				$this->langObj,
@@ -95,10 +96,14 @@ class tx_srfeuserregister_control_main {
 				$origArray,
 				$dataArray,
 				$templateCode,
-				$error_message
+				$this->errorMessage
 			);
 		} else {
-			$content = '<em>Internal error in ' . $pibaseObj->extKey . '!</em><br /> Maybe you forgot to include the basic template file under statics from extensions.';
+			if ($this->errorMessage) {
+				$content = $this->errorMessage;
+			} else {
+				$content = '<em>Internal error in ' . $pibaseObj->extKey . '!</em><br /> Maybe you forgot to include the basic template file under statics from extensions.';
+			}
 		}
 		$content = $pibaseObj->pi_wrapInBaseClass($content);
 		return $content;
@@ -153,7 +158,6 @@ class tx_srfeuserregister_control_main {
 			$pibaseObj->piVars,
 			$theTable
 		);
-
 		if ($this->extKey != SR_FEUSER_REGISTER_EXT) {
 
 					// Static Methods for Extensions for fetching the texts of sr_feuser_register
@@ -166,6 +170,7 @@ class tx_srfeuserregister_control_main {
 
 		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXT)) {
 				// Initialise static info library
+			require_once(t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php');
 			$staticInfoObj = t3lib_div::getUserObj('&tx_staticinfotables_pi1');
 			if (!method_exists($staticInfoObj, 'needsInit') || $staticInfoObj->needsInit()) {
 				$staticInfoObj->init();
@@ -196,58 +201,62 @@ class tx_srfeuserregister_control_main {
 		$success = $this->langObj->loadLL();
 
 		if ($success !== FALSE) {
-			$this->control->init(
-				$this->langObj,
-				$cObj,
-				$this->controlData,
-				$this->display,
-				$this->marker,
-				$this->email,
-				$this->tca,
-				$this->setfixedObj,
-				$this->urlObj
-			);
-
-			$this->data->init(
-				$cObj,
-				$conf,
-				$this->langObj,
-				$this->tca,
-				$this->control,
-				$theTable,
-				$this->controlData
-			);
-
-			$this->control->init2( // only here the $conf is changed
-				$confObj,
-				$theTable,
-				$this->controlData,
-				$this->data,
-				$adminFieldList
-			);
-
-			$uid = $this->data->getRecUid();
-
-			$this->marker->init(
-				$confObj,
-				$this->data,
-				$this->tca,
-				$this->langObj,
-				$this->controlData,
-				$this->urlObj,
-				$uid,
-				$this->controlData->readToken()
-			);
-
-			if ($buttonLabelsList != '') {
-				$this->marker->setButtonLabelsList($buttonLabelsList);
-			}
-
-			if ($otherLabelsList != '') {
-				$this->marker->addOtherLabelsList($otherLabelsList);
+			if ($this->controlData->isTokenValid()) {
+				$this->control->init(
+					$this->langObj,
+					$cObj,
+					$this->controlData,
+					$this->display,
+					$this->marker,
+					$this->email,
+					$this->tca,
+					$this->setfixedObj,
+					$this->urlObj
+				);
+	
+				$this->data->init(
+					$cObj,
+					$conf,
+					$this->langObj,
+					$this->tca,
+					$this->control,
+					$theTable,
+					$this->controlData
+				);
+	
+				$this->control->init2( // only here the $conf is changed
+					$confObj,
+					$theTable,
+					$this->controlData,
+					$this->data,
+					$adminFieldList
+				);
+	
+				$uid = $this->data->getRecUid();
+	
+				$this->marker->init(
+					$confObj,
+					$this->data,
+					$this->tca,
+					$this->langObj,
+					$this->controlData,
+					$this->urlObj,
+					$uid,
+					$this->controlData->readToken()
+				);
+	
+				if ($buttonLabelsList != '') {
+					$this->marker->setButtonLabelsList($buttonLabelsList);
+				}
+	
+				if ($otherLabelsList != '') {
+					$this->marker->addOtherLabelsList($otherLabelsList);
+				}
+			} else {
+				$success = FALSE;
+				$this->errorMessage = $this->langObj->getLL('invalidToken');
 			}
 		}
-
 		return $success;
 	}	// init
 }

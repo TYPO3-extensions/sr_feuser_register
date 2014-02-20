@@ -9,6 +9,7 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="invalidToken">Apparently, this link has expired.</label>
 			<label index="unsupported">unsupported</label>
 			<label index="username">Preferred username</label>
 			<label index="tooltip_username">Enter the username you want to use to login.</label>
