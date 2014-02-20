@@ -162,7 +162,7 @@ class tx_srfeuserregister_auth {
 	) {
 		$result = FALSE;
 
-		if ($this->authCode) {
+		if ($this->authCode && is_array($record)) {
 			$authCode = $this->authCode($record, $fields);
 
 			if (!strcmp($this->authCode, $authCode)) {
