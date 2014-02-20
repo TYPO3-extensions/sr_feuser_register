@@ -829,69 +829,42 @@ class tx_srfeuserregister_email {
 			trim($recipient) &&
 			(trim($HTMLContent) || trim($PLAINContent))
 		) {
-			$typo3Version = class_exists('t3lib_utility_VersionNumber') ? t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) : t3lib_div::int_from_ver(TYPO3_version);
-
-			if (
-				$typo3Version >= 4007000 ||
-				(
-					$typo3Version >= 4005000 &&
-					is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']) &&
-					isset($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']['substituteMailDelivery']) &&
-					is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']['substituteMailDelivery']) &&
-					array_search('t3lib_mail_SwiftMailerAdapter', $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/utility/class.t3lib_utility_mail.php']['substituteMailDelivery']) !== FALSE
-				)
-			) {
-				$fromName = str_replace('"', '\'', $fromName);
-				if (preg_match('#[/\(\)\\<>,;:@\.\]\[\s]#', $fromName)) {
-					$fromName = '"' . $fromName . '"';
-				}
-				$defaultSubject = 'Front end user registration message';
-				if ($HTMLContent) {
-					$parts = preg_split('/<title>|<\\/title>/i', $HTMLContent, 3);
-					$subject = trim($parts[1]) ? strip_tags(trim($parts[1])) : $defaultSubject;
-				} else {
-						// First line is subject
-					$parts = explode(chr(10), $PLAINContent, 2);
-					$subject = trim($parts[0]) ? trim($parts[0]) : $defaultSubject;
-					$PLAINContent = trim($parts[1]);
-				}
-				$mail = t3lib_div::makeInstance('t3lib_mail_Message');
-				$mail->setSubject($subject);
-				$mail->setFrom(array($fromEmail => $fromName));
-				$mail->setSender($fromEmail);
-				$mail->setReturnPath($fromEmail);
-				$mail->setReplyTo($replyTo ? array($replyTo => '') : array($fromEmail => $fromName));
-				$mail->setPriority(3);
-
-					// ATTACHMENT
-				if ($fileAttachment && file_exists($fileAttachment)) {
-					$mail->attach(Swift_Attachment::fromPath($fileAttachment));
-				}
-					// HTML
-				if (trim($HTMLContent)) {
-					$HTMLContent = $this->embedMedia($mail, $HTMLContent);
-					$mail->setBody($HTMLContent, 'text/html');
-				}
-					// PLAIN
-				$mail->addPart($PLAINContent, 'text/plain');
-					// SET Headers and Content
-				$mail->setTo(array($recipient));
-				$mail->send();
-			} else {
-				tx_div2007_email::sendMail(
-					$recipient,
-					$subject,
-					$PLAINContent,
-					$HTMLContent,
-					$fromEmail,
-					$fromName,
-					$fileAttachment,
-					'',
-					'',
-					'',
-					$replyTo
-				);
+			$fromName = str_replace('"', '\'', $fromName);
+			if (preg_match('#[/\(\)\\<>,;:@\.\]\[\s]#', $fromName)) {
+				$fromName = '"' . $fromName . '"';
 			}
+			$defaultSubject = 'Front end user registration message';
+			if ($HTMLContent) {
+				$parts = preg_split('/<title>|<\\/title>/i', $HTMLContent, 3);
+				$subject = trim($parts[1]) ? strip_tags(trim($parts[1])) : $defaultSubject;
+			} else {
+					// First line is subject
+				$parts = explode(chr(10), $PLAINContent, 2);
+				$subject = trim($parts[0]) ? trim($parts[0]) : $defaultSubject;
+				$PLAINContent = trim($parts[1]);
+			}
+			$mail = t3lib_div::makeInstance('t3lib_mail_Message');
+			$mail->setSubject($subject);
+			$mail->setFrom(array($fromEmail => $fromName));
+			$mail->setSender($fromEmail);
+			$mail->setReturnPath($fromEmail);
+			$mail->setReplyTo($replyTo ? array($replyTo => '') : array($fromEmail => $fromName));
+			$mail->setPriority(3);
+
+				// ATTACHMENT
+			if ($fileAttachment && file_exists($fileAttachment)) {
+				$mail->attach(Swift_Attachment::fromPath($fileAttachment));
+			}
+				// HTML
+			if (trim($HTMLContent)) {
+				$HTMLContent = $this->embedMedia($mail, $HTMLContent);
+				$mail->setBody($HTMLContent, 'text/html');
+			}
+				// PLAIN
+			$mail->addPart($PLAINContent, 'text/plain');
+				// SET Headers and Content
+			$mail->setTo(array($recipient));
+			$mail->send();
 		}
 	}
 
