@@ -553,7 +553,6 @@ class tx_srfeuserregister_marker {
 		$prefixId
 	) {
 		$markerArray = array();
-		$this->checkToken($token, $extKey);
 		$vars = array();
 		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,rU,aC,sFK,doNotSave,preview';
 		$unsetVars = t3lib_div::trimExplode(',', $unsetVarsList);
@@ -925,21 +924,6 @@ class tx_srfeuserregister_marker {
 		}
 	}	// addFileUploadMarkers
 
-
-	public function checkToken ($token, $extKey) {
-		$tokenError = '';
-		if ($token == '') {
-			$tokenError = $this->langObj->getLL('internal_token_empty');
-		} else if (strlen($token) < 10) {
-			$tokenError = $this->langObj->getLL('token_short');
-		}
-
-		if ($tokenError != '') {
-			exit($extKey . ': ' . $tokenError);
-		}
-	}
-
-
 	/**
 	* Inserts a token for the form and stores it
 	*
@@ -951,8 +935,6 @@ class tx_srfeuserregister_marker {
 		$extKey,
 		$prefixId
 	) {
-		$this->checkToken($token, $extKey);
-
 		$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="' . $prefixId . '[token]" value="' . $token . '" />';
 	}
 
