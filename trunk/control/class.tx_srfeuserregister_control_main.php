@@ -55,6 +55,7 @@ class tx_srfeuserregister_control_main {
 	public $langObj; // object of type tx_srfeuserregister_lang
 	public $tca;  // object of type tx_srfeuserregister_tca
 	public $marker; // object of type tx_srfeuserregister_marker
+	public $pibaseObj;
 	public $extKey;
 	protected $errorMessage = '';
 
@@ -202,9 +203,15 @@ class tx_srfeuserregister_control_main {
 
 		if ($success !== FALSE) {
 			if ($this->controlData->isTokenValid()) {
+				$this->tca->init2(
+					$this->pibaseObj,
+					$this->conf,
+					$this->controlData,
+					$this->langObj
+				);
 				$this->control->init(
 					$this->langObj,
-					$cObj,
+					$this->pibaseObj->cObj,
 					$this->controlData,
 					$this->display,
 					$this->marker,
@@ -215,8 +222,9 @@ class tx_srfeuserregister_control_main {
 				);
 	
 				$this->data->init(
-					$cObj,
-					$conf,
+					$this->pibaseObj->cObj,
+					$this->conf,
+					$this->config,
 					$this->langObj,
 					$this->tca,
 					$this->control,
@@ -235,7 +243,9 @@ class tx_srfeuserregister_control_main {
 				$uid = $this->data->getRecUid();
 	
 				$this->marker->init(
-					$confObj,
+					$this->pibaseObj,
+					$this->conf,
+					$this->config,
 					$this->data,
 					$this->tca,
 					$this->langObj,
@@ -252,6 +262,40 @@ class tx_srfeuserregister_control_main {
 				if ($otherLabelsList != '') {
 					$this->marker->addOtherLabelsList($otherLabelsList);
 				}
+
+				$this->display->init(
+					$this->cObj,
+					$this->conf,
+					$this->config,
+					$this->data,
+					$this->marker,
+					$this->tca,
+					$this->control
+				);
+
+				$this->email->init(
+					$this->langObj,
+					$this->cObj,
+					$this->conf,
+					$this->config,
+					$this->display,
+					$this->data,
+					$this->marker,
+					$this->tca,
+					$this->controlData,
+					$this->setfixedObj
+				);
+
+				$this->setfixedObj->init(
+					$this->cObj,
+					$this->conf,
+					$this->config,
+					$this->controlData,
+					$this->tca,
+					$this->display,
+					$this->email,
+					$this->marker
+				);
 			} else {
 				$success = FALSE;
 				$this->errorMessage = $this->langObj->getLL('invalidToken');
