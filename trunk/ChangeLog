@@ -3,6 +3,7 @@
 	* Resolves #50838: Non existing token crashes site
 	* Resolves #54034: typo ("rewiew") in locallang.xml
 	* Requires TYPO3 4.5+
+	* Resolves #51950: Deprecation Message t3lib_htmlmail->t3lib_htmlmail()
 
 2013-08-11 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #50607: sr_freecap Captcha might not be accepted after submission (Thanks to Roland Schenke)
