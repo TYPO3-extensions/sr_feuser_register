@@ -159,15 +159,6 @@ class tx_srfeuserregister_control_main {
 			$pibaseObj->piVars,
 			$theTable
 		);
-		if ($this->extKey != SR_FEUSER_REGISTER_EXT) {
-
-					// Static Methods for Extensions for fetching the texts of sr_feuser_register
-				tx_div2007_alpha5::loadLL_fh002(
-					$pibaseObj,
-					'EXT:' . SR_FEUSER_REGISTER_EXT . '/pi1/locallang.xml',
-					FALSE
-				);
-		} // otherwise the labels from sr_feuser_register need not be included, because this has been done in
 
 		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXT)) {
 				// Initialise static info library
@@ -203,15 +194,9 @@ class tx_srfeuserregister_control_main {
 
 		if ($success !== FALSE) {
 			if ($this->controlData->isTokenValid()) {
-				$this->tca->init2(
-					$this->pibaseObj,
-					$this->conf,
-					$this->controlData,
-					$this->langObj
-				);
 				$this->control->init(
 					$this->langObj,
-					$this->pibaseObj->cObj,
+					$cObj,
 					$this->controlData,
 					$this->display,
 					$this->marker,
@@ -222,9 +207,8 @@ class tx_srfeuserregister_control_main {
 				);
 	
 				$this->data->init(
-					$this->pibaseObj->cObj,
+					$cObj,
 					$this->conf,
-					$this->config,
 					$this->langObj,
 					$this->tca,
 					$this->control,
@@ -232,7 +216,7 @@ class tx_srfeuserregister_control_main {
 					$this->controlData
 				);
 	
-				$this->control->init2( // only here the $conf is changed
+				$this->control->init2(
 					$confObj,
 					$theTable,
 					$this->controlData,
@@ -243,9 +227,7 @@ class tx_srfeuserregister_control_main {
 				$uid = $this->data->getRecUid();
 	
 				$this->marker->init(
-					$this->pibaseObj,
-					$this->conf,
-					$this->config,
+					$confObj,
 					$this->data,
 					$this->tca,
 					$this->langObj,
@@ -262,47 +244,13 @@ class tx_srfeuserregister_control_main {
 				if ($otherLabelsList != '') {
 					$this->marker->addOtherLabelsList($otherLabelsList);
 				}
-
-				$this->display->init(
-					$this->cObj,
-					$this->conf,
-					$this->config,
-					$this->data,
-					$this->marker,
-					$this->tca,
-					$this->control
-				);
-
-				$this->email->init(
-					$this->langObj,
-					$this->cObj,
-					$this->conf,
-					$this->config,
-					$this->display,
-					$this->data,
-					$this->marker,
-					$this->tca,
-					$this->controlData,
-					$this->setfixedObj
-				);
-
-				$this->setfixedObj->init(
-					$this->cObj,
-					$this->conf,
-					$this->config,
-					$this->controlData,
-					$this->tca,
-					$this->display,
-					$this->email,
-					$this->marker
-				);
 			} else {
 				$success = FALSE;
 				$this->errorMessage = $this->langObj->getLL('invalidToken');
 			}
 		}
 		return $success;
-	}	// init
+	}
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/control/class.tx_srfeuserregister_control_main.php']) {
