@@ -352,8 +352,8 @@
 			<label index="v_registration_initiated_review2">Please be aware that after you confirm your registration, it will need to be reviewed by the administrator before you gain access to the section &lt;b&gt;%1$s&lt;/b&gt; of our website.</label>
 			<label index="v_registration_initiated_review2_informal">Please be aware that after you confirm your registration, it will need to be reviewed by the administrator before you gain access to the section &lt;b&gt;%1$s&lt;/b&gt; of our website.</label>
 			<label index="v_registration_initiated">%3$s initiated his(her) registration in %1$s.</label>
-			<label index="v_registration_review_subject">Please rewiew the application of &lt;b&gt;%3$s&lt;/b&gt; for membership with &lt;b&gt;%1$s&lt;/b&gt;.</label>
-			<label index="v_registration_review_subject_informal">Please rewiew the application of &lt;b&gt;%3$s&lt;/b&gt; for membership with &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_review_subject">Please review the application of &lt;b&gt;%3$s&lt;/b&gt; for membership with &lt;b&gt;%1$s&lt;/b&gt;.</label>
+			<label index="v_registration_review_subject_informal">Please review the application of &lt;b&gt;%3$s&lt;/b&gt; for membership with &lt;b&gt;%1$s&lt;/b&gt;.</label>
 			<label index="v_registration_review_message1">If you think that the application for membership with &lt;b&gt;%3$s&lt;/b&gt; should be accepted, please click on this link to accept</label>
 			<label index="v_registration_review_message1_informal">If you think that the application for membership with &lt;b&gt;%3$s&lt;/b&gt; should be accepted, please click on this link to accept</label>
 			<label index="v_registration_review_message2">If you think that the application for membership with &lt;b&gt;%3$s&lt;/b&gt; should be refused, please click on this link to refuse</label>
