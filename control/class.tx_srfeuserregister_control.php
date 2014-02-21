@@ -43,7 +43,7 @@
 
 class tx_srfeuserregister_control {
 	public $langObj;
-	public $conf = array();
+	public $confObj;
 	public $display;
 	public $data;
 	public $marker;
@@ -66,12 +66,11 @@ class tx_srfeuserregister_control {
 		$email,
 		$tca,
 		$setfixedObj,
-		$urlObj
+		$urlObj,
+		$conf
 	) {
+		
 		$this->langObj = $langObj;
-
-		$confObj = t3lib_div::getUserObj('&tx_srfeuserregister_conf');
-		$conf = $confObj->getConf();
 		$this->display = $display;
 		$this->marker = $marker;
 		$this->email = $email;
@@ -107,7 +106,8 @@ class tx_srfeuserregister_control {
 		$data,
 		&$adminFieldList
 	) {
-		$conf = $confObj->getConf();
+		$this->confObj = $confObj;
+		$conf = $this->confObj->getConf();
 		$this->data = $data;
 
 		$tablesObj = t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
@@ -269,7 +269,7 @@ class tx_srfeuserregister_control {
 				unset($conf[$cmdKey . '.']['evalValues.']['username']);
 			}
 		}
-		$confObj->setConf($conf);
+		$this->confObj->setConf($conf);
 
 			// Setting requiredArr to the fields in "required" fields list intersected with the total field list in order to remove invalid fields.
 		$requiredArray = array_intersect(
@@ -306,8 +306,7 @@ class tx_srfeuserregister_control {
 		$templateCode,
 		&$error_message
 	) {
-		$confObj = t3lib_div::getUserObj('&tx_srfeuserregister_conf');
-		$conf = $confObj->getConf();
+		$conf = $this->confObj->getConf();
 
 		$prefixId = $controlData->getPrefixId();
 		$controlData->setMode(MODE_NORMAL);

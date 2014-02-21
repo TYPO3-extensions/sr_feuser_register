@@ -78,7 +78,7 @@ class tx_srfeuserregister_marker {
 		$this->controlData = $controlData;
 		$theTable = $this->controlData->getTable();
 
-		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXT)) {
+		if (t3lib_extMgm::isLoaded('static_info_tables')) {
 			$this->staticInfo = t3lib_div::getUserObj('&tx_staticinfotables_pi1');
 		}
 		$markerArray = array();
@@ -202,7 +202,6 @@ class tx_srfeuserregister_marker {
 		$confObj = t3lib_div::getUserObj('&tx_srfeuserregister_conf');
 		$cObj = t3lib_div::getUserObj('&tx_div2007_cobj');
 		$conf = $confObj->getConf();
-		$langObj = t3lib_div::getUserObj('&tx_srfeuserregister_lang');
 		$controlData = t3lib_div::getUserObj('&tx_srfeuserregister_controldata');
 
 		$rc = '';
@@ -225,7 +224,7 @@ class tx_srfeuserregister_marker {
 						$this->tmpTcaMarkers,
 						$conf,
 						$cObj,
-						$langObj,
+						$this->langObj,
 						$controlData,
 						$row,
 						$this->data->getOrigArray(),

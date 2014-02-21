@@ -132,7 +132,7 @@ class tx_srfeuserregister_control_main {
 		$cObj = $pibaseObj->cObj;
 		$this->tca = t3lib_div::getUserObj('&tx_srfeuserregister_tca');
 
-			// plugin initialization
+		// Plugin initialization
 		$this->conf = $conf;
 
 		if (
@@ -155,14 +155,16 @@ class tx_srfeuserregister_control_main {
 		$this->controlData->init(
 			$conf,
 			$pibaseObj->prefixId,
-			$this->extKey,
+			$pibaseObj->extKey,
 			$pibaseObj->piVars,
 			$theTable
 		);
 
-		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXT)) {
-				// Initialise static info library
-			require_once(t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php');
+		if (t3lib_extMgm::isLoaded('static_info_tables')) {
+			// Initialise static info library
+			if (!class_exists('tx_staticinfotables_pi1')) {
+				require_once(t3lib_extMgm::extPath('static_info_tables') . 'pi1/class.tx_staticinfotables_pi1.php');
+			}
 			$staticInfoObj = t3lib_div::getUserObj('&tx_staticinfotables_pi1');
 			if (!method_exists($staticInfoObj, 'needsInit') || $staticInfoObj->needsInit()) {
 				$staticInfoObj->init();
@@ -182,72 +184,64 @@ class tx_srfeuserregister_control_main {
 			$this->controlData,
 			$cObj
 		);
+		$this->langObj->init($pibaseObj);
 
-		$this->langObj->init(
-			$pibaseObj,
-			$cObj,
-			$conf,
-			$pibaseObj->scriptRelPath,
-			$this->extKey
-		);
-		$success = $this->langObj->loadLL();
+		$success = TRUE;
+		if ($this->controlData->isTokenValid()) {
+			$this->control->init(
+				$this->langObj,
+				$cObj,
+				$this->controlData,
+				$this->display,
+				$this->marker,
+				$this->email,
+				$this->tca,
+				$this->setfixedObj,
+				$this->urlObj,
+				$this->conf
+			);
 
-		if ($success !== FALSE) {
-			if ($this->controlData->isTokenValid()) {
-				$this->control->init(
-					$this->langObj,
-					$cObj,
-					$this->controlData,
-					$this->display,
-					$this->marker,
-					$this->email,
-					$this->tca,
-					$this->setfixedObj,
-					$this->urlObj
-				);
-	
-				$this->data->init(
-					$cObj,
-					$this->conf,
-					$this->langObj,
-					$this->tca,
-					$this->control,
-					$theTable,
-					$this->controlData
-				);
-	
-				$this->control->init2(
-					$confObj,
-					$theTable,
-					$this->controlData,
-					$this->data,
-					$adminFieldList
-				);
-	
-				$uid = $this->data->getRecUid();
-	
-				$this->marker->init(
-					$confObj,
-					$this->data,
-					$this->tca,
-					$this->langObj,
-					$this->controlData,
-					$this->urlObj,
-					$uid,
-					$this->controlData->readToken()
-				);
-	
-				if ($buttonLabelsList != '') {
-					$this->marker->setButtonLabelsList($buttonLabelsList);
-				}
-	
-				if ($otherLabelsList != '') {
-					$this->marker->addOtherLabelsList($otherLabelsList);
-				}
-			} else {
-				$success = FALSE;
-				$this->errorMessage = $this->langObj->getLL('invalidToken');
+			$this->data->init(
+				$cObj,
+				$this->conf,
+				$this->langObj,
+				$this->tca,
+				$this->control,
+				$theTable,
+				$this->controlData
+			);
+
+			$this->control->init2(
+				$confObj,
+				$theTable,
+				$this->controlData,
+				$this->data,
+				$adminFieldList
+			);
+
+			$uid = $this->data->getRecUid();
+
+			$this->marker->init(
+				$confObj,
+				$this->data,
+				$this->tca,
+				$this->langObj,
+				$this->controlData,
+				$this->urlObj,
+				$uid,
+				$this->controlData->readToken()
+			);
+
+			if ($buttonLabelsList != '') {
+				$this->marker->setButtonLabelsList($buttonLabelsList);
 			}
+
+			if ($otherLabelsList != '') {
+				$this->marker->addOtherLabelsList($otherLabelsList);
+			}
+		} else {
+			$success = FALSE;
+			$this->errorMessage = $this->langObj->getLL('invalidToken');
 		}
 		return $success;
 	}

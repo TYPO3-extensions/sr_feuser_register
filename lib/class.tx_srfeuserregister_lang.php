@@ -41,51 +41,34 @@
  */
 
 
-class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
-	public $allowedSuffixes = array('formal', 'informal'); // list of allowed suffixes
+class tx_srfeuserregister_lang {
+	
+	protected $pibaseObj;
 
+	// List of allowed suffixes
+	public $allowedSuffixes = array('formal', 'informal');
 
-// 	public function init (&$pibase, &$conf, $LLkey)	{
-	public function init ($pObj, $cObj, $conf, $scriptRelPath, $extKey) {
-
-		parent::init(
-			$cObj,
-			$extKey,
-			$conf,
-			$scriptRelPath
-		);
-
-		// keep previsous language settings if available
-		if (isset($pObj->LOCAL_LANG) && is_array($pObj->LOCAL_LANG)) {
-			$this->LOCAL_LANG = &$pObj->LOCAL_LANG;
-		}
-		if (isset($pObj->LOCAL_LANG_charset) && is_array($pObj->LOCAL_LANG_charset)) {
-			$this->LOCAL_LANG_charset = &$pObj->LOCAL_LANG_charset;
-		}
-		if (isset($pObj->LOCAL_LANG_loaded) && is_array($pObj->LOCAL_LANG_loaded)) {
-			$this->LOCAL_LANG_loaded = &$pObj->LOCAL_LANG_loaded;
-		}
+	public function init ($pibaseObj) {
+		$this->pibaseObj = $pibaseObj;
+		$this->pibaseObj->pi_loadLL();
 	}
 
-	public function getLLFromString ($string, $bForce = TRUE) {
-		global $LOCAL_LANG, $TSFE;
-
-		$rc = '';
+	public function getLLFromString ($string, $force = TRUE) {
+		$label = '';
 		$arr = explode(':', $string);
-
-		if($arr[0] == 'LLL' && $arr[1] == 'EXT') {
+		if ($arr[0] === 'LLL' && $arr[1] === 'EXT') {
 			$temp = $this->getLL($arr[3]);
-			if ($temp || !$bForce) {
-				$rc = $temp;
+			if ($temp || !$force) {
+				$label = $temp;
 			} else {
-				$rc = $TSFE->sL($string);
+				$label = $GLOBALS['TSFE']->sL($string);
 			}
 		} else {
-			$rc = $string;
+			$label = $string;
 		}
 
-		return $rc;
-	}	// getLLFromString
+		return $label;
+	}
 
 	/**
 	* Get the item array for a select if configured via TypoScript
@@ -110,132 +93,47 @@ class tx_srfeuserregister_lang extends tx_div2007_alpha_language_base {
 			}
 		}
 		return $rc;
-	}	// getItemsLL
-
-	/**
-	* Returns the localized label of the LOCAL_LANG key, $key
-	* In $this->conf['salutation'], a suffix to the key may be set (which may be either 'formal' or 'informal').
-	* If a corresponding key exists, the formal/informal localized string is used instead.
-	* If the key doesn't exist, we just use the normal string.
-	*
-	* Example: key = 'greeting', suffix = 'informal'. If the key 'greeting_informal' exists, that string is used.
-	* If it doesn't exist, we'll try to use the string with the key 'greeting'.
-	*
-	* Notice that for debugging purposes prefixes for the output values can be set with the internal vars ->LLtestPrefixAlt and ->LLtestPrefix
-	*
-	* @param string The key from the LOCAL_LANG array for which to return the value.
-	* @param string Alternative string to return IF no value is found set for the key, neither for the local language nor the default.
-	* @param boolean If TRUE, the output label is passed through htmlspecialchars()
-	* @return string The value from LOCAL_LANG.
-	*/
-	public function getLL ($key, $alt = '', $hsc = FALSE) {
-
-			// If the suffix is allowed and we have a localized string for the desired salutation, we'll take that.
-		$localizedLabel = '';
-		$usedLang = '';
-			// Check for an allowed salutation suffix and, if configured, try to localize
-		if (
-			isset($this->conf['salutation']) &&
-			in_array($this->conf['salutation'], $this->allowedSuffixes, 1)
-		) {
-			$expandedKey = $key . '_' . $this->conf['salutation'];
-			$localizedLabel =
-				tx_div2007_alpha5::getLL_fh002(
-					$this,
-					$expandedKey,
-					$usedLang,
-					$alt,
-					$hsc
-				);
-					// Fall back to tslib_fe::sL
-				if ($localizedLabel == '') {
-					$localizedLabel = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:' . $expandedKey);
-					if ($localizedLabel != '') {
-						$message = sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_label_not_localized_by_div2007'), $expandedKey);
-						t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_WARNING);
-					}
-				}
-		}
-			// No allowed salutation suffix and fall back
-		if ($localizedLabel == '' || $localizedLabel == $alt || $usedLang != $this->LLkey) {
-			$localizedLabel =
-				tx_div2007_alpha5::getLL_fh002(
-					$this,
-					$key,
-					$usedLang,
-					$alt,
-					$hsc
-				);
-				// Fall back to tslib_fe::sL
-			if ($localizedLabel == '') {
-				$localizedLabel = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:' . $key);
-				if ($localizedLabel != '') {
-					$message = sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/pi1/locallang.xml:internal_label_not_localized_by_div2007'), $key);
-					t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_WARNING);
-				}
-			}
-		}
-		return $localizedLabel;
 	}
 
-	public function loadLL () {
-		$rc = TRUE;
-
-			// flatten the structure of labels overrides
-		if (is_array($this->conf['_LOCAL_LANG.'])) {
-			$done = FALSE;
-			$i = 0;
-			while(!$done && $i < 10000) {
-				$done = TRUE;
-				foreach($this->conf['_LOCAL_LANG.'] as $k => $lA) {
-					if (is_array($lA)) {
-						foreach($lA as $llK => $llV) {
-							if (is_array($llV)) {
-								foreach ($llV as $llK2 => $llV2) {
-									if (is_array($llK2)) {
-										foreach ($llV2 as $llK3 => $llV3) {
-											if (is_array($llV3)) {
-												foreach ($llV3 as $llK4 => $llV4) {
-													$this->conf['_LOCAL_LANG.'][$k][$llK . $llK2 . $llK3 . $llK4] = $llV4;
-												}
-											} else {
-												$this->conf['_LOCAL_LANG.'][$k][$llK . $llK2 . $llK3] = $llV3;
-											}
-										}
-									} else {
-										$this->conf['_LOCAL_LANG.'][$k][$llK . $llK2] = $llV2;
-									}
-								}
-								unset($this->conf['_LOCAL_LANG.'][$k][$llK]);
-								$done = FALSE;
-								++$i;
-							}
-						}
-					}
+	/**
+	 * From the 'salutationswitcher' extension.
+	 *
+	 * @author	Oliver Klee <typo-coding@oliverklee.de>
+	 */
+	
+	/**
+	 * Returns the localized label of the LOCAL_LANG key, $key
+	 * In $this->conf['salutation'], a suffix to the key may be set (which may be either 'formal' or 'informal').
+	 * If a corresponding key exists, the formal/informal localized string is used instead.
+	 * If the key doesn't exist, we just use the normal string.
+	 *
+	 * Example: key = 'greeting', suffix = 'informal'. If the key 'greeting_informal' exists, that string is used.
+	 * If it doesn't exist, we'll try to use the string with the key 'greeting'.
+	 *
+	 * Notice that for debugging purposes prefixes for the output values can be set with the internal vars ->LLtestPrefixAlt and ->LLtestPrefix
+	 *
+	 * @param    string        The key from the LOCAL_LANG array for which to return the value.
+	 * @param    string        Alternative string to return IF no value is found set for the key, neither for the local language nor the default.
+	 * @param    boolean        If true, the output label is passed through htmlspecialchars()
+	 * @return    string        The value from LOCAL_LANG.
+	 */
+	public function getLL($key, $alt = '', $hsc = FALSE) {
+		// If the suffix is allowed and we have a localized string for the desired salutation, we'll take that.
+		if (isset($this->pibaseObj->conf['salutation']) && in_array($this->pibaseObj->conf['salutation'], $this->allowedSuffixes, 1)) {
+			$expandedKey = $key . '_' . $this->pibaseObj->conf['salutation'];
+			if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 4006000) {
+				if ($this->pibaseObj->LOCAL_LANG[$this->pibaseObj->LLkey][$expandedKey][0]['target'] != '') {
+					$key = $expandedKey;
+				}
+			} else {
+				if (isset($this->pibaseObj->LOCAL_LANG[$this->pibaseObj->LLkey][$expandedKey])) {
+					$key = $expandedKey;
 				}
 			}
 		}
-		$locallang = $this->LOCAL_LANG;
-		tx_div2007_alpha5::loadLL_fh002($this);
-
-		if ($locallang != '') {
-			foreach ($this->LOCAL_LANG as $key => $langArray) {
-				if (isset($locallang[$key]) && is_array($locallang[$key])) {
-					$this->LOCAL_LANG[$key] = array_merge($locallang[$key], $langArray);
-				}
-			}
-		}
-
-		// do a check if the language file works
-		$tmpText = $this->getLL('unsupported');
-
-		if ($tmpText == '') {
-			$rc = FALSE;
-		}
-
-		return $rc;
-	}	// loadLL
-} // class tx_srfeuserregister_lang
+		return $this->pibaseObj->pi_getLL($key, $alt, $hsc);
+	}
+}
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_lang.php']) {
   include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_lang.php']);
