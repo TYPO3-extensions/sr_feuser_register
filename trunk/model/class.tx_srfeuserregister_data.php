@@ -1255,12 +1255,11 @@ class tx_srfeuserregister_data {
 						$newRow = $this->parseIncomingData($newRow);
 						$this->tca->modifyRow($theTable, $newRow, TRUE);
 
-						tx_div2007_alpha::userProcess_fh001(
-							$this->control,
-							$this->conf['edit.'],
-							'userFunc_afterSave',
-							array('rec' => $newRow, 'origRec' => $origArray)
-						);
+						if ($this->conf['edit.']['userFunc_afterSave'] && is_array($this->conf['edit.']['userFunc_afterSave.'])) {
+							$funcConf = $this->conf['edit.']['userFunc_afterSave.'];
+							$funcConf['parentObj'] = $this->control;
+							$GLOBALS['TSFE']->cObj->callUserFunction($this->conf['edit.']['userFunc_afterSave'], $funcConf, array('rec' => $newRow, 'origRec' => $origArray));
+						}
 
 						// Post-edit processing: call user functions and hooks
 						// Call all afterSaveEdit hooks after the record has been edited and saved
@@ -1371,12 +1370,11 @@ class tx_srfeuserregister_data {
 						$newRow = $this->parseIncomingData($newRow);
 						$this->tca->modifyRow($theTable, $newRow, TRUE);
 
-						tx_div2007_alpha::userProcess_fh001(
-							$this->control,
-							$this->conf['create.'],
-							'userFunc_afterSave',
-							array('rec' => $newRow, 'origRec' => $origArray)
-						);
+						if ($this->conf['create.']['userFunc_afterSave'] && is_array($this->conf['create.']['userFunc_afterSave.'])) {
+							$funcConf = $this->conf['create.']['userFunc_afterSave.'];
+							$funcConf['parentObj'] = $this->control;
+							$GLOBALS['TSFE']->cObj->callUserFunction($this->conf['create.']['userFunc_afterSave'], $funcConf, array('rec' => $newRow, 'origRec' => $origArray));
+						}
 
 						// Call all afterSaveCreate hooks after the record has been created and saved
 						if (is_array ($hookClassArray)) {
@@ -1715,15 +1713,13 @@ class tx_srfeuserregister_data {
 			}
 		}
 
-		$inputArr =
-			tx_div2007_alpha::userProcess_fh001(
-				$this->control,
-				$this->conf,
-				'userFunc_updateArray',
-				$inputArr
-			);
+		if ($this->conf['userFunc_updateArray'] && is_array($this->conf['userFunc_updateArray.'])) {
+			$funcConf = $this->conf['userFunc_updateArray.'];
+			$funcConf['parentObj'] = $this->control;
+			$inputArr = $GLOBALS['TSFE']->cObj->callUserFunction($this->conf['userFunc_updateArray'], $funcConf, $inputArr);
+		}
 
-		foreach($inputArr as $theField => $value) {
+		foreach ($inputArr as $theField => $value) {
 
 			if (is_array($value)) {
 				$value = implode(',', $value);

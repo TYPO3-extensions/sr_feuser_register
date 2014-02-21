@@ -234,13 +234,11 @@ class tx_srfeuserregister_setfixed {
 						);
 
 					$row = array_merge($row, $modArray);
-					tx_div2007_alpha::userProcess_fh001(
-						$pObj,
-						$conf['setfixed.'],
-						'userFunc_afterSave',
-						array('rec' => $currArr, 'origRec' => $origArray)
-					);
-
+					if ($conf['setfixed.']['userFunc_afterSave'] && is_array($conf['setfixed.']['userFunc_afterSave.'])) {
+						$funcConf = $conf['setfixed.']['userFunc_afterSave.'];
+						$funcConf['parentObj'] = $pObj;
+						$GLOBALS['TSFE']->cObj->callUserFunction($conf['setfixed.']['userFunc_afterSave'], $funcConf, array('rec' => $currArr, 'origRec' => $origArray));
+					}
 						// Hook: confirmRegistrationClass_postProcess
 					foreach($hookObjectsArr as $hookObj) {
 						if (method_exists($hookObj, 'confirmRegistrationClass_postProcess')) {
