@@ -12,6 +12,7 @@
 	* Remove usage of tx_div2007_alpha::loadTcaAdditions_fh001
 	* Remove usage of tx_div2007_alpha::userProcess_fh001	
 	* Remove usage of tx_div2007_alpha::getSetupOrFFvalue_fh002
+	* Remove tx_srfeuserregister_hooks_cms.php
 
 2013-08-11 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #50607: sr_freecap Captcha might not be accepted after submission (Thanks to Roland Schenke)
