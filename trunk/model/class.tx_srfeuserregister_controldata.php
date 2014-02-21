@@ -639,13 +639,13 @@ class tx_srfeuserregister_controldata {
 			// Read all session data
 		$allSessionData = $this->readSessionData(TRUE);
 		if (is_array($allSessionData[$extKey])) {
+			$typo3Version = t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version);
 			$keys = array_keys($allSessionData[$extKey]);
 			if ($clearSession) {
 				foreach ($keys as $key) {
 					unset($allSessionData[$extKey][$key]);
 				}
 			} else {
-				$typo3Version = class_exists('t3lib_utility_VersionNumber') ? t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) : t3lib_div::int_from_ver(TYPO3_version);
 				if ($typo3Version < 4007000) {
 					foreach ($keys as $key) {
 						if ($data[$key] == '__UNSET') {
@@ -655,13 +655,16 @@ class tx_srfeuserregister_controldata {
 					}
 				}
 			}
-
-			$allSessionData[$extKey] = t3lib_div::array_merge_recursive_overrule($allSessionData[$extKey], $data);
+			if ($typo3Version < 6002000) {
+				$allSessionData[$extKey] = t3lib_div::array_merge_recursive_overrule($allSessionData[$extKey], $data);
+			} else {
+				\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($allSessionData[$extKey], $data);
+			}
 		} else {
 			$allSessionData[$extKey] = $data;
 		}
 		$GLOBALS['TSFE']->fe_user->setKey('ses', 'feuser', $allSessionData);
-			// The feuser session data shall not get lost when coming back from external scripts
+		// The feuser session data shall not get lost when coming back from external scripts
 		$GLOBALS['TSFE']->fe_user->storeSessionData();
 	}
 
