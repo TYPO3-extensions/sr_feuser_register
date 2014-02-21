@@ -198,7 +198,8 @@ class tx_srfeuserregister_control_main {
 				$this->tca,
 				$this->setfixedObj,
 				$this->urlObj,
-				$this->conf
+				$this->conf,
+				$pibaseObj
 			);
 
 			$this->data->init(
