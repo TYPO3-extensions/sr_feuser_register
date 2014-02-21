@@ -67,7 +67,8 @@ class tx_srfeuserregister_control {
 		$tca,
 		$setfixedObj,
 		$urlObj,
-		$conf
+		$conf,
+		$pibaseObj
 	) {
 		
 		$this->langObj = $langObj;
@@ -79,20 +80,14 @@ class tx_srfeuserregister_control {
 		$this->urlObj = $urlObj;
 			// Retrieve the extension key
 		$extKey = $controlData->getExtKey();
-			// Get the command as set in piVars
+		// Get the command as set in piVars
 		$cmd = $controlData->getCmd();
-			// If not set, get the command from the flexform
-		if ($cmd == '') {
-				// Check the flexform
-			$cObj->data['pi_flexform'] = t3lib_div::xml2array($cObj->data['pi_flexform']);
-			$cmd = tx_div2007_alpha::getSetupOrFFvalue_fh002(
-				$langObj,
-				'',
-				'',
-				$conf['defaultCODE'],
-				$cObj->data['pi_flexform'],
-				'display_mode'
-			);
+		// If not set, get the command from the flexform
+		if ($cmd === '') {
+			// Check the flexform
+			$pibaseObj->pi_initPIflexForm();
+			$cmd = $pibaseObj->pi_getFFvalue($pibaseObj->cObj->data['pi_flexform'], 'display_mode');
+			$cmd = $cmd?:$conf['defaultCODE'];
 			$cmd = $cObj->caseshift($cmd, 'lower');
 		}
 		$controlData->setCmd($cmd);
