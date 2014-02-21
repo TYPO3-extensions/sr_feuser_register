@@ -69,11 +69,6 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['tx_srfeuserregis
 
 if (TYPO3_MODE == 'BE') {
 
-	if (t3lib_extMgm::isLoaded(DIV2007_EXT)) {
-		// replace the output of the former CODE field with the flexform
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][SR_FEUSER_REGISTER_EXT.'_pi1'][] = 'EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/class.tx_srfeuserregister_hooks_cms.php:&tx_srfeuserregister_hooks_cms->pmDrawItem';
-	}
-
 	if (!defined($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_users']['MENU'])) {
 		$tableArray = array('fe_users', 'fe_groups', 'fe_groups_language_overlay');
 		foreach ($tableArray as $theTable) {
