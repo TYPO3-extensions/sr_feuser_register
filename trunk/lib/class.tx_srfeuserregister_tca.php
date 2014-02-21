@@ -44,18 +44,49 @@
 class tx_srfeuserregister_tca {
 
 	public function init ($extKey, $theTable) {
-
+		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6001000) {
 			// Get the table definition
-		tx_div2007_alpha::loadTcaAdditions_fh001(array($extKey));
-		$this->fixAddressFeAdminFieldList();
-
-		if (t3lib_extMgm::isLoaded('direct_mail')) {
-			tx_div2007_alpha::loadTcaAdditions_fh001(array('direct_mail'));
+			$this->loadTcaAdditions(array($extKey));
+			$this->fixAddressFeAdminFieldList();
+	
+			if (t3lib_extMgm::isLoaded('direct_mail')) {
+				$this->loadTcaAdditions(array('direct_mail'));
+				$this->fixAddressFeAdminFieldList();
+			}
+	
+			$this->loadTcaAdditions($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['extendingTCA']);
 			$this->fixAddressFeAdminFieldList();
 		}
+	}
 
-		tx_div2007_alpha::loadTcaAdditions_fh001($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['extendingTCA']);
-		$this->fixAddressFeAdminFieldList();
+	/* loadTcaAdditions($ext_keys)
+	*
+	* Your extension may depend on fields that are added by other
+	* extensios. For reasons of performance parts of the TCA are only
+	* loaded on demand. To ensure that the extended TCA is loaded for
+	* the extensions you depend on or which extend your extension by
+	* hooks, you shall apply this function.
+	*
+	* @param array     extension keys which have TCA additions to load
+	*/
+	public function loadTcaAdditions($ext_keys) {
+		global $_EXTKEY, $TCA;
+
+		$loadTcaAdditions = TRUE;
+
+		//Merge all ext_keys
+		if (is_array($ext_keys)) {
+			foreach ($ext_keys as $_EXTKEY) {
+				if (t3lib_extMgm::isLoaded($_EXTKEY)) {
+					//Include the ext_table
+					include(t3lib_extMgm::extPath($_EXTKEY) . 'ext_tables.php');
+				}
+			}
+		}
+		// ext-script
+		if (TYPO3_extTableDef_script) {
+			include (PATH_typo3conf.TYPO3_extTableDef_script);
+		}
 	}
 
 	/**
