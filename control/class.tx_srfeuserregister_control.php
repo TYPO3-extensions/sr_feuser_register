@@ -337,10 +337,12 @@ class tx_srfeuserregister_control {
 			if ($theTable == 'fe_users') {
 				$securedArray = $controlData->readSecuredArray();
 			}
-			$finalDataArray = t3lib_div::array_merge_recursive_overrule(
-				$dataArray,
-				$securedArray
-			);
+			if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6002000) {
+				$finalDataArray = t3lib_div::array_merge_recursive_overrule($dataArray, $securedArray);
+			} else {
+				$finalDataArray = $dataArray;
+				\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($finalDataArray, $securedArray);
+			}
 		} else {
 			$finalDataArray = $dataArray;
 		}
@@ -968,7 +970,7 @@ class tx_srfeuserregister_control {
 
 		// Check against configured pid (defaulting to current page)
 		$GLOBALS['TSFE']->fe_user->checkPid = TRUE;
-		$GLOBALS['TSFE']->fe_user->checkPid_value = $this->controlData->getPid();
+		$GLOBALS['TSFE']->fe_user->checkPid_value = $controlData->getPid();
 
 		// Get authentication info array
 		$authInfo = $GLOBALS['TSFE']->fe_user->getAuthInfoArray();

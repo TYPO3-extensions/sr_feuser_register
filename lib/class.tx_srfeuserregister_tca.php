@@ -534,7 +534,9 @@ class tx_srfeuserregister_tca {
 									}
 
 									if ($colConfig['foreign_table']) {
-										t3lib_div::loadTCA($colConfig['foreign_table']);
+										if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6001000) {
+											t3lib_div::loadTCA($colConfig['foreign_table']);
+										}
 										$reservedValues = array();
 										if (isset($userGroupObj) && is_object($userGroupObj)) {
 											$reservedValues = $userGroupObj->getReservedValues();
@@ -765,7 +767,9 @@ class tx_srfeuserregister_tca {
 									$colConfig['foreign_table'] &&
 									isset($GLOBALS['TCA'][$colConfig['foreign_table']])
 								) {
-									t3lib_div::loadTCA($colConfig['foreign_table']);
+									if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6001000) {
+										t3lib_div::loadTCA($colConfig['foreign_table']);
+									}
 									$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
 									$reservedValues = array();
 									$whereClause = '1=1';

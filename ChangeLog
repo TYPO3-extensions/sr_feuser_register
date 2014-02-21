@@ -8,6 +8,7 @@
 	* Initialize $GLOBALS['TCA']['fe_users']['feInterface'] when not set (TYPO3 6.2)
 	* Remove usage of tx_div2007_alpha_language_base
 	* Require php 5.3+ and enable in TYPO3 6.2
+	* Fix usage of methods deprecated in TYPO3 6.2
 
 2013-08-11 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #50607: sr_freecap Captcha might not be accepted after submission (Thanks to Roland Schenke)

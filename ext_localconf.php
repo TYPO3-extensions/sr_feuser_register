@@ -21,8 +21,8 @@ if (!defined(STATIC_INFO_TABLES_EXT)) {
 	define('STATIC_INFO_TABLES_EXT', 'static_info_tables');
 }
 
-	// Add Status Report
-$typo3Version = class_exists('t3lib_utility_VersionNumber') ? t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) : t3lib_div::int_from_ver(TYPO3_version);
+// Add Status Report
+$typo3Version = t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version);
 if ($typo3Version >= 4006000) {
 	require_once(PATH_BE_srfeuserregister . 'hooks/statusreport/ext_localconf.php');
 }
