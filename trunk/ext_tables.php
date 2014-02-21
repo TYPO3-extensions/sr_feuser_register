@@ -7,8 +7,8 @@ if (TYPO3_MODE == 'BE' && !$loadTcaAdditions) {
 	t3lib_extMgm::addStaticFile(SR_FEUSER_REGISTER_EXT, 'static/css_styled/', 'FE User Registration CSS-styled');
 
 	t3lib_div::loadTCA('tt_content');
-	$TCA['tt_content']['types']['list']['subtypes_excludelist'][SR_FEUSER_REGISTER_EXT.'_pi1']='layout,select_key';
-	$TCA['tt_content']['types']['list']['subtypes_addlist'][SR_FEUSER_REGISTER_EXT.'_pi1']='pi_flexform';
+	$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][SR_FEUSER_REGISTER_EXT.'_pi1']='layout,select_key';
+	$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][SR_FEUSER_REGISTER_EXT.'_pi1']='pi_flexform';
 	t3lib_extMgm::addPiFlexFormValue(SR_FEUSER_REGISTER_EXT.'_pi1', 'FILE:EXT:'.SR_FEUSER_REGISTER_EXT.'/pi1/flexform_ds_pi1.xml');
 
 	t3lib_extMgm::addPlugin(Array('LLL:EXT:'.SR_FEUSER_REGISTER_EXT.'/locallang_db.xml:tt_content.list_type', SR_FEUSER_REGISTER_EXT.'_pi1'),'list_type');
@@ -21,21 +21,21 @@ if (TYPO3_MODE == 'BE' && !$loadTcaAdditions) {
  */
 t3lib_div::loadTCA('fe_users');
 
-$TCA['fe_users']['columns']['username']['config']['eval'] = 'nospace,uniqueInPid,required';
-$TCA['fe_users']['columns']['name']['config']['max'] = '100';
-$TCA['fe_users']['columns']['company']['config']['max'] = '50';
-$TCA['fe_users']['columns']['city']['config']['max'] = '40';
-$TCA['fe_users']['columns']['country']['config']['max'] = '60';
-$TCA['fe_users']['columns']['zip']['config']['size'] = '15';
-$TCA['fe_users']['columns']['zip']['config']['max'] = '20';
-$TCA['fe_users']['columns']['email']['config']['max'] = '255';
-$TCA['fe_users']['columns']['telephone']['config']['max'] = '25';
-$TCA['fe_users']['columns']['fax']['config']['max'] = '25';
+$GLOBALS['TCA']['fe_users']['columns']['username']['config']['eval'] = 'nospace,uniqueInPid,required';
+$GLOBALS['TCA']['fe_users']['columns']['name']['config']['max'] = '100';
+$GLOBALS['TCA']['fe_users']['columns']['company']['config']['max'] = '50';
+$GLOBALS['TCA']['fe_users']['columns']['city']['config']['max'] = '40';
+$GLOBALS['TCA']['fe_users']['columns']['country']['config']['max'] = '60';
+$GLOBALS['TCA']['fe_users']['columns']['zip']['config']['size'] = '15';
+$GLOBALS['TCA']['fe_users']['columns']['zip']['config']['max'] = '20';
+$GLOBALS['TCA']['fe_users']['columns']['email']['config']['max'] = '255';
+$GLOBALS['TCA']['fe_users']['columns']['telephone']['config']['max'] = '25';
+$GLOBALS['TCA']['fe_users']['columns']['fax']['config']['max'] = '25';
 
 
-$TCA['fe_users']['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['uploadfolder'];
-$TCA['fe_users']['columns']['image']['config']['max_size'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['imageMaxSize'];
-$TCA['fe_users']['columns']['image']['config']['allowed'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['imageTypes'];
+$GLOBALS['TCA']['fe_users']['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['uploadfolder'];
+$GLOBALS['TCA']['fe_users']['columns']['image']['config']['max_size'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['imageMaxSize'];
+$GLOBALS['TCA']['fe_users']['columns']['image']['config']['allowed'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['imageTypes'];
 
 $addColumnArray = Array(
 	'cnum' => Array (
@@ -177,26 +177,33 @@ $addColumnArray = Array(
 );
 t3lib_extMgm::addTCAcolumns('fe_users', $addColumnArray);
 
-$TCA['fe_users']['interface']['showRecordFieldList'] = preg_replace('/(^|,)\s*country\s*(,|$)/', '$1zone,static_info_country,country,language$2', $TCA['fe_users']['interface']['showRecordFieldList']);
-$TCA['fe_users']['interface']['showRecordFieldList'] = preg_replace('/(^|,)\s*title\s*(,|$)/', '$1gender,status,date_of_birth,house_no,title$2', $TCA['fe_users']['interface']['showRecordFieldList']);
+$GLOBALS['TCA']['fe_users']['interface']['showRecordFieldList'] = preg_replace('/(^|,)\s*country\s*(,|$)/', '$1zone,static_info_country,country,language$2', $GLOBALS['TCA']['fe_users']['interface']['showRecordFieldList']);
+$GLOBALS['TCA']['fe_users']['interface']['showRecordFieldList'] = preg_replace('/(^|,)\s*title\s*(,|$)/', '$1gender,status,date_of_birth,house_no,title$2', $GLOBALS['TCA']['fe_users']['interface']['showRecordFieldList']);
 
 $additionalFields = '';
-if (strpos($TCA['fe_users']['feInterface']['fe_admin_fieldList'],'first_name') === FALSE) {
+if (strpos($GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList'],'first_name') === FALSE) {
 	$additionalFields = 'first_name,middle_name,last_name,';
 }
+if (!is_array($GLOBALS['TCA']['fe_users']['feInterface'])) {
+	$GLOBALS['TCA']['fe_users']['feInterface'] = array();
+}
+if (!isset($GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList'])) {
+	$GLOBALS['TCA']['fe_users']['feInterface'] = array(
+		'fe_admin_fieldList' => 'username,password,usergroup,name,address,telephone,fax,email,title,zip,city,country,www,company'
+	);
+}
+$GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList'] = preg_replace('/(^|,)\s*title\s*(,|$)/', '$1gender,' . $additionalFields . 'cnum,status,title$2', $GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList']);
+$GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList'] .= ',image,disable,date_of_birth,house_no,by_invitation,terms_acknowledged,tx_srfeuserregister_password';
+$GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList'] = preg_replace('/(^|,)\s*country\s*(,|$)/', '$1zone,static_info_country,country,language,comments$2', $GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList']);
 
-$TCA['fe_users']['feInterface']['fe_admin_fieldList'] = preg_replace('/(^|,)\s*title\s*(,|$)/', '$1gender,' . $additionalFields . 'cnum,status,title$2', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
-$TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',image,disable,date_of_birth,house_no,by_invitation,terms_acknowledged,tx_srfeuserregister_password';
-$TCA['fe_users']['feInterface']['fe_admin_fieldList'] = preg_replace('/(^|,)\s*country\s*(,|$)/', '$1zone,static_info_country,country,language,comments$2', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
+$GLOBALS['TCA']['fe_users']['types']['0']['showitem'] = preg_replace('/(^|,)\s*country\s*(,|$)/', '$1 zone, static_info_country, country, language$2', $GLOBALS['TCA']['fe_users']['types']['0']['showitem']);
+$GLOBALS['TCA']['fe_users']['types']['0']['showitem'] = preg_replace('/(^|,)\s*address\s*(,|$)/', '$1 cnum, status, date_of_birth, house_no, address$2', $GLOBALS['TCA']['fe_users']['types']['0']['showitem']);
+$GLOBALS['TCA']['fe_users']['types']['0']['showitem'] = preg_replace('/(^|,)\s*www\s*(,|$)/', '$1 www, comments, by_invitation, terms_acknowledged$2', $GLOBALS['TCA']['fe_users']['types']['0']['showitem']);
 
-$TCA['fe_users']['types']['0']['showitem'] = preg_replace('/(^|,)\s*country\s*(,|$)/', '$1 zone, static_info_country, country, language$2', $TCA['fe_users']['types']['0']['showitem']);
-$TCA['fe_users']['types']['0']['showitem'] = preg_replace('/(^|,)\s*address\s*(,|$)/', '$1 cnum, status, date_of_birth, house_no, address$2', $TCA['fe_users']['types']['0']['showitem']);
-$TCA['fe_users']['types']['0']['showitem'] = preg_replace('/(^|,)\s*www\s*(,|$)/', '$1 www, comments, by_invitation, terms_acknowledged$2', $TCA['fe_users']['types']['0']['showitem']);
-
-$TCA['fe_users']['palettes']['2']['showitem'] = 'gender,--linebreak--,' . $TCA['fe_users']['palettes']['2']['showitem'];
+$GLOBALS['TCA']['fe_users']['palettes']['2']['showitem'] = 'gender,--linebreak--,' . $GLOBALS['TCA']['fe_users']['palettes']['2']['showitem'];
 
 
-$TCA['fe_users']['ctrl']['thumbnail'] = 'image';
+$GLOBALS['TCA']['fe_users']['ctrl']['thumbnail'] = 'image';
 
 
 	// fe_users modified
@@ -242,12 +249,12 @@ if (
 
 	t3lib_extMgm::addTCAcolumns('fe_users', $tempCols);
 
-	$TCA['fe_users']['feInterface']['fe_admin_fieldList'] .= ',module_sys_dmail_newsletter,module_sys_dmail_category,module_sys_dmail_html';
+	$GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList'] .= ',module_sys_dmail_newsletter,module_sys_dmail_category,module_sys_dmail_html';
 
 	t3lib_extMgm::addToAllTCATypes('fe_users','--div--;Direct mail,module_sys_dmail_newsletter;;;;1-1-1,module_sys_dmail_category,module_sys_dmail_html');
 }
 
-$TCA['fe_groups_language_overlay'] = Array (
+$GLOBALS['TCA']['fe_groups_language_overlay'] = Array (
 	'ctrl' => Array (
  	'title' => 'LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/locallang_db.xml:fe_groups_language_overlay',
 		'label' => 'title',
