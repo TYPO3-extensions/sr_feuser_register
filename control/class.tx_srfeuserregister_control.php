@@ -389,15 +389,11 @@ class tx_srfeuserregister_control {
 				) {
 					$controlData->clearSessionData();
 				}
-				if ($conf['evalFunc']) {
+				if ($conf['evalFunc'] && is_array($conf['evalFunc.'])) {
 					$this->marker->setArray($markerArray);
-					$userProcessedDataArray =
-						tx_div2007_alpha::userProcess_fh001(
-							$this,
-							$conf,
-							'evalFunc',
-							$finalDataArray
-						);
+					$funcConf = $conf['evalFunc.'];
+					$funcConf['parentObj'] = $this;
+					$userProcessedDataArray = $GLOBALS['TSFE']->cObj->callUserFunction($conf['evalFunc'], $funcConf, $finalDataArray);
 					if (is_array($userProcessedDataArray)) {
 						$finalDataArray = $userProcessedDataArray;
 					}
