@@ -1,3 +1,6 @@
+2014-02-25 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix flexfom structure and flexform value retrieval
+
 2014-02-20 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #43925: Site crashes (500) if security token is clicked after more than 30 days
 	* Resolves #50838: Non existing token crashes site
