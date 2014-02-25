@@ -83,11 +83,13 @@ class tx_srfeuserregister_control {
 		// Get the command as set in piVars
 		$cmd = $controlData->getCmd();
 		// If not set, get the command from the flexform
-		if ($cmd === '') {
+		if (!isset($cmd) || $cmd === '') {
 			// Check the flexform
 			$pibaseObj->pi_initPIflexForm();
-			$cmd = $pibaseObj->pi_getFFvalue($pibaseObj->cObj->data['pi_flexform'], 'display_mode');
-			$cmd = $cmd?:$conf['defaultCODE'];
+			$cmd = $pibaseObj->pi_getFFvalue($pibaseObj->cObj->data['pi_flexform'], 'display_mode', 'sDEF');
+			if (!isset($cmd) || $cmd === '') {
+				$cmd = $conf['defaultCODE'];
+			}
 			$cmd = $cObj->caseshift($cmd, 'lower');
 		}
 		$controlData->setCmd($cmd);
