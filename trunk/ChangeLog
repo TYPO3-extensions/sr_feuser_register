@@ -1,5 +1,6 @@
 2014-03-11 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #56790: Remove dependency on extension div2007
+	* Updated manual
 
 2014-02-25 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix flexfom structure and flexform value retrieval
