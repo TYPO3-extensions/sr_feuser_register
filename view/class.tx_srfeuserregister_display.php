@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  (c) 2007-2014 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -43,6 +43,12 @@
 
 
 class tx_srfeuserregister_display {
+	
+	protected $pibaseObj;
+
+	public function init($pibaseObj) {
+		$this->pibaseObj = $pibaseObj;
+	}
 
 	/**
 	* Displays the record update form
@@ -239,11 +245,7 @@ class tx_srfeuserregister_display {
 			);
 
 		if ($mode != MODE_PREVIEW) {
-			$form =
-				tx_div2007_alpha::getClassName(
-					$theTable . '_form',
-					$controlData->getPrefixId()
-				);
+			$form = $this->pibaseObj->pi_getClassName($theTable . '_form');
 			$modData = $dataObj->modifyDataArrForFormUpdate($currentArray, $cmdKey);
 			$fields = $dataObj->getFieldList() . ',' . $dataObj->getAdditionalUpdateFields();
 			$fields = implode(',', array_intersect(explode(',', $fields), t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1)));
@@ -461,11 +463,7 @@ class tx_srfeuserregister_display {
 				$fields = implode(',', array_intersect(explode(',', $fields), t3lib_div::trimExplode(',', $conf[$cmdKey . '.']['fields'], 1)));	
 				$fields = $controlData->getOpenFields($fields);
 				$modData = $dataObj->modifyDataArrForFormUpdate($dataArray, $cmdKey);
-				$form =
-					tx_div2007_alpha::getClassName(
-						$theTable . '_form',
-						$controlData->getPrefixId()
-					);
+				$form = $this->pibaseObj->pi_getClassName($theTable . '_form');
 				$updateJS =
 					$cObj->getUpdateJS(
 						$modData,

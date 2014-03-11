@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  (c) 2007-2014 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -42,8 +42,10 @@
  */
 
 class tx_srfeuserregister_tca {
+	
+	protected $pibaseObj;
 
-	public function init ($extKey, $theTable) {
+	public function init ($extKey, $theTable, $pibaseObj) {
 		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6001000) {
 			// Get the table definition
 			$this->loadTcaAdditions(array($extKey));
@@ -57,6 +59,7 @@ class tx_srfeuserregister_tca {
 			$this->loadTcaAdditions($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['extendingTCA']);
 			$this->fixAddressFeAdminFieldList();
 		}
+		$this->pibaseObj = $pibaseObj;
 	}
 
 	/* loadTcaAdditions($ext_keys)
@@ -663,7 +666,7 @@ class tx_srfeuserregister_tca {
 							case 'text':
 								$label = $langObj->getLLFromString($colConfig['default']);
 								$label = htmlspecialchars($label, ENT_QUOTES, $charset);
-								$colContent = '<textarea id="' .  tx_div2007_alpha5::getClassName_fh001($colName, $prefixId) . '" name="FE[' . $theTable . '][' . $colName . ']"' .
+								$colContent = '<textarea id="' .  $this->pibaseObj->pi_getClassName($colName) . '" name="FE[' . $theTable . '][' . $colName . ']"' .
 									' title="###TOOLTIP_' . (($cmd == 'invite') ? 'INVITATION_':'') . $cObj->caseshift($colName, 'upper') . '###"' .
 									' cols="' . ($colConfig['cols'] ? $colConfig['cols'] : 30) . '"' .
 									' rows="' . ($colConfig['rows'] ? $colConfig['rows'] : 5) . '"' .
@@ -675,7 +678,7 @@ class tx_srfeuserregister_tca {
 								$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 
 								if (isset($itemArray) && is_array($itemArray)) {
-									$uidText = tx_div2007_alpha5::getClassName_fh001($colName, $prefixId);
+									$uidText = $this->pibaseObj->pi_getClassName($colName);
 									if (isset($mrow) && is_array($mrow) && $mrow['uid']) {
 										$uidText .= '-' . $mrow['uid'];
 									}
@@ -695,14 +698,14 @@ class tx_srfeuserregister_tca {
 										$label = $langObj->getLLFromString($itemArray[$key][0]);
 										$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 										$colContent .= '<li><input type="checkbox"' .
-										tx_div2007_alpha5::classParam_fh001('checkbox', '', $prefixId) .
+										$this->pibaseObj->pi_classParam('checkbox', '') .
 										' id="' . $uidText . '-' . $key .  '" name="FE[' . $theTable . '][' . $colName . '][]" value="' . $key . '"' . $checked . ' /><label for="' . $uidText . '-' . $key . '">' . $label . '</label></li>';
 									}
 									$colContent .= '</ul>';
 								} else {
 									$colContent = '<input type="checkbox"' .
-									tx_div2007_alpha5::classParam_fh001('checkbox', '', $prefixId) .
-									' id="' . tx_div2007_alpha5::getClassName_fh001($colName, $prefixId) .
+									$this->pibaseObj->pi_classParam('checkbox', '') .
+									' id="' . $this->pibaseObj->pi_getClassName($colName) .
 									'" name="FE[' . $theTable . '][' . $colName . ']" title="' . $label . '"' . ($mrow[$colName] ? ' checked="checked"' : '') . ' />';
 								}
 								break;
@@ -734,12 +737,12 @@ class tx_srfeuserregister_tca {
 										$label = $langObj->getLLFromString($confArray[0]);
 										$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 										$itemOut = '<input type="radio"' .
-										tx_div2007_alpha5::classParam_fh001('radio', '', $prefixId) .
+										$this->pibaseObj->pi_classParam('radio', '') .
 										' id="'.
-										tx_div2007_alpha5::getClassName_fh001($colName, $prefixId) .
+										$this->pibaseObj->pi_getClassName($colName) .
 										'-' . $i . '" name="FE[' . $theTable . '][' . $colName . ']"' .
 											' value="' . $value . '" ' . ($value == $startVal ? ' checked="checked"' : '') . ' />' .
-											'<label for="' . tx_div2007_alpha5::getClassName_fh001($colName, $prefixId) .
+											'<label for="' . $this->pibaseObj->pi_getClassName($colName) .
 											'-' . $i . '">' . $label . '</label>';
 										$i++;
 										$colContent .= ((!$bNotLast || $i < count($itemArray) - 1 ) ?  $cObj->stdWrap($itemOut, $stdWrap) : $itemOut);
@@ -761,15 +764,15 @@ class tx_srfeuserregister_tca {
 
 								if ($colConfig['renderMode'] == 'checkbox') {
 									$colContent .= '
-										<input id="' . tx_div2007_alpha5::getClassName_fh001($colName, $prefixId) .
+										<input id="' . $this->pibaseObj->pi_getClassName($colName) .
 										'" name="FE[' . $theTable . '][' . $colName . ']" value="" type="hidden" />';
 									$colContent .= '
 										<dl class="' .
-										tx_div2007_alpha5::getClassName_fh001('multiple-checkboxes', $prefixId) .
+										$this->pibaseObj->pi_getClassName('multiple-checkboxes') .
 										'" title="###TOOLTIP_' . (($cmd == 'invite') ? 'INVITATION_' : '') . $cObj->caseshift($colName,'upper') . '###">';
 								} else {
 									$colContent .= '<select id="'.
-									tx_div2007_alpha5::getClassName_fh001('multiple-checkboxes', $prefixId) .
+									$this->pibaseObj->pi_getClassName('multiple-checkboxes') .
 									'" name="FE[' . $theTable . '][' . $colName . ']' . $multiple . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $cObj->caseshift($colName, 'upper') . '###">';
 								}
 
@@ -782,10 +785,10 @@ class tx_srfeuserregister_tca {
 										if ($colConfig['renderMode'] == 'checkbox') {
 
 											$colContent .= '<dt><input class="' .
-											tx_div2007_alpha5::getClassName_fh001('checkbox-checkboxes', $prefixId) .
-											 '" id="' . tx_div2007_alpha5::getClassName_fh001($colName, $prefixId) . '-' . $i . '" name="FE[' . $theTable . '][' . $colName . '][' . $k . ']" value="' . $k . '" type="checkbox"  ' . (in_array($k, $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
+											$this->pibaseObj->pi_getClassName('checkbox-checkboxes') .
+											 '" id="' . $this->pibaseObj->pi_getClassName($colName) . '-' . $i . '" name="FE[' . $theTable . '][' . $colName . '][' . $k . ']" value="' . $k . '" type="checkbox"  ' . (in_array($k, $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
 												<dd><label for="' .
-												tx_div2007_alpha5::getClassName_fh001($colName, $prefixId) .
+												$this->pibaseObj->pi_getClassName($colName) .
 												'-' . $i . '">' . $label . '</label></dd>';
 										} else {
 											$colContent .= '<option value="'.$k. '" ' . (in_array($k, $valuesArray) ? 'selected="selected"' : '') . '>' . $label . '</option>';
@@ -875,9 +878,9 @@ class tx_srfeuserregister_tca {
 												$selectedValue = ($selected ? TRUE: $selectedValue);
 												if ($colConfig['renderMode'] == 'checkbox') {
 													$colContent .= '<dt><input  class="' .
-													tx_div2007_alpha5::getClassName_fh001('checkbox', $prefixId) .
-													'" id="'. tx_div2007_alpha5::getClassName_fh001($colName, $prefixId) . '-' . $row2['uid'] . '" name="FE[' . $theTable . '][' . $colName . '][' . $row2['uid'] . ']" value="'.$row2['uid'] . '" type="checkbox"' . ($selected ? ' checked="checked"':'') . ' /></dt>
-													<dd><label for="' . tx_div2007_alpha5::getClassName_fh001($colName, $prefixId) . '-' . $row2['uid'] . '">' . $titleText . '</label></dd>';
+													$this->pibaseObj->pi_getClassName('checkbox') .
+													'" id="'. $this->pibaseObj->pi_getClassName($colName) . '-' . $row2['uid'] . '" name="FE[' . $theTable . '][' . $colName . '][' . $row2['uid'] . ']" value="'.$row2['uid'] . '" type="checkbox"' . ($selected ? ' checked="checked"':'') . ' /></dt>
+													<dd><label for="' . $this->pibaseObj->pi_getClassName($colName) . '-' . $row2['uid'] . '">' . $titleText . '</label></dd>';
 												} else {
 													$colContent .= '<option value="' . $row2['uid'] . '"' . $selected . '>' . $titleText . '</option>';
 												}
@@ -901,9 +904,9 @@ class tx_srfeuserregister_tca {
 
 											if ($colConfig['renderMode'] == 'checkbox') {
 												$colContent .= '<dt><input class="' .
-												tx_div2007_alpha5::getClassName_fh001('checkbox', $prefixId) .
-												'" id="'. tx_div2007_alpha5::getClassName_fh001($colName, $prefixId) . '-' . $row2['uid'] . '" name="FE[' . $theTable . '][' . $colName . '][' . $row2['uid'] . ']" value="' . $row2['uid'] . '" type="checkbox"' . (in_array($row2['uid'],  $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
-												<dd><label for="' . tx_div2007_alpha5::getClassName_fh001($colName, $prefixId) . '-' . $row2['uid'] . '">' . $titleText . '</label></dd>';
+												$this->pibaseObj->pi_getClassName('checkbox') .
+												'" id="'. $this->pibaseObj->pi_getClassName($colName) . '-' . $row2['uid'] . '" name="FE[' . $theTable . '][' . $colName . '][' . $row2['uid'] . ']" value="' . $row2['uid'] . '" type="checkbox"' . (in_array($row2['uid'],  $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
+												<dd><label for="' . $this->pibaseObj->pi_getClassName($colName) . '-' . $row2['uid'] . '">' . $titleText . '</label></dd>';
 
 											} else {
 												$colContent .= '<option value="' . $row2['uid'] . '"' . (in_array($row2['uid'], $valuesArray) ? 'selected="selected"' : '') . '>' . $titleText . '</option>';
@@ -998,7 +1001,7 @@ class tx_srfeuserregister_tca {
 			}
 
 			if (count($fieldArr)) {
-				$cObj = t3lib_div::getUserObj('&tx_div2007_cobj');
+				$cObj = t3lib_div::getUserObj('&tslib_cObj');
 
 				$whereClause = 'fe_group=' . intval($fe_groups_uid) . ' ' .
 					'AND sys_language_uid=' . intval($languageUid) . ' ' .

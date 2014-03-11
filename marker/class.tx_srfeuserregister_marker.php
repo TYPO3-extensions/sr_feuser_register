@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  (c) 2007-2014 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -53,6 +53,7 @@ class tx_srfeuserregister_marker {
 	public $controlData;
 	public $langObj;
 	public $tca;
+	protected $pibaseObj;
 	public $previewLabel;
 	public $staticInfo;
 	public $markerArray = array();
@@ -69,12 +70,14 @@ class tx_srfeuserregister_marker {
 		$controlData,
 		$urlObj,
 		$uid,
-		$token
+		$token,
+		$pibaseObj
 	) {
 		$this->conf = $confObj->getConf();
 		$this->data = $data;
 		$this->tca = $tca;
 		$this->langObj = $langObj;
+		$this->pibaseObj = $pibaseObj;
 		$this->controlData = $controlData;
 		$theTable = $this->controlData->getTable();
 
@@ -200,7 +203,7 @@ class tx_srfeuserregister_marker {
 		$matches
 	) {
 		$confObj = t3lib_div::getUserObj('&tx_srfeuserregister_conf');
-		$cObj = t3lib_div::getUserObj('&tx_div2007_cobj');
+		$cObj = t3lib_div::getUserObj('&tslib_cObj');
 		$conf = $confObj->getConf();
 		$controlData = t3lib_div::getUserObj('&tx_srfeuserregister_controldata');
 
@@ -562,7 +565,7 @@ class tx_srfeuserregister_marker {
 
 		unset($unsetVars['cmd']);
 		$markerArray['###FORM_URL###'] = $formUrl;
-		$form = tx_div2007_alpha5::getClassName_fh001($theTable . '_form', $prefixId);
+		$form = $this->pibaseObj->pi_getClassName($theTable . '_form');
 
 		$markerArray['###FORM_NAME###'] = $form; // $this->conf['formName'];
 
@@ -714,11 +717,11 @@ class tx_srfeuserregister_marker {
 				}
 				$markerArray['###FIELD_language###'] = $this->staticInfo->getStaticInfoName('LANGUAGES',  is_array($row) ? $row['language'] : '');
 			} else {
-				$idCountry = tx_div2007_alpha5::getClassName_fh001('static_info_country', $prefixId);
+				$idCountry = $this->pibaseObj->pi_getClassName('static_info_country');
 				$titleCountry = $this->langObj->getLL('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'static_info_country');
-				$idZone = tx_div2007_alpha5::getClassName_fh001('zone', $prefixId);
+				$idZone = $this->pibaseObj->pi_getClassName('zone');
 				$titleZone = $this->langObj->getLL('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'zone');
-				$idLanguage = tx_div2007_alpha5::getClassName_fh001('language', $prefixId);
+				$idLanguage = $this->pibaseObj->pi_getClassName('language');
 				$titleLanguage = $this->langObj->getLL('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'language');
 				$selected = (is_array($row) && isset($row['static_info_country']) ? $row['static_info_country'] : array());
 				$where = '';
@@ -835,7 +838,7 @@ class tx_srfeuserregister_marker {
 					}
 				} else if ($bHtml) {
 					$HTMLContent .= '<a href="' . $dir . '/' . $filenameArray[$i] . '"' .
-					tx_div2007_alpha5::classParam_fh001('file-view', '', $prefixId) .
+					$this->pibaseObj->pi_classParam('file-view', '') .
 					' target="_blank" title="' . $this->langObj->getLL('file_view') . '">' . $this->langObj->getLL('file_view') . '</a><br />';
 				}
 			}
@@ -843,19 +846,19 @@ class tx_srfeuserregister_marker {
 			for($i = 0; $i < sizeof($filenameArray); $i++) {
 				$HTMLContent .=
 					$filenameArray[$i] . '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="' . $prefixId . '[' . $theField . '][' . $i . '][submit_delete]" value="1" title="' . $this->langObj->getLL('icon_delete') . '" alt="' . $this->langObj->getLL('icon_delete') . '"' .
-					tx_div2007_alpha5::classParam_fh001('delete-view', '', $prefixId) .
+					$this->pibaseObj->pi_classParam('delete-view', '') .
 					' onclick=\'if(confirm("' . $this->langObj->getLL('confirm_file_delete') . '")) return true; else return false;\' />'
 					. '<a href="' . $dir . '/' . $filenameArray[$i] . '" ' .
-					tx_div2007_alpha5::classParam_fh001('file-view', '', $prefixId) .
+					$this->pibaseObj->pi_classParam('file-view', '') .
 					' target="_blank" title="' . $this->langObj->getLL('file_view') . '">' .
 					$this->langObj->getLL('file_view') . '</a><br />';
 				$HTMLContent .= '<input type="hidden" name="' . $prefixId . '[' . $theField . '][' . $i . '][name]' . '" value="' . $filenameArray[$i] . '" />';
 			}
 			for ($i = sizeof($filenameArray); $i < $number + sizeof($filenameArray); $i++) {
 				$HTMLContent .= '<input id="' .
-				tx_div2007_alpha5::getClassName_fh001($theField, $prefixId) .
+				$this->pibaseObj->pi_getClassName($theField) .
 				'-' . ($i-sizeof($filenameArray)) . '" name="' . $prefixId . '[' . $theField . '][' . $i . ']" title="' . $this->langObj->getLL('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'image') . '" size="40" type="file" ' .
-				tx_div2007_alpha5::classParam_fh001('uploader-view', '', $prefixId) .
+				$this->pibaseObj->pi_classParam('uploader-view', '') .
 				' /><br />';
 			}
 		}
@@ -1027,7 +1030,7 @@ class tx_srfeuserregister_marker {
 		$markerArray,
 		$viewOnly = FALSE
 	) {
-		$cObj = t3lib_div::getUserObj('&tx_div2007_cobj');
+		$cObj = t3lib_div::getUserObj('&tslib_cObj');
 
 		if (!$markerArray) {
 			$markerArray = $this->getArray();
