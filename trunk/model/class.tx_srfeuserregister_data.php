@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  (c) 2007-2014 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -266,7 +266,7 @@ class tx_srfeuserregister_data {
 	*/
 	public function overrideValues (array &$dataArray, $cmdKey) {
 
-		$cObj = t3lib_div::getUserObj('&tx_div2007_cobj');
+		$cObj = t3lib_div::getUserObj('&tslib_cObj');
 
 		// Addition of overriding values
 		if (is_array($this->conf[$cmdKey . '.']['overrideValues.'])) {
@@ -897,7 +897,7 @@ class tx_srfeuserregister_data {
 	*/
 	public function parseValues ($theTable, array &$dataArray, array $origArray, $cmdKey) {
 
-		$cObj = t3lib_div::getUserObj('&tx_div2007_cobj');
+		$cObj = t3lib_div::getUserObj('&tslib_cObj');
 
 		if (is_array($this->conf['parseValues.'])) {
 

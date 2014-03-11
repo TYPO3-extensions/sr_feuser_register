@@ -40,8 +40,7 @@ $EM_CONF[$_EXTKEY] = array(
 			'felogin' => '',
 			'rsaauth' => '',
 			'saltedpasswords' => '',
-			'static_info_tables' => '2.3.0-',
-			'div2007' => '0.10.1-',
+			'static_info_tables' => '2.3.0-'
 		),
 		'conflicts' => array(
 			'germandates' => '0.0.0-1.0.1',
@@ -55,9 +54,7 @@ $EM_CONF[$_EXTKEY] = array(
 		'suggests' => array(
 			'sr_freecap' => '1.5.3-',
 		),
-	),
-	'suggests' => array(
-	),
+	)
 );
 
 ?>

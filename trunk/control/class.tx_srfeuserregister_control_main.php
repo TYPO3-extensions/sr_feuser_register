@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 1999-2003 Kasper Skårhøj (kasperYYYY@typo3.com)
-*  (c) 2004-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  (c) 2004-2014 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -145,7 +145,7 @@ class tx_srfeuserregister_control_main {
 		$confObj = t3lib_div::getUserObj('&tx_srfeuserregister_conf');
 		$confObj->init($conf);
 
-		$this->tca->init($this->extKey, $theTable);
+		$this->tca->init($this->extKey, $theTable, $pibaseObj);
 
 		$tablesObj = t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
 		$tablesObj->init($theTable);
@@ -176,8 +176,10 @@ class tx_srfeuserregister_control_main {
 		$this->data = t3lib_div::getUserObj('&tx_srfeuserregister_data');
 		$this->marker = t3lib_div::getUserObj('&tx_srfeuserregister_marker');
 		$this->display = t3lib_div::getUserObj('&tx_srfeuserregister_display');
+		$this->display->init($pibaseObj);
 		$this->setfixedObj = t3lib_div::getUserObj('&tx_srfeuserregister_setfixed');
 		$this->email = t3lib_div::getUserObj('&tx_srfeuserregister_email');
+		$this->email->init($pibaseObj);
 		$this->control = t3lib_div::getUserObj('&tx_srfeuserregister_control');
 
 		$this->urlObj->init(
@@ -230,7 +232,8 @@ class tx_srfeuserregister_control_main {
 				$this->controlData,
 				$this->urlObj,
 				$uid,
-				$this->controlData->readToken()
+				$this->controlData->readToken(),
+				$pibaseObj
 			);
 
 			if ($buttonLabelsList != '') {

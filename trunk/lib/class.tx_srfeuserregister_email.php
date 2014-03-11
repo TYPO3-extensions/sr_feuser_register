@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  (c) 2007-2014 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -42,11 +42,15 @@
  */
 
 class tx_srfeuserregister_email {
+	protected $pibaseObj;
 	public $infomailPrefix = 'INFOMAIL_';
 	public $emailMarkPrefix = 'EMAIL_TEMPLATE_';
 	public $emailMarkAdminSuffix = '_ADMIN';
 	public $emailMarkHTMLSuffix = '_HTML';
-
+	
+	public function init($pibaseObj) {
+		$this->pibaseObj = $pibaseObj;
+	}
 
 	public function isHTMLMailEnabled ($conf) {
 		$result = TRUE;
@@ -637,11 +641,7 @@ class tx_srfeuserregister_email {
 				$cObj->substituteSubpart(
 					$content['userhtml']['all'],
 					'###SUB_RECORD###',
-					tx_div2007_alpha::wrapInBaseClass_fh001(
-						$content['userhtml']['accum'],
-						$controlData->getPrefixId(),
-						$controlData->getExtKey()
-					)
+					$this->pibaseObj->pi_wrapInBaseClass($content['userhtml']['accum'])
 				);
 				// Remove HTML comments
 			$content['userhtml']['final'] = $displayObj->removeHTMLComments($content['userhtml']['final']);
@@ -665,11 +665,7 @@ class tx_srfeuserregister_email {
 				$cObj->substituteSubpart(
 					$content['adminhtml']['all'],
 					'###SUB_RECORD###',
-					tx_div2007_alpha::wrapInBaseClass_fh001(
-						$content['adminhtml']['accum'],
-						$controlData->getPrefixId(),
-						$controlData->getExtKey()
-					)
+					$this->pibaseObj->pi_wrapInBaseClass($content['adminhtml']['accum'])
 				);
 				// Remove HTML comments
 			$content['adminhtml']['final'] = $displayObj->removeHTMLComments($content['adminhtml']['final']);

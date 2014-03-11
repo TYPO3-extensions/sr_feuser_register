@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2013 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  (c) 2007-2014 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -642,8 +642,9 @@ class tx_srfeuserregister_setfixed {
 				);
 
 				$confirmType = ($bconfirmTypeIsInt ? intval($confirmType) : $GLOBALS['TSFE']->type);
+				
 				$url =
-					tx_div2007_alpha5::getTypoLink_URL_fh003(
+					Tx_SrFeuserRegister_Utility_UrlUtility::getTypoLink_URL(
 						$cObj,
 						$linkPID . ',' . $confirmType,
 						$setfixedpiVars,
