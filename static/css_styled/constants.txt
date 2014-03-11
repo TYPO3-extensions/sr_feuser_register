@@ -46,6 +46,9 @@ plugin.tx_srfeuserregister_pi1 {
       # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Generate the username: If set, the username is assumed to be generated. Appropriate hook must be configured.
   generateUsername = 0
 
+      # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Do not enforce username: If set, field username is not forced to be part of formFields and requiredFields.
+  doNotEnforceUsername = 0
+
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Authentication code length: Length of the authentication codes. Direct Mail uses 8.
   codeLength = 12
 
@@ -167,7 +170,7 @@ plugin.tx_srfeuserregister_pi1 {
   autoLoginRedirect_url =
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=boolean; label= Direct Mail checked upon registration: The checkboxes for Direct Mail categories will be checked by default if you set this.
-   dmailCheckedUponRegistration = 0
+  dmailCheckedUponRegistration = 0
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= User group(s) upon registration: The value of the user group field. Must be a list of integers WITHOUT spaces between the comma separated values! Furthermore these integers MUST belong to actual fe_groups records!
   userGroupUponRegistration = 0

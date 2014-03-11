@@ -65,6 +65,7 @@ plugin.tx_srfeuserregister_pi1 {
 		required = {$plugin.tx_srfeuserregister_pi1.requiredFields}
 		useEmailAsUsername = {$plugin.tx_srfeuserregister_pi1.useEmailAsUsername}
 		generateUsername = {$plugin.tx_srfeuserregister_pi1.generateUsername}
+		doNotEnforceUsername = {$plugin.tx_srfeuserregister_pi1.doNotEnforceUsername}
 		allowUserGroupSelection = {$plugin.tx_srfeuserregister_pi1.allowUserGroupSelection}
 		allowedUserGroups = {$plugin.tx_srfeuserregister_pi1.allowedUserGroups}
 		allowedSubgroups = {$plugin.tx_srfeuserregister_pi1.allowedSubgroups}
