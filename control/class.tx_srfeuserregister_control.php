@@ -252,13 +252,14 @@ class tx_srfeuserregister_control {
 				$conf[$cmdKey . '.']['fields'] = t3lib_div::rmFromList('name', $conf[$cmdKey . '.']['fields']);
 			}
 		}
-			// Adjust some evaluation settings
+		// Adjust some evaluation settings
+		// TODO: Fix scope issue: unsetting $conf entry here has no effect
 		if (is_array($conf[$cmdKey . '.']['evalValues.'])) {
-				// Do not evaluate any password when inviting
+			// Do not evaluate any password when inviting
 			if ($cmdKey == 'invite') {
 				unset($conf[$cmdKey . '.']['evalValues.']['password']);
 			}
-				// Do not evaluate the username if it is generated or if email is used
+			// Do not evaluate the username if it is generated or if email is used
 			if (
 				$conf[$cmdKey . '.']['useEmailAsUsername'] ||
 				($conf[$cmdKey . '.']['generateUsername'] && $cmdKey != 'edit' && $cmdKey != 'password')
@@ -268,7 +269,7 @@ class tx_srfeuserregister_control {
 		}
 		$this->confObj->setConf($conf);
 
-			// Setting requiredArr to the fields in "required" fields list intersected with the total field list in order to remove invalid fields.
+		// Setting requiredArr to the fields in "required" fields list intersected with the total field list in order to remove invalid fields.
 		$requiredArray = array_intersect(
 			t3lib_div::trimExplode(
 				',',
