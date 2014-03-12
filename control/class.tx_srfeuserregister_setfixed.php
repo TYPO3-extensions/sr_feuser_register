@@ -410,7 +410,7 @@ class tx_srfeuserregister_setfixed {
 						);
 
 						if (is_array($errorCode)) {
-							$errorText = $this->langObj->getLL($errorCode['0']);
+							$errorText = $langObj->getLL($errorCode['0']);
 							$errorContent = sprintf($errorText, $errorCode['1']);
 						}
 					}
@@ -451,7 +451,7 @@ class tx_srfeuserregister_setfixed {
 							);
 
 							if (is_array($errorCode)) {
-								$errorText = $this->langObj->getLL($errorCode['0']);
+								$errorText = $langObj->getLL($errorCode['0']);
 								$errorContent = sprintf($errorText, $errorCode['1']);
 							}
 						}

@@ -1,3 +1,6 @@
+2014-03-12 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix localization failure of error text in tx_srfeuserregister_setfixed
+
 2014-03-11 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #56790: Remove dependency on extension div2007
 	* Updated manual
