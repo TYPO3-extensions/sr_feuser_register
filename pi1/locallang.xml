@@ -442,6 +442,7 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 			<label index="v_registration_entered_message1_informal">Your membership &lt;b&gt;%2$s&lt;/b&gt; has been accepted.</label>
 			<label index="v_registration_entered_message2">Your e-mail address &lt;b&gt;%4$s&lt;/b&gt; has been added to our list.</label>
 			<label index="v_registration_entered_message2_informal">Your e-mail address &lt;b&gt;%4$s&lt;/b&gt; has been added to our list.</label>
+			<label index="v_registration_entered">%3$s accessed the login form of %1$s after acceptation of his(her) membership application.</label>
 			<label index="v_registration_deleted_subject">Your membership with &lt;b&gt;%1$s&lt;/b&gt; has been ended.</label>
 			<label index="v_registration_deleted_subject_informal">Your membership with &lt;b&gt;%1$s&lt;/b&gt; has been ended.</label>
 			<label index="v_registration_deleted_message1">As requested, we have ended your membership &lt;b&gt;%2$s&lt;/b&gt; and your e-mail address &lt;b&gt;%4$s&lt;/b&gt; has been deleted from our list.&lt;br /&gt;</label>

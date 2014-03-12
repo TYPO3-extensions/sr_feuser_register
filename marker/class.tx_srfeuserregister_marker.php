@@ -132,7 +132,7 @@ class tx_srfeuserregister_marker {
 			',v_registration_refused,v_registration_refused_subject,v_registration_refused_message1,v_registration_refused_message2'.
 			',v_registration_accepted_subject2,v_registration_accepted_message3,v_registration_accepted_message4'.
 			',v_registration_refused_subject2,v_registration_refused_message3,v_registration_refused_message4'.
-			',v_registration_entered_subject,v_registration_entered_message1,v_registration_entered_message2'.
+			',v_registration_entered,v_registration_entered_subject,v_registration_entered_message1,v_registration_entered_message2'.
 			',v_registration_updated,v_registration_updated_subject,v_registration_updated_message1'.
 			',v_registration_deleted,v_registration_deleted_subject,v_registration_deleted_message1,v_registration_deleted_message2'.
 			',v_registration_unsubscribed,v_registration_unsubscribed_subject,v_registration_unsubscribed_message1,v_registration_unsubscribed_message2';
