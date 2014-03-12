@@ -453,8 +453,18 @@ class tx_srfeuserregister_data {
 				$recordTestPid = $thePid ? $thePid :
 				(method_exists('TYPO3\\CMS\\Core\\Utility\\MathUtility', 'convertToPositiveInteger') ? \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($pid) : t3lib_div::intval_positive($pid));
 			}
+
+			// TODO: Fix scope issue: unsetting $conf entry in tx_srfeuserregister_control->init2 has no effect
+			// Do not evaluate any password when inviting
 			if ($cmdKey == 'invite') {
 				unset($this->conf[$cmdKey . '.']['evalValues.']['password']);
+			}
+			// Do not evaluate the username if it is generated or if email is used
+			if (
+				$this->conf[$cmdKey . '.']['useEmailAsUsername'] ||
+				($this->conf[$cmdKey . '.']['generateUsername'] && $cmdKey != 'edit' && $cmdKey != 'password')
+			) {
+				unset($this->conf[$cmdKey . '.']['evalValues.']['username']);
 			}
 			$countArray = array();
 			$countArray['hook'] = array();

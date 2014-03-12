@@ -3,6 +3,7 @@
 	* Updated manual
 	* Fix PHP warning in tx_srfeuserregister_select_dmcategories
 	* Missing doNotEnforceUsername in static template
+	* Fix incorrect behaviour when using email as username
 
 2014-02-25 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix flexfom structure and flexform value retrieval
