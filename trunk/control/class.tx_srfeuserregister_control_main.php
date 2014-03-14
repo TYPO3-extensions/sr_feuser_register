@@ -172,6 +172,7 @@ class tx_srfeuserregister_control_main {
 		}
 
 		$this->langObj = t3lib_div::getUserObj('&tx_srfeuserregister_lang');
+		$this->langObj->init($pibaseObj);
 		$this->urlObj = t3lib_div::getUserObj('&tx_srfeuserregister_url');
 		$this->data = t3lib_div::getUserObj('&tx_srfeuserregister_data');
 		$this->marker = t3lib_div::getUserObj('&tx_srfeuserregister_marker');
@@ -186,7 +187,6 @@ class tx_srfeuserregister_control_main {
 			$this->controlData,
 			$cObj
 		);
-		$this->langObj->init($pibaseObj);
 
 		$success = TRUE;
 		if ($this->controlData->isTokenValid()) {
