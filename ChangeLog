@@ -1,5 +1,6 @@
 2014-03-13 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Update manual
+	* Clean initialisation
 
 2014-03-12 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix localization failure of error text in tx_srfeuserregister_setfixed
