@@ -1001,7 +1001,7 @@ class tx_srfeuserregister_tca {
 			}
 
 			if (count($fieldArr)) {
-				$cObj = t3lib_div::getUserObj('&tslib_cObj');
+				$cObj = t3lib_div::makeInstance('tslib_cObj');
 
 				$whereClause = 'fe_group=' . intval($fe_groups_uid) . ' ' .
 					'AND sys_language_uid=' . intval($languageUid) . ' ' .
