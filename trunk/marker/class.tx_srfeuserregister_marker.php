@@ -203,7 +203,7 @@ class tx_srfeuserregister_marker {
 		$matches
 	) {
 		$confObj = t3lib_div::getUserObj('&tx_srfeuserregister_conf');
-		$cObj = t3lib_div::getUserObj('&tslib_cObj');
+		$cObj = t3lib_div::makeInstance('tslib_cObj');;
 		$conf = $confObj->getConf();
 		$controlData = t3lib_div::getUserObj('&tx_srfeuserregister_controldata');
 
@@ -1030,7 +1030,7 @@ class tx_srfeuserregister_marker {
 		$markerArray,
 		$viewOnly = FALSE
 	) {
-		$cObj = t3lib_div::getUserObj('&tslib_cObj');
+		$cObj = t3lib_div::makeInstance('tslib_cObj');;
 
 		if (!$markerArray) {
 			$markerArray = $this->getArray();

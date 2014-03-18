@@ -266,7 +266,7 @@ class tx_srfeuserregister_data {
 	*/
 	public function overrideValues (array &$dataArray, $cmdKey) {
 
-		$cObj = t3lib_div::getUserObj('&tslib_cObj');
+		$cObj = t3lib_div::makeInstance('tslib_cObj');
 
 		// Addition of overriding values
 		if (is_array($this->conf[$cmdKey . '.']['overrideValues.'])) {
@@ -907,7 +907,7 @@ class tx_srfeuserregister_data {
 	*/
 	public function parseValues ($theTable, array &$dataArray, array $origArray, $cmdKey) {
 
-		$cObj = t3lib_div::getUserObj('&tslib_cObj');
+		$cObj = t3lib_div::makeInstance('tslib_cObj');
 
 		if (is_array($this->conf['parseValues.'])) {
 
