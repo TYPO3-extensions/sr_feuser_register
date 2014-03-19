@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 2007-2012 Franz Holzinger (franz@ttproducts.de)
-*  (c) 2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  (c) 2012-2014 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -259,54 +259,65 @@ class tx_srfeuserregister_controldata {
 			)
 		) {
 			$this->setTokenValid(TRUE);
-		} else if (
-			$bRuIsInt &&
-				// When processing a setfixed link from other extensions,
-				// there might no token and no short url regHash, but there might be an authCode
-			(
-				$bValidRegHash ||
-				!$conf['useShortUrls'] ||
-				($authObj->getAuthCode($aC) && !$bSecureStartCmd)
-			)
-		) {
+		} else {
+			// When processing a setfixed link from other extensions,
+			// there might no token and no short url regHash, but there might be an authCode
 			if (
-				isset($getVars) &&
-				is_array($getVars) &&
-				isset($getVars['fD']) &&
-				is_array($getVars['fD'])
+				$bRuIsInt &&
+				(
+					$bValidRegHash ||
+					!$conf['useShortUrls'] ||
+					($authObj->getAuthCode($aC) && !$bSecureStartCmd)
+				)
 			) {
-				$fdArray = $getVars['fD'];
-			} else if (!isset($getVars)) {
-				$fdArray = t3lib_div::_GP('fD', 1);
-			}
-
-			if (
-				isset($fdArray) &&
-				is_array($fdArray) &&
-				isset($origArray) &&
-				is_array($origArray)
-			) {
-					// Calculate the setfixed hash from incoming data
-				$fieldList = rawurldecode($fdArray['_FIELDLIST']);
-				$setFixedArray = array_merge($origArray, $fdArray);
-				$codeLength = strlen($authObj->getAuthCode());
-				$sFK = $this->getFeUserData('sFK');
-
-					// Let's try with a code length of 8 in case this link is coming from direct mail
 				if (
-					$codeLength == 8 &&
-					in_array($sFK, array('DELETE', 'EDIT', 'UNSUBSCRIBE'))
+					isset($getVars) &&
+					is_array($getVars) &&
+					isset($getVars['fD']) &&
+					is_array($getVars['fD'])
 				) {
-					$authCode = $authObj->setfixedHash($setFixedArray, $fieldList, $codeLength);
-				} else {
-					$authCode = $authObj->setfixedHash($setFixedArray, $fieldList);
+					$fdArray = $getVars['fD'];
+				} else if (!isset($getVars)) {
+					$fdArray = t3lib_div::_GP('fD', 1);
 				}
-
-				if (!strcmp($authObj->getAuthCode(), $authCode)) {
+	
+				if (
+					isset($fdArray) &&
+					is_array($fdArray) &&
+					isset($origArray) &&
+					is_array($origArray)
+				) {
+					// Calculate the setfixed hash from incoming data
+					$fieldList = rawurldecode($fdArray['_FIELDLIST']);
+					$setFixedArray = array_merge($origArray, $fdArray);
+					$codeLength = strlen($authObj->getAuthCode());
+					$sFK = $this->getFeUserData('sFK');
+	
+					// Let's try with a code length of 8 in case this link is coming from direct mail
+					if (
+						$codeLength == 8 &&
+						in_array($sFK, array('DELETE', 'EDIT', 'UNSUBSCRIBE'))
+					) {
+						$authCode = $authObj->setfixedHash($setFixedArray, $fieldList, $codeLength);
+					} else {
+						$authCode = $authObj->setfixedHash($setFixedArray, $fieldList);
+					}
+	
+					if (!strcmp($authObj->getAuthCode(), $authCode)) {
 						// We use the valid authCode in place of token
-					$this->setFeUserData($authCode, 'token');
-					$this->setTokenValid(TRUE);
+						$this->setFeUserData($authCode, 'token');
+						$this->setTokenValid(TRUE);
+					}
+				} else {
+					// aC parameter from URL does not match the hash calculated from the given user record data
+					if ($token === '' && (!isset($fdArray) || !is_array($fdArray))) {
+						$message = 'The submitted authcode does not match the one from the given user record, perhaps due to missing fD[_FIELDLIST] parameter.';
+						t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
+					}
 				}
+			} else if ($token === ''  && !$bRuIsInt) {
+				$message = 'The submitted authcode does not match any user record.';
+				t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 			}
 		}
 
