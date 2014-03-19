@@ -51,6 +51,27 @@ class tx_srfeuserregister_lang {
 	public function init ($pibaseObj) {
 		$this->pibaseObj = $pibaseObj;
 		$this->pibaseObj->pi_loadLL();
+		if (isset($this->pibaseObj->conf['_LOCAL_LANG.'])) {
+			// Clear the "unset memory"
+			//$this->pibaseObj->LOCAL_LANG_UNSET = array();
+			foreach ($this->pibaseObj->conf['_LOCAL_LANG.'] as $languageKey => $languageArray) {
+				// Remove the dot after the language key
+				$languageKey = substr($languageKey, 0, -1);
+				// Don't process label if the language is not loaded
+				if (is_array($languageArray) && isset($this->pibaseObj->LOCAL_LANG[$languageKey])) {
+					foreach ($languageArray as $labelKey => $labelValue) {
+						if (!is_array($labelValue)) {
+							$this->pibaseObj->LOCAL_LANG[$languageKey][$labelKey][0]['target'] = $labelValue;
+							$this->pibaseObj->LOCAL_LANG_charset[$languageKey][$labelKey] = 'utf-8';
+						} else {
+							$labelValue = $this->flattenTypoScriptLabelArray($labelValue, $labelKey);
+							$this->pibaseObj->LOCAL_LANG[$languageKey] = array_merge($this->pibaseObj->LOCAL_LANG[$languageKey], $labelValue);
+
+						}
+					}
+				}
+			}
+		}
 	}
 
 	public function getLLFromString ($string, $force = TRUE) {
@@ -133,6 +154,34 @@ class tx_srfeuserregister_lang {
 		}
 		return $this->pibaseObj->pi_getLL($key, $alt, $hsc);
 	}
+
+	/**
+	 * Flatten TypoScript label array; converting a hierarchical array into a flat
+	 * array with the keys separated by dots.
+	 *
+	 * Example Input:  array('k1' => array('subkey1' => 'val1'))
+	 * Example Output: array('k1.subkey1' => 'val1')
+	 *
+	 * @param array $labelValues Hierarchical array of labels
+	 * @param string $parentKey the name of the parent key in the recursion; is only needed for recursion.
+	 * @return array flattened array of labels.
+	 */
+	protected function flattenTypoScriptLabelArray(array $labelValues, $parentKey = '') {
+		$result = array();
+		foreach ($labelValues as $key => $labelValue) {
+			if (!empty($parentKey)) {
+				$key = $parentKey . $key;
+			}
+			if (is_array($labelValue)) {
+				$labelValue = $this->flattenTypoScriptLabelArray($labelValue, $key);
+				$result = array_merge($result, $labelValue);
+			} else {
+				$result[$key][0]['target'] = $labelValue;
+			}
+		}
+		return $result;
+	}
+
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_lang.php']) {
