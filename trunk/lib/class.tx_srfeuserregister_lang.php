@@ -176,7 +176,11 @@ class tx_srfeuserregister_lang {
 				$labelValue = $this->flattenTypoScriptLabelArray($labelValue, $key);
 				$result = array_merge($result, $labelValue);
 			} else {
-				$result[$key][0]['target'] = $labelValue;
+				if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 4006000) {
+					$result[$key][0]['target'] = $labelValue;
+				} else {
+					$result[$key] = $labelValue;
+				}
 			}
 		}
 		return $result;

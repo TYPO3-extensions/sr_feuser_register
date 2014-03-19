@@ -1,3 +1,6 @@
+2014-03-19 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow-up to fix to support for labels containing dots in TypoScript
+
 2014-03-18 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #56989: getUserObj vs makeInstance on tslib_cObj in 3.1.0
 	* Resolves #50848: Improve usability when using tt_address
