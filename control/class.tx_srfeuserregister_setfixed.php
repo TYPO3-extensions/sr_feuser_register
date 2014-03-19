@@ -447,7 +447,8 @@ class tx_srfeuserregister_setfixed {
 								$cmdKey,
 								$templateCode,
 								$this->data->inError,
-								$conf['setfixed.']
+								$conf['setfixed.'],
+								$errorCode
 							);
 
 							if (is_array($errorCode)) {
