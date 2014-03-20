@@ -1,3 +1,6 @@
+2014-03-20 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #57091: Class 'Tx_SrFeuserRegister_Utility_UrlUtility' not found in TYPO3 4.5
+
 2014-03-19 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up to fix to support for labels containing dots in TypoScript
 

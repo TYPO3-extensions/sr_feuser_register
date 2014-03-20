@@ -36,7 +36,6 @@ return array(
 	'tx_srfeuserregister_dmstatic' => $sr_feuser_registerExtensionPath . 'scripts/class.tx_srfeuserregister_dmstatic.php',
 	'tx_srfeuserregister_select_dmcategories' => $sr_feuser_registerExtensionPath . 'scripts/class.tx_srfeuserregister_select_dmcategories.php',
 	'tx_srfeuserregister_display' => $sr_feuser_registerExtensionPath . 'view/class.tx_srfeuserregister_display.php',
-	'Tx_SrFeuserRegister_Utility_UrlUtility' => $sr_feuser_registerExtensionPath . 'Classes/Utility/UrlUtility.php',
 );
 unset($sr_feuser_registerExtensionPath);
 ?>
