@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<Members>
+<Row>
+	<cnum>00001</cnum>
+	<last_name>Mustermann</last_name>
+	<zip>80100</zip>
+	<email>max.mustermann@mail.de</email>
+</Row>
+<Row>
+	<cnum>00002</cnum>
+	<last_name>Musterfrau</last_name>
+	<zip>80200</zip>
+	<email>susi.musterfrau@mail.dk</email>
+</Row>
+</Members>

@@ -1,0 +1,1023 @@
+2014-03-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow up to #57091: Class 'Tx_SrFeuserRegister_Utility_UrlUtility' not found in TYPO3 4.5
+	* Update version to 3.1.1
+
+2014-03-20 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #57091: Class 'Tx_SrFeuserRegister_Utility_UrlUtility' not found in TYPO3 4.5
+
+2014-03-19 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow-up to fix to support for labels containing dots in TypoScript
+
+2014-03-18 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #56989: getUserObj vs makeInstance on tslib_cObj in 3.1.0
+	* Resolves #50848: Improve usability when using tt_address
+	* Fix missing argument on call to tx_srfeuserregister_email::compile() in tx_srfeuserregister_setfixed
+	* Fix support for labels containing dots in TypoScript
+
+2014-03-13 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Update manual
+	* Clean initialisation
+	* Update version to 3.1.0
+
+2014-03-12 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix localization failure of error text in tx_srfeuserregister_setfixed
+	* Resolves #51953: Subpart ###EMAIL_TEMPLATE_SETFIXED_ENTER_ADMIN### missing in HTML template
+
+2014-03-11 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #56790: Remove dependency on extension div2007
+	* Updated manual
+	* Fix PHP warning in tx_srfeuserregister_select_dmcategories
+	* Missing doNotEnforceUsername in static template
+	* Fix incorrect behaviour when using email as username
+	* Resolves #51959: Markers visible in administrator notification after edit
+
+2014-02-25 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix flexfom structure and flexform value retrieval
+
+2014-02-20 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #43925: Site crashes (500) if security token is clicked after more than 30 days
+	* Resolves #50838: Non existing token crashes site
+	* Resolves #54034: typo ("rewiew") in locallang.xml
+	* Requires TYPO3 4.5+
+	* Resolves #51950: Deprecation Message t3lib_htmlmail->t3lib_htmlmail()
+	* Follow-up to #50838: Non existing token crashes site
+	* Initialize $GLOBALS['TCA']['fe_users']['feInterface'] when not set (TYPO3 6.2)
+	* Remove usage of tx_div2007_alpha_language_base
+	* Require php 5.3+ and enable in TYPO3 6.2
+	* Fix usage of methods deprecated in TYPO3 6.2
+	* Remove usage of tx_div2007_alpha::loadTcaAdditions_fh001
+	* Remove usage of tx_div2007_alpha::userProcess_fh001	
+	* Remove usage of tx_div2007_alpha::getSetupOrFFvalue_fh002
+	* Remove tx_srfeuserregister_hooks_cms.php
+
+2013-08-11 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #50607: sr_freecap Captcha might not be accepted after submission (Thanks to Roland Schenke)
+
+2013-08-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix text in static template constants
+	* Fix issue #50934: Security Ticket #2013011810000038
+
+2013-07-04 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Revert fix issue #39429: usergroups outside pid not saved in edit / invite mode
+
+2013-07-02 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix dates in change log
+	* Follow-up to t3lib_div::intval_positive not available in TYPO3 6.0 in tx_srfeuserregister_data
+	* Fix issue #39429: usergroups outside pid not saved in edit / invite mode
+	* Ensure the data array is always an array
+
+2013-07-01 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #41827: enableAdminNotifyOnUpdate=1 produces wrong dmailCategories values in E-Mail
+	* Fix bug #44151: ###BACK_URL### not working, looses Parameters and possible wrong character encoding
+	* Fix bug #41321: Clicking cancel on the account deletion confirmation pages causes a 404 error with internet explorer
+	* Fix bug #46429: Empty Form after cancelling delete Form
+	* Fix issue #49426: addGlobalMarkers: wrong conditions
+	* Fix issue #37022: Empty form security token
+	* Fix issue #39069: Check pid of fe-users in function login (Thanks to Georg Schönweger)
+	* Fix issue with confirmType in setfixed url
+	* Correct function name in tx_srfeuserregister_setfixed->computeUrl
+	* Fix issue #37046: JavaScript for updateForm() doesn't respect formFields setting
+	* Fix issue #40079: Can't edit password when password is required in edit mode
+	* Correction to the manual
+	* Fix issue #40548: Show password_again as required field on registration form
+	* Fix issue #39560: Added single checkbox always checked
+	* Follow-up to issue #39560: Added single checkbox always checked
+
+2013-06-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #46080: BE log error after change PHP5.2 -> PHP5.3
+	* Fix bug #41799: Title in fe_groups_language_overlay is too short
+
+2013-06-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Revert Revision 67451: Do not expose autologin private key
+
+2013-06-26 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Revert Revision 66556: Require saltedpasswords to be installed
+	* Revert Revision 66559: Require felogin, rsaauth and saltedpasswords
+	* Revert Revision 66567: Always check for required rsaauth
+	* Fix t3lib_div::intval_positive not available in TYPO3 6.0 in tx_srfeuserregister_data
+
+2013-04-02 Franz Holzinger  <franz@ttproducts.de>
+	* replace PHP constant SR_FEUSER_REGISTER_EXTkey by SR_FEUSER_REGISTER_EXT
+	* remove constants from div2007
+
+2013-03-16 Franz Holzinger  <franz@ttproducts.de>
+	* new feature: control the user group generation by comparing of the entries in a XML file
+
+2013-02-19 Franz Holzinger  <franz@ttproducts.de>
+	* support for DirectMail fields even if it is not installed any more
+
+2012-10-27 Franz Holzinger  <franz@ttproducts.de>
+	* use global $GLOBALS['TCA'][$theTable] instead of internal $this->TCA variable
+
+2012-10-26 Franz Holzinger  <franz@ttproducts.de>
+	* replace auto_login_key from dataArray into its own variable
+
+2012-10-22 Franz Holzinger  <franz@ttproducts.de>
+	* restructuring
+
+2012-10-18 Franz Holzinger  <franz@ttproducts.de>
+	* Fix bug: Do not continue if the saving of the user data went wrong
+
+2012-10-15 Franz Holzinger  <franz@ttproducts.de>
+	* new feature: house_no which contains the house number for the given street
+
+2012-10-10 Franz Holzinger  <franz@ttproducts.de>
+	* Fix bug #35796: you must add the server timezone in seconds after the usage of mktime if the server time is set (serverTimeZone)
+
+2012-10-03 Franz Holzinger  <franz@ttproducts.de>
+	* return a boolean FALSE in decryptPasswordForAutoLogin if there is a problem with the rsaauth backend decryption
+	* do not require rsaauth to be installed
+
+2012-10-02 Franz Holzinger  <franz@ttproducts.de>
+	* return a boolean FALSE if there is a problem with the saltedpasswords
+	* do not require saltedpasswords to be installed
+
+2012-09-11 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug #40812: wrong usage of sprintf when locallang wants to report a text which is not replaced by div2007
+
+2012-07-11 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug with captcha: The subpart marker ###SUB_ERROR_FIELD_captcha_response### for the field captcha_response has not been generated.
+
+2012-05-04 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #36838: FE user password saved in BE is displayed in plaintext
+	* Version 3.0.1
+
+2012-04-28 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Remove middle_name from default setup
+	* Move some functions to tx_srfeuserregister_display
+	* Update to manual
+	* Add label evalErrors_uniqueLocal_email_informal
+	* Version 3.0.0
+
+2012-04-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Require div2007 0.10.1
+	* Fix bug #36675: Query parameter cmd is not honoured
+	* Fix bug #36526: authCode is not compatible with standard authentication code
+	* Fix bug #36504: SR's authentication code does not match the one from DirectMail
+	* Fix bug #36680: authCode is not horoured if short urls are enabled
+	* Follow-up to feature #36123: Allow evaluation of email and captcha on the infomail form
+	* Add feature #36682: Add setfixed option to unsubscribe a fe user without having to login
+
+2012-04-26 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #36590: Infomail form does not display email validation error
+	* Fix bug #36638: Composite name may be substituted with a single space
+
+2012-04-24 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Cleanup in ext_localconf.php
+	* Fix class name in ext_autoload.php
+	* Revert class name change in ext_autoload.php
+	* Cleanup in class.tx_srfeuserregister_email.php
+	* Remove require_once class.tx_div2007_email.php in class.tx_srfeuserregister_email.php
+
+2012-04-23 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow-up to bug #35882: Corrections to template subpart "terms acknowledged" on edit form
+	* Follow-up 14 to feature #34447: Add hidden username if needed
+	* Cleanup captcha-related code
+	* Add feature #36492: Use t3lib_div::isValidUrl to validate url's
+	* Update manual
+
+2012-04-22 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #36433: Non-closed br tags in pi1/locallang.xml
+	* Fix bug #36434: locallang.xml contains \n characters combination
+	* Fix bug #15661 (old bug tracker): broken linefeed handling in plain text emails
+	* Fix bug #36434: Broken linefeed handling in plain text emails
+	* Fix bug #36442: t3lib_div::cHashParams is deprecated in TYPO3 4.7
+
+2012-04-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Require div2007 0.10.0
+	* Follow-up 12 to feature #34447: Avoid retrieving private key when no password is set
+	* Follow-up to feature #36191: Remove left over debugging code
+	* Follow-up 13 to feature #34447: Remove secured password from data array
+	* Fix bug #15231 (old bug tracker): when generating username, the username is not shown in the preview page
+	* Fix bug #13853 (old bug tracker): Changes in recordArray (hook registrationProcess_beforeConfirmCreate) does not show in preview
+
+2012-04-20 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Remove global declarations from tx_srfeuserregister_tca
+	* Fix bug #36383: module_sys_dmail_newsletter not removed from admin review email
+	* Fix bug #36388: In preview mode, the list of user groups ends with suprfluous br
+	* Follow-up 11 to feature #34447: Password edit when both username and email are disabled
+	* Cleanup outdated hidden field for password_again in tx_srfeuserregister_marker
+	* Remove unnecessary access to secure array
+	* Add feature #36396: Always use character set utf-8 by default
+	* Add feature #36398: Password needs to be entered again when cancelling the preview
+	* Allow update of fe_users on setfixed
+
+2012-04-19 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow-up 2 to feature #36006: Test whether extension tt_address is loaded
+	* Fix typo in comment in class.tx_srfeuserregister_marker.php
+	* Simplify condition in class.tx_srfeuserregister_data.php
+	* Move call to clearSessionData out of tx_srfeuserregister_data
+	* Restructure tx_srfeuserregister_display::getKeyAfterSave
+	* Require div2007 0.9.0
+	* Follow-up to bug #36165: Log warning to sysLog if localized label was not returned by div2007
+	* Fix bug #36306: Attachment fails with current trunk producing fatal error in div2007
+	* Fix bug #36307: Admin review E-Mail plain text rendering problem with current trunk
+	* Recommend setting ['MAIL']['substituteOldMailAPI'] to '1' in the Install tool
+	* Remove global declarations from tx_srfeuserregister_control, tx_srfeuserregister_control_main and tx_srfeuserregister_setfixed
+	* Remove global declarations from tx_srfeuserregister_marker and tx_srfeuserregister_display
+
+2012-04-16 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix variable name in class.tx_srfeuserregister_control_main.php
+
+2012-04-15 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #36165: Localization of some strings results in empty string
+	* Fix bug #18108 (old bug tracker): Evaluating for white spaces with preg does not work
+	* Fix bug #14453 (old bug tracker): Confirmation mail is sent to user although enableEmailConfirmation = 0
+	* Add feature #36191: Move captcha markers setting and captcha evaluation to hooks
+
+2012-04-15 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Add feature #36123: Allow evaluation of email and captcha on the infomail form
+	* Cleanup changelog
+	* Follow-up 10 to feature #34447: No infomail feature for fe_users
+	* Update manual: Remove color and wrap markers absent of css-styled template
+	* Add feature #36125: Require to remove obsolete infomail markers
+	* Fix bug #36126: email.INFOMAIL_NORECORD = 0 is not honoured
+	* Suggest sr_freecap
+	* Add feature #36129: Adjust HTML markup of captcha subpart of default HTML template
+	* Fix bug #36131: infomail edit link leads to wrong page
+
+2012-04-14 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #36051: RegHash not cleared if link results in auto-login
+	* Change order of extension dependencies (rsaauth before saltedpasswords)
+	* Update extensions dependencies, require TYPO3 4.4
+	* Update manual
+	* Add feature #36089: Issue error message if html template contains deprecated marker
+	* Fix bug #36091: setEmptyIfAbsent may not work if field is not numeric
+
+2012-04-13 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow-up 10 to feature #34447: Upgrade markers only for extension sr_feuser_register
+	* Update manual: Remove references to simulateStaticDocuments
+	* Add feature #36006: Honour tt_address extension configuration settings
+	* Follow-up feature #36006: Fix $GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList']
+	* Cleanup identity checks
+
+2012-04-12 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #35910: Messages regarding installation problems are not localized
+	* Follow-up to bug #35910: Messages regarding installation problems are not localized
+	* Cleanup: Remove unnecessary check for div2007 in tx_srfeuserregister_email
+	* Fix bug #35926: Checkbox cannot be unset when preview is used
+	* Fix bug #9542 (old bug tracker): Required for checkbox doesn't work
+	* Fix bug #8432 (old bug tracker): Required checkbox of extended fe_user table is not required when registering in the FE
+	* Add feature #35931: Allow to show terms of usage on page or url
+	* Add feature #15100 (old bug tracker): How to include terms of use in registration form
+	* Add feature #18009 (old bug tracker): Add module_sys_dmail_newsletter to tx_srfeuserregister_pi1_css_tmpl.html (Thanks to Tobias Schaefer)
+	* Fix bug #11529 (old bug tracker): tx_srfeuserregister_control_main::init has wrong PhpDoc comment
+	* Follow-up to feature #35883: Always use flexforms
+
+2012-04-11 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow-up 4 to feature #35805: Display message in frontend if required extension is not loaded
+	* Add feature #35878: Issue error message if FE login security level is not set to "normal" or to "rsa"
+	* Add feature #35881: Add a status report about the installation of the extension (TYPO3 4.6+ only)
+	* Fix bug #35882: Corrections to template subpart for "terms acknowledged"
+	* Follow-up to feature #35881: Add a status report about the installation of the extension (TYPO3 4.6+ only)
+	* Follow-up 5 to feature #35805: Drop requirement for ADOdb Date Library
+	* Add feature #35883: Always use flexforms
+	* Add feature #35884: Add support for middle name
+
+2012-04-10 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow-up 1 to feature #35805: Require system extension adodb
+	* Follow-up 9 to feature #34447: Do not show tx_srfeuserregister_password in HTML source
+	* Follow-up to #15174 (old bug tracker): Incorrect test of absence of required value
+	* Fix bug #35833: Password update on accepting invitation may not work
+	* Follow-up 2 to feature #35805: Write error to syslog if required extension is not loaded
+	* Follow-up 3 to feature #35805: Always use adodb Date library for timestamp conversion
+
+2012-04-09 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #15174 (old bug tracker): Doesn't allow update of user group
+	* Fix bug #10435 (old bug tracker): Error messages when country is changed while no user group is selected in frontend
+	* Cleanup line breaks in rsaauth.js
+	* Fix bug #14020 (old bug tracker): user groups from userGroupAfterConfirmation are visible in the invitation form
+	* Fix bug #13913 (old bug tracker): Login through email-link overwrites usergroup settings
+	* Cleanup: Add tx_srfeuserregister_pi1_adodb_time to ext_autoload
+	* Add feature #35805: Use ADOdb Date Library from system extension adodb
+
+2012-04-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Add feature #28370: replyTo feature for mails sent to user
+	* Add feature #6168 (old bug tracker): Support itemsProcFunc property of TCA select and radio fields (Thanks to Jeff Segars)
+	* Fix bug #12795 (old bug tracker): Default setup damages valid e-mail adresses
+	* Fix bug #13765 (old bug tracker): Attachment file is attached to the administrative review email
+	* Follow-up 8 to feature #34447: Add ###LABEL_NEW_PASSWORD### on ###TEMPLATE_EDIT###
+	* Fix bug #35786: JavaScript files are not versioned
+	* Fix bug #16658 (old bug tracker): amp htmlspecialchars_decode doesn't work in 2.6.1
+	* Fix bug #14739 (old bug tracker): htmlspecialchars_decode doesn't work
+
+2012-04-07 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow-up 7 to feature #34447: ###HIDDENFIELDS### not always replaced
+
+2012-04-06 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow-up to bug #27521: Deleting images in EDIT mode leads to broken references
+	* Follow-up 6 to feature #34447: Add getters for transmission security and storage security
+
+2012-04-05 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow-up 5 to feature #34447: Move transmission security to own class
+	* Cleanup: Initialize the command key
+	* Follow-up 2 to feature #34405: Allow old mailer API for TYPO3 4.5-4.6
+	* Fix bug #35730: enableEmailOnDelete not honoured
+	* Fix bug #35732: Error due to username being required in edit mode
+
+2012-04-04 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow-up to cleanup #35292: Cleanup in ext_tables.php
+	* Follow-up 3 to feature #34447: Add support for saltedpasswords and rsaauth
+	* Follow-up 4 to feature #34447: Move storage security to own class
+
+2012-04-03 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Add feature #27504: Add userGroupsPidList TS constant and TS setup property (Thanks to Georg Schönweger).
+
+2012-03-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #14271 (old bug tracker): Password constant not respected
+
+2012-03-28 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow-up 1 to feature #34405: Make use of Swift Mailer API
+	* Fix bug #17506 (old bug tracker): Error in registration process since TYPO3 4.5
+	* Fix bug #18475 (old bug tracker): Backslashes added to Name in E-Mail
+	* Require div2007 version 8.2
+	* Add feature #35347: Add autoload file
+	* Fix bug #16950 (old bug tracker): Adding middle_name to field list
+
+2012-03-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #33122: User confirmation with multiple usergroups (Thanks to Tomita Militaru)
+	* Fix bug #14930 (old bug tracker): Admin confirmation not working
+	* Fix bug #11191: enableAdminReview do not work without enableEmailConfirmation
+	* Fix bug #18169 (old bug tracker): Combination: no user confirmation, adminReview + user notification not possible
+	* Fix bug #11533 (old bug tracker): Documentation is incorrect for tx_srfeuserregister_tca::addTcaMarkers
+	* Fix bug #13643 (old bug tracker): Unnecessary disclosure of username in filename (Thanks to Steffen Müller)
+	* Follow-up 2 to feature #34447: Add support for saltedpasswords and rsaauth
+	* Cleanup #35292: Cleanup in ext_tables.php
+	* Fix bug #35293: Protect method tx_srfeuserregister_controldata::writeToken
+
+2012-03-26 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #33279: Evaluation of arrays returns always false
+	* Follow-up 1 to feature #34447: Add support for saltedpasswords and rsaauth
+	* Add feature #34676: Add support for title attribute on input fields for TCA markers (Thanks to Carlos Meyer)
+	* Fix bug #14699 (old bug tracker): Cannot remove "username" field in EDIT view
+	* Fix bug #31012: Images lost on profile editing
+	* Fix bug #27521: Deleting images in EDIT mode leads to broken references
+	* Fix bug #5932 (old bug tracker): Update profile and delete image
+	* Fix bug #14509 (old bug tracker): Deleting images still buggy
+	* Fix bug #13882: Gender is not shown in backend
+
+2012-03-25 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix bug #32066: Security bug in admin confirmation
+	* Fix bug #15081 (old bug tracker): Admin review email is not sent to the admin but to the user
+	* Fix bug #15182 (old bug tracker): Very very big problem with administrative review
+
+2012-03-24 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow-up to bug #13349: Checkbox is set to "0" if not checked (Thanks to Oliver Hader)
+
+2012-03-23 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Add feature #34447: Add support for saltedpasswords and rsaauth
+	* Fix bug #26708: Autologin does not work with rsa and saltedpasswords
+	* Fix bug #34417: Does not work with srfeuserregister_t3secsaltedpw anymore
+	* Fix bug #34792: Edit profile sets password to dummyPassword if useMd5Password is used
+	* Fix bug #34453: "password repeat" field has the value ###FIELD_password_again###
+	* Fix bug #31152: Can't eval password on edit
+	* Fix bug #31140: Dummy password "Joh 3,16" is used in the registration
+	* Fix bug #26952: Missing declaration of pw_change in javascript
+	* Add feature #34907: Remove Old-style template
+	* Fix bug #34217: Radio buttons do not respect db values in edit view (Thanks to Jan Loderhose)
+	* Fix bug #13349: Checkbox is set to "0" if not checked (Thanks to Oliver Hader)
+	* Fix #15813 (old bug tracker): Labels with variables do not get processed if fieldname contains numbers (Thanks to Joerg Winter)
+	* Add feature #6646 (old bug tracker): Possibility to disable enforcing of username field (Thanks to François Suter)
+	* Fix #15659 (old bug tracker): Field fe_cruser_id is never set (Thanks to Jens Herden)
+	* Fix #17686 (old bug tracker): Password change does not execute any validation
+	* Fix #6308 (old bug tracker): Wrong marker in template (Thanks to Bjorn T. Hallberg)
+	* Fix #10858 (old bug tracker): Password not md5 hashed with firefox because onchange is not triggered when the form is automatically filled
+	* Fix #7786 (old bug tracker): PasswordAtLeast has no effect when useMd5Password is set
+	* Fix #7932 (old bug tracker): Confirmation displays in the login form the password MD5 hash
+	* Fix #9274 (old bug tracker): MD5 Hash inserted in password field of create form
+	* Fix #6731 (old bug tracker): Suboptimal way to tell user his pw if generatepassword & md5 is used
+	* Add feature #35209: Make extension conflict with extension patch1822
+
+2012-03-01 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow-up to feature #34405: Fix CGL in tx_srfeuserregister_email (Thanks to Franz Holzinger)
+
+2012-02-28 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Add feature #34405: Make use of Swift Mailer API
+
+2012-02-25 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* fix regression on security issue: Information (and password) Disclosure in extension sr_feuser_register (Thanks to Franz Holzinger)
+
+2012-02-24 Franz Holzinger  <franz@ttproducts.de>
+	* add more parameters to the hooks for registrationProcess_afterSaveCreate, registrationProcess_afterSaveCreate and evalValues
+
+2012-02-22 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* fix security issue: Information (and password) Disclosure in extension sr_feuser_register
+	* fix security issue: sr_feuser_register: "edit account" page contains cleartext password in HTML source
+
+2012-01-19 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug #17137: store the token together with the user data before a setfixed command is executed
+
+2012-01-18 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug #18019: Incorrect login URL code
+
+2012-01-16 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug #18083: Parser error on eval() in getShortUrl()
+
+2012-01-16 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug #18364: Initialize $prefixId in method tx_srfeuserregister_display::editForm
+
+2012-01-13 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug #14416: Missing break in switch after preg
+
+2012-01-13 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug #18343: replace deprecated t3lib_div::intInRange by t3lib_utility_Math::forceIntegerInRange
+	* replace deprecated t3lib_div::testInt by t3lib_utility_Math::canBeInterpretedAsInteger
+
+2011-11-24 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug: do not use the deprecated function t3lib_div::int_from_ver for TYPO3 4.6 and later
+
+2011-11-16 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug: use the new method getLL_fh002 which supports TYPO3 4.6
+
+2011-11-15 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug in implode for the field list of DBgetUpdate
+
+2011-11-15 Franz Holzinger  <franz@ttproducts.de>
+	* restructuring and CGL
+
+2011-11-15 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug with TYPO3 4.6: use the getLL method tx_div2007_alpha5::getLL_fh002
+
+2011-11-14 Franz Holzinger  <franz@ttproducts.de>
+	* new feature: decide which user groups are selectable: allowedUserGroups, allowedSubgroups, deniedUserGroups and which must kept keepUnselectableUserGroups
+	* fix bug: no requirement for tems_acknowledged by default
+
+2011-10-04 Franz Holzinger  <franz@ttproducts.de>
+	* new feature: add the field terms_acknowledged and a PDF file with the terms
+	* fix bug: show an error text if there is not text for missing_<fieldname> found.
+
+2011-09-08 Franz Holzinger  <franz@ttproducts.de>
+	* issue #29523 (forge): improve the hook for the validation to use the error message generator
+
+2011-09-05 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug with duplicate html tag ids in select box
+	* fix bug with the check for required input fields: the data:<field> feature must not use an array
+
+2011-05-30 Franz Holzinger  <franz@ttproducts.de>
+	* better error messages if the file upload fails
+
+2011-05-16 Franz Holzinger  <franz@ttproducts.de>
+	* avoid unnecessary commands when ext_tables.php is included in the FE hook tt_products extendingTCA
+
+2011-05-14 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug: enableAutoLoginOnConfirmation is also supported with md5 password
+
+2011-03-03 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug: override values for group must not use array_diff if there has not been a usergroup array before
+
+2011-03-02 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug: PHP Warning: trim() expects parameter 1 to be string, array given in model/class.tx_srfeuserregister_data.php line 391
+	* TYPO3 coding guidelines: add "public" to the function and variable names
+
+2011-02-28 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug #17622: the email name must be encoded using addcslashes and have double quotes around it
+
+2011-02-12 Franz Holzinger  <franz@ttproducts.de>
+	* replace for PHP 5.3 deprecated ereg_replace by preg_replace
+	* parameter $is_dst of mktime is deprecated in PHP 5.3
+
+2011-01-19 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug with sr_email_subscribe: regHash has been deleted too early before saving
+	* fix bug: preview data has not been read in with regHash
+
+2011-01-04 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug with sr_email_subscribe: No saving of the edited data has been possible
+
+2010-12-01 Franz Holzinger  <franz@ttproducts.de>
+	* undo the change to disable a user confirmation when the admin receives the email to review SETFIXED_REVIEW
+
+2010-11-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Restored missing entry in Changelog
+	* Fixed bug #11149(Forge): Extension Manager issues warning regarding class tx_srfeuserregister_lib_conf
+	* Fixed issue #11150(Forge): Remove references to obsolete extension patch1822
+	* Fixed issue #11151(Forge): Remove global declarations from class tx_srfeuserregister_data
+	* Fixed bug #15182(bugtracker): Problem with administrative review
+
+2010-11-19 Franz Holzinger  <franz@ttproducts.de>
+	* new feature: use v_dear_male or v_dear_female instead of v_dear if a gender has been entered
+	* complete the contributor list in contributors.txt
+	* fix bug 16132: image is missing at CREATE and INVITE
+	* allow to set attributes to the buttons
+
+2010-10-21 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 15281: the authorization in the confirmation link did not work with multiple FE groups because the comma had been HTML encoded
+	* fix bug 15225: Form token is empty
+
+2010-10-17 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Updated manual
+	* Fix XCLASS keys of files model/class.tx_srfeuserregister_model_table_base.php and model/class.tx_srfeuserregister_model_conf.php
+	* Version 2.6.1
+
+2010-10-14 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 15271: When logged in, edit form is shown instead of "click_here_to_edit"-link
+	* fix bug 15660: locallang.xml has become invalid
+	* fix bug 14976: PHP Warning: explode() expects parameter 2 to be string
+	* fix bug 15176: no first_name and last_name for TYPO3 4.4+
+	* Fix security issue: CSS with first_name and last_name
+	* Fix bug 15664: replace marker ###LABEL_V_EMAIL_LOST_PASSWORD### by ###LABEL_V_INFOMAIL_LOST_PASSWORD###
+	* Fix bug 14936: restore the edit link
+
+2010-06-26 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug: a md5 encoded password must be shown as clear text in the password marker
+	* fix bug: if enableHTMLMail is 1, then the admin must always receive a HTML email independant from the FE users preferences
+	* new feature: useLocalCountry to show the country names in their local languages
+	* remove support for old styled template
+	* change of subpart markers: ###EMAIL_TEMPLATE_SETFIXED_REVIEW### and HTML variant renamed to ###EMAIL_TEMPLATE_SETFIXED_REVIEW_ADMIN###, because it is sent to the admin and not to the user.
+	* fix bug 4341: delete regHash after usage and no confirmation email will be sent twice using short urls
+	* enhance feature: ###EMAIL_TEMPLATE_SETFIXED_ENTER_ADMIN### and HTML as notification when a user has clicked on the login link
+	* fix bug in order not to lose the chosen checkbox entries on create if the user steps back to the entry form.
+
+2010-05-31 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 14125: if user group can be selected by user, then the authorization key has been using an empty group field
+	* fix bug 14163: an automatically generated password had been sent as an empty password to the user
+	* new feature: do not check the token, if a create or edit cmd is provided without any additional data
+
+2010-04-14 Franz Holzinger  <franz@ttproducts.de>
+	* new feature: add a token to the form. Form data is only read with a valid token.
+	* new feature: no password and password_again fields are shown in the update Javascript
+	* new marker for a simulated password and password_again, where only a dummy password will be used
+	  The HTML template file must be modified with value="###FIELD_password###" in the input tags
+	* check for the authorization code in confirmation links and setfixed at the beginning when the incoming data is read
+	* do not use special groups in authorization code because these values are changed very frequently
+	* fix bug 12323: PHP 5.3 checks the TYPO3 api parameter $conf and no reference is allowed
+	* fix bug 13107: consider invite for sending of email
+	* fix bug 11999: PHP 5.3 does not allow the split function
+	* fix bug 13140: absRefPrefix has been wrongly implemented
+	* change default settings for the password to allow blank characters
+	* dependency on div2007 version 0.2.6
+
+2009-10-17 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 12171: fix PHP errors caused with enableEmailOnUpdate setup
+	* fix bug with not sent HTML emails
+	* fix bug 10227: error in deleting registration to directmail because of missing aC parameter
+	* fix bug 12261: srfeuserregister v 2.5.23 some markers not set in email
+	* fix bug 9687: Problems when Admin invites a new user width md5 encrypted password
+
+2009-09-17 Franz Holzinger  <franz@ttproducts.de>
+	* fix bug 11185: usergroup(s) are not correctly saved while using user group selection upon registration
+	* new eval values uniqueDeletedGlobal and uniqueDeletedLocal: This considers that also deleted users are prohibited from a recreation in the future.
+	* fix bug 11304: password has not been MD5 encrypted if autogeneration has been set
+	* fix bug with HTMLMailEnabled: check the correct data row
+	* fix bug 10785: support middle_name in the name
+	* fix bug 10714: confirmation mail not sent as HTML
+	* fix bug 8831: do not save htmlspecialchar'ed records
+	* fix bug 11527: correct html for group selection with check boxes
+	* fix bug 11534: allowUserGroupSelection has lead to SQL error in some cases
+	* fix bug 10989: Javascript has true and false in lower case
+	* new feature: consider the localization of Direct Mail categories only if useLocalization has been set. Otherwise all categories are listed.
+	* new feature: preg for the evaluation of Perl regular expressions
+	* new feature: set enableEmailOnDeny=0 if a rejected user shall not get any email
+
+2009-05-13 Franz Holzinger  <franz@ttproducts.de>
+	* new field cnum which holds the customer number for different ERP software
+	* fix bug with wrong class attribute for the image preview tag
+	* fix bug with not replace marker for FIELD_date_of_birth
+	* fix bug 10981: the merging of language file did remove new translations
+
+2009-04-06 Franz Holzinger  <franz@ttproducts.de>
+	* fix security issue TYPO3-SA-2009-004
+
+2009-01-18 Franz Holzinger  <franz@ttproducts.de>
+	* new hook for data field evaluation
+	* fix bug 9556: email with forgotten password did not work properly. Add the missing template subparts to the CSS template.
+	* fix bug 10156 and support the felogin extension
+	* fix bugs with problems on editing
+	* support for patch 1822
+
+2008-09-24 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.19:
+	* Fix bug 9380: $conf has not been used for the translations
+
+2008-09-17 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.17-18:
+	* Fix bug 8844: delete link
+	* Always submit the cmd with infomail
+
+2008-07-28 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.16:
+	* Fix bug with not working radio button ḟor tt_address gender because it has values different from 0 and 1
+	* Fix bug to always show the registration link before the CREATE or EDIT template is displayed.
+
+2008-06-23 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.15:
+	* Fix bug 8789: User group is emptied after editing and updating data
+
+2008-06-20 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.14:
+	* Fix bug with not substituted hidden field markers for infomail
+
+2008-06-19 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.13:
+	* Do not require email confirmation if enableEmailConfirmation is 0. v_your_account_was_created_nomail will be used in this case.
+	* new feature 0007933: Confirmation link cannot be clicked more than once if regHash is used.
+	* fix bug with translation for Direct Mail categories
+	* fix bug with admin email confirmation which did not contain all new fields after creation if default values have been added during the saving before
+	* fix bug with md5 password encryption
+
+2008-05-28 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.12:
+	* fix bug 8382: when some records have already been stored and there is evaluation to edit fields which are not shown then the error message is not displayed. ###EVAL_ERROR_saved### is a new marker in order to display an error message for all fields which have been wrongly stored.
+	* restructure code: The cmd piVar must be evaluated already in the controldata because cmdKey must be set after it.
+
+2008-05-20 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.11:
+	* fix bug 8416: the CODE and flexforms have been emptied
+
+2008-05-15 Franz Holzinger  <franz@fholzinger.com>
+	* fix security issues
+
+2008-04-01 Franz Holzinger  <franz@fholzinger.com>
+	* new hook addGlobalMarkers for additional global markers
+	* new constant dmailCheckedUponRegistration if the Direct Mail categories shall be checked by default
+	* fix bug 3650: Password is not md5 hashed if changed after making an error on registration
+	* new feature dateFormat
+	* fix bug with not sent HTML emails in sr_email_subscribe due to wrong initializations
+	* fix bug 7376: evalFunc does not work in 2.5.8 but crashes TYPO3
+	* add &nbsp; after the preview markers in the CSS HTML template as a workaround for a bug in MS Internet Explorer 7
+	* many additions to the old style template file
+	* small modification to captcha for sr_freecap
+	* labels for eval errors translations
+	* new feature: make all objects globally available over t3lib_div::getUserObj
+	* fix bug 7822: DMAIL- Category Subscription did not work
+
+2007-10-17 Franz Holzinger  <franz@fholzinger.com>
+	* new feature: enableEmailOnUpdate = 2 to send only the changed fields in an email if a user alters his data
+	* fix bug with not saved change of unchecked check box input
+	* fix bugs with wrong HTML output at select box and check boxes
+	* new feature: select.static_country to use a SQL WHERE clause as a filter over the countries in the select box
+
+2007-09-12 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug with checkboxes set to zero when errors in the entered data
+	* fix wrong lower case markers of checkboxes to upper case
+
+2007-09-04 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug with having same html ids many times when more records are shown
+
+2007-08-29 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug with wrong $row variable in tx_srfeuserregister_tca
+	* start with encoding in renderCharset
+
+2007-08-14 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug with no editing possible for sr_email_subscribe and a setfixed link
+	* fix bug 5609: informal texts did not work
+	* fix bug with not saved entries for mm relations
+	* fix bug when delete did not work with setfixed becaue the cmd has been overridden by restored regHash value
+
+2007-07-12 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug 5291: new translations for Dutch by Felippe van Eekhout <feekhout@worldonline.nl>
+
+2007-06-16 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug with autocreation of usernames
+	* new classes for setfixed, control data and url functions
+	* fix bug with not shown status field in backend
+
+2007-06-11 Franz Holzinger  <franz@fholzinger.com>
+	* rename ###EMAIL_TEMPLATE_INFOMAIL_EMPTY### back to ###TEMPLATE_INFOMAIL### because it is not sent in an email
+	* fix bug 5766: no notification emails have been sent due to wrong $templateCode variable.
+
+2007-06-07 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug with missing getTemplateCode function in data object
+
+2007-06-04 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug 5329: The inError property has been missing in the data object
+	* fix bug 5687: setfixed could not be turned off
+
+2007-05-29 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug 5256: replace also the ',' in str_replace in order not avoid replacement of other fields with the same name but from other extensions.
+	* fix bug 5397: images could not be uploaded and have not been shown
+
+2007-05-26 Franz Holzinger  <franz@fholzinger.com>
+	* fix bug 5641: modifications needed to make sr_email_subsribe working again
+
+2007-05-18 Franz Holzinger  <franz@fholzinger.com>
+	* use first line of plain text emails as the subject
+	* when there is already an items array in TCA and also records from a foreign table, then both will be added
+
+2007-05-10 Franz Holzinger  <franz@fholzinger.com>
+	* use t3lib_htmlmail also for sending of plain text emails
+	* fix bugs with invite (see bug #5588)
+	* Version 2.5.6 relaunch
+
+2007-05-02 Franz Holzinger  <franz@fholzinger.com>
+	* Danish backend texts
+	* fix bug with not possible image upload
+	* Version 2.5.6 relaunch
+
+2007-04-18 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.6 relaunch
+
+2007-03-15 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.6 relaunch
+	* fix bugs caused by restructuring of code
+
+2007-03-09 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.6 relaunch
+	* more flexform entries
+	* fix bugs caused by restructuring of code
+
+2007-03-06 Franz Holzinger  <franz@fholzinger.com>
+	* some bug fixes due to restructuring
+
+2007-02-28 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.6
+	* internal restructuring of code into more classes
+
+2007-02-09 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.5 relaunch
+	* Fix bug 4056: The comparison of the authorisation code has been wrong.
+
+2007-02-07 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.5 relaunch
+	* Fix bug with not considered multiple select fields with text fields. A text string must be allowed as a value in a select box.
+
+2007-01-17 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.5
+	* enable overrideValues setup with stdWrap function call - by Jens Hirschfeld <Jens.Hirschfeld@KeepOut.de>
+	* If useEmailAsUsername is set, and the user changes their email address, the username will also be changed.
+	* automatic password generation by Dennis S. Hennen <dennis@28studios.com>
+	* Ralph Brugger <Ralph.Brugger@linkpool.de> added captcha feature
+
+2006-12-29 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.4
+	* enable always INFOMAIL when function compileMail has been reached
+	* message for lost password is possible: v_registration_infomail_message1
+	* split pi1/locallang.xml into separate files for each language in l10n/pi1
+
+2006-12-11 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.3
+	* Fix bug: input-Tags shall be shown as <input ... />
+	* Fix bug with wrongly filled in field values of mm table records with setfixed command, e.g. module_sys_dmail_category
+	* Gideon So: all Hongkong Chinese translations
+	* Thomas Dubach: more German translations
+
+2006-11-24 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.2 relaunch
+	* add 'infomail' to the commands where not FE login is necessary
+
+2006-11-16 Franz Holzinger  <franz@fholzinger.com>
+	* Version 2.5.2
+	* no edit functions shall be available when user has logged out
+	* htmlspecialchar around the url links to have clean HTML
+	* overridable select items for status via TS _LOCAL_LANG setup
+	* Fix bugtracker issue 3986: formName has been deleted. No data has been visible in edit form.
+	* Fix bugtracker issue 4055: $_GET array should not get lost
+	* Fix bug: The select box entries could not be saved
+	* enhance CSS template to show the select box entries as plain texts
+
+2006-08-14 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 2.5.1
+	* Update to Russian translation.
+	* When a foreign table is used on a select field, sort values according to the sortby field.
+	* Fix bugtracker issue 3992: Hook not working: confirmRegistrationClass_postProcess
+	* Remove duplicate class attributes on multiple statements of the css-styles html template.
+	* Remove deprecated wrap attribute from dynamically-generated textearea html statements.
+	* Remove for attribute from label tag of "gender" radio buttons field.
+	* onchange and onsubmit attribute names should be lowercase.
+
+2006-06-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 2.5
+	* Remove dependency on Static Info Library (sr_static_info)
+	* Correction for missing htmlspecialcharacters statements.
+
+2006-06-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 2.4
+	* Correction to some improbable failure. Thanks to Rupert Germann.
+	* Small corrections to the manual.
+	* Correction to infomail screen display for sr_email_subscribe
+	* Correction to path to icon in default css of css-styled static template.
+	* Correction to back path of the delete dialog.
+	* Conversion of locallang files to xml format.
+
+2006-05-16 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 2.3.6
+	* CSS adjustments for multiple checkboxes.
+
+2006-05-16 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 2.3.5
+	* Honor TCA setting renderMode = checkbox for columns of type select when static template css-styled is used.
+
+2006-05-16 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 2.3.4
+	* Fix bugtracker issue 3431: incorrect email url's when config.absRefPrefix is used.
+	* New TS Constant: enableAutoLoginOnCreate.
+	* Update to the structure of the manual.
+
+2006-04-05 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 2.3.3
+	* Correction: missing inclusion of t3lib_htmlmail
+
+2006-03-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Use cObj->caseshift for case shifting operations on markers.
+
+2006-03-26 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Two new TS constants: enableAdminNotifyOnAdminAccept and enableAdminNotifyOnAdminRefuse.
+	* Remove locally defined quoteJSvalue and getUpdateJS (these were fixed in TYPO3 4.0).
+	* Use TCA-driven field module_sys_dmail_html in css-styled template.
+	* If usergroup selection is enabled on edit, keep usergroups set by confirmation or acceptation.
+	* Ensure that case shifting operations on markers are performed using C locale.
+
+2006-03-25 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Add TS setup property extraLabels. Thanks to Dmitry Dulepov.
+
+2006-03-22 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Adjustments to make the extension compatible with system extension Database Abstraction Layer (dbal).
+	* Correct bugtracker issue 2912: some missing slashes.
+	* Preserve <url> constructs in plain text html template. See bugtracker issue 1966.
+
+2006-03-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Remove locally extended t3lib_htmlmail (fixed in TYPO3 4.0).
+
+2006-03-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Add short URL's feature. Thanks to Steve Webster.
+	* Update requirements to TYPO3 4.0.0
+	* Correct processing of module_sys_dmail fields when Direct Mail is not installed.
+	* Modify plugin initialization: remove constructor and initId method.
+
+2006-03-03 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Update Danish localization.
+	* Update version number to 2.3.0
+	* On edit, do not reset the username if we have no new value
+
+2006-03-01 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Add support for localization of MM relations when configured on the foreign table.
+	* Add constant and setup property module_sys_dmail_category_PIDLIST
+	* Update to the requirements section of the manual
+	* Small cleaning changes in class.tx_srfeuserregister_pi1.php and static templates setup.txt
+
+2006-02-03 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Honor TCA default value for TCA-driven multiple checkboxes. Thanks to Simon Tuck.
+	* Remove support for TYPO3 3.5.0.
+
+2006-01-30 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Verify enabled fields when selecting MM relations, in particular module_sys_dmail_category.
+	* Accept value '0' on required fields (see bugtracker issue #2027).
+
+2006-01-30 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Correction to css-styled html template (see bugtracker issue #2403).
+	* Remove changes to the TCA for fields module_sys_dmail_category and module_sys_dmail_html
+	* Ignore fields module_sys_dmail_category and module_sys_dmail_html if direct_mail extension is not loaded.
+	* Enable support for select fields with MM relations, in particular module_sys_dmail_category.
+
+2006-01-14 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 2.2.5:
+	* Correction to the useEmailAsUsername property: when set, the username was erased on editing the profile.
+
+2006-01-10 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 2.2.4:
+	* Correction to the generateUsername property: when set, the username was erased on editing the profile.
+	* For TCA-driven select fields, if no default value is set in TS template, apply default value from TCA, if present.
+
+2006-01-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 2.2.3:
+	* Update to Danish, Norwegian and Turkish translations.
+
+2006-01-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 2.2.3:
+	* Allow to override TCA labels in TS template setup
+	* Add generateUsername setup property.
+	* Add registrationProcess_beforeConfirmCreate hook. Thanks to Pieter Verstraelen.
+
+2005-12-05  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Use backURL linkVar to link back from the edit page, after saving, to some referring extension such as tt_products. Thanks to Franz Holzinger.
+
+2005-12-04  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Correction: setting usergroupAfterAcceptation did not work if the original usergroup assigned at creation was changed by usergroupAfterConfirmation.
+
+2005-11-30  Franz Holzinger  <franz@fholzinger.com>
+	* German texts for the flexform
+
+2005-11-28  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Eliminate error subpart when a required field is missing but no other validation error is raised.
+	* Minor improvement to html template.
+
+2005-11-26  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 2.2.1:
+	* Fix in ext_localconf.php
+	* Documentation update.
+
+2005-11-25  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Added support for backend flexforms by Franz Holzinger.
+
+2005-11-25  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 2.2.0:
+	* Further correction due to IE mishandling of button elements of type button. Eliminated all button elements from the html template.
+	* Added a note on upgrading to version 2 in the configuration section.
+
+2005-11-24  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 2.1.0:
+	* Major correction to the CSS-styled html template: backtracking on the use of button elements of type submit because their behavior is erratic in Internet Explorer 6 and break a number of screens of the extension. Most of them are replaced by input elements.
+	* Some further adjustments to the CSS-styled template.
+	* Simplification of the default CSS styles. In particular, most color and font styling has been eliminated.
+
+2005-11-21  Sebastian Roth <sebastian.roth@c-qube.com>
+	* Monday hacking session (mostly css related):
+	* Many cleanups & some bugfixes.
+	* Fixed some whitespace issues with IE/FF.
+
+2005-11-16  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 2.0.0
+	* Adding size and maxlength attributes on text input fields (in css-styled template).
+	* Final css adjustments.
+	* Updating the manual.
+
+2005-11-15  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Adding tooltips
+	* Adding fieldset tags
+	* Adding by_invitation field to fe_users table.
+	* Generate password when inviting and useMd5Password is enabled.
+	* Do not request administrative review on invitation.
+
+2005-11-14  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Finalizing css styling (css-styled template).
+	* Working around varions IE css bugs and label on select bug.
+
+2005-11-13  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Further adjustments to default css (in css-styled template).
+	* Adding label tags for radio and checkbox values of TCA-driven fields.
+	* Further adjustments to default css for email messages in css-styled template.
+	* Adjustments to the html template for the administrative review process.
+	* Correction: the multiple user group selection feature did not work.
+	* Standardizing names of css selectors.
+	* New markers to erase any error markups when there is no error on an input field.
+	* Delete icon specified in style tag.
+
+2005-11-10  Sebastian Roth <sebastian.roth@c-qube.com>
+	* Current merge from Stefan Galinski.
+	* Zapped some bugs in css styled template.
+	* Improved xhtml compliance.
+
+2005-11-08  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Correction to reserved user groups when the administrative review is enabled (in css-styled template).
+	* Addition of id attribute on select tags produced by sr_static_info: version 1.4.7 of sr_static_info is now required to use css-styled template.
+
+2005-11-08  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Rename tx_srfeuserregister_pi1_css_tmpl.tmpl to tx_srfeuserregister_pi1_css_tmpl.html
+	* Correctly display all data fields in email messages in css-styled template.
+	* Correct error when entering multiple lines in a textarea field.
+	* Correct country onChange handler in css-styled template.
+	* Remove updateForm JavaScript from preview screens in css-styled template.
+	* New constants and setup to configure the administrative review process (in css-styled template).
+	* Further adjustments to the html template for the administrative review process (in css-styled template).
+
+2005-11-07  Sebastian Roth <sebastian.roth@c-qube.com>
+	* Bugfixing.
+
+2005-11-06  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Additional html subparts in the css-styled template for the administrative review process (work in progress).
+
+2005-11-05  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Adding some new subparts for the administrative review process (work in progress).
+
+2005-11-04  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Restructure the extension with two Static Templates: Old Style and CSS-styled. One static template must be added to the TS template after extension installation.
+	* Add label tag on all form fields in css-styled html template
+	* Prefix all field ids with tx-srfeuserregister-pi1- in css-styled html template
+	* Generate field ids for all TCA-driven fields
+	* Small adjustments to locallang and html template files
+	* Addition of scripts folder and elimination of name attribute on form tags in css-styled template
+	* Adjustments to css inclusion in html emails in css-styled template and addition of css file
+	* Remove attributes from the body tags of html emails in css-styled template
+	* Change doctype declararation in html emails in css-styled template
+
+2005-11-02  Sebastian Roth <sebastian.roth@c-qube.com>
+	* Added basic template using CSS. Please note that it's not useable at the moment. We still zap our gremlins with it.
+	* Cleaned up some other stuff like css & typoscript.
+
+2005-11-01  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 1.6.8
+	* Corrections to a few glitches introduced in version 1.6.7.
+	* Update to the Russian translation.
+	* New TS constant confirmInvitationPID.
+
+2005-10-28  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 1.6.7
+	* Add a few labels.
+	* Add an 'en_US' localization for the frontend side of the extension.
+	* Manual reviewed for US market. Thanks to Alex Heizer.
+	* New TS constant salutation allows to switch salutation mode.
+	* New TS constant useMd5Password enables md5-hashed passwords when extension KB MD5 FE Password (kb_md5fepw) is installed. HTML templates should be updated with markers ###FORM_ONSUBMIT### and ###PASSWORD_ONCHANGE###. See the example HTML templates. ###HIDDENFIELDS### marker is also added to subparts ###TEMPLATE_CREATE_SAVED### and ###TEMPLATE_SETFIXED_OK###.
+
+2005-10-16  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Correction to the useEmailAsUsername feature.
+	* Take into account the user preference regarding html emails when sending infomails (used by sr_email_subscribe).
+
+2005-10-13  Sebastian Roth <sebastian.roth@c-qube.com>
+	* Modified remaining function call with reference parameter, see
+	  last change at 2005-10-13.
+
+2005-10-12  Sebastian Roth <sebastian.roth@c-qube.com>
+	* fixed a possible problem with php and the option
+	  allow_call_time_pass_reference which will likely be removed in future
+	  versions of php and create error messages. Thanks to Stefan Galinski
+	  for pointing that out.
+
+2005-10-10  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 1.6.6
+	* Correction to the usergroup language overlay. Thanks to Rakowski Tomasz.
+	* Correction to TCA-driven select field with values from foreign table. Thanks to Rakowski Tomasz.
+	* Update to step 3 of the tutorial for the case of multiple selection fields.
+	* Change log added.
+
+2005-10-06  Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Version 1.6.5
+	* Initial CVS upload.
