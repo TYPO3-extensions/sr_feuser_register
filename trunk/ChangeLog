@@ -1,5 +1,6 @@
 2014-03-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow up to #57091: Class 'Tx_SrFeuserRegister_Utility_UrlUtility' not found in TYPO3 4.5
+	* Update version to 3.1.1
 
 2014-03-20 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #57091: Class 'Tx_SrFeuserRegister_Utility_UrlUtility' not found in TYPO3 4.5
