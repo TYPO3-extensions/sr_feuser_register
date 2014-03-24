@@ -61,8 +61,12 @@ class tx_srfeuserregister_lang {
 				if (is_array($languageArray) && isset($this->pibaseObj->LOCAL_LANG[$languageKey])) {
 					foreach ($languageArray as $labelKey => $labelValue) {
 						if (!is_array($labelValue)) {
-							$this->pibaseObj->LOCAL_LANG[$languageKey][$labelKey][0]['target'] = $labelValue;
-							$this->pibaseObj->LOCAL_LANG_charset[$languageKey][$labelKey] = 'utf-8';
+							if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 4006000) {
+								$this->pibaseObj->LOCAL_LANG[$languageKey][$labelKey][0]['target'] = $labelValue;
+								$this->pibaseObj->LOCAL_LANG_charset[$languageKey][$labelKey] = 'utf-8';
+							} else {
+								$this->pibaseObj->LOCAL_LANG[$languageKey][$labelKey] = $labelValue;
+							}
 						} else {
 							$labelValue = $this->flattenTypoScriptLabelArray($labelValue, $labelKey);
 							$this->pibaseObj->LOCAL_LANG[$languageKey] = array_merge($this->pibaseObj->LOCAL_LANG[$languageKey], $labelValue);
