@@ -600,7 +600,7 @@ class tx_srfeuserregister_control {
 						$this->marker,
 						$this->data,
 						$this->display,
-						$this->setfixedObj.
+						$this->setfixedObj,
 						$theTable,
 						$prefixId,
 						array($dataArray),

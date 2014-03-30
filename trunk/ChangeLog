@@ -1,3 +1,6 @@
+2014-03-30 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #57433: Wrong call of $this->email->compile
+
 2014-03-24 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #57236: Fatal error in class.tx_srfeuserregister_lang.php on line 64 in TYPO3 4.5
 	* Update version to 3.1.2
