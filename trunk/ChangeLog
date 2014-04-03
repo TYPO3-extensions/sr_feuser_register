@@ -1,3 +1,6 @@
+2014-04-03 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Correction to manual regarding removed generatePassword option
+
 2014-03-30 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #57433: Wrong call of $this->email->compile
 
