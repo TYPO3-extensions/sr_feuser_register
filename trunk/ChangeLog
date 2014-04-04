@@ -1,3 +1,6 @@
+2014-04-04 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #57650: Fatal error: Call to a member function getSubmit() on a non-object
+
 2014-04-03 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Correction to manual regarding removed generatePassword option
 
