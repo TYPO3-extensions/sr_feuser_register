@@ -684,7 +684,7 @@ class tx_srfeuserregister_tca {
 									}
 									$colContent = '<ul id="' . $uidText . '" class="tx-srfeuserregister-multiple-checkboxes">';
 									if (
-										$this->controlData->getSubmit() ||
+										$controlData->getSubmit() ||
 										$controlData->getDoNotSave() ||
 										$cmd == 'edit'
 									) {
