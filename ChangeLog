@@ -1,3 +1,6 @@
+2014-04-10 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* First argument of tx_srfeuserregister_auth->aCAuth should be an array
+
 2014-04-04 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #57650: Fatal error: Call to a member function getSubmit() on a non-object
 

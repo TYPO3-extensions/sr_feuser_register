@@ -667,12 +667,14 @@ class tx_srfeuserregister_display {
 					$theTable,
 					$dataObj->getRecUid()
 				);
-			$aCAuth =
-				$authObj->aCAuth(
-					$origArray,
-					$conf['setfixed.']['DELETE.']['_FIELDLIST']
-				);
-
+			$aCAuth = FALSE;
+			if (is_array($origArray)) {
+				$aCAuth =
+					$authObj->aCAuth(
+						$origArray,
+						$conf['setfixed.']['DELETE.']['_FIELDLIST']
+					);
+			}
 			if (
 				($theTable == 'fe_users' && $GLOBALS['TSFE']->loginUser) ||
 				$aCAuth
