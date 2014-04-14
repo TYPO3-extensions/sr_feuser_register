@@ -1,3 +1,6 @@
+2014-04-14 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Correction to default template for sr_freecap
+
 2014-04-10 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* First argument of tx_srfeuserregister_auth->aCAuth should be an array
 
