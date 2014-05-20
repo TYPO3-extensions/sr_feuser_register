@@ -1,3 +1,6 @@
+2014-05-20 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Second argument of tx_srfeuserregister_auth::deleteRecord should be an array
+
 2014-04-14 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Correction to default template for sr_freecap
 
