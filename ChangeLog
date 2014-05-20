@@ -2,6 +2,7 @@
 	* Second argument of tx_srfeuserregister_auth::deleteRecord should be an array
 	* Fix some default language labels
 	* Missing value for BACK_URL marker
+	* Missing fieldset element on login form in default template
 
 2014-04-14 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Correction to default template for sr_freecap

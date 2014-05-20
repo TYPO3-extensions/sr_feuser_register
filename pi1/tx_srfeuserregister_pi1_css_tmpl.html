@@ -683,8 +683,8 @@
 <p>###LABEL_V_REGISTRATION_CREATED_MESSAGE1###</p>
 <p>###LABEL_V_REGISTRATION_CREATED_MESSAGE2###</p>
 <p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
-
 <form id="###FORM_NAME###" method="post" action="###LOGIN_FORM###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<fieldset>
 <dl>
 	<dt>###LABEL_USERNAME###</dt>
 	<dd><input type="text" class="tx-srfeuserregister-pi1-text" name="user" value="###FIELD_username###"  size="40" maxlength="50" /></dd>
@@ -701,6 +701,7 @@
 		<input type="submit" name="submit" value="###LABEL_BUTTON_ENTER###" />
 	</dd>
 </dl>
+</fieldset>
 </form>
 <!-- ###TEMPLATE_CREATE_SAVED### end-->
 
@@ -2032,6 +2033,7 @@ The user is informed that a message has been sent to the email address and that 
 <p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE2###</p>
 <p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
 <form id="###FORM_NAME###" method="post" action="###LOGIN_FORM###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<fieldset>
 <dl>
 	<dt><label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME###</label></dt>
 	<dd> <input type="text" class="tx-srfeuserregister-pi1-text" id="tx-srfeuserregister-pi1-username" size="40" maxlength="50" title="###LABEL_TOOLTIP_LOGIN_USERNAME###" name="user" value="###FIELD_username###" /> </dd>
@@ -2048,6 +2050,7 @@ The user is informed that a message has been sent to the email address and that 
 		###HIDDENFIELDS###
 	</dd>
 </dl>
+</fieldset>
 </form>
 <!-- ###TEMPLATE_SETFIXED_OK### end-->
 
