@@ -514,6 +514,12 @@ class tx_srfeuserregister_control {
 			!$bDoNotSave
 		) {
 			// Delete record if delete command is set + the preview flag is NOT set.
+			if (empty($origArray)) {
+				$origArray = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $uid);
+				if (empty($origArray)) {
+					$origArray = array();
+				}
+			}
 			$this->data->deleteRecord($theTable, $origArray, $dataArray);
 		}
 		$errorContent = '';
