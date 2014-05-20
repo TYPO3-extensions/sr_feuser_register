@@ -696,7 +696,8 @@ class tx_srfeuserregister_display {
 						$markerArray = $markerObj->getArray();
 						// Display the form, if access granted.
 						$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $prefixId . '[rU]" value="' .  $dataObj->getRecUid() . '" />';
-						$markerObj->addGeneralHiddenFieldsMarkers ($markerArray, 'delete', $token);
+						$markerArray['###BACK_URL###'] = ($controlData->getBackURL() ? $controlData->getBackURL() : $cObj->getTypoLink_URL($conf['loginPID'] . ',' . $GLOBALS['TSFE']->type));
+						$markerObj->addGeneralHiddenFieldsMarkers($markerArray, 'delete', $token);
 
 						$markerObj->setArray($markerArray);
 						$content = $this->getPlainTemplate(
