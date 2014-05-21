@@ -2,6 +2,7 @@
 	* Resolves #58964: Additional Fields not working after update on 6.2
 	* Follow-up to Resolves #58964: Additional Fields not working after update on 6.2
 	* Resolves #58997: Labels for field "house_no" are missing in locallang.xml
+	* Resolves #52037: Erroneous mailto link in text version of acceptance email to admin after confirmation
 
 2014-05-20 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Second argument of tx_srfeuserregister_auth::deleteRecord should be an array
