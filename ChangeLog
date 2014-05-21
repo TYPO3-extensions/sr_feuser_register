@@ -1,3 +1,6 @@
+2014-05-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #58964: Additional Fields not working after update on 6.2
+
 2014-05-20 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Second argument of tx_srfeuserregister_auth::deleteRecord should be an array
 	* Fix some default language labels

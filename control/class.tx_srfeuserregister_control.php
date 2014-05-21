@@ -156,21 +156,17 @@ class tx_srfeuserregister_control {
 		}
 		$this->data->setOrigArray($origArray);
 
-			// Setting the list of fields allowed for editing and creation.
-		$tcaFieldArray =
-			t3lib_div::trimExplode(
-				',',
-				$GLOBALS['TCA'][$theTable]['feInterface']['fe_admin_fieldList'],
-				1
-			);
-		$tcaFieldArray = array_unique($tcaFieldArray);
-		$fieldlist = implode(',', $tcaFieldArray);
+		// Setting the list of fields allowed for editing and creation
+		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6001000) {
+			$this->tca->loadTcaAdditions();
+		}
+		$fieldlist = implode(',', array_diff(array_keys($GLOBALS['TCA'][$theTable]['columns']), array('felogin_forgotHash,felogin_redirectPid,lastlogin,lockToDomain,starttime,endtime,token,TSconfig')));
 		$this->data->setFieldList($fieldlist);
 
 		if (trim($conf['addAdminFieldList'])) {
 			$adminFieldList .= ',' . trim($conf['addAdminFieldList']);
 		}
-		$adminFieldList = implode(',', array_intersect( explode(',', $fieldlist), t3lib_div::trimExplode(',', $adminFieldList, 1)));
+		$adminFieldList = implode(',', array_intersect(explode(',', $fieldlist), t3lib_div::trimExplode(',', $adminFieldList, 1)));
 		$this->data->setAdminFieldList($adminFieldList);
 
 		if (!t3lib_extMgm::isLoaded('direct_mail')) {

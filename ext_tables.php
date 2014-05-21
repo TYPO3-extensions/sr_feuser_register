@@ -184,22 +184,6 @@ t3lib_extMgm::addTCAcolumns('fe_users', $addColumnArray);
 $GLOBALS['TCA']['fe_users']['interface']['showRecordFieldList'] = preg_replace('/(^|,)\s*country\s*(,|$)/', '$1zone,static_info_country,country,language$2', $GLOBALS['TCA']['fe_users']['interface']['showRecordFieldList']);
 $GLOBALS['TCA']['fe_users']['interface']['showRecordFieldList'] = preg_replace('/(^|,)\s*title\s*(,|$)/', '$1gender,status,date_of_birth,house_no,title$2', $GLOBALS['TCA']['fe_users']['interface']['showRecordFieldList']);
 
-$additionalFields = '';
-if (strpos($GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList'],'first_name') === FALSE) {
-	$additionalFields = 'first_name,middle_name,last_name,';
-}
-if (!is_array($GLOBALS['TCA']['fe_users']['feInterface'])) {
-	$GLOBALS['TCA']['fe_users']['feInterface'] = array();
-}
-if (!isset($GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList'])) {
-	$GLOBALS['TCA']['fe_users']['feInterface'] = array(
-		'fe_admin_fieldList' => 'username,password,usergroup,name,address,telephone,fax,email,title,zip,city,country,www,company'
-	);
-}
-$GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList'] = preg_replace('/(^|,)\s*title\s*(,|$)/', '$1gender,' . $additionalFields . 'cnum,status,title$2', $GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList']);
-$GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList'] .= ',image,disable,date_of_birth,house_no,by_invitation,terms_acknowledged,tx_srfeuserregister_password';
-$GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList'] = preg_replace('/(^|,)\s*country\s*(,|$)/', '$1zone,static_info_country,country,language,comments$2', $GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList']);
-
 $GLOBALS['TCA']['fe_users']['types']['0']['showitem'] = preg_replace('/(^|,)\s*country\s*(,|$)/', '$1 zone, static_info_country, country, language$2', $GLOBALS['TCA']['fe_users']['types']['0']['showitem']);
 $GLOBALS['TCA']['fe_users']['types']['0']['showitem'] = preg_replace('/(^|,)\s*address\s*(,|$)/', '$1 cnum, status, date_of_birth, house_no, address$2', $GLOBALS['TCA']['fe_users']['types']['0']['showitem']);
 $GLOBALS['TCA']['fe_users']['types']['0']['showitem'] = preg_replace('/(^|,)\s*www\s*(,|$)/', '$1 www, comments, by_invitation, terms_acknowledged$2', $GLOBALS['TCA']['fe_users']['types']['0']['showitem']);
@@ -250,11 +234,7 @@ if (
 			)
 		)
 	);
-
 	t3lib_extMgm::addTCAcolumns('fe_users', $tempCols);
-
-	$GLOBALS['TCA']['fe_users']['feInterface']['fe_admin_fieldList'] .= ',module_sys_dmail_newsletter,module_sys_dmail_category,module_sys_dmail_html';
-
 	t3lib_extMgm::addToAllTCATypes('fe_users','--div--;Direct mail,module_sys_dmail_newsletter;;;;1-1-1,module_sys_dmail_category,module_sys_dmail_html');
 }
 
