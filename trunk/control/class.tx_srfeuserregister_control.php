@@ -160,7 +160,7 @@ class tx_srfeuserregister_control {
 		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6001000) {
 			$this->tca->loadTcaAdditions();
 		}
-		$fieldlist = implode(',', array_diff(array_keys($GLOBALS['TCA'][$theTable]['columns']), array('felogin_forgotHash,felogin_redirectPid,lastlogin,lockToDomain,starttime,endtime,token,TSconfig')));
+		$fieldlist = implode(',', array_diff(array_keys($GLOBALS['TCA'][$theTable]['columns']), array('felogin_forgotHash','felogin_redirectPid','lastlogin','lockToDomain','starttime','endtime','token','TSconfig')));
 		$this->data->setFieldList($fieldlist);
 
 		if (trim($conf['addAdminFieldList'])) {
