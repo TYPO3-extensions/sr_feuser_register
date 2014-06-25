@@ -315,9 +315,6 @@ class tx_srfeuserregister_controldata {
 						t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 					}
 				}
-			} else if ($token === ''  && !$bRuIsInt) {
-				$message = 'The submitted authcode does not match any user record.';
-				t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
 			}
 		}
 
