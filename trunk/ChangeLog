@@ -1,5 +1,6 @@
 2014-06-25 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Adjust extension constraints
+	* Remove useless error message from syslog regarding non-matching authCode
 
 2014-05-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #58964: Additional Fields not working after update on 6.2
