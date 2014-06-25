@@ -1,3 +1,6 @@
+2014-06-25 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Adjust extension constraints
+
 2014-05-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #58964: Additional Fields not working after update on 6.2
 	* Follow-up to Resolves #58964: Additional Fields not working after update on 6.2
