@@ -38,21 +38,20 @@ $EM_CONF[$_EXTKEY] = array (
 		array (
 			'php' => '5.3.0-0.0.0',
 			'typo3' => '4.5.0-6.2.99',
-			'cms' => '',
-			'felogin' => '',
-			'rsaauth' => '',
-			'saltedpasswords' => '',
+			'felogin' => '4.5.0-6.2.99',
+			'rsaauth' => '4.5.0-6.2.99',
+			'saltedpasswords' => '4.5.0-6.2.99',
 			'static_info_tables' => '2.3.0-',
 		),
 		'conflicts' => 
 		array (
-			'germandates' => '0.0.0-1.0.1',
-			'rlmp_language_detection' => '0.0.0-1.2.99',
-			'newloginbox' => '',
-			'kb_md5fepw' => '',
-			'srfeuserregister_t3secsaltedpw' => '',
-			'patch1822' => '',
-			'cc_random_image' => '',
+			'germandates' => '0.0.0-99.99.99',
+			'rlmp_language_detection' => '0.0.0-99.99.99',
+			'newloginbox' => '0.0.0-99.99.99',
+			'kb_md5fepw' => '0.0.0-99.99.99',
+			'srfeuserregister_t3secsaltedpw' => '0.0.0-99.99.99',
+			'patch1822' => '0.0.0-99.99.99',
+			'cc_random_image' => '0.0.0-99.99.99',
 		),
 		'suggests' => 
 		array (
