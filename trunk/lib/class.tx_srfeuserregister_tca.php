@@ -771,8 +771,9 @@ class tx_srfeuserregister_tca {
 										$this->pibaseObj->pi_getClassName('multiple-checkboxes') .
 										'" title="###TOOLTIP_' . (($cmd == 'invite') ? 'INVITATION_' : '') . $cObj->caseshift($colName,'upper') . '###">';
 								} else {
-									$colContent .= '<select id="'.
+									$colContent .= '<select class="'.
 									$this->pibaseObj->pi_getClassName('multiple-checkboxes') .
+									'id="' . $this->pibaseObj->pi_getClassName($colName) .
 									'" name="FE[' . $theTable . '][' . $colName . ']' . $multiple . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $cObj->caseshift($colName, 'upper') . '###">';
 								}
 
@@ -783,15 +784,12 @@ class tx_srfeuserregister_tca {
 										$label = $langObj->getLLFromString($item[0], TRUE);
 										$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 										if ($colConfig['renderMode'] == 'checkbox') {
-
 											$colContent .= '<dt><input class="' .
 											$this->pibaseObj->pi_getClassName('checkbox-checkboxes') .
 											 '" id="' . $this->pibaseObj->pi_getClassName($colName) . '-' . $i . '" name="FE[' . $theTable . '][' . $colName . '][' . $k . ']" value="' . $k . '" type="checkbox"  ' . (in_array($k, $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
-												<dd><label for="' .
-												$this->pibaseObj->pi_getClassName($colName) .
-												'-' . $i . '">' . $label . '</label></dd>';
+												<dd><label for="' . $this->pibaseObj->pi_getClassName($colName) . '-' . $i . '">' . $label . '</label></dd>';
 										} else {
-											$colContent .= '<option value="'.$k. '" ' . (in_array($k, $valuesArray) ? 'selected="selected"' : '') . '>' . $label . '</option>';
+											$colContent .= '<option value="' . $k . '" ' . (in_array($k, $valuesArray) ? 'selected="selected"' : '') . '>' . $label . '</option>';
 										}
 										$i++;
 									}
