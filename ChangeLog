@@ -1,3 +1,6 @@
+2014-06-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #59919: id tag not unique / no class tag for multiple select box
+
 2014-06-25 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Adjust extension constraints
 	* Remove useless error message from syslog regarding non-matching authCode
