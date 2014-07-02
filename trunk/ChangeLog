@@ -1,3 +1,6 @@
+2014-07-02 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #60022: Dependency issues when updating to 3.1.3
+
 2014-06-27 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #59919: id tag not unique / no class tag for multiple select box
 

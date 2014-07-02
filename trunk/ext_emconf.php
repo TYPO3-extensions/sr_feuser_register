@@ -38,9 +38,9 @@ $EM_CONF[$_EXTKEY] = array (
 		array (
 			'php' => '5.3.0-0.0.0',
 			'typo3' => '4.5.0-6.2.99',
-			'felogin' => '4.5.0-6.2.99',
-			'rsaauth' => '4.5.0-6.2.99',
-			'saltedpasswords' => '4.5.0-6.2.99',
+			'felogin' => '1.3.0-6.2.99',
+			'rsaauth' => '1.1.0-6.2.99',
+			'saltedpasswords' => '1.0.0-6.2.99',
 			'static_info_tables' => '2.3.0-',
 		),
 		'conflicts' => 
