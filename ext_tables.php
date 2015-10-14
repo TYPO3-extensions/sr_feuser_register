@@ -1,7 +1,11 @@
 <?php
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
-$typo3Version = t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version);
+if (class_exists('t3lib_utility_VersionNumber')) {
+	$typo3Version = t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version);
+} else if (class_exists('TYPO3\\CMS\\Core\\Utility\\VersionNumberUtility')) {
+	$typo3Version = \TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
+}
 
 if (TYPO3_MODE == 'BE' && !$loadTcaAdditions) {
 
@@ -13,7 +17,7 @@ if (TYPO3_MODE == 'BE' && !$loadTcaAdditions) {
 	$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][SR_FEUSER_REGISTER_EXT.'_pi1']='layout,select_key';
 	$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][SR_FEUSER_REGISTER_EXT.'_pi1']='pi_flexform';
 	t3lib_extMgm::addPiFlexFormValue(SR_FEUSER_REGISTER_EXT.'_pi1', 'FILE:EXT:'.SR_FEUSER_REGISTER_EXT.'/pi1/flexform_ds_pi1.xml');
-	t3lib_extMgm::addPlugin(Array('LLL:EXT:'.SR_FEUSER_REGISTER_EXT.'/locallang_db.xml:tt_content.list_type', SR_FEUSER_REGISTER_EXT.'_pi1'),'list_type');
+	t3lib_extMgm::addPlugin(Array('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:tt_content.list_type', SR_FEUSER_REGISTER_EXT.'_pi1'),'list_type');
 }
 
 
@@ -44,7 +48,7 @@ $GLOBALS['TCA']['fe_users']['columns']['image']['config']['allowed'] = $GLOBALS[
 $addColumnArray = Array(
 	'cnum' => Array (
 		'exclude' => 0,
-		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.cnum',
+		'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.cnum',
 		'config' => Array (
 			'type' => 'input',
 			'size' => '20',
@@ -55,7 +59,7 @@ $addColumnArray = Array(
 	),
 	'static_info_country' => Array (
 		'exclude' => 0,
-		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.static_info_country',
+		'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.static_info_country',
 		'config' => Array (
 			'type' => 'input',
 			'size' => '5',
@@ -66,7 +70,7 @@ $addColumnArray = Array(
 	),
 	'zone' => Array (
 		'exclude' => 0,
-		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.zone',
+		'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.zone',
 		'config' => Array (
 			'type' => 'input',
 			'size' => '20',
@@ -77,7 +81,7 @@ $addColumnArray = Array(
 	),
 	'language' => Array (
 		'exclude' => 0,
-		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.language',
+		'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.language',
 		'config' => Array (
 			'type' => 'input',
 			'size' => '4',
@@ -88,7 +92,7 @@ $addColumnArray = Array(
 	),
 	'date_of_birth' => Array (
 		'exclude' => 0,
-		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.date_of_birth',
+		'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.date_of_birth',
 		'config' => Array (
 			'type' => 'input',
 			'size' => '10',
@@ -100,27 +104,27 @@ $addColumnArray = Array(
 	),
 	'gender' => Array (
 		'exclude' => 0,
-		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender',
+		'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.gender',
 		'config' => Array (
 			'type' => 'radio',
 			'items' => Array (
-				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender.I.99', '99'),
-				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender.I.0', '0'),
-				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.gender.I.1', '1')
+				Array('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.gender.I.99', '99'),
+				Array('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.gender.I.0', '0'),
+				Array('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.gender.I.1', '1')
 			),
 		)
 	),
 	'status' => Array (
 		'exclude' => 0,
-		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status',
+		'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.status',
 		'config' => Array (
 			'type' => 'select',
 			'items' => Array (
-				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.0', '0'),
-				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.1', '1'),
-				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.2', '2'),
-				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.3', '3'),
-				Array('LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.status.I.4', '4'),
+				Array('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.status.I.0', '0'),
+				Array('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.status.I.1', '1'),
+				Array('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.status.I.2', '2'),
+				Array('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.status.I.3', '3'),
+				Array('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.status.I.4', '4'),
 			),
 			'size' => 1,
 			'maxitems' => 1,
@@ -128,7 +132,7 @@ $addColumnArray = Array(
 	),
 	'comments' => Array (
 		'exclude' => 0,
-		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.comments',
+		'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.comments',
 		'config' => Array (
 			'type' => 'text',
 			'rows' => '5',
@@ -137,7 +141,7 @@ $addColumnArray = Array(
 	),
 	'by_invitation' => Array (
 		'exclude' => 0,
-		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.by_invitation',
+		'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.by_invitation',
 		'config' => Array (
 			'type' => 'check',
 			'default' => '0'
@@ -145,7 +149,7 @@ $addColumnArray = Array(
 	),
 	'terms_acknowledged' => Array (
 		'exclude' => 0,
-		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.terms_acknowledged',
+		'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.terms_acknowledged',
 		'config' => Array (
 			'type' => 'check',
 			'default' => '0',
@@ -154,7 +158,7 @@ $addColumnArray = Array(
 	),
 	'token' => Array (
 		'exclude' => 1,
-		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.token',
+		'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.token',
 		'config' => Array (
 			'type' => 'text',
 			'rows' => '1',
@@ -163,14 +167,14 @@ $addColumnArray = Array(
 	),
 	'tx_srfeuserregister_password' => array (
 		'exclude' => 1,
-		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.tx_srfeuserregister_password',
+		'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.tx_srfeuserregister_password',
 		'config' => array (
 			'type' => 'passthrough',
 		)
 	),
 	'house_no' => array(
 		'exclude' => 1,
-		'label' => 'LLL:EXT:sr_feuser_register/locallang_db.xml:fe_users.house_no',
+		'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.house_no',
 		'config' => array(
 			'type' => 'input',
 			'eval' => 'trim',
@@ -201,14 +205,14 @@ if (
 ) {
 	$tempCols = Array(
 		'module_sys_dmail_newsletter' => Array(
-			'label' => 'LLL:EXT:' . $_EXTKEY . '/locallang_db.xml:fe_users.module_sys_dmail_newsletter',
+			'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.module_sys_dmail_newsletter',
 			'exclude' => '1',
 			'config'=>Array(
 				'type'=>'check'
 				)
 			),
 		'module_sys_dmail_category' => Array(
-			'label' => 'LLL:EXT:' . $_EXTKEY . '/locallang_db.xml:fe_users.module_sys_dmail_category',
+			'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.module_sys_dmail_category',
 			'exclude' => '1',
 			'config' => Array (
 				'type' => 'select',
@@ -227,7 +231,7 @@ if (
 			)
 		),
 		'module_sys_dmail_html' => Array(
-			'label' => 'LLL:EXT:' . $_EXTKEY . '/locallang_db.xml:fe_users.module_sys_dmail_html',
+			'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.module_sys_dmail_html',
 			'exclude' => '1',
 			'config'=>Array(
 				'type'=>'check'
@@ -240,7 +244,7 @@ if (
 
 $GLOBALS['TCA']['fe_groups_language_overlay'] = Array (
 	'ctrl' => Array (
- 	'title' => 'LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/locallang_db.xml:fe_groups_language_overlay',
+ 	'title' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_groups_language_overlay',
 		'label' => 'title',
 		'default_sortby' => 'ORDER BY fe_groups_uid',
 		'sortby' => 'sorting',

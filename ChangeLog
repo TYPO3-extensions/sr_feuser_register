@@ -1,3 +1,6 @@
+2015-10-13 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #70669: Convert localization files to xliff and move them to Resources directory
+
 2014-07-02 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #60022: Dependency issues when updating to 3.1.3
 
