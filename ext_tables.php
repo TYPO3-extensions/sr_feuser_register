@@ -1,19 +1,10 @@
 <?php
-if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
-
-if (class_exists('t3lib_utility_VersionNumber')) {
-	$typo3Version = t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version);
-} else if (class_exists('TYPO3\\CMS\\Core\\Utility\\VersionNumberUtility')) {
-	$typo3Version = \TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
-}
+defined('TYPO3_MODE') or die();
 
 if (TYPO3_MODE == 'BE' && !$loadTcaAdditions) {
 
 	t3lib_extMgm::addStaticFile(SR_FEUSER_REGISTER_EXT, 'static/css_styled/', 'FE User Registration CSS-styled');
 
-	if ($typo3Version < 6001000) {
-		t3lib_div::loadTCA('tt_content');
-	}
 	$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][SR_FEUSER_REGISTER_EXT.'_pi1']='layout,select_key';
 	$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][SR_FEUSER_REGISTER_EXT.'_pi1']='pi_flexform';
 	t3lib_extMgm::addPiFlexFormValue(SR_FEUSER_REGISTER_EXT.'_pi1', 'FILE:EXT:'.SR_FEUSER_REGISTER_EXT.'/pi1/flexform_ds_pi1.xml');
@@ -25,10 +16,6 @@ if (TYPO3_MODE == 'BE' && !$loadTcaAdditions) {
  * Setting up country, country subdivision, preferred language, first_name and last_name in fe_users table
  * Adjusting some maximum lengths to conform to specifications of payment gateways (ref.: Authorize.net)
  */
-if ($typo3Version < 6001000) {
-	t3lib_div::loadTCA('fe_users');
-}
-
 $GLOBALS['TCA']['fe_users']['columns']['username']['config']['eval'] = 'nospace,uniqueInPid,required';
 $GLOBALS['TCA']['fe_users']['columns']['name']['config']['max'] = '100';
 $GLOBALS['TCA']['fe_users']['columns']['company']['config']['max'] = '50';
@@ -258,6 +245,3 @@ $GLOBALS['TCA']['fe_groups_language_overlay'] = Array (
 );
 t3lib_extMgm::allowTableOnStandardPages('fe_groups_language_overlay');
 t3lib_extMgm::addToInsertRecords('fe_groups_language_overlay');
-unset($typo3Version);
-
-?>

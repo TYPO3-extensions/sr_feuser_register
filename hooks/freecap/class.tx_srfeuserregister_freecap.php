@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2012 Stanislas Rolland <typo3@sjbr.ca>
+*  (c) 2012-2015 Stanislas Rolland <typo3@sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -71,9 +71,6 @@ class tx_srfeuserregister_freecap {
 			$freeCap = t3lib_div::getUserObj('&tx_srfreecap_pi2');
 			if (isset($GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['sr_freecap_EidDispatcher'])) {
 				$sessionNameSpace = 'tx_srfreecap';
-			} else {
-				// Old version of sr_freecap
-				$sessionNameSpace = 'tx_' . $freeCap->extKey;
 			}
 			// Save the sr_freecap word_hash
 			// sr_freecap will invalidate the word_hash after calling checkWord

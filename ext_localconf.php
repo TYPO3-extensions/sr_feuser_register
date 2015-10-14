@@ -1,5 +1,5 @@
 <?php
-if (!defined ('TYPO3_MODE')) die ('Access denied.');
+defined('TYPO3_MODE') or die();
 
 if (!defined ('SR_FEUSER_REGISTER_EXT')) {
 	define('SR_FEUSER_REGISTER_EXT', $_EXTKEY);
@@ -20,17 +20,6 @@ if (!defined ('PATH_FE_srfeuserregister_rel')) {
 if (!defined(STATIC_INFO_TABLES_EXT)) {
 	define('STATIC_INFO_TABLES_EXT', 'static_info_tables');
 }
-
-// Add Status Report
-if (class_exists('t3lib_utility_VersionNumber')) {
-	$typo3Version = t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version);
-} else if (class_exists('TYPO3\\CMS\\Core\\Utility\\VersionNumberUtility')) {
-	$typo3Version = \TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
-}
-if ($typo3Version >= 4006000) {
-	require_once(PATH_BE_srfeuserregister . 'hooks/statusreport/ext_localconf.php');
-}
-unset($typo3Version);
 
 t3lib_extMgm::addPItoST43(SR_FEUSER_REGISTER_EXT, 'pi1/class.tx_srfeuserregister_pi1.php', '_pi1', 'list_type', 0);
 
@@ -71,7 +60,13 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['tx_srfeuserregis
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['tx_srfeuserregister_pi1']['registrationProcess'][] = 'EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/freecap/class.tx_srfeuserregister_freecap.php:&tx_srfeuserregister_freecap';
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['tx_srfeuserregister_pi1']['model'][] = 'EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/freecap/class.tx_srfeuserregister_freecap.php:&tx_srfeuserregister_freecap';
 
-if (TYPO3_MODE == 'BE') {
+if (TYPO3_MODE === 'BE') {
+	
+	// Add Status Report
+	// Take note of conflicting extensions
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['constraints'] = $EM_CONF['sr_feuser_register']['constraints'];
+	// Register Status Report Hook
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['Front End User Registration'][] = 'SJBR\\SrFeuserRegister\\Reports\\StatusProvider';
 
 	if (!defined($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_users']['MENU'])) {
 		$tableArray = array('fe_users', 'fe_groups', 'fe_groups_language_overlay');
@@ -124,9 +119,3 @@ if (TYPO3_MODE == 'BE') {
 		);
 	}
 }
-
-if (t3lib_extMgm::isLoaded('tt_products') && TYPO3_MODE=='FE') {
-	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tt_products']['extendingTCA'][] = SR_FEUSER_REGISTER_EXT;
-}
-
-?>

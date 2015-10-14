@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -157,9 +157,6 @@ class tx_srfeuserregister_control {
 		$this->data->setOrigArray($origArray);
 
 		// Setting the list of fields allowed for editing and creation
-		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6001000) {
-			$this->tca->loadTcaAdditions();
-		}
 		$fieldlist = implode(',', array_diff(array_keys($GLOBALS['TCA'][$theTable]['columns']), array('felogin_forgotHash','felogin_redirectPid','lastlogin','lockToDomain','starttime','endtime','token','TSconfig')));
 		$this->data->setFieldList($fieldlist);
 
@@ -331,12 +328,7 @@ class tx_srfeuserregister_control {
 			if ($theTable == 'fe_users') {
 				$securedArray = $controlData->readSecuredArray();
 			}
-			if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6002000) {
-				$finalDataArray = t3lib_div::array_merge_recursive_overrule($dataArray, $securedArray);
-			} else {
-				$finalDataArray = $dataArray;
-				\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($finalDataArray, $securedArray);
-			}
+			\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($finalDataArray, $securedArray);
 		} else {
 			$finalDataArray = $dataArray;
 		}

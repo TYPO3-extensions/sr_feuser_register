@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2012 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -61,12 +61,8 @@ class tx_srfeuserregister_lang {
 				if (is_array($languageArray) && isset($this->pibaseObj->LOCAL_LANG[$languageKey])) {
 					foreach ($languageArray as $labelKey => $labelValue) {
 						if (!is_array($labelValue)) {
-							if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 4006000) {
-								$this->pibaseObj->LOCAL_LANG[$languageKey][$labelKey][0]['target'] = $labelValue;
-								$this->pibaseObj->LOCAL_LANG_charset[$languageKey][$labelKey] = 'utf-8';
-							} else {
-								$this->pibaseObj->LOCAL_LANG[$languageKey][$labelKey] = $labelValue;
-							}
+							$this->pibaseObj->LOCAL_LANG[$languageKey][$labelKey][0]['target'] = $labelValue;
+							$this->pibaseObj->LOCAL_LANG_charset[$languageKey][$labelKey] = 'utf-8';
 						} else {
 							$labelValue = $this->flattenTypoScriptLabelArray($labelValue, $labelKey);
 							$this->pibaseObj->LOCAL_LANG[$languageKey] = array_merge($this->pibaseObj->LOCAL_LANG[$languageKey], $labelValue);
@@ -146,14 +142,8 @@ class tx_srfeuserregister_lang {
 		// If the suffix is allowed and we have a localized string for the desired salutation, we'll take that.
 		if (isset($this->pibaseObj->conf['salutation']) && in_array($this->pibaseObj->conf['salutation'], $this->allowedSuffixes, 1)) {
 			$expandedKey = $key . '_' . $this->pibaseObj->conf['salutation'];
-			if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 4006000) {
-				if ($this->pibaseObj->LOCAL_LANG[$this->pibaseObj->LLkey][$expandedKey][0]['target'] != '') {
-					$key = $expandedKey;
-				}
-			} else {
-				if (isset($this->pibaseObj->LOCAL_LANG[$this->pibaseObj->LLkey][$expandedKey])) {
-					$key = $expandedKey;
-				}
+			if ($this->pibaseObj->LOCAL_LANG[$this->pibaseObj->LLkey][$expandedKey][0]['target'] != '') {
+				$key = $expandedKey;
 			}
 		}
 		return $this->pibaseObj->pi_getLL($key, $alt, $hsc);
@@ -180,16 +170,11 @@ class tx_srfeuserregister_lang {
 				$labelValue = $this->flattenTypoScriptLabelArray($labelValue, $key);
 				$result = array_merge($result, $labelValue);
 			} else {
-				if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 4006000) {
-					$result[$key][0]['target'] = $labelValue;
-				} else {
-					$result[$key] = $labelValue;
-				}
+				$result[$key][0]['target'] = $labelValue;
 			}
 		}
 		return $result;
 	}
-
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_lang.php']) {
