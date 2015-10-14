@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2012 Stanislas Rolland <typo3@sjbr.ca>
+*  (c) 2012-2015 Stanislas Rolland <typo3@sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -47,7 +47,7 @@ class tx_srfeuserregister_statusReport implements tx_reports_StatusProvider {
 	 * @return	tx_reports_reports_status_Status
 	 */
 	protected function checkIfRequiredExtensionsAreInstalled() {
-		$title = $GLOBALS['LANG']->sL('LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/statusreport/locallang.xlf:Required_extensions_not_installed');
+		$title = $GLOBALS['LANG']->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:Required_extensions_not_installed');
 		$missingExtensions = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['constraints']['depends'])) {
 			$requiredExtensions = array_diff(array_keys($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['constraints']['depends']), array('php', 'typo3'));
@@ -58,11 +58,11 @@ class tx_srfeuserregister_statusReport implements tx_reports_StatusProvider {
 			}
 		}
 		if (count($missingExtensions)) {
-			$value = $GLOBALS['LANG']->sL('LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/statusreport/locallang.xlf:keys') . ' ' . implode(', ', $missingExtensions);
-			$message = $GLOBALS['LANG']->sL('LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/statusreport/locallang.xlf:install');
+			$value = $GLOBALS['LANG']->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf::keys') . ' ' . implode(', ', $missingExtensions);
+			$message = $GLOBALS['LANG']->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf::install');
 			$status = tx_reports_reports_status_Status::ERROR;
 		} else {
-			$value = $GLOBALS['LANG']->sL('LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/statusreport/locallang.xlf:none');
+			$value = $GLOBALS['LANG']->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf::none');
 			$message = '';
 			$status = tx_reports_reports_status_Status::OK;
 		}
@@ -80,7 +80,7 @@ class tx_srfeuserregister_statusReport implements tx_reports_StatusProvider {
 	 * @return	tx_reports_reports_status_Status
 	 */
 	protected function checkIfNoConflictingExtensionIsInstalled() {
-		$title = $GLOBALS['LANG']->sL('LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/statusreport/locallang.xlf:Conflicting_extensions_installed');
+		$title = $GLOBALS['LANG']->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf::Conflicting_extensions_installed');
 		$conflictingExtensions = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['constraints']['conflicts'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['constraints']['conflicts'] as $extensionKey => $version) {
@@ -90,11 +90,11 @@ class tx_srfeuserregister_statusReport implements tx_reports_StatusProvider {
 			}
 		}
 		if (count($conflictingExtensions)) {
-			$value = $GLOBALS['LANG']->sL('LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/statusreport/locallang.xlf:keys') . ' ' . implode(', ', $conflictingExtensions);
-			$message = $GLOBALS['LANG']->sL('LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/statusreport/locallang.xlf:uninstall');
+			$value = $GLOBALS['LANG']->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf::keys') . ' ' . implode(', ', $conflictingExtensions);
+			$message = $GLOBALS['LANG']->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf::uninstall');
 			$status = tx_reports_reports_status_Status::ERROR;
 		} else {
-			$value = $GLOBALS['LANG']->sL('LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/statusreport/locallang.xlf:none');
+			$value = $GLOBALS['LANG']->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf::none');
 			$message = '';
 			$status = tx_reports_reports_status_Status::OK;
 		}
@@ -112,11 +112,11 @@ class tx_srfeuserregister_statusReport implements tx_reports_StatusProvider {
 	 * @return	tx_reports_reports_status_Status
 	 */
 	protected function checkIfFrontEndLoginSecurityLevelIsCorrectlySet() {
-		$title = $GLOBALS['LANG']->sL('LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/statusreport/locallang.xlf:Front_end_login_security_level');
+		$title = $GLOBALS['LANG']->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf::Front_end_login_security_level');
 		$supportedTransmissionSecurityLevels = array('normal', 'rsa');
 		if (!in_array($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'], $supportedTransmissionSecurityLevels)) {
 			$value = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
-			$message = $GLOBALS['LANG']->sL('LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/statusreport/locallang.xlf:must_be_normal_or_rsa');
+			$message = $GLOBALS['LANG']->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf::must_be_normal_or_rsa');
 			$status = tx_reports_reports_status_Status::ERROR;
 		} else {
 			$value = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];;
@@ -137,13 +137,13 @@ class tx_srfeuserregister_statusReport implements tx_reports_StatusProvider {
 	 * @return	tx_reports_reports_status_Status
 	 */
 	protected function checkIfSaltedPasswordsAreEnabledInFrontEnd() {
-		$title = $GLOBALS['LANG']->sL('LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/statusreport/locallang.xlf:Salted_passwords_in_front_end');
+		$title = $GLOBALS['LANG']->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf::Salted_passwords_in_front_end');
 		if (!t3lib_extMgm::isLoaded('saltedpasswords') || !tx_saltedpasswords_div::isUsageEnabled('FE')) {
-			$value = $GLOBALS['LANG']->sL('LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/statusreport/locallang.xlf:disabled');
-			$message = $GLOBALS['LANG']->sL('LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/statusreport/locallang.xlf:salted_passwords_must_be_enabled');
+			$value = $GLOBALS['LANG']->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf::disabled');
+			$message = $GLOBALS['LANG']->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf::salted_passwords_must_be_enabled');
 			$status = tx_reports_reports_status_Status::ERROR;
 		} else {
-			$value = $GLOBALS['LANG']->sL('LLL:EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/statusreport/locallang.xlf:enabled');
+			$value = $GLOBALS['LANG']->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf::enabled');
 			$message = '';
 			$status = tx_reports_reports_status_Status::OK;
 		}

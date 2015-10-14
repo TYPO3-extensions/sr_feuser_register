@@ -22,7 +22,11 @@ if (!defined(STATIC_INFO_TABLES_EXT)) {
 }
 
 // Add Status Report
-$typo3Version = t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version);
+if (class_exists('t3lib_utility_VersionNumber')) {
+	$typo3Version = t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version);
+} else if (class_exists('TYPO3\\CMS\\Core\\Utility\\VersionNumberUtility')) {
+	$typo3Version = \TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
+}
 if ($typo3Version >= 4006000) {
 	require_once(PATH_BE_srfeuserregister . 'hooks/statusreport/ext_localconf.php');
 }
@@ -72,7 +76,7 @@ if (TYPO3_MODE == 'BE') {
 	if (!defined($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_users']['MENU'])) {
 		$tableArray = array('fe_users', 'fe_groups', 'fe_groups_language_overlay');
 		foreach ($tableArray as $theTable) {
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['LLFile'][$theTable] = 'EXT:'.SR_FEUSER_REGISTER_EXT.'/locallang.xml';
+			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['LLFile'][$theTable] = 'EXT:sr_feuser_register/Resources/Private/Language/locallang.xlf';
 		}
 
 		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_users'] = array (
