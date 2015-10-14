@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 2007-2012 Franz Holzinger (franz@ttproducts.de)
-*  (c) 2012-2014 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  (c) 2012-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -647,27 +647,13 @@ class tx_srfeuserregister_controldata {
 			// Read all session data
 		$allSessionData = $this->readSessionData(TRUE);
 		if (is_array($allSessionData[$extKey])) {
-			$typo3Version = t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version);
 			$keys = array_keys($allSessionData[$extKey]);
 			if ($clearSession) {
 				foreach ($keys as $key) {
 					unset($allSessionData[$extKey][$key]);
 				}
-			} else {
-				if ($typo3Version < 4007000) {
-					foreach ($keys as $key) {
-						if ($data[$key] == '__UNSET') {
-							unset($data[$key]);
-							unset($allSessionData[$extKey][$key]);
-						}
-					}
-				}
 			}
-			if ($typo3Version < 6002000) {
-				$allSessionData[$extKey] = t3lib_div::array_merge_recursive_overrule($allSessionData[$extKey], $data);
-			} else {
-				\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($allSessionData[$extKey], $data);
-			}
+			\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($allSessionData[$extKey], $data);
 		} else {
 			$allSessionData[$extKey] = $data;
 		}

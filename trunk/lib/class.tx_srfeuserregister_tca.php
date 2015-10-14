@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2014 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -46,69 +46,7 @@ class tx_srfeuserregister_tca {
 	protected $pibaseObj;
 
 	public function init ($extKey, $theTable, $pibaseObj) {
-		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6001000) {
-			// Get the table definition
-			$this->loadTcaAdditions(array($extKey));
-			$this->fixAddressFeAdminFieldList();
-	
-			if (t3lib_extMgm::isLoaded('direct_mail')) {
-				$this->loadTcaAdditions(array('direct_mail'));
-				$this->fixAddressFeAdminFieldList();
-			}
-	
-			$this->loadTcaAdditions($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['extendingTCA']);
-			$this->fixAddressFeAdminFieldList();
-		}
 		$this->pibaseObj = $pibaseObj;
-	}
-
-	/* loadTcaAdditions($ext_keys)
-	*
-	* Your extension may depend on fields that are added by other
-	* extensios. For reasons of performance parts of the TCA are only
-	* loaded on demand. To ensure that the extended TCA is loaded for
-	* the extensions you depend on or which extend your extension by
-	* hooks, you shall apply this function.
-	*
-	* @param array     extension keys which have TCA additions to load
-	*/
-	public function loadTcaAdditions($ext_keys) {
-		global $_EXTKEY, $TCA;
-
-		$loadTcaAdditions = TRUE;
-
-		//Merge all ext_keys
-		if (is_array($ext_keys)) {
-			foreach ($ext_keys as $_EXTKEY) {
-				if (t3lib_extMgm::isLoaded($_EXTKEY)) {
-					//Include the ext_table
-					include(t3lib_extMgm::extPath($_EXTKEY) . 'ext_tables.php');
-				}
-			}
-		}
-		// ext-script
-		if (TYPO3_extTableDef_script) {
-			include (PATH_typo3conf.TYPO3_extTableDef_script);
-		}
-	}
-
-	/**
-	 * Fix contents of $GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList']
-	 * The list gets broken when EXT:tt_address/tca.php is included twice
-	 *
-	 * @return void
-	 */
-	protected function fixAddressFeAdminFieldList () {
-		if (
-			t3lib_extMgm::isLoaded('tt_address') &&
-			isset($GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList'])
-		) {
-			$fieldArray = array_unique(t3lib_div::trimExplode(',', $GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList'], 1));
-			$fieldArray = array_diff($fieldArray, array('middle_first_name', 'last_first_name'));
-			$fieldList = implode(',', $fieldArray);
-			$fieldList = str_replace('first_first_name', 'first_name', $fieldList);
-			$GLOBALS['TCA']['tt_address']['feInterface']['fe_admin_fieldList'] = $fieldList;
-		}
 	}
 
 	public function getForeignTable ($theTable, $colName) {
@@ -568,9 +506,6 @@ class tx_srfeuserregister_tca {
 									}
 
 									if ($colConfig['foreign_table']) {
-										if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6001000) {
-											t3lib_div::loadTCA($colConfig['foreign_table']);
-										}
 										$reservedValues = array();
 										if (isset($userGroupObj) && is_object($userGroupObj)) {
 											$reservedValues = $userGroupObj->getReservedValues();
@@ -799,9 +734,6 @@ class tx_srfeuserregister_tca {
 									$colConfig['foreign_table'] &&
 									isset($GLOBALS['TCA'][$colConfig['foreign_table']])
 								) {
-									if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6001000) {
-										t3lib_div::loadTCA($colConfig['foreign_table']);
-									}
 									$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
 									$reservedValues = array();
 									$whereClause = '1=1';
