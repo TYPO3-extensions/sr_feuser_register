@@ -1,5 +1,6 @@
 2015-10-14 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #70732: Move configuration files to Configuration directory
+	* Resolves #62206: Array problem 5.4+
 
 2015-10-13 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #70669: Convert localization files to xliff and move them to Resources directory

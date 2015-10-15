@@ -821,7 +821,7 @@ class tx_srfeuserregister_display {
 		}
 
 		$templateCode = $cObj->getSubpart($templateCode, $subpartMarker);
-
+		$row = is_array($row) ? $row : array();
 		if ($templateCode != '') {
 				// Remove non-included fields
 			$templateCode =
@@ -837,7 +837,7 @@ class tx_srfeuserregister_display {
 			$markerArray =
 				$markerObj->fillInMarkerArray(
 					$markerArray,
-					is_array($row) ? $row : array(),
+					$row,
 					$securedArray,
 					''
 				);
@@ -1154,7 +1154,7 @@ class tx_srfeuserregister_display {
 			// Display confirmation message
 		$subpartMarker = '###TEMPLATE_' . $key . '###';
 		$templateCode = $cObj->getSubpart($templateCode, $subpartMarker);
-
+		$dataArray = is_array($dataArray) ? $$dataArray : array();
 		if ($templateCode) {
 				// Remove non-included fields
 			$templateCode =
