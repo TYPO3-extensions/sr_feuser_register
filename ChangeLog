@@ -1,6 +1,7 @@
 2015-10-14 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #70732: Move configuration files to Configuration directory
-	* Resolves #62206: Array problem 5.4+
+	* Resolves #62206: Array problem with 5.4+
+	* Resolves #70279: Remove use of option $TYPO3_CONF_VARS['SYS']['serverTimeZone']
 
 2015-10-13 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #70669: Convert localization files to xliff and move them to Resources directory
