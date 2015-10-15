@@ -6,29 +6,29 @@ if (!defined ('SR_FEUSER_REGISTER_EXT')) {
 }
 
 if (!defined ('PATH_BE_srfeuserregister')) {
-	define('PATH_BE_srfeuserregister', t3lib_extMgm::extPath(SR_FEUSER_REGISTER_EXT));
+	define('PATH_BE_srfeuserregister', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY));
 }
 
 if (!defined ('PATH_BE_srfeuserregister_rel')) {
-	define('PATH_BE_srfeuserregister_rel', t3lib_extMgm::extRelPath(SR_FEUSER_REGISTER_EXT));
+	define('PATH_BE_srfeuserregister_rel', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY));
 }
 
 if (!defined ('PATH_FE_srfeuserregister_rel')) {
-	define('PATH_FE_srfeuserregister_rel', t3lib_extMgm::siteRelPath(SR_FEUSER_REGISTER_EXT));
+	define('PATH_FE_srfeuserregister_rel', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($_EXTKEY));
 }
 
 if (!defined(STATIC_INFO_TABLES_EXT)) {
 	define('STATIC_INFO_TABLES_EXT', 'static_info_tables');
 }
 
-t3lib_extMgm::addPItoST43(SR_FEUSER_REGISTER_EXT, 'pi1/class.tx_srfeuserregister_pi1.php', '_pi1', 'list_type', 0);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'pi1/class.tx_srfeuserregister_pi1.php', '_pi1', 'list_type', 0);
 
 $_EXTCONF =unserialize($_EXTCONF);    // unserializing the configuration so we can use it here:
 
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['uploadfolder'] = $_EXTCONF['uploadFolder'] ? $_EXTCONF['uploadFolder'] : 'uploads/tx_srfeuserregister';
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['imageMaxSize'] = $_EXTCONF['imageMaxSize'] ? $_EXTCONF['imageMaxSize'] : 250;
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['imageTypes'] = $_EXTCONF['imageTypes'] ? $_EXTCONF['imageTypes'] : 'png,jpeg,jpg,gif,tif,tiff';
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['enableDirectMail'] = $_EXTCONF['enableDirectMail'] ? $_EXTCONF['enableDirectMail'] : 0;
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['uploadfolder'] = $_EXTCONF['uploadFolder'] ? $_EXTCONF['uploadFolder'] : 'uploads/tx_srfeuserregister';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['imageMaxSize'] = $_EXTCONF['imageMaxSize'] ? $_EXTCONF['imageMaxSize'] : 250;
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['imageTypes'] = $_EXTCONF['imageTypes'] ? $_EXTCONF['imageTypes'] : 'png,jpeg,jpg,gif,tif,tiff';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['enableDirectMail'] = $_EXTCONF['enableDirectMail'] ? $_EXTCONF['enableDirectMail'] : 0;
 
 
 	/* Example of configuration of hooks */
@@ -39,14 +39,14 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['tx_srfeuserregiste
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['tx_srfeuserregister_pi1']['registrationProcess'][] = 'EXT:sr_feuser_register/hooks/class.tx_srfeuserregister_hooksHandler.php:&tx_srfeuserregister_hooksHandler';
 
 	// Save extension version and constraints
-require_once(t3lib_extMgm::extPath($_EXTKEY) . 'ext_emconf.php');
+require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'ext_emconf.php');
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['version'] = $EM_CONF[$_EXTKEY]['version'];
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['constraints'] = $EM_CONF[$_EXTKEY]['constraints'];
 
 	// Set path to extension static_info_tables
-if (t3lib_extMgm::isLoaded('static_info_tables')) {
+if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('static_info_tables')) {
 	if (!defined ('PATH_BE_static_info_tables')) {
-		define('PATH_BE_static_info_tables', t3lib_extMgm::extPath('static_info_tables'));
+		define('PATH_BE_static_info_tables', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('static_info_tables'));
 	}
 }
 
@@ -54,11 +54,11 @@ if (t3lib_extMgm::isLoaded('static_info_tables')) {
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['loginSecurityLevels'] = array('normal', 'rsa');
 
 	// Captcha marker hook
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['tx_srfeuserregister_pi1']['registrationProcess'][] = 'EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/captcha/class.tx_srfeuserregister_captcha.php:&tx_srfeuserregister_captcha';
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['tx_srfeuserregister_pi1']['model'][] = 'EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/captcha/class.tx_srfeuserregister_captcha.php:&tx_srfeuserregister_captcha';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['tx_srfeuserregister_pi1']['registrationProcess'][] = 'EXT:sr_feuser_register/hooks/captcha/class.tx_srfeuserregister_captcha.php:&tx_srfeuserregister_captcha';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['tx_srfeuserregister_pi1']['model'][] = 'EXT:sr_feuser_register/hooks/captcha/class.tx_srfeuserregister_captcha.php:&tx_srfeuserregister_captcha';
 	// Freecap marker hook
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['tx_srfeuserregister_pi1']['registrationProcess'][] = 'EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/freecap/class.tx_srfeuserregister_freecap.php:&tx_srfeuserregister_freecap';
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][SR_FEUSER_REGISTER_EXT]['tx_srfeuserregister_pi1']['model'][] = 'EXT:' . SR_FEUSER_REGISTER_EXT . '/hooks/freecap/class.tx_srfeuserregister_freecap.php:&tx_srfeuserregister_freecap';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['tx_srfeuserregister_pi1']['registrationProcess'][] = 'EXT:sr_feuser_register/hooks/freecap/class.tx_srfeuserregister_freecap.php:&tx_srfeuserregister_freecap';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['tx_srfeuserregister_pi1']['model'][] = 'EXT:sr_feuser_register/hooks/freecap/class.tx_srfeuserregister_freecap.php:&tx_srfeuserregister_freecap';
 
 if (TYPO3_MODE === 'BE') {
 	
@@ -74,47 +74,47 @@ if (TYPO3_MODE === 'BE') {
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['LLFile'][$theTable] = 'EXT:sr_feuser_register/Resources/Private/Language/locallang.xlf';
 		}
 
-		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_users'] = array (
+		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_users'] = array(
 			'default' => array(
 				'MENU' => 'm_default',
 				'fList' =>  'username,usergroup,name,cnum,zip,city,email,telephone,gender,uid',
-				'icon' => TRUE
+				'icon' => true
 			),
 			'ext' => array (
 				'MENU' => 'm_ext',
 				'fList' =>  'username,first_name,middle_name,last_name,title,date_of_birth,comments',
-				'icon' => TRUE
+				'icon' => true
 			),
 			'country' => array(
 				'MENU' => 'm_country',
 				'fList' =>  'username,static_info_country,zone,language',
-				'icon' => TRUE
+				'icon' => true
 			),
 			'other' => array(
 				'MENU' => 'm_other',
 				'fList' =>  'username,www,company,status,image,lastlogin,by_invitation,terms_acknowledged,is_online,module_sys_dmail_html',
-				'icon' => TRUE
+				'icon' => true
 			)
 		);
 
-		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_groups'] = array (
+		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_groups'] = array(
 			'default' => array(
 				'MENU' => 'm_default',
 				'fList' =>  'title,description',
-				'icon' => TRUE
+				'icon' => true
 			),
 			'ext' => array(
 				'MENU' => 'm_ext',
 				'fList' =>  'title,subgroup,lockToDomain,TSconfig',
-				'icon' => TRUE
+				'icon' => true
 			)
 		);
 
-		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_groups_language_overlay'] = array (
+		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_groups_language_overlay'] = array(
 			'default' => array(
 				'MENU' => 'm_default',
 				'fList' =>  'title,fe_group,sys_language_uid',
-				'icon' => TRUE
+				'icon' => true
 			)
 		);
 	}
