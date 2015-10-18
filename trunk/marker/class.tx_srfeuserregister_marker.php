@@ -1101,15 +1101,23 @@ class tx_srfeuserregister_marker {
 				}
 			}
 		}
-			// Add global markers
+
+		// Add global markers
 		$extKey = $this->controlData->getExtKey();
 		$prefixId = $this->controlData->getPrefixId();
 		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['registrationProcess'] as $classRef) {
-				$hookObj= t3lib_div::getUserObj($classRef);
+				$hookObj= \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($classRef);
 				if (method_exists($hookObj, 'addGlobalMarkers')) {
 					$hookObj->addGlobalMarkers($markerArray, $this);
 				}
+			}
+		}
+		// Add captcha markers
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['captcha'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['captcha'] as $classRef) {
+				$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($classRef);
+				$hookObj->addGlobalMarkers($markerArray, $this);
 			}
 		}
 		return $markerArray;

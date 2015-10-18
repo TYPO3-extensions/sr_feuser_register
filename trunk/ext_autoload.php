@@ -6,8 +6,6 @@
  */
 $sr_feuser_registerExtensionPath = t3lib_extMgm::extPath('sr_feuser_register');
 return array(
-	'tx_srfeuserregister_captcha' => $sr_feuser_registerExtensionPath . '/hooks/captcha/class.tx_srfeuserregister_captcha.php',
-	'tx_srfeuserregister_freecap' => $sr_feuser_registerExtensionPath . '/hooks/freecap/class.tx_srfeuserregister_freecap.php',
 	'tx_srfeuserregister_hooks_cms' => $sr_feuser_registerExtensionPath . 'hooks/class.tx_srfeuserregister_hooks_cms.php',
 	'tx_srfeuserregister_hookshandler' => $sr_feuser_registerExtensionPath . 'hooks/class.tx_srfeuserregister_hooksHandler.php',
 	'tx_srfeuserregister_pi1' => $sr_feuser_registerExtensionPath . 'pi1/class.tx_srfeuserregister_pi1.php',
