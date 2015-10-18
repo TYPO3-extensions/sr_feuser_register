@@ -806,48 +806,21 @@ class tx_srfeuserregister_data {
 								}
 								$extKey = $this->controlData->getExtKey();
 								$prefixId = $this->controlData->getPrefixId();
-								$hookClassArray = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['model'];
+								$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey][$prefixId]['model'] : array();
+								if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['captcha'])) {
+										$hookClassArray = array_merge($hookClassArray, $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['captcha']);
+								}
 								if (is_array($hookClassArray)) {
 									foreach ($hookClassArray as $classRef) {
-										$hookObj= t3lib_div::getUserObj($classRef);
-										if (
-											is_object($hookObj) &&
-											method_exists($hookObj, 'evalValues')
-										) {
-											$test = FALSE; // set it to TRUE when you test the hooks
-											$bInternal = FALSE;
-											$errorField = $hookObj->evalValues(
-												$theTable,
-												$dataArray,
-												$origArray,
-												$markContentArray,
-												$cmdKey,
-												$requiredArray,
-												$theField,
-												$cmdParts,
-												$bInternal,
-												$test, // must be set to FALSE if it is not a test
-												$this
-											);
-											if ($errorField != '') {
+										$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($classRef);
+										if (is_object($hookObj) && method_exists($hookObj, 'evalValues')) {
+											$errorField = $hookObj->evalValues($theTable, $dataArray, $theField, $cmdKey, $cmdParts);
+											if ($errorField !== '') {
 												$failureArray[] = $errorField;
 												$this->evalErrors[$theField][] = $theCmd;
-												if (!$test) {
-													$this->inError[$theField] = TRUE;
-													$failureMsg[$theField][] =
-														$this->getFailureText(
-															$theField,
-															$theCmd,
-															'evalErrors_' . $theCmd,
-															$countArray['hook'][$theCmd],
-															$cmd,
-															$bInternal
-														);
-												}
-												break;
+												$this->inError[$theField] = true;
+												$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_' . $theCmd, $countArray['hook'][$theCmd], $cmd);
 											}
-										} else {
-											debug ($classRef, 'error in the class name for the hook "model"'); // keep debug
 										}
 									}
 								}
