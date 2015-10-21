@@ -42,6 +42,11 @@
  */
 
 class tx_srfeuserregister_tca {
+
+	/**
+	 * @var string Extension name
+	 */
+	public $extensionName = 'SrFeuserRegister';
 	
 	protected $pibaseObj;
 
@@ -272,7 +277,6 @@ class tx_srfeuserregister_tca {
 	*
 	* @param array $markerArray: the input marker array
 	* @param array $cObj: the cObject
-	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
 	* @param array $row: the updated record
 	* @param array $origRow: the original record as before the updates
@@ -290,7 +294,6 @@ class tx_srfeuserregister_tca {
 		&$markerArray,
 		$conf,
 		$cObj,
-		$langObj,
 		$controlData,
 		$row,
 		$origRow,
@@ -415,7 +418,7 @@ class tx_srfeuserregister_tca {
 									$checkedCount = 0;
 									foreach($colConfig['items'] as $key => $value) {
 										$count++;
-										$label = $langObj->getLLFromString($colConfig['items'][$key][0]);
+										$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($colConfig['items'][$key][0], $this->extensionName);
 										if ($HSC) {
 											$label =
 												htmlspecialchars(
@@ -436,9 +439,9 @@ class tx_srfeuserregister_tca {
 									$colContent = $cObj->stdWrap($colContent, $listWrap);
 								} else {
 									if ($mrow[$colName]) {
-										$label = $langObj->getLL('yes');
+										$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('yes', $this->extensionName);
 									} else {
-										$label = $langObj->getLL('no');
+										$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('no', $this->extensionName);
 									}
 									if ($HSC) {
 										$label = htmlspecialchars($label, ENT_QUOTES, $charset);
@@ -451,7 +454,7 @@ class tx_srfeuserregister_tca {
 								if ($mrow[$colName] != '') {
 									$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',', $mrow[$colName]);
 									$textSchema = $theTable . '.' . $colName . '.I.';
-									$itemArray = $langObj->getItemsLL($textSchema, TRUE);
+									$itemArray = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::getItemsLL($textSchema, $this->extensionName);
 
 									if (!count($itemArray)) {
 										if ($colConfig['itemsProcFunc']) {
@@ -468,7 +471,7 @@ class tx_srfeuserregister_tca {
 										}
 
 										for ($i = 0; $i < count ($valuesArray); $i++) {
-											$label = $langObj->getLLFromString($itemKeyArray[$valuesArray[$i]][0]);
+											$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($itemKeyArray[$valuesArray[$i]][0], $this->extensionName);
 											if ($HSC) {
 												$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 											}
@@ -482,7 +485,7 @@ class tx_srfeuserregister_tca {
 								if ($mrow[$colName] != '') {
 									$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',', $mrow[$colName]);
 									$textSchema = $theTable . '.' . $colName . '.I.';
-									$itemArray = $langObj->getItemsLL($textSchema, TRUE);
+									$itemArray = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::getItemsLL($textSchema, $this->extensionName);
 
 									if (!count($itemArray)) {
 										if ($colConfig['itemsProcFunc']) {
@@ -497,7 +500,7 @@ class tx_srfeuserregister_tca {
 									if (is_array($itemArray)) {
 										$itemKeyArray = $this->getItemKeyArray($itemArray);
 										for ($i = 0; $i < count ($valuesArray); $i++) {
-											$label = $langObj->getLLFromString($itemKeyArray[$valuesArray[$i]][0]);
+											$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($itemKeyArray[$valuesArray[$i]][0], $this->extensionName);
 											if ($HSC) {
 												$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 											}
@@ -548,7 +551,7 @@ class tx_srfeuserregister_tca {
 
 							default:
 								// unsupported input type
-								$label = $langObj->getLL('unsupported');
+								$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('unsupported', $this->extensionName);
 								if ($HSC)	{
 									$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 								}
@@ -565,7 +568,7 @@ class tx_srfeuserregister_tca {
 									$valuesArray[] = $colConfig['default'];
 								}
 								$textSchema = $theTable . '.' . $colName . '.I.';
-								$itemArray = $langObj->getItemsLL($textSchema, TRUE);
+								$itemArray = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::getItemsLL($textSchema, $this->extensionName);
 								$bUseTCA = FALSE;
 								if (!count($itemArray))	{
 									if (in_array($type, array('radio', 'select')) && $colConfig['itemsProcFunc']) {
@@ -591,7 +594,7 @@ class tx_srfeuserregister_tca {
 									$colContent .= ' maxlength="' . $colConfig['max'] . '"';
 								}
 								if ($colConfig['default']) {
-									$label = $langObj->getLLFromString($colConfig['default']);
+									$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($colConfig['default'], $this->extensionName);
 									$label = htmlspecialchars($label,ENT_QUOTES,$charset);
 									$colContent .= ' value="' . $label . '"';
 								}
@@ -599,7 +602,7 @@ class tx_srfeuserregister_tca {
 								break;
 
 							case 'text':
-								$label = $langObj->getLLFromString($colConfig['default']);
+								$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($colConfig['default'], $this->extensionName);
 								$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 								$colContent = '<textarea id="' .  $this->pibaseObj->pi_getClassName($colName) . '" name="FE[' . $theTable . '][' . $colName . ']"' .
 									' title="###TOOLTIP_' . (($cmd == 'invite') ? 'INVITATION_':'') . $cObj->caseshift($colName, 'upper') . '###"' .
@@ -609,7 +612,7 @@ class tx_srfeuserregister_tca {
 								break;
 
 							case 'check':
-								$label = $langObj->getLL('tooltip_' . $colName);
+								$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('tooltip_' . $colName, $this->extensionName);
 								$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 
 								if (isset($itemArray) && is_array($itemArray)) {
@@ -630,7 +633,7 @@ class tx_srfeuserregister_tca {
 
 									foreach ($itemArray as $key => $value) {
 										$checked = ($startVal & (1 << $key)) ? ' checked="checked"' : '';
-										$label = $langObj->getLLFromString($itemArray[$key][0]);
+										$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($itemArray[$key][0], $this->extensionName);
 										$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 										$colContent .= '<li><input type="checkbox"' .
 										$this->pibaseObj->pi_classParam('checkbox', '') .
@@ -669,7 +672,7 @@ class tx_srfeuserregister_tca {
 									$i = 0;
 									foreach($itemArray as $key => $confArray) {
 										$value = $confArray[1];
-										$label = $langObj->getLLFromString($confArray[0]);
+										$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($confArray[0], $this->extensionName);
 										$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 										$itemOut = '<input type="radio"' .
 										$this->pibaseObj->pi_classParam('radio', '') .
@@ -716,7 +719,7 @@ class tx_srfeuserregister_tca {
 									$itemArray = $this->getItemKeyArray($itemArray);
 									$i = 0;
 									foreach ($itemArray as $k => $item)	{
-										$label = $langObj->getLLFromString($item[0], TRUE);
+										$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($item[0], $this->extensionName);
 										$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 										if ($colConfig['renderMode'] == 'checkbox') {
 											$colContent .= '<dt><input class="' .
@@ -853,7 +856,7 @@ class tx_srfeuserregister_tca {
 								break;
 
 							default:
-								$colContent .= $colConfig['type'] . ':' . $langObj->getLL('unsupported');
+								$colContent .= $colConfig['type'] . ':' . \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('unsupported', $this->extensionName);
 								break;
 						}
 					}
@@ -952,9 +955,3 @@ class tx_srfeuserregister_tca {
 		}
 	}	// getUsergroupOverlay
 }
-
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_tca.php'])  {
-  include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/lib/class.tx_srfeuserregister_tca.php']);
-}
-?>

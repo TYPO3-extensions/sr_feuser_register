@@ -46,12 +46,17 @@ define('SAVED_SUFFIX', '_SAVED');
 define('SETFIXED_PREFIX', 'SETFIXED_');
 
 
-class tx_srfeuserregister_marker {
+class tx_srfeuserregister_marker
+{
+	/**
+	 * @var string Extension name
+	 */
+	public $extensionName = 'SrFeuserRegister';
+
 	public $conf = array();
 	public $data;
 	public $control;
 	public $controlData;
-	public $langObj;
 	public $tca;
 	protected $pibaseObj;
 	public $previewLabel;
@@ -66,7 +71,6 @@ class tx_srfeuserregister_marker {
 		$confObj,
 		$data,
 		$tca,
-		$langObj,
 		$controlData,
 		$urlObj,
 		$uid,
@@ -76,7 +80,6 @@ class tx_srfeuserregister_marker {
 		$this->conf = $confObj->getConf();
 		$this->data = $data;
 		$this->tca = $tca;
-		$this->langObj = $langObj;
 		$this->pibaseObj = $pibaseObj;
 		$this->controlData = $controlData;
 		$theTable = $this->controlData->getTable();
@@ -227,7 +230,6 @@ class tx_srfeuserregister_marker {
 						$this->tmpTcaMarkers,
 						$conf,
 						$cObj,
-						$this->langObj,
 						$controlData,
 						$row,
 						$this->data->getOrigArray(),
@@ -366,18 +368,18 @@ class tx_srfeuserregister_marker {
 			}
 
 			if (!$bChangesOnly || $bValueChanged || in_array($theField, $keepFields)) {
-				$label = $this->langObj->getLL($theTable . '.' . $theField);
+				$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($theTable . '.' . $theField, $this->extensionName);
 				if (empty($label)) {
-					$label = $this->langObj->getLL($theField);
+					$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($theField, $this->extensionName);
 				}
-				$label = (empty($label) ? $this->langObj->getLLFromString($tcaColumns[$theField]['label']) : $label);
+				$label = (empty($label) ? \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($tcaColumns[$theField]['label'], $this->extensionName) : $label);
 				$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 			} else {
 				$label = '';
 			}
 			$markerArray['###LABEL_' . $markerkey . '###'] = $label;
-			$markerArray['###TOOLTIP_' . $markerkey . '###'] = $this->langObj->getLL('tooltip_' . $theField);
-			$label = $this->langObj->getLL('tooltip_invitation_' . $theField);
+			$markerArray['###TOOLTIP_' . $markerkey . '###'] = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('tooltip_' . $theField, $this->extensionName);
+			$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('tooltip_invitation_' . $theField, $this->extensionName);
 			$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 			$markerArray['###TOOLTIP_INVITATION_' . $markerkey . '###'] = $label;
 			$colConfig = $tcaColumns[$theField]['config'];
@@ -394,28 +396,27 @@ class tx_srfeuserregister_marker {
 						$fieldArray = t3lib_div::trimExplode(',', $row[$theField]);
 					}
 					foreach ($fieldArray as $key => $value) {
-						$label = $this->langObj->getLLFromString($colConfig['items'][$value][0]);
+						$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($colConfig['items'][$value][0], $this->extensionName);
 						$markerArray['###FIELD_' . $markerkey . '_CHECKED###'] .= '- ' . $label . '<br />';
-						$label = $this->langObj->getLLFromString($colConfig['items'][$value][0]);
 						$markerArray['###LABEL_' . $markerkey . '_CHECKED###'] .= '- ' . $label . '<br />';
 						$markerArray['###POSTVARS_' . $markerkey.'###'] .= chr(10) . '	<input type="hidden" name="FE[fe_users][' . $theField . '][' . $key . ']" value ="' . $value . '" />';
 					}
 				}
 			} else if ($colConfig['type'] == 'check') {
 				$markerArray['###FIELD_' . $markerkey . '_CHECKED###'] = ($row[$theField]) ? 'checked' : '';
-				$markerArray['###LABEL_' . $markerkey . '_CHECKED###'] = ($row[$theField]) ? $this->langObj->getLL('yes') : $this->langObj->getLL('no');
+				$markerArray['###LABEL_' . $markerkey . '_CHECKED###'] = ($row[$theField]) ? \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('yes', $this->extensionName) : \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('no', $this->extensionName);
 			}
 
 			if (in_array(trim($theField), $requiredArray)) {
-				$markerArray['###REQUIRED_' . $markerkey . '###'] = $cObj->cObjGetSingle($conf['displayRequired'], $conf['displayRequired.'], $extKey); // default: '<span>*</span>';
+				$markerArray['###REQUIRED_' . $markerkey . '###'] = $cObj->cObjGetSingle($conf['displayRequired'], $conf['displayRequired.'], $extKey);
 				$key = 'missing_' . $theField;
-				$label = $this->langObj->getLL($key);
+				$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($key, $this->extensionName);
 				if ($label == '') {
-					$label = $this->langObj->getLL('internal_no_text_found');
+					$label = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_no_text_found', $this->extensionName);
 					$label = sprintf($label, $key);
 				}
 				$markerArray['###MISSING_' . $markerkey . '###'] = $label;
-				$markerArray['###MISSING_INVITATION_' . $markerkey . '###'] = $this->langObj->getLL('missing_invitation_' . $theField);
+				$markerArray['###MISSING_INVITATION_' . $markerkey . '###'] = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('missing_invitation_' . $theField, $this->extensionName);
 			} else {
 				$markerArray['###REQUIRED_' . $markerkey . '###'] = '';
 				$markerArray['###MISSING_' . $markerkey . '###'] = '';
@@ -429,7 +430,7 @@ class tx_srfeuserregister_marker {
 		foreach($buttonLabels as $labelName) {
 			if ($labelName) {
 				$buttonKey = strtoupper($labelName);
-				$markerArray['###LABEL_BUTTON_' . $buttonKey . '###'] = $this->langObj->getLL('button_' . $labelName);
+				$markerArray['###LABEL_BUTTON_' . $buttonKey . '###'] = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('button_' . $labelName, $this->extensionName);
 				$attributes = '';
 
 				if (
@@ -512,7 +513,7 @@ class tx_srfeuserregister_marker {
 			} else {
 				$labelName = $value;
 			}
-			$langText = $this->langObj->getLL($labelName);
+			$langText = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($labelName, $this->extensionName);
 			$label = sprintf(
 				$langText,
 				$this->controlData->getPidTitle(),
@@ -718,11 +719,11 @@ class tx_srfeuserregister_marker {
 				$markerArray['###FIELD_language###'] = $this->staticInfo->getStaticInfoName('LANGUAGES',  is_array($row) ? $row['language'] : '');
 			} else {
 				$idCountry = $this->pibaseObj->pi_getClassName('static_info_country');
-				$titleCountry = $this->langObj->getLL('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'static_info_country');
+				$titleCountry = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'static_info_country', $this->extensionName);
 				$idZone = $this->pibaseObj->pi_getClassName('zone');
-				$titleZone = $this->langObj->getLL('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'zone');
+				$titleZone = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'zone', $this->extensionName);
 				$idLanguage = $this->pibaseObj->pi_getClassName('language');
-				$titleLanguage = $this->langObj->getLL('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'language');
+				$titleLanguage = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'language', $this->extensionName);
 				$selected = (is_array($row) && isset($row['static_info_country']) ? $row['static_info_country'] : array());
 				$where = '';
 				if (isset($this->conf['where.']) && is_array($this->conf['where.'])) {
@@ -780,7 +781,7 @@ class tx_srfeuserregister_marker {
 					);
 			}
 		}
-	}	// addStaticInfoMarkers
+	}
 
 	/**
 	* Adds password transmission markers
@@ -839,31 +840,31 @@ class tx_srfeuserregister_marker {
 				} else if ($bHtml) {
 					$HTMLContent .= '<a href="' . $dir . '/' . $filenameArray[$i] . '"' .
 					$this->pibaseObj->pi_classParam('file-view', '') .
-					' target="_blank" title="' . $this->langObj->getLL('file_view') . '">' . $this->langObj->getLL('file_view') . '</a><br />';
+					' target="_blank" title="' . \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('file_view', $this->extensionName) . '">' . \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('file_view', $this->extensionName) . '</a><br />';
 				}
 			}
 		} else {
 			for($i = 0; $i < sizeof($filenameArray); $i++) {
 				$HTMLContent .=
-					$filenameArray[$i] . '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="' . $prefixId . '[' . $theField . '][' . $i . '][submit_delete]" value="1" title="' . $this->langObj->getLL('icon_delete') . '" alt="' . $this->langObj->getLL('icon_delete') . '"' .
+					$filenameArray[$i] . '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="' . $prefixId . '[' . $theField . '][' . $i . '][submit_delete]" value="1" title="' . \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('icon_delete', $this->extensionName) . '" alt="' . \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('icon_delete', $this->extensionName) . '"' .
 					$this->pibaseObj->pi_classParam('delete-view', '') .
-					' onclick=\'if(confirm("' . $this->langObj->getLL('confirm_file_delete') . '")) return true; else return false;\' />'
+					' onclick=\'if(confirm("' . \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('confirm_file_delete', $this->extensionName) . '")) return true; else return false;\' />'
 					. '<a href="' . $dir . '/' . $filenameArray[$i] . '" ' .
 					$this->pibaseObj->pi_classParam('file-view', '') .
-					' target="_blank" title="' . $this->langObj->getLL('file_view') . '">' .
-					$this->langObj->getLL('file_view') . '</a><br />';
+					' target="_blank" title="' . \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('file_view', $this->extensionName) . '">' .
+					\SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('file_view', $this->extensionName) . '</a><br />';
 				$HTMLContent .= '<input type="hidden" name="' . $prefixId . '[' . $theField . '][' . $i . '][name]' . '" value="' . $filenameArray[$i] . '" />';
 			}
 			for ($i = sizeof($filenameArray); $i < $number + sizeof($filenameArray); $i++) {
 				$HTMLContent .= '<input id="' .
 				$this->pibaseObj->pi_getClassName($theField) .
-				'-' . ($i-sizeof($filenameArray)) . '" name="' . $prefixId . '[' . $theField . '][' . $i . ']" title="' . $this->langObj->getLL('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'image') . '" size="40" type="file" ' .
+				'-' . ($i-sizeof($filenameArray)) . '" name="' . $prefixId . '[' . $theField . '][' . $i . ']" title="' . \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'image', $this->extensionName) . '" size="40" type="file" ' .
 				$this->pibaseObj->pi_classParam('uploader-view', '') .
 				' /><br />';
 			}
 		}
 		return $HTMLContent;
-	}	// buildFileUploader
+	}
 
 
 	/**
@@ -924,7 +925,7 @@ class tx_srfeuserregister_marker {
 			$max_size = $fieldConfig['config']['max_size'] * 1024;
 			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="MAX_FILE_SIZE" value="' . $max_size . '" />';
 		}
-	}	// addFileUploadMarkers
+	}
 
 	/**
 	* Inserts a token for the form and stores it
@@ -1015,7 +1016,7 @@ class tx_srfeuserregister_marker {
 			$extKey,
 			$prefixId
 		);
-	}	// addHiddenFieldsMarkers
+	}
 
 
 	/**
@@ -1046,7 +1047,7 @@ class tx_srfeuserregister_marker {
 			}
 		}
 		return $templateCode;
-	}	// removeStaticInfoSubparts
+	}
 
 
 	/**
@@ -1083,12 +1084,7 @@ class tx_srfeuserregister_marker {
 		} else {
 			if (is_array($row)) {
 				foreach($row as $field => $value) {
-					$bFieldIsInt = (
-						class_exists('t3lib_utility_Math') ?
-							t3lib_utility_Math::canBeInterpretedAsInteger($field) :
-							t3lib_div::testInt($field)
-					);
-
+					$bFieldIsInt = t3lib_utility_Math::canBeInterpretedAsInteger($field);
 					if (!$bFieldIsInt) {
 						if (is_array($value)) {
 							$value = implode(',', $value);
@@ -1147,7 +1143,7 @@ class tx_srfeuserregister_marker {
 				'###TEMPLATE_INFOMAIL_SENT###',
 				'###EMAIL_TEMPLATE_INFOMAIL###',
 			);
-			$removeMarkerMessage = $GLOBALS['TSFE']->sL('LLL:EXT:' . $extKey . '/pi1/locallang.xml:internal_remove_deprecated_marker');
+			$removeMarkerMessage = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('LLL:EXT:' . $extKey . '/Resources/Private/Language/locallang.xlf:internal_remove_deprecated_marker', $this->extensionName);
 			foreach ($removeMarkers as $marker) {
 				if (strpos($templateCode, $marker) !== FALSE) {
 					$messages[] = sprintf($removeMarkerMessage, $marker, $fileName);
@@ -1174,9 +1170,9 @@ class tx_srfeuserregister_marker {
 					'replacement' => '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A_INFORMAL###',
 				),
 			);
-			$replaceMarkerMessage = $GLOBALS['TSFE']->sL('LLL:EXT:' . $extKey . '/pi1/locallang.xml:internal_replace_deprecated_marker');
+			$replaceMarkerMessage = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('LLL:EXT:' . $extKey . '/Resources/Private/Language/locallang.xlf:internal_replace_deprecated_marker', $this->extensionName);
 			foreach ($replaceMarkers as $replaceMarker) {
-				if (strpos($templateCode, $replaceMarker['marker']) !== FALSE) {
+				if (strpos($templateCode, $replaceMarker['marker']) !== false) {
 					$messages[] = sprintf($replaceMarkerMessage, $replaceMarker['marker'], $replaceMarker['replacement'], $fileName);
 				}
 			}
@@ -1184,8 +1180,3 @@ class tx_srfeuserregister_marker {
 		return $messages;
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/marker/class.tx_srfeuserregister_marker.php']) {
-  include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/marker/class.tx_srfeuserregister_marker.php']);
-}
-?>

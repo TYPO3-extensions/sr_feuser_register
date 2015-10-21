@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2014 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -43,6 +43,11 @@
 
 
 class tx_srfeuserregister_setfixed {
+	/**
+	 * @var string Extension name
+	 */
+	public $extensionName = 'SrFeuserRegister';
+
 	public $previewLabel;
 	public $setfixedEnabled;
 	public $cObj;
@@ -54,7 +59,6 @@ class tx_srfeuserregister_setfixed {
 	* Process the front end user reply to the confirmation request
 	*
 	* @param array $cObj: the cObject
-	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
 	* @param string $theTable: the table in use
 	* @param string $prefixId: the extension prefix id
@@ -64,7 +68,6 @@ class tx_srfeuserregister_setfixed {
 	public function processSetFixed (
 		$conf,
 		$cObj,
-		$langObj,
 		$controlData,
 		$tcaObj,
 		$markerObj,
@@ -130,7 +133,6 @@ class tx_srfeuserregister_setfixed {
 						$markerArray,
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$tcaObj,
 						$markerObj,
@@ -274,7 +276,6 @@ class tx_srfeuserregister_setfixed {
 						$loginSuccess =
 							$pObj->login(
 								$conf,
-								$langObj,
 								$controlData,
 								$currArr,
 								FALSE
@@ -286,7 +287,6 @@ class tx_srfeuserregister_setfixed {
 									$markerArray,
 									$conf,
 									$cObj,
-									$langObj,
 									$controlData,
 									$tcaObj,
 									$markerObj,
@@ -308,7 +308,6 @@ class tx_srfeuserregister_setfixed {
 								$displayObj->getPlainTemplate(
 									$conf,
 									$cObj,
-									$langObj,
 									$controlData,
 									$tcaObj,
 									$markerObj,
@@ -337,7 +336,6 @@ class tx_srfeuserregister_setfixed {
 							$displayObj->getPlainTemplate(
 								$conf,
 								$cObj,
-								$langObj,
 								$controlData,
 								$tcaObj,
 								$markerObj,
@@ -360,7 +358,6 @@ class tx_srfeuserregister_setfixed {
 							$displayObj->getPlainTemplate(
 								$conf,
 								$cObj,
-								$langObj,
 								$controlData,
 								$tcaObj,
 								$markerObj,
@@ -387,7 +384,6 @@ class tx_srfeuserregister_setfixed {
 							SETFIXED_PREFIX . $setfixedSuffix,
 							$conf,
 							$cObj,
-							$langObj,
 							$controlData,
 							$tcaObj,
 							$markerObj,
@@ -410,7 +406,7 @@ class tx_srfeuserregister_setfixed {
 						);
 
 						if (is_array($errorCode)) {
-							$errorText = $langObj->getLL($errorCode['0']);
+							$errorText = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($errorCode['0'], $this->extensionName);
 							$errorContent = sprintf($errorText, $errorCode['1']);
 						}
 					}
@@ -429,7 +425,6 @@ class tx_srfeuserregister_setfixed {
 								SETFIXED_PREFIX . 'REVIEW',
 								$conf,
 								$cObj,
-								$langObj,
 								$controlData,
 								$tcaObj,
 								$markerObj,
@@ -452,7 +447,7 @@ class tx_srfeuserregister_setfixed {
 							);
 
 							if (is_array($errorCode)) {
-								$errorText = $langObj->getLL($errorCode['0']);
+								$errorText = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($errorCode['0'], $this->extensionName);
 								$errorContent = sprintf($errorText, $errorCode['1']);
 							}
 						}
@@ -468,7 +463,6 @@ class tx_srfeuserregister_setfixed {
 							$loginSuccess =
 								$pObj->login(
 									$conf,
-									$langObj,
 									$controlData,
 									$currArr
 								);
@@ -480,7 +474,6 @@ class tx_srfeuserregister_setfixed {
 								$content = $displayObj->getPlainTemplate(
 									$conf,
 									$cObj,
-									$langObj,
 									$controlData,
 									$tcaObj,
 									$markerObj,
@@ -502,7 +495,6 @@ class tx_srfeuserregister_setfixed {
 				$content = $displayObj->getPlainTemplate(
 					$conf,
 					$cObj,
-					$langObj,
 					$controlData,
 					$tcaObj,
 					$markerObj,
@@ -707,8 +699,3 @@ class tx_srfeuserregister_setfixed {
 		return $regHash_calc;
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/control/class.tx_srfeuserregister_setfixed.php']) {
-  include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/control/class.tx_srfeuserregister_setfixed.php']);
-}
-?>

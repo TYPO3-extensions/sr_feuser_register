@@ -41,6 +41,11 @@
  *
  */
 class tx_srfeuserregister_control_main {
+	/**
+	 * @var string Extension name
+	 */
+	public $extensionName = 'SrFeuserRegister';
+
 	public $config = array();
 	public $incomingData = FALSE;
 	public $nc = ''; // "&no_cache=1" if you want that parameter sent.
@@ -52,7 +57,6 @@ class tx_srfeuserregister_control_main {
 	public $urlObj;
 	public $display; // object of type tx_srfeuserregister_display
 	public $email; // object of type tx_srfeuserregister_email
-	public $langObj; // object of type tx_srfeuserregister_lang
 	public $tca;  // object of type tx_srfeuserregister_tca
 	public $marker; // object of type tx_srfeuserregister_marker
 	public $pibaseObj;
@@ -89,7 +93,6 @@ class tx_srfeuserregister_control_main {
 			$this->errorMessage = '';
 			$content = $this->control->doProcessing(
 				$pibaseObj->cObj,
-				$this->langObj,
 				$this->controlData,
 				$theTable,
 				$cmd,
@@ -131,7 +134,7 @@ class tx_srfeuserregister_control_main {
 	) {
 		$cObj = $pibaseObj->cObj;
 		$this->tca = t3lib_div::getUserObj('&tx_srfeuserregister_tca');
-
+		$this->tca->extensionName = $this->extensionName;
 		// Plugin initialization
 		$this->conf = $conf;
 
@@ -171,17 +174,20 @@ class tx_srfeuserregister_control_main {
 			}
 		}
 
-		$this->langObj = t3lib_div::getUserObj('&tx_srfeuserregister_lang');
-		$this->langObj->init($pibaseObj);
 		$this->urlObj = t3lib_div::getUserObj('&tx_srfeuserregister_url');
 		$this->data = t3lib_div::getUserObj('&tx_srfeuserregister_data');
+		$this->data->extensionName = $this->extensionName;
 		$this->marker = t3lib_div::getUserObj('&tx_srfeuserregister_marker');
+		$this->marker->extensionName = $this->extensionName;
 		$this->display = t3lib_div::getUserObj('&tx_srfeuserregister_display');
 		$this->display->init($pibaseObj);
+		$this->display->extensionName = $this->extensionName;		
 		$this->setfixedObj = t3lib_div::getUserObj('&tx_srfeuserregister_setfixed');
+		$this->setfixedObj->extensionName = $this->extensionName;
 		$this->email = t3lib_div::getUserObj('&tx_srfeuserregister_email');
 		$this->email->init($pibaseObj);
 		$this->control = t3lib_div::getUserObj('&tx_srfeuserregister_control');
+		$this->control->extensionName = $this->extensionName;
 
 		$this->urlObj->init(
 			$this->controlData,
@@ -191,7 +197,6 @@ class tx_srfeuserregister_control_main {
 		$success = TRUE;
 		if ($this->controlData->isTokenValid()) {
 			$this->control->init(
-				$this->langObj,
 				$cObj,
 				$this->controlData,
 				$this->display,
@@ -207,7 +212,6 @@ class tx_srfeuserregister_control_main {
 			$this->data->init(
 				$cObj,
 				$this->conf,
-				$this->langObj,
 				$this->tca,
 				$this->control,
 				$theTable,
@@ -228,7 +232,6 @@ class tx_srfeuserregister_control_main {
 				$confObj,
 				$this->data,
 				$this->tca,
-				$this->langObj,
 				$this->controlData,
 				$this->urlObj,
 				$uid,
@@ -245,13 +248,8 @@ class tx_srfeuserregister_control_main {
 			}
 		} else {
 			$success = FALSE;
-			$this->errorMessage = $this->langObj->getLL('invalidToken');
+			$this->errorMessage = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('invalidToken', $this->extensionName);
 		}
 		return $success;
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/control/class.tx_srfeuserregister_control_main.php']) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/control/class.tx_srfeuserregister_control_main.php']);
-}
-?>

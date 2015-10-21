@@ -39,11 +39,24 @@
  *
  */
 class tx_srfeuserregister_pi1_base extends tslib_pibase {
+	/**
+	 * @var string Extension name
+	 */
+	protected $extensionName = 'SrFeuserRegister';
 
-		// Plugin initialization variables
-	public $prefixId = 'tx_srfeuserregister_pi1';		// Should be same as classname of the plugin, used for CSS classes, variables
-	public $scriptRelPath = 'pi1/class.tx_srfeuserregister_pi1_base.php'; // Path to this script relative to the extension dir.
-	public $extKey = SR_FEUSER_REGISTER_EXT;		// Extension key.
+	/**
+	 * Used for CSS classes, variables
+	 *
+	 * @var string
+	 */
+	public $prefixId = 'tx_srfeuserregister_pi1';
+
+	/**
+	 * Extension key
+	 *
+	 * @var string
+	 */
+	public $extKey = 'sr_feuser_register';
 
 	public function main ($content, $conf) {
 		$this->pi_setPiVarDefaults();
@@ -56,6 +69,7 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 		if (!$content) {
 			$mainObj = t3lib_div::getUserObj('&tx_srfeuserregister_control_main');
 			$mainObj->cObj = $this->cObj;
+			$mainObj->extensionName = $this->extensionName;
 			$content = $mainObj->main($content, $conf, $this, 'fe_users');
 		}
 		return $content;
@@ -72,9 +86,9 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 			$requiredExtensions = array_diff(array_keys($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['constraints']['depends']), array('php', 'typo3'));
 			foreach ($requiredExtensions as $requiredExtension) {
 				if (!t3lib_extMgm::isLoaded($requiredExtension)) {
-					$message = sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf:internal_required_extension_missing'), $requiredExtension);
+					$message = sprintf(\SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_required_extension_missing', $this->extensionName), $requiredExtension);
 					t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
-					$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf:internal_check_requirements_frontend'), $message);
+					$content .= sprintf(\SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_check_requirements_frontend', $this->extensionName), $message);
 				}
 			}
 		}
@@ -82,41 +96,36 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 		$supportedTransmissionSecurityLevels = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['loginSecurityLevels'];
 
 		if (!in_array($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'], $supportedTransmissionSecurityLevels)) {
-			$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf:internal_login_security_level');
+			$message = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_login_security_level', $this->extensionName);
 			t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
-			$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf:internal_check_requirements_frontend'), $message);
+			$content .= sprintf(\SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_check_requirements_frontend', $this->extensionName), $message);
 		} else {
 				// Check if salted passwords are enabled in front end
 			if (t3lib_extMgm::isLoaded('saltedpasswords')) {
 				if (!tx_saltedpasswords_div::isUsageEnabled('FE')) {
-					$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf:internal_salted_passwords_disabled');
+					$message = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_salted_passwords_disabled', $this->extensionName);
 					t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
-					$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf:internal_check_requirements_frontend'), $message);
+					$content .= sprintf(\SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_check_requirements_frontend', $this->extensionName), $message);
 				} else {
 						// Check if we can get a salting instance
 					$objSalt = tx_saltedpasswords_salts_factory::getSaltingInstance(NULL);
 					if (!is_object($objSalt)) {
-							// Could not get a salting instance from saltedpasswords
-						$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf:internal_salted_passwords_no_instance');
+						// Could not get a salting instance from saltedpasswords
+						$message = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_salted_passwords_no_instance', $this->extensionName);
 						t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
-						$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf:internal_check_requirements_frontend'), $message);
+						$content .= sprintf(\SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_check_requirements_frontend', $this->extensionName), $message);
 					}
 				}
 			}
 				// Check if we can get a backend from rsaauth
 			if (t3lib_extMgm::isLoaded('rsaauth')) {
-					// rsaauth in TYPO3 4.5 misses autoload
-				if (!class_exists('tx_rsaauth_backendfactory')) {
-					require_once(t3lib_extMgm::extPath('rsaauth') . 'sv1/backends/class.tx_rsaauth_backendfactory.php');
-					require_once(t3lib_extMgm::extPath('rsaauth') . 'sv1/storage/class.tx_rsaauth_storagefactory.php');
-				}
 				$backend = tx_rsaauth_backendfactory::getBackend();
 				$storage = tx_rsaauth_storagefactory::getStorage();
 				if (!is_object($backend) || !$backend->isAvailable() || !is_object($storage)) {
-						// Required RSA auth backend not available
-					$message = $GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf:internal_rsaauth_backend_not_available');
+					// Required RSA auth backend not available
+					$message = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_rsaauth_backend_not_available', $this->extensionName);
 					t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
-					$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf:internal_check_requirements_frontend'), $message);
+					$content .= sprintf(\SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_check_requirements_frontend', $this->extensionName), $message);
 				}
 			}
 		}
@@ -134,12 +143,8 @@ class tx_srfeuserregister_pi1_base extends tslib_pibase {
 		$messages = $marker->checkDeprecatedMarkers($templateCode, $this->extKey, $this->conf['templateFile']);
 		foreach ($messages as $message) {
 			t3lib_div::sysLog($message, $this->extKey, t3lib_div::SYSLOG_SEVERITY_ERROR);
-			$content .= sprintf($GLOBALS['TSFE']->sL('LLL:EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf:internal_check_requirements_frontend'), $message);
+			$content .= sprintf(\SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_check_requirements_frontend', $this->extensionName), $message);
 		}
 		return $content;
 	}
 }
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_base.php']) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/pi1/class.tx_srfeuserregister_pi1_base.php']);
-}
-?>

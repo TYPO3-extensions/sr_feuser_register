@@ -1,5 +1,8 @@
+2015-10-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #70920: [!!!] Use Extbase localization
+
 2015-10-18 Stanislas Rolland  <typo3(arobas)sjbr.ca>
-	* [!!!]Resolves #70822: Restructure captcha hooks
+	* Resolves #70822: [!!!] Restructure captcha hooks
 
 2015-10-14 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #70732: Move configuration files to Configuration directory

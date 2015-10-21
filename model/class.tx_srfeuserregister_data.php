@@ -41,8 +41,12 @@
  *
  */
 class tx_srfeuserregister_data {
+	/**
+	 * @var string Extension name
+	 */
+	public $extensionName = 'SrFeuserRegister';
+
 	public $conf = array();
-	public $lang;
 	public $tca;
 	public $freeCap; // object of type tx_srfreecap_pi2
 	public $controlData;
@@ -68,14 +72,12 @@ class tx_srfeuserregister_data {
 	public function init (
 		$cObj,
 		$conf,
-		$lang,
 		$tca,
 		$control,
 		$theTable,
 		$controlData
 	) {
 		$this->conf = $conf;
-		$this->lang = $lang;
 		$this->tca = $tca;
 		$this->control = $control;
 		$this->controlData = $controlData;
@@ -322,7 +324,6 @@ class tx_srfeuserregister_data {
 	* @param string  $label: a default error message provided by the invoking function
 	* @param integer $orderNo: ordered number of the rule for the field (>0 if used)
 	* @param string  $param: parameter for the error message
-	* @param boolean $bInternal: if the bug is caused by an internal problem
 	* @return string  the error message to be displayed
 	*/
 	public function getFailureText (
@@ -330,8 +331,7 @@ class tx_srfeuserregister_data {
 		$theRule,
 		$label,
 		$orderNo = '',
-		$param = '',
-		$bInternal = FALSE
+		$param = ''
 	) {
  		if (
 			$orderNo != '' &&
@@ -341,11 +341,7 @@ class tx_srfeuserregister_data {
 			$count = 0;
 
 			foreach ($this->conf['evalErrors.'][$theField . '.'][$theRule . '.'] as $k => $v) {
-				$bKIsInt = (
-					class_exists('t3lib_utility_Math') ?
-						t3lib_utility_Math::canBeInterpretedAsInteger($k) :
-						t3lib_div::testInt($k)
-				);
+				$bKIsInt = t3lib_utility_Math::canBeInterpretedAsInteger($k);
 
 				if ($bInternal) {
 					if ($k == 'internal') {
@@ -374,12 +370,12 @@ class tx_srfeuserregister_data {
 				$internalPostfix = ($bInternal ? '_internal' : '');
 				if ($theRule) {
 					$labelname = 'evalErrors_' . $theRule . '_' . $theField . $internalPostfix;
-					$failureLabel = $this->lang->getLL($labelname);
-					$failureLabel = $failureLabel ? $failureLabel : $this->lang->getLL('evalErrors_' . $theRule . $internalPostfix);
+					$failureLabel = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($labelname, $this->extensionName);
+					$failureLabel = $failureLabel ?: \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('evalErrors_' . $theRule . $internalPostfix, $this->extensionName);
 				}
-				if (!$failureLabel) { // this remains only for compatibility reasons
+				if (!$failureLabel) {
 					$labelname = $label;
-					$failureLabel = $this->lang->getLL($labelname);
+					$failureLabel = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($labelname, $this->extensionName);
 				}
 			}
 		}
@@ -389,7 +385,7 @@ class tx_srfeuserregister_data {
 		}
 
 		return $failureLabel;
-	}	// getFailureText
+	}
 
 
 	/**
@@ -781,20 +777,10 @@ class tx_srfeuserregister_data {
 									$matches = array();
 									$test = preg_match($pattern, $dataArray[$theField], $matches);
 
-									if ($test === FALSE || $test == 0) {
-										$failureArray[] = $theField;
-										$this->inError[$theField] = TRUE;
-										$this->evalErrors[$theField][] = $theCmd;
-										$failureMsg[$theField][] =
-											$this->getFailureText(
-												$theField,
-												$theCmd,
-												'evalErrors_' . $theCmd,
-												$countArray['preg'][$theCmd],
-												$cmd,
-												($test === FALSE)
-											);
-									}
+									$failureArray[] = $theField;
+									$this->inError[$theField] = TRUE;
+									$this->evalErrors[$theField][] = $theCmd;
+									$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_' . $theCmd, $countArray['preg'][$theCmd], $cmd);
 								}
 							break;
 							case 'hook':
@@ -810,17 +796,15 @@ class tx_srfeuserregister_data {
 								if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['captcha'])) {
 										$hookClassArray = array_merge($hookClassArray, $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['captcha']);
 								}
-								if (is_array($hookClassArray)) {
-									foreach ($hookClassArray as $classRef) {
-										$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($classRef);
-										if (is_object($hookObj) && method_exists($hookObj, 'evalValues')) {
-											$errorField = $hookObj->evalValues($theTable, $dataArray, $theField, $cmdKey, $cmdParts);
-											if ($errorField !== '') {
-												$failureArray[] = $errorField;
-												$this->evalErrors[$theField][] = $theCmd;
-												$this->inError[$theField] = true;
-												$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_' . $theCmd, $countArray['hook'][$theCmd], $cmd);
-											}
+								foreach ($hookClassArray as $classRef) {
+									$hookObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($classRef);
+									if (is_object($hookObj) && method_exists($hookObj, 'evalValues')) {
+										$errorField = $hookObj->evalValues($theTable, $dataArray, $theField, $cmdKey, $cmdParts);
+										if ($errorField !== '') {
+											$failureArray[] = $errorField;
+											$this->evalErrors[$theField][] = $theCmd;
+											$this->inError[$theField] = true;
+											$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_' . $theCmd, $countArray['hook'][$theCmd], $cmd);
 										}
 									}
 								}
@@ -2018,9 +2002,3 @@ class tx_srfeuserregister_data {
 		}
 	}
 }
-
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_data.php']) {
-  include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_data.php']);
-}
-?>

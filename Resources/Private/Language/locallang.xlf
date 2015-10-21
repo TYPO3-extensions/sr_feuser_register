@@ -3,21 +3,6 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2015-10-13T20:54:21Z" product-name="sr_feuser_register">
 		<header/>
 		<body>
-			<trans-unit id="fe_user_register" xml:space="preserve">
-				<source>Front End User Registration</source>
-			</trans-unit>
-			<trans-unit id="m_default" xml:space="preserve">
-				<source>default</source>
-			</trans-unit>
-			<trans-unit id="m_ext" xml:space="preserve">
-				<source>extended</source>
-			</trans-unit>
-			<trans-unit id="m_country" xml:space="preserve">
-				<source>country</source>
-			</trans-unit>
-			<trans-unit id="m_other" xml:space="preserve">
-				<source>other</source>
-			</trans-unit>
 			<trans-unit id="invalidToken" xml:space="preserve">
 				<source>Apparently, this link has expired.</source>
 			</trans-unit>

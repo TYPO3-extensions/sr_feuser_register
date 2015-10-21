@@ -293,3 +293,6 @@ plugin.tx_srfeuserregister_pi1 {
 	_DEFAULT_PI_VARS {
 	}
 }
+plugin.tx_srfeuserregister.settings {
+		salutation = {$plugin.tx_srfeuserregister_pi1.salutation}
+}
