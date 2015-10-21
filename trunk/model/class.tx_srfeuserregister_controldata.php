@@ -26,18 +26,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Part of the sr_feuser_register (Front End User Registration) extension.
- *
- * control data store functions
- *
- * $Id$
- *
- * @author	Franz Holzinger <franz@ttproducts.de>
- *
- * @package TYPO3
- * @subpackage sr_feuser_register
- *
- *
+ * Control data store functions
  */
 
 define ('MODE_NORMAL', '0');
@@ -67,10 +56,21 @@ class tx_srfeuserregister_controldata {
 	public $regHash;
 		// Whether the token was found valid
 	protected $isTokenValid = FALSE;
-		// Transmission security object
+
+	/**
+	 * Transmission security object
+	 *
+	 * @var \SJBR\SrFeuserRegister\Security\TransmissionSecurity;
+	 */
 	protected $transmissionSecurity;
-		// Storage security object
+	
+	/**
+	 * Storage security object
+	 *
+	 * @var \SJBR\SrFeuserRegister\Security\StorageSecurity;
+	 */
 	protected $storageSecurity;
+
 		// Supported captcha extensions
 	protected $captchaExtensions = array(
 		array(
@@ -108,11 +108,7 @@ class tx_srfeuserregister_controldata {
 			// Initialize array of installed captcha extensions
 		$this->setCaptchaExtensions();
 
-		$bSysLanguageUidIsInt = (
-			class_exists('t3lib_utility_Math') ?
-				t3lib_utility_Math::canBeInterpretedAsInteger($GLOBALS['TSFE']->config['config']['sys_language_uid']) :
-				t3lib_div::testInt($GLOBALS['TSFE']->config['config']['sys_language_uid'])
-		);
+		$bSysLanguageUidIsInt = t3lib_utility_Math::canBeInterpretedAsInteger($GLOBALS['TSFE']->config['config']['sys_language_uid']);
 		$this->sys_language_content = ($bSysLanguageUidIsInt ? $GLOBALS['TSFE']->config['config']['sys_language_uid'] : 0);
 
 			// set the title language overlay
@@ -353,12 +349,12 @@ class tx_srfeuserregister_controldata {
 	/**
 	 * Gets the transmission security object
 	 *
-	 * @return tx_srfeuserregister_transmission_security the transmission security object
+	 * @return \SJBR\SrFeuserRegister\Security\TransmissionSecurity the transmission security object
 	 */
-	public function getTransmissionSecurity () {
+	public function getTransmissionSecurity()
+	{
 		if (!is_object($this->transmissionSecurity)) {
-			/* tx_srfeuserregister_transmission_security */
-			$this->transmissionSecurity = t3lib_div::getUserObj('&tx_srfeuserregister_transmission_security');
+			$this->transmissionSecurity = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\Security\\TransmissionSecurity');
 		}
 		return $this->transmissionSecurity;
 	}
@@ -366,12 +362,12 @@ class tx_srfeuserregister_controldata {
 	/**
 	 * Gets the storage security object
 	 *
-	 * @return tx_srfeuserregister_transmission_security the storage security object
+	 * @return \SJBR\SrFeuserRegister\Security\StorageSecurity the storage security object
 	 */
-	public function getStorageSecurity () {
+	public function getStorageSecurity()
+	{
 		if (!is_object($this->storageSecurity)) {
-			/* tx_srfeuserregister_storage_security */
-			$this->storageSecurity = t3lib_div::getUserObj('&tx_srfeuserregister_storage_security');
+			$this->storageSecurity = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\Security\\StorageSecurity');
 		}
 		return $this->storageSecurity;
 	}
@@ -794,11 +790,7 @@ class tx_srfeuserregister_controldata {
 			is_array($conf['conf.'][$theTable . '.']) &&
 			isset($conf['conf.'][$theTable . '.'][$theCode . '.']) &&
 			is_array($conf['conf.'][$theTable . '.'][$theCode . '.']) &&
-			(
-				class_exists('t3lib_utility_Math') ?
-					t3lib_utility_Math::canBeInterpretedAsInteger($conf['conf.'][$theTable . '.'][$theCode . '.']['sys_language_uid']) :
-					t3lib_div::testInt($conf['conf.'][$theTable . '.'][$theCode . '.']['sys_language_uid'])
-			)
+			t3lib_utility_Math::canBeInterpretedAsInteger($conf['conf.'][$theTable . '.'][$theCode . '.']['sys_language_uid'])
 		)	{
 			$rc = $conf['conf.'][$theTable . '.'][$theCode . '.']['sys_language_uid'];
 		} else {

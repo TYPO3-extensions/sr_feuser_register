@@ -25,6 +25,7 @@ namespace SJBR\SrFeuserRegister\Reports;
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 use TYPO3\CMS\Saltedpasswords\Utility\SaltedPasswordsUtility;
@@ -34,6 +35,11 @@ use TYPO3\CMS\Saltedpasswords\Utility\SaltedPasswordsUtility;
  */
 class StatusProvider implements StatusProviderInterface
 {
+	/**
+	 * @var string Extension name
+	 */
+	protected $extensionName = 'SrFeuserRegister';
+
 	/**
 	 * Compiles a collection of system status checks as a status report.
 	 *
@@ -57,8 +63,7 @@ class StatusProvider implements StatusProviderInterface
 	 */
 	protected function checkIfRequiredExtensionsAreInstalled()
 	{
-		$languageService = $this->getLanguageService();
-		$title = $languageService->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:Required_extensions_not_installed');
+		$title = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:Required_extensions_not_installed', $this->extensionName);
 		$missingExtensions = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['constraints']['depends'])) {
 			$requiredExtensions = array_diff(array_keys($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['constraints']['depends']), array('php', 'typo3'));
@@ -69,11 +74,11 @@ class StatusProvider implements StatusProviderInterface
 			}
 		}
 		if (count($missingExtensions)) {
-			$value = $languageService->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:keys') . ' ' . implode(', ', $missingExtensions);
-			$message = $languageService->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:install');
+			$value = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:keys', $this->extensionName) . ' ' . implode(', ', $missingExtensions);
+			$message = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:install', $this->extensionName);
 			$status = Status::ERROR;
 		} else {
-			$value = $languageService->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:none');
+			$value = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:none', $this->extensionName);
 			$message = '';
 			$status = Status::OK;
 		}
@@ -87,8 +92,7 @@ class StatusProvider implements StatusProviderInterface
 	 */
 	protected function checkIfNoConflictingExtensionIsInstalled()
 	{
-		$languageService = $this->getLanguageService();
-		$title = $languageService->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:Conflicting_extensions_installed');
+		$title = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:Conflicting_extensions_installed', $this->extensionName);
 		$conflictingExtensions = array();
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['constraints']['conflicts'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['constraints']['conflicts'] as $extensionKey => $version) {
@@ -98,11 +102,11 @@ class StatusProvider implements StatusProviderInterface
 			}
 		}
 		if (count($conflictingExtensions)) {
-			$value = $languageService->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:keys') . ' ' . implode(', ', $conflictingExtensions);
-			$message = $languageService->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:uninstall');
+			$value = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:keys', $this->extensionName) . ' ' . implode(', ', $conflictingExtensions);
+			$message = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:uninstall', $this->extensionName);
 			$status = Status::ERROR;
 		} else {
-			$value = $languageService->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:none');
+			$value = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:none', $this->extensionName);
 			$message = '';
 			$status = Status::OK;
 		}
@@ -116,12 +120,11 @@ class StatusProvider implements StatusProviderInterface
 	 */
 	protected function checkIfFrontEndLoginSecurityLevelIsCorrectlySet()
 	{
-		$languageService = $this->getLanguageService();
-		$title = $languageService->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:Front_end_login_security_level');
+		$title = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:Front_end_login_security_level', $this->extensionName);
 		$supportedTransmissionSecurityLevels = array('normal', 'rsa');
 		if (!in_array($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'], $supportedTransmissionSecurityLevels)) {
 			$value = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
-			$message = $languageService->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:must_be_normal_or_rsa');
+			$message = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:must_be_normal_or_rsa', $this->extensionName);
 			$status = Status::ERROR;
 		} else {
 			$value = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
@@ -138,25 +141,16 @@ class StatusProvider implements StatusProviderInterface
 	 */
 	protected function checkIfSaltedPasswordsAreEnabledInFrontEnd()
 	{
-		$languageService = $this->getLanguageService();
-		$title = $languageService->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:Salted_passwords_in_front_end');
+		$title = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:Salted_passwords_in_front_end', $this->extensionName);
 		if (!ExtensionManagementUtility::isLoaded('saltedpasswords') || !SaltedPasswordsUtility::isUsageEnabled('FE')) {
-			$value = $languageService->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:disabled');
-			$message = $languageService->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:salted_passwords_must_be_enabled');
+			$value = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:disabled', $this->extensionName);
+			$message = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:salted_passwords_must_be_enabled', $this->extensionName);
 			$status = Status::ERROR;
 		} else {
-			$value = $languageService->sL('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:enabled');
+			$value = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:enabled', $this->extensionName);
 			$message = '';
 			$status = Status::OK;
 		}
 		return GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status', $title, $value, $message, $status);
 	}
-
-    /**
-     * @return LanguageService
-     */
-    protected function getLanguageService()
-    {
-        return $GLOBALS['LANG'];
-    }
 }

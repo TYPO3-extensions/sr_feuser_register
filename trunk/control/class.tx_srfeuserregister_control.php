@@ -42,7 +42,11 @@
  */
 
 class tx_srfeuserregister_control {
-	public $langObj;
+	/**
+	 * @var string Extension name
+	 */
+	public $extensionName = 'SrFeuserRegister';
+
 	public $confObj;
 	public $display;
 	public $data;
@@ -58,7 +62,6 @@ class tx_srfeuserregister_control {
 
 
 	public function init (
-		$langObj,
 		$cObj,
 		$controlData,
 		$display,
@@ -71,7 +74,6 @@ class tx_srfeuserregister_control {
 		$pibaseObj
 	) {
 		
-		$this->langObj = $langObj;
 		$this->display = $display;
 		$this->marker = $marker;
 		$this->email = $email;
@@ -287,7 +289,6 @@ class tx_srfeuserregister_control {
 	*/
 	public function doProcessing (
 		$cObj,
-		$langObj,
 		$controlData,
 		$theTable,
 		$cmd,
@@ -298,16 +299,16 @@ class tx_srfeuserregister_control {
 		&$error_message
 	) {
 		$conf = $this->confObj->getConf();
-
 		$prefixId = $controlData->getPrefixId();
 		$controlData->setMode(MODE_NORMAL);
+		$finalDataArray = array();
+		$securedArray = array();
 
-			// Commands with which the data will not be saved by $this->data->save
+		// Commands with which the data will not be saved by $this->data->save
 		$noSaveCommands = array('infomail', 'login', 'delete');
 		$uid = $this->data->getRecUid();
 
-		$securedArray = array();
-			// Check for valid token
+		// Check for valid token
 		if (
 			!$controlData->isTokenValid() ||
 			(
@@ -325,7 +326,8 @@ class tx_srfeuserregister_control {
 			$this->data->resetDataArray();
 			$finalDataArray = $dataArray;
 		} else if ($this->data->bNewAvailable()) {
-			if ($theTable == 'fe_users') {
+			$finalDataArray = $dataArray;
+			if ($theTable === 'fe_users') {
 				$securedArray = $controlData->readSecuredArray();
 			}
 			\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($finalDataArray, $securedArray);
@@ -348,17 +350,13 @@ class tx_srfeuserregister_control {
 
 		$markerArray = $this->marker->getArray();
 
-			// Evaluate incoming data
-		if (is_array($finalDataArray) && count($finalDataArray) && !in_array($cmd, $noSaveCommands)) {
+		// Evaluate incoming data
+		if (!empty($finalDataArray) && !in_array($cmd, $noSaveCommands)) {
 			$this->data->setName($finalDataArray, $cmdKey, $theTable);
 			$this->data->parseValues($theTable, $finalDataArray, $origArray, $cmdKey);
 			$this->data->overrideValues($finalDataArray, $cmdKey);
 
-			if (
-				$bSubmit ||
-				$bDoNotSave ||
-				$controlData->getFeUserData('linkToPID')
-			) {
+			if ($bSubmit || $bDoNotSave || $controlData->getFeUserData('linkToPID')) {
 					// A button was clicked on
 				$evalErrors = $this->data->evalValues(
 					$theTable,
@@ -368,7 +366,8 @@ class tx_srfeuserregister_control {
 					$cmdKey,
 					$controlData->getRequiredArray()
 				);
-					// If the two password fields are not equal, clear session data
+
+				// If the two password fields are not equal, clear session data
 				if (
 					is_array($evalErrors['password']) &&
 					in_array('twice', $evalErrors['password'])
@@ -557,7 +556,6 @@ class tx_srfeuserregister_control {
 				$this->display->afterSave(
 					$conf,
 					$cObj,
-					$langObj,
 					$controlData,
 					$this->tca,
 					$this->marker,
@@ -588,7 +586,6 @@ class tx_srfeuserregister_control {
 						SETFIXED_PREFIX . 'REVIEW',
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$this->tca,
 						$this->marker,
@@ -630,7 +627,6 @@ class tx_srfeuserregister_control {
 						$key,
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$this->tca,
 						$this->marker,
@@ -654,7 +650,7 @@ class tx_srfeuserregister_control {
 				}
 
 				if (is_array($errorCode)) {
-					$errorText = $langObj->getLL($errorCode['0']);
+					$errorText = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($errorCode['0'], $this->extensionName);
 					$errorContent = sprintf($errorText, $errorCode['1']);
 				}
 			}
@@ -683,7 +679,6 @@ class tx_srfeuserregister_control {
 					$loginSuccess =
 						$this->login(
 							$conf,
-							$langObj,
 							$controlData,
 							$finalDataArray
 						);
@@ -742,7 +737,6 @@ class tx_srfeuserregister_control {
 					$content = $this->setfixedObj->processSetFixed(
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$this->tca,
 						$this->marker,
@@ -779,7 +773,6 @@ class tx_srfeuserregister_control {
 					$content = $this->email->sendInfo(
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$this->tca,
 						$this->marker,
@@ -799,7 +792,7 @@ class tx_srfeuserregister_control {
 					);
 
 					if (is_array($errorCode)) {
-						$content = $langObj->getLL($errorCode['0']);
+						$content = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate($errorCode['0'], $this->extensionName);
 					}
 					break;
 				case 'delete':
@@ -812,7 +805,6 @@ class tx_srfeuserregister_control {
 						$markerArray,
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$this->tca,
 						$this->marker,
@@ -835,7 +827,6 @@ class tx_srfeuserregister_control {
 						$markerArray,
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$this->tca,
 						$this->marker,
@@ -864,7 +855,6 @@ class tx_srfeuserregister_control {
 						$markerArray,
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$this->tca,
 						$this->marker,
@@ -894,7 +884,6 @@ class tx_srfeuserregister_control {
 						$markerArray,
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$this->tca,
 						$this->marker,
@@ -942,7 +931,6 @@ class tx_srfeuserregister_control {
 	 */
 	public function login (
 		$conf,
-		$langObj,
 		$controlData,
 		array $row,
 		$redirect = TRUE
@@ -1006,8 +994,8 @@ class tx_srfeuserregister_control {
 					$result = FALSE;
 				}
 			} else {
-					// Required authentication service not available
-				$message = $langObj->getLL('internal_required_authentication_service_not_available');
+				// Required authentication service not available
+				$message = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_required_authentication_service_not_available', $this->extensionName);
 				t3lib_div::sysLog($message, $controlData->getExtKey(), t3lib_div::SYSLOG_SEVERITY_ERROR);
 				$controlData->clearSessionData(FALSE);
 				$result = FALSE;
@@ -1021,10 +1009,3 @@ class tx_srfeuserregister_control {
 		return $result;
 	}
 }
-
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/control/class.tx_srfeuserregister_control.php']) {
-  include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/control/class.tx_srfeuserregister_control.php']);
-}
-
-?>

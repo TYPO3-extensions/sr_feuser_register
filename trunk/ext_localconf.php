@@ -60,7 +60,6 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['captcha'][] = 'SJBR\\SrFeuserR
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['captcha'][] = 'SJBR\\SrFeuserRegister\\Captcha\\Freecap';
 
 if (TYPO3_MODE === 'BE') {
-	// Add Status Report
 	// Take note of conflicting extensions
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['constraints'] = $EM_CONF['sr_feuser_register']['constraints'];
 	// Register Status Report Hook
@@ -69,9 +68,8 @@ if (TYPO3_MODE === 'BE') {
 	if (!defined($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_users']['MENU'])) {
 		$tableArray = array('fe_users', 'fe_groups', 'fe_groups_language_overlay');
 		foreach ($tableArray as $theTable) {
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['LLFile'][$theTable] = 'EXT:sr_feuser_register/Resources/Private/Language/locallang.xlf';
+			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['LLFile'][$theTable] = 'EXT:sr_feuser_register/Resources/Private/Language/locallang_db_layout.xlf';
 		}
-
 		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_users'] = array(
 			'default' => array(
 				'MENU' => 'm_default',
@@ -94,7 +92,6 @@ if (TYPO3_MODE === 'BE') {
 				'icon' => true
 			)
 		);
-
 		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_groups'] = array(
 			'default' => array(
 				'MENU' => 'm_default',
@@ -107,7 +104,6 @@ if (TYPO3_MODE === 'BE') {
 				'icon' => true
 			)
 		);
-
 		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['cms']['db_layout']['addTables']['fe_groups_language_overlay'] = array(
 			'default' => array(
 				'MENU' => 'm_default',

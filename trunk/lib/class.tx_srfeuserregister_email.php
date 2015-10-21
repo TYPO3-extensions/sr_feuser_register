@@ -67,7 +67,6 @@ class tx_srfeuserregister_email {
 	* Sends info mail to subscriber or displays a screen to update or delete the membership
 	*
 	* @param array $cObj: the cObject
-	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
 	* @param array $controlData: the object of the control data
 	* @param string $theTable: the table in use
@@ -79,7 +78,6 @@ class tx_srfeuserregister_email {
 	public function sendInfo (
 		$conf,
 		$cObj,
-		$langObj,
 		$controlData,
 		$tcaObj,
 		$markerObj,
@@ -126,7 +124,6 @@ class tx_srfeuserregister_email {
 						'INFOMAIL',
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$tcaObj,
 						$markerObj,
@@ -153,7 +150,6 @@ class tx_srfeuserregister_email {
 						'INFOMAIL_NORECORD',
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$tcaObj,
 						$markerObj,
@@ -184,7 +180,6 @@ class tx_srfeuserregister_email {
 						$displayObj->getPlainTemplate(
 							$conf,
 							$cObj,
-							$langObj,
 							$controlData,
 							$tcaObj,
 							$markerObj,
@@ -206,7 +201,6 @@ class tx_srfeuserregister_email {
 							$displayObj->getPlainTemplate(
 								$conf,
 								$cObj,
-								$langObj,
 								$controlData,
 								$tcaObj,
 								$markerObj,
@@ -233,7 +227,6 @@ class tx_srfeuserregister_email {
 					$displayObj->getPlainTemplate(
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$tcaObj,
 						$markerObj,
@@ -263,7 +256,6 @@ class tx_srfeuserregister_email {
 	*
 	* @param string  $key: template key
 	* @param array $cObj: the cObject
-	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
 	* @param string $theTable: the table in use
 	* @param string $prefixId: the extension prefix id
@@ -278,7 +270,6 @@ class tx_srfeuserregister_email {
 		$key,
 		$conf,
 		$cObj,
-		$langObj,
 		$controlData,
 		$tcaObj,
 		$markerObj,
@@ -589,7 +580,6 @@ class tx_srfeuserregister_email {
 					$fieldMarkerArray,
 					$conf,
 					$cObj,
-					$langObj,
 					$controlData,
 					$row,
 					$origRow,
@@ -673,11 +663,7 @@ class tx_srfeuserregister_email {
 			$content['adminhtml']['final'] = str_replace('\n', '', $content['adminhtml']['final']);
 		}
 
-		$bRecipientIsInt = (
-			class_exists('t3lib_utility_Math') ?
-				t3lib_utility_Math::canBeInterpretedAsInteger($recipient) :
-				t3lib_div::testInt($recipient)
-		);
+		$bRecipientIsInt = t3lib_utility_Math::canBeInterpretedAsInteger($recipient);
 		if ($bRecipientIsInt) {
 			$fe_userRec = $GLOBALS['TSFE']->sys_page->getRawRecord('fe_users', $recipient);
 			$recipient = $fe_userRec['email'];

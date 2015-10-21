@@ -43,6 +43,10 @@
 
 
 class tx_srfeuserregister_display {
+	/**
+	 * @var string Extension name
+	 */
+	public $extensionName = 'SrFeuserRegister';
 	
 	protected $pibaseObj;
 
@@ -53,8 +57,6 @@ class tx_srfeuserregister_display {
 	/**
 	* Displays the record update form
 	*
-	* @param array $cObj: the cObject
-	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
 	* @param array  $origArray: the array coming from the database
 	* @param array  $errorFieldArray: array of field with errors (former $dataObj->inError[$theField])
@@ -64,7 +66,6 @@ class tx_srfeuserregister_display {
 		&$markerArray,
 		$conf,
 		$cObj,
-		$langObj,
 		$controlData,
 		$tcaObj,
 		$markerObj,
@@ -144,7 +145,6 @@ class tx_srfeuserregister_display {
 			$markerArray,
 			$conf,
 			$cObj,
-			$langObj,
 			$controlData,
 			$currentArray,
 			$origArray,
@@ -158,7 +158,6 @@ class tx_srfeuserregister_display {
 			$markerArray,
 			$conf,
 			$cObj,
-			$langObj,
 			$controlData,
 			$currentArray,
 			$origArray,
@@ -269,7 +268,6 @@ class tx_srfeuserregister_display {
 	* or the first link display to create or edit someone's data
 	*
 	* @param array $cObj: the cObject
-	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
 	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
 	* @return string  the template with substituted markers
@@ -278,7 +276,6 @@ class tx_srfeuserregister_display {
 		&$markerArray,
 		$conf,
 		$cObj,
-		$langObj,
 		$controlData,
 		$tcaObj,
 		$markerObj,
@@ -381,7 +378,6 @@ class tx_srfeuserregister_display {
 				$markerArray,
 				$conf,
 				$cObj,
-				$langObj,
 				$controlData,
 				$dataArray,
 				$origArray,
@@ -483,7 +479,6 @@ class tx_srfeuserregister_display {
 	* Checks if the edit form may be displayed; if not, a link to login
 	*
 	* @param array $cObj: the cObject
-	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
 	* @param array  $errorFieldArray: array of field with errors (former $this->data->inError[$theField])
 	* @return string  the template with substituted markers
@@ -492,7 +487,6 @@ class tx_srfeuserregister_display {
 		&$markerArray,
 		$conf,
 		$cObj,
-		$langObj,
 		$controlData,
 		$tcaObj,
 		$markerObj,
@@ -569,7 +563,6 @@ class tx_srfeuserregister_display {
 						$markerArray,
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$tcaObj,
 						$markerObj,
@@ -589,7 +582,6 @@ class tx_srfeuserregister_display {
 					$content = $this->getPlainTemplate(
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$tcaObj,
 						$markerObj,
@@ -609,7 +601,6 @@ class tx_srfeuserregister_display {
 				$content = $this->getPlainTemplate(
 					$conf,
 					$cObj,
-					$langObj,
 					$controlData,
 					$tcaObj,
 					$markerObj,
@@ -625,7 +616,7 @@ class tx_srfeuserregister_display {
 				);
 			}
 		} else {
-			$content .= $langObj->getLL('internal_edit_option');
+			$content .= \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_edit_option', $this->extensionName);
 		}
 
 		return $content;
@@ -635,7 +626,6 @@ class tx_srfeuserregister_display {
 	* This is basically the preview display of delete
 	*
 	* @param array $cObj: the cObject
-	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
 	* @return string  the template with substituted markers
 	*/
@@ -643,7 +633,6 @@ class tx_srfeuserregister_display {
 		$markerArray,
 		$conf,
 		$cObj,
-		$langObj,
 		$controlData,
 		$tcaObj,
 		$markerObj,
@@ -703,7 +692,6 @@ class tx_srfeuserregister_display {
 						$content = $this->getPlainTemplate(
 							$conf,
 							$cObj,
-							$langObj,
 							$controlData,
 							$tcaObj,
 							$markerObj,
@@ -722,7 +710,6 @@ class tx_srfeuserregister_display {
 						$content = $this->getPlainTemplate(
 							$conf,
 							$cObj,
-							$langObj,
 							$controlData,
 							$tcaObj,
 							$markerObj,
@@ -744,7 +731,6 @@ class tx_srfeuserregister_display {
 					$content = $this->getPlainTemplate(
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$tcaObj,
 						$markerObj,
@@ -762,7 +748,6 @@ class tx_srfeuserregister_display {
 					$content = $this->getPlainTemplate(
 						$conf,
 						$cObj,
-						$langObj,
 						$controlData,
 						$tcaObj,
 						$markerObj,
@@ -788,7 +773,6 @@ class tx_srfeuserregister_display {
 	* Initializes a template, filling values for data and labels
 	*
 	* @param array $cObj: the cObject
-	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
 	* @param string  $subpartMarker: the template subpart marker
 	* @param array  $row: the data array, if any
@@ -797,7 +781,6 @@ class tx_srfeuserregister_display {
 	public function getPlainTemplate (
 		$conf,
 		$cObj,
-		$langObj,
 		$controlData,
 		$tcaObj,
 		$markerObj,
@@ -853,7 +836,6 @@ class tx_srfeuserregister_display {
 				$markerArray,
 				$conf,
 				$cObj,
-				$langObj,
 				$controlData,
 				$row,
 				$origArray,
@@ -898,12 +880,11 @@ class tx_srfeuserregister_display {
 					$deleteUnusedMarkers
 				);
 		} else if ($bCheckEmpty) {
-			$langObj = t3lib_div::getUserObj('&tx_srfeuserregister_lang');
-			$errorText = $langObj->getLL('internal_no_subtemplate');
+			$errorText = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_no_subtemplate', $this->extensionName);
 			$result = sprintf($errorText, $subpartMarker);
 		}
 		return $result;
-	}	// getPlainTemplate
+	}
 
 	/**
 	* Removes required and error sub-parts when there are no errors
@@ -1119,7 +1100,6 @@ class tx_srfeuserregister_display {
 	* You're able to include the saved values by markers.
 	*
 	* @param array $cObj: the cObject
-	* @param array $langObj: the language object
 	* @param array $controlData: the object of the control data
 	* @param string $theTable: the table in use
 	* @param string  $subpartMarker: the template subpart marker
@@ -1130,7 +1110,6 @@ class tx_srfeuserregister_display {
 	public function afterSave (
 		$conf,
 		$cObj,
-		$langObj,
 		$controlData,
 		$tcaObj,
 		$markerObj,
@@ -1154,7 +1133,7 @@ class tx_srfeuserregister_display {
 			// Display confirmation message
 		$subpartMarker = '###TEMPLATE_' . $key . '###';
 		$templateCode = $cObj->getSubpart($templateCode, $subpartMarker);
-		$dataArray = is_array($dataArray) ? $$dataArray : array();
+		$dataArray = is_array($dataArray) ? $dataArray : array();
 		if ($templateCode) {
 				// Remove non-included fields
 			$templateCode =
@@ -1186,7 +1165,6 @@ class tx_srfeuserregister_display {
 				$markerArray,
 				$conf,
 				$cObj,
-				$langObj,
 				$controlData,
 				$dataArray,
 				$origArray,
@@ -1249,7 +1227,7 @@ class tx_srfeuserregister_display {
 				$deleteUnusedMarkers
 			);
 		} else {
-			$errorText = $langObj->getLL('internal_no_subtemplate');
+			$errorText = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_no_subtemplate', $this->extensionName);
 			$errorContent = sprintf($errorText, $subpartMarker);
 		}
 		return $errorContent;
@@ -1302,10 +1280,3 @@ class tx_srfeuserregister_display {
 		return $result;
 	}
 }
-
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/view/class.tx_srfeuserregister_display.php'])  {
-  include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/view/class.tx_srfeuserregister_display.php']);
-}
-
-?>
