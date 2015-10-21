@@ -1,6 +1,7 @@
 2015-10-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #70920: [!!!] Use Extbase localization
 	* Resolves #70925: Namespace plugin controller
+	* Follow-up to Resolves #70920: [!!!] Use Extbase localization
 
 2015-10-18 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #70822: [!!!] Restructure captcha hooks
@@ -11,7 +12,7 @@
 	* Resolves #70279: Remove use of option $TYPO3_CONF_VARS['SYS']['serverTimeZone']
 
 2015-10-13 Stanislas Rolland  <typo3(arobas)sjbr.ca>
-	* Resolves #70669: Convert localization files to xliff and move them to Resources directory
+	* Resolves #70669: [!!!] Convert localization files to xliff and move them to Resources directory
 	* Resolves #70671: Require TYPO3 CMS 6.2 and remove references to previous versions
 
 2014-07-02 Stanislas Rolland  <typo3(arobas)sjbr.ca>
