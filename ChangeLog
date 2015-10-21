@@ -1,5 +1,6 @@
 2015-10-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #70920: [!!!] Use Extbase localization
+	* Resolves #70925: Namespace plugin controller
 
 2015-10-18 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #70822: [!!!] Restructure captcha hooks

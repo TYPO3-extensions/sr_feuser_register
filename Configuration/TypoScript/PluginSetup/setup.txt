@@ -1,6 +1,6 @@
 plugin.tx_srfeuserregister_pi1 = USER_INT
 plugin.tx_srfeuserregister_pi1 {
-
+	userFunc = SJBR\SrFeuserRegister\Controller\RegisterPluginController->main
 	table.name = {$plugin.tx_srfeuserregister_pi1.tableName}
 
 	templateFile = {$plugin.tx_srfeuserregister_pi1.file.templateFile}
