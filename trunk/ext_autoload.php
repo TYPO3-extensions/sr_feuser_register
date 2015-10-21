@@ -8,8 +8,6 @@ $sr_feuser_registerExtensionPath = t3lib_extMgm::extPath('sr_feuser_register');
 return array(
 	'tx_srfeuserregister_hooks_cms' => $sr_feuser_registerExtensionPath . 'hooks/class.tx_srfeuserregister_hooks_cms.php',
 	'tx_srfeuserregister_hookshandler' => $sr_feuser_registerExtensionPath . 'hooks/class.tx_srfeuserregister_hooksHandler.php',
-	'tx_srfeuserregister_pi1' => $sr_feuser_registerExtensionPath . 'pi1/class.tx_srfeuserregister_pi1.php',
-	'tx_srfeuserregister_pi1_base' => $sr_feuser_registerExtensionPath . 'pi1/class.tx_srfeuserregister_pi1_base.php',
 	'tx_srfeuserregister_control_main' => $sr_feuser_registerExtensionPath . 'control/class.tx_srfeuserregister_control_main.php',
 	'tx_srfeuserregister_control' => $sr_feuser_registerExtensionPath . 'control/class.tx_srfeuserregister_control.php',
 	'tx_srfeuserregister_setfixed' => $sr_feuser_registerExtensionPath . 'control/class.tx_srfeuserregister_setfixed.php',

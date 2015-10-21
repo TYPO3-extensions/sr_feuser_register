@@ -21,7 +21,7 @@ if (!defined(STATIC_INFO_TABLES_EXT)) {
 	define('STATIC_INFO_TABLES_EXT', 'static_info_tables');
 }
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'pi1/class.tx_srfeuserregister_pi1.php', '_pi1', 'list_type', 0);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'Classes/Controller/RegisterPluginController.php', '_pi1', 'list_type', 0);
 
 $_EXTCONF =unserialize($_EXTCONF);    // unserializing the configuration so we can use it here:
 
