@@ -54,24 +54,9 @@ class tx_srfeuserregister_controldata {
 	protected $securedFieldArray = array('password', 'password_again', 'tx_srfeuserregister_password');
 	public $bValidRegHash;
 	public $regHash;
-		// Whether the token was found valid
-	protected $isTokenValid = FALSE;
-
-	/**
-	 * Transmission security object
-	 *
-	 * @var \SJBR\SrFeuserRegister\Security\TransmissionSecurity;
-	 */
-	protected $transmissionSecurity;
-	
-	/**
-	 * Storage security object
-	 *
-	 * @var \SJBR\SrFeuserRegister\Security\StorageSecurity;
-	 */
-	protected $storageSecurity;
-
-		// Supported captcha extensions
+	// Whether the token was found valid
+	protected $isTokenValid = false;
+	// Supported captcha extensions
 	protected $captchaExtensions = array(
 		array(
 			'extensionKey' => 'sr_freecap',
@@ -83,6 +68,10 @@ class tx_srfeuserregister_controldata {
 		),
 	);
 
+	// Support for repeated password (password_again internal field)
+	protected $usePasswordAgain = false;
+	protected $usePassword = false;
+
 	public function init (
 		$conf,
 		$prefixId,
@@ -91,6 +80,10 @@ class tx_srfeuserregister_controldata {
 		$theTable
 	) {
 		$this->conf = $conf;
+		if ($theTable === 'fe_users') {
+			$this->initPasswordField($conf);
+		}
+
 		$this->site_url = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
 		if ($GLOBALS['TSFE']->absRefPrefix) {
 			if(strpos($GLOBALS['TSFE']->absRefPrefix, 'http://') === 0 || strpos($GLOBALS['TSFE']->absRefPrefix, 'https://') === 0) {
@@ -215,23 +208,26 @@ class tx_srfeuserregister_controldata {
 		$cmd = $this->getFeUserData('cmd');
 		$this->setCmd($cmd);
 
-			// Cleanup input values
+		// Cleanup input values
 		$feUserData = $this->getFeUserData();
 		$this->secureInput($feUserData);
 
-			// Get the data for the uid provided in query parameters
-		$bRuIsInt = (
-			class_exists('t3lib_utility_Math') ?
-				t3lib_utility_Math::canBeInterpretedAsInteger($feUserData['rU']) :
-				t3lib_div::testInt($feUserData['rU'])
-		);
+		// Establishing compatibility with the extension Felogin
+		if ($this->getUsePassword()) {
+			$value = t3lib_div::_GP('pass');
+			if ($value != '') {
+				$this->writePassword($value, '');
+			}
+		}
 
+		// Get the data for the uid provided in query parameters
+		$bRuIsInt = t3lib_utility_Math::canBeInterpretedAsInteger($feUserData['rU']);
 		if ($bRuIsInt) {
 			$theUid = intval($feUserData['rU']);
 			$origArray = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, $theUid);
 		}
 
-			// Get the token
+		// Get the token
 		$token = '';
 		if (
 			isset($origArray) &&
@@ -323,6 +319,7 @@ class tx_srfeuserregister_controldata {
 			$this->setFeUserData(array());
 			// Erase any stored password
 			$this->writePassword('');
+
 		}
 		// Generate a new token for the next created forms
 		$token = $authObj->generateToken();
@@ -344,32 +341,6 @@ class tx_srfeuserregister_controldata {
 
 	public function getValidRegHash () {
 		return $this->bValidRegHash;
-	}
-
-	/**
-	 * Gets the transmission security object
-	 *
-	 * @return \SJBR\SrFeuserRegister\Security\TransmissionSecurity the transmission security object
-	 */
-	public function getTransmissionSecurity()
-	{
-		if (!is_object($this->transmissionSecurity)) {
-			$this->transmissionSecurity = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\Security\\TransmissionSecurity');
-		}
-		return $this->transmissionSecurity;
-	}
-
-	/**
-	 * Gets the storage security object
-	 *
-	 * @return \SJBR\SrFeuserRegister\Security\StorageSecurity the storage security object
-	 */
-	public function getStorageSecurity()
-	{
-		if (!is_object($this->storageSecurity)) {
-			$this->storageSecurity = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\Security\\StorageSecurity');
-		}
-		return $this->storageSecurity;
 	}
 
 	/* reduces to the field list which are allowed to be shown */
@@ -432,23 +403,61 @@ class tx_srfeuserregister_controldata {
 	/*************************************
 	* PASSWORD HANDLING
 	*************************************/
+
 	/**
-	* Retrieves the password from session data and encrypt it for storage
-	*
-	* @return	string	the encrypted password
-	*/
-	public function readPasswordForStorage () {
+	 * Sets the use of password and password again fields
+	 *
+	 * @return void
+	 */
+	protected function initPasswordField($conf)
+	{	
+		if (isset($conf['create.']['evalValues.']['password'])) {
+			$this->usePassword = true;
+			if (t3lib_div::inList($conf['create.']['evalValues.']['password'], 'twice')) {
+				$this->usePasswordAgain = true;
+			}
+		}
+	}
+
+	/**
+	 * Gets the use of the password field
+	 *
+	 * @return boolean whether password field is used
+	 */
+	public function getUsePassword()
+	{
+		return $this->usePassword;
+	}
+
+	/**
+	 * Gets the use of the password again field
+	 *
+	 * @return boolean whether password again field is used
+	 */
+	public function getUsePasswordAgain()
+	{
+		return $this->usePasswordAgain;
+	}
+
+	/**
+	 * Retrieves the password from session data and encrypt it for storage
+	 *
+	 * @return string the encrypted password
+	 */
+	public function readPasswordForStorage()
+	{
 		$password = $this->readPassword();
-		$result = $this->getStorageSecurity()->encryptPasswordForStorage($password);
+		$result = \SJBR\SrFeuserRegister\Security\StorageSecurity::encryptPasswordForStorage($password);
 		return $result;
 	}
 
 	/**
-	* Retrieves the password from session data
-	*
-	* @return	string	the password
-	*/
-	protected function readPassword () {
+	 * Retrieves the password from session data
+	 *
+	 * @return string the password
+	 */
+	public function readPassword()
+	{
 		$password = '';
 		$securedArray = $this->readSecuredArray();
 		if ($securedArray['password']) {
@@ -458,29 +467,22 @@ class tx_srfeuserregister_controldata {
 	}
 
 	/**
-	* Writes the password to FE user session data
-	*
-	* @param	array	$row: data array that may contain password values
-	*
-	* @return void
-	*/
-	public function securePassword (array &$row) {
-		$data = array();
-			// Decrypt incoming password (and eventually other encrypted fields)
-		$passwordDecrypted = $this->getTransmissionSecurity()->decryptIncomingFields($row);
-			// Collect secured fields
-		$securedFieldArray = $this->getSecuredFieldArray();
-		foreach ($securedFieldArray as $securedField) {
-			if (isset($row[$securedField]) && !empty($row[$securedField])) {
-				$data[$securedField] = $row[$securedField];
-				if ($securedField == 'password' || $securedField == 'password_again') {
-					unset($row[$securedField]);
-				}
+	 * Writes the password to FE user session data
+	 *
+	 * @param array $row: data array that may contain password values
+	 * @return void
+	 */
+	public function securePassword(array $row)
+	{
+		if ($this->getUsePassword()) {
+			// Decrypt incoming password
+			$passwordRow = array('password' => $this->readPassword());
+			$passwordDecrypted = \SJBR\SrFeuserRegister\Security\TransmissionSecurity::decryptIncomingFields($passwordRow);
+			if ($passwordDecrypted) {
+				$this->writePassword($passwordRow['password'], $passwordRow['password']);
+			} else if (\SJBR\SrFeuserRegister\Security\TransmissionSecurity::getTransmissionSecurityLevel() !== 'rsa') {
+				$this->writePassword($passwordRow['password'], $row['password_again']);
 			}
-		}
-			// Update FE user session data if required
-		if (!empty($data)) {
-			$this->writeSessionData($data);
 		}
 	}
 
@@ -494,22 +496,26 @@ class tx_srfeuserregister_controldata {
 		$generatedPassword = substr(md5(uniqid(microtime(), 1)), 0, 32);
 		$dataArray['password'] = $generatedPassword;
 		$dataArray['password_again'] = $generatedPassword;
-		$this->writePassword($generatedPassword);
+		$this->writePassword($generatedPassword, $generatedPassword);
 	}
 
 	/**
-	* Writes the password to session data
-	*
-	* @param	string	$password: the password
-	* @return	void
-	*/
-	protected function writePassword ($password) {
+	 * Writes the password to session data
+	 *
+	 * @param string $password: the password
+	 * @return void
+	 */
+	protected function writePassword($password, $passwordAgain = '')
+	{
 		$sessionData = $this->readSessionData();
-		if ($password == '') {
+		if ($password === '') {
 			$sessionData['password'] = '__UNSET';
 			$sessionData['password_again'] = '__UNSET';
 		} else {
 			$sessionData['password'] = $password;
+			if ($passwordAgain !== '') {
+				$sessionData['password_again'] = $passwordAgain;
+			}
 		}
 		$this->writeSessionData($sessionData);
 	}
@@ -640,9 +646,9 @@ class tx_srfeuserregister_controldata {
 			}
 		}
 		$extKey = $this->getExtKey();
-			// Read all session data
-		$allSessionData = $this->readSessionData(TRUE);
-		if (is_array($allSessionData[$extKey])) {
+		// Read all session data
+		$allSessionData = $this->readSessionData(true);
+		if (isset($allSessionData[$extKey]) && is_array($allSessionData[$extKey])) {
 			$keys = array_keys($allSessionData[$extKey]);
 			if ($clearSession) {
 				foreach ($keys as $key) {

@@ -117,7 +117,7 @@ class tx_srfeuserregister_display {
 					''
 				);
 		}
-		$markerObj->addPasswordTransmissionMarkers($markerArray);
+		$markerObj->addPasswordTransmissionMarkers($markerArray, $controlData->getUsePassword(), $controlData->getUsePasswordAgain());
 		$templateCode =
 			$this->removeRequired(
 				$conf,
@@ -303,11 +303,13 @@ class tx_srfeuserregister_display {
 		$extKey = $controlData->getExtKey();
 		$currentArray = array_merge($origArray, $dataArray);
 
-		if ($theTable == 'fe_users') {
-			if (!isset($currentArray['password'])) {
+		if ($theTable === 'fe_users') {
+			if ($controlData->getUsePassword() && !isset($currentArray['password'])) {
 				$currentArray['password'] = '';
 			}
-			$currentArray['password_again'] = $currentArray['password'];
+			if ($controlData->getUsePasswordAgain()) {
+				$currentArray['password_again'] = $currentArray['password'];
+            }
 		}
 
 		if ($conf['create']) {
@@ -337,7 +339,7 @@ class tx_srfeuserregister_display {
 			}
 
 			if ($bNeedUpdateJS) {
-				$markerObj->addPasswordTransmissionMarkers($markerArray);
+				$markerObj->addPasswordTransmissionMarkers($markerArray, $controlData->getUsePassword(), $controlData->getUsePasswordAgain());
 			}
 
 			$templateCode = $cObj->getSubpart($templateCode, $subpartKey);
@@ -1196,7 +1198,7 @@ class tx_srfeuserregister_display {
 				!$conf['enableEmailConfirmation'] &&
 				!$conf['enableAutoLoginOnCreate']
 			) {
-				$markerObj->addPasswordTransmissionMarkers($markerArray);
+				$markerObj->addPasswordTransmissionMarkers($markerArray, $controlData->getUsePassword(), $controlData->getUsePasswordAgain());
 			}
 
 			if (isset($conf[$cmdKey . '.']['marker.'])) {

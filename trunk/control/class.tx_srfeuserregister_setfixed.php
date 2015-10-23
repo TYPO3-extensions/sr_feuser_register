@@ -90,7 +90,7 @@ class tx_srfeuserregister_setfixed {
 		$row = $origArray;
 
 		if ($controlData->getSetfixedEnabled()) {
-			$autoLoginIsRequested = FALSE;
+			$autoLoginIsRequested = false;
 			$origUsergroup = $row['usergroup'];
 			$setfixedUsergroup = '';
 			$setfixedSuffix = $sFK = $feuData['sFK'];
@@ -107,9 +107,9 @@ class tx_srfeuserregister_setfixed {
 				}
 			}
 
-			if ($theTable == 'fe_users') {
-					// Determine if auto-login is requested
-				$autoLoginIsRequested = $controlData->getStorageSecurity()->getAutoLoginIsRequested($feuData, $row);
+			if ($theTable === 'fe_users') {
+				// Determine whether auto login is requested
+				$autoLoginIsRequested = \SJBR\SrFeuserRegister\Security\StorageSecurity::getAutoLoginIsRequested($feuData, $row);
 			}
 
 			$authObj = t3lib_div::getUserObj('&tx_srfeuserregister_auth');
@@ -225,7 +225,7 @@ class tx_srfeuserregister_setfixed {
 					}
 					$currArr = $origArray;
 					if ($autoLoginIsRequested) {
-						$controlData->getStorageSecurity()->decryptPasswordForAutoLogin($currArr, $row);
+						\SJBR\SrFeuserRegister\Security\StorageSecurity::decryptPasswordForAutoLogin($currArr, $row);
 					}
 					$modArray = array();
 					$currArr =
@@ -257,7 +257,7 @@ class tx_srfeuserregister_setfixed {
 				) {
 					$markerObj->addGeneralHiddenFieldsMarkers($markerArray, $row['by_invitation'] ? 'password' : 'login', $token);
 					if (!$row['by_invitation']) {
-						$markerObj->addPasswordTransmissionMarkers($markerArray);
+						$markerObj->addPasswordTransmissionMarkers($markerArray, $controlData->getUsePassword(), $controlData->getUsePasswordAgain());
 						$markerObj->setArray($markerArray);
 					}
 				} else {
@@ -267,18 +267,15 @@ class tx_srfeuserregister_setfixed {
 				if ($sFK == 'EDIT') {
 					// Nothing to do
 				} else {
-					if (
-						$theTable == 'fe_users' &&
-						($sFK == 'APPROVE' || $sFK == 'ENTER') &&
-						$row['by_invitation']
-					) {
-							// Auto-login
+					if ($theTable == 'fe_users' && ($sFK == 'APPROVE' || $sFK == 'ENTER') && $row['by_invitation']) {
+						// Auto login
 						$loginSuccess =
 							$pObj->login(
 								$conf,
 								$controlData,
-								$currArr,
-								FALSE
+								$currArr['username'],
+								$currArr['password'],
+								false
 							);
 
 						if ($loginSuccess) {
@@ -453,24 +450,14 @@ class tx_srfeuserregister_setfixed {
 						}
 						if ($errorContent) {
 							$content = $errorContent;
-						} else if (
-								// Auto-login on confirmation
-							$conf['enableAutoLoginOnConfirmation'] &&
-							!$row['by_invitation'] &&
-							(($sFK == 'APPROVE' && !$conf['enableAdminReview']) || $sFK == 'ENTER') &&
-							$autoLoginIsRequested
-						) {
-							$loginSuccess =
-								$pObj->login(
-									$conf,
-									$controlData,
-									$currArr
-								);
+						} else if ($conf['enableAutoLoginOnConfirmation'] && !$row['by_invitation'] && (($sFK == 'APPROVE' && !$conf['enableAdminReview']) || $sFK == 'ENTER') && $autoLoginIsRequested) {
+							// Auto login on confirmation
+							$loginSuccess = $pObj->login($conf, $controlData, $currArr['username'], $currArr['password']);
 							if ($loginSuccess) {
-									// Login was successful
+								// Login was successful
 								exit;
 							} else {
-									// Login failed
+								// Login failed
 								$content = $displayObj->getPlainTemplate(
 									$conf,
 									$cObj,
@@ -651,25 +638,18 @@ class tx_srfeuserregister_setfixed {
 				$markerArray[$markerKey] = str_replace(array('[',']'), array('%5B', '%5D'), $url);
 			}	// foreach
 		}
-	}	// computeUrl
-
+	}
 
 	/**
 	 *  Store the setfixed vars and return a replacement hash
 	 */
-	public function storeFixedPiVars ($vars) {
-
-			// Create a unique hash value
-		if (class_exists('t3lib_cacheHash')) {
-			$cacheHash = t3lib_div::makeInstance('t3lib_cacheHash');
-			$regHash_calc = $cacheHash->calculateCacheHash($vars);
-			$regHash_calc = substr($regHash_calc, 0, 20);
-		} else {
-				// t3lib_div::cHashParams is deprecated in TYPO3 4.7
-			$regHash_array = t3lib_div::cHashParams(t3lib_div::implodeArrayForUrl('', $vars));
-			$regHash_calc = t3lib_div::shortMD5(serialize($regHash_array), 20);
-		}
-			// and store it with a serialized version of the array in the DB
+	public function storeFixedPiVars(array $vars)
+	{
+		// Create a unique hash value
+		$cacheHash = t3lib_div::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
+		$regHash_calc = $cacheHash->calculateCacheHash($vars);
+		$regHash_calc = substr($regHash_calc, 0, 20);
+		// and store it with a serialized version of the array in the DB
 		$res =
 			$GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'md5hash',

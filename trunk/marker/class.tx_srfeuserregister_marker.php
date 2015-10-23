@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007-2014 Stanislas Rolland <typo3(arobas)sjbr.ca>
+*  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -287,17 +287,22 @@ class tx_srfeuserregister_marker
 
 
 	/**
-	* Gets the field name needed for the name attribute of the input HTML tag.
-	*
-	* @param string name of the table
-	* @param string name of the field
-	* @return string  FE[tablename][fieldname]  ... POST var to transmit the entries with the form
-	*/
-	public function getFieldName ($theTable, $theField) {
-		$rc = 'FE[' . $theTable . '][' . $theField . ']';
-		return $rc;
+	 * Gets the field name needed for the name attribute of the input HTML tag.
+	 *
+	 * @param string name of the table
+	 * @param string name of the field
+	 * @return string  FE[tablename][fieldname]  ... POST var to transmit the entries with the form
+	 */
+	public function getFieldName($theTable, $theField)
+	{
+		if ($theField === 'password') {
+			// See FrontendLoginFormRsaEncryption.js
+			$fieldName = 'pass';
+		} else {
+			$fieldName = 'FE[' . $theTable . '][' . $theField . ']';
+		}
+		return $fieldName;
 	}
-
 
 	/**
 	* Adds language-dependant label markers
@@ -784,17 +789,20 @@ class tx_srfeuserregister_marker
 	}
 
 	/**
-	* Adds password transmission markers
-	*
-	* @param array  $markerArray: the input marker array
-	* @return void
-	*/
-	public function addPasswordTransmissionMarkers (&$markerArray) {
+	 * Adds password transmission markers
+	 *
+	 * @param array  $markerArray: the input marker array
+	 * @param boolean $usePassword: whether the password field is configured	
+	 * @param boolean $usePasswordAgain: whether the password again field is configured
+	 * @return void
+	 */
+	public function addPasswordTransmissionMarkers(&$markerArray, $usePassword, $usePasswordAgain)
+	{
 		if (!$markerArray) {
  			$markerArray = $this->getArray();
  		}
- 		if ($this->controlData->getTable() == 'fe_users') {
- 			$this->controlData->getTransmissionSecurity()->getMarkers($markerArray);
+ 		if ($usePassword) {
+ 			\SJBR\SrFeuserRegister\Security\TransmissionSecurity::getMarkers($markerArray, $usePasswordAgain);
  		}
 	}
 
