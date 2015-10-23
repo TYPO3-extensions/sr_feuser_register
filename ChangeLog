@@ -1,6 +1,7 @@
 2015-10-22 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #67629: RSA authentication didn't work from TYPO3 6.2.4
 	* Update version to 4.0.0
+	* Resolves #59450: Missing SQL definition for telephone
 
 2015-10-21 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #70920: [!!!] Use Extbase localization
