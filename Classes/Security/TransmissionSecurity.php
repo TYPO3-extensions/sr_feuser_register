@@ -34,52 +34,27 @@ use TYPO3\CMS\Rsaauth\Storage\StorageFactory;
 class TransmissionSecurity
 {
 	/**
-	 * @var string Extension name
+	 *  Extension name
+	 *
+	 * @var string
 	 */
-	protected $extensionName = 'SrFeuserRegister';
+	static protected $extensionName = 'SrFeuserRegister';
 
 	/**
 	 * Extension key
 	 *
 	 * @var string
 	 */
-	protected $extKey = 'sr_feuser_register';
-
-	/**
-	 * The transmission security level: normal or rsa
-	 *
-	 * @var string
-	 */	
-	protected $transmissionSecurityLevel = 'normal';
-
-	/**
-	 * Constructor
-	 *
-	 * @return void
-	 */
-	public function __construct()
-	{
-		$this->setTransmissionSecurityLevel();
-	}
-
-	/**
-	 * Sets the transmission security level
-	 *
-	 * @return void
-	 */
-	protected function setTransmissionSecurityLevel()
-	{
-		$this->transmissionSecurityLevel = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
-	}
+	static protected $extensionKey = 'sr_feuser_register';
 
 	/**
 	 * Gets the transmission security level
 	 *
-	 * @return string the storage security level
+	 * @return string the transmission security level
 	 */
-	public function getTransmissionSecurityLevel()
+	static public function getTransmissionSecurityLevel()
 	{
-		return $this->transmissionSecurityLevel;
+		return $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
 	}
 
 	/**
@@ -88,19 +63,11 @@ class TransmissionSecurity
 	 * @param array $row: incoming data array that may contain encrypted fields
 	 * @return boolean true, if decryption was successful
 	 */
-	public function decryptIncomingFields(array &$row)
+	static public function decryptIncomingFields(array &$row)
 	{
 		$success = true;
-		$fields = array('password', 'password_again');
-		$incomingFieldSet = false;
-		foreach ($fields as $field) {
-			if (isset($row[$field])) {
-				$incomingFieldSet = true;
-				break;
-			}
-		}
-		if ($incomingFieldSet) {
-			switch ($this->getTransmissionSecurityLevel()) {
+		if (!empty($row)) {
+			switch (self::getTransmissionSecurityLevel()) {
 				case 'rsa':
 					// Get services from rsaauth
 					// Can't simply use the authentication service because we have two fields to decrypt
@@ -110,12 +77,12 @@ class TransmissionSecurity
 					$storage = StorageFactory::getStorage();
 					if (is_object($backend) && is_object($storage)) {
 						$key = $storage->get();
-						if ($key != NULL) {
-							foreach ($fields as $field) {
-								if (isset($row[$field]) && $row[$field] != '') {
-									if (substr($row[$field], 0, 4) == 'rsa:') {
+						if ($key !== null) {
+							foreach ($row as $field => $value) {
+								if (isset($value) && $value !== '') {
+									if (substr($value, 0, 4) === 'rsa:') {
 										// Decode password
-										$result = $backend->decrypt($key, substr($row[$field], 4));
+										$result = $backend->decrypt($key, substr($value, 4));
 										if ($result) {
 											$row[$field] = $result;
 										} else {
@@ -123,27 +90,27 @@ class TransmissionSecurity
 											// May happen if the key is wrong
 											// May happen if multiple instance of rsaauth on same page
 											$success = false;
-											$message = LocalizationUtility::translate('internal_rsaauth_process_incoming_password_failed', $this->extensionName);
-											GeneralUtility::sysLog($message, $this->extKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
+											$message = LocalizationUtility::translate('internal_rsaauth_process_incoming_password_failed', self::$extensionName);
+											GeneralUtility::sysLog($message, self::$extensionKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
 										}
 									}
 								}
 							}
 							// Remove the key
-							$storage->put(NULL);
+							$storage->put(null);
 						} else {
 							// RSA auth service failed to retrieve private key
 							// May happen if the key was already removed
 							$success = false;
-							$message = LocalizationUtility::translate('internal_rsaauth_retrieve_private_key_failed', $this->extensionName);
-							GeneralUtility::sysLog($message, $this->extKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
+							$message = LocalizationUtility::translate('internal_rsaauth_retrieve_private_key_failed', self::$extensionName);
+							GeneralUtility::sysLog($message, self::$extensionKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
 						}
 					} else {
 						// Required RSA auth backend not available
 						// Should not happen
 						$success = false;
-						$message = LocalizationUtility::translate('internal_rsaauth_backend_not_available', $this->extensionName);
-						GeneralUtility::sysLog($message, $this->extKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
+						$message = LocalizationUtility::translate('internal_rsaauth_backend_not_available', self::$extensionName);
+						GeneralUtility::sysLog($message, self::$extensionKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
 					}
 					break;
 				case 'normal':
@@ -159,35 +126,41 @@ class TransmissionSecurity
 	 * Gets value for ###FORM_ONSUBMIT### and ###HIDDENFIELDS### markers
 	 *
 	 * @param array $markerArray: marker array
+	 * @param boolean $usePasswordAgain: whether the password again field is configured
 	 * @return void
 	 */
-	public function getMarkers(array &$markerArray)
+	static public function getMarkers(array &$markerArray, $usePasswordAgain)
 	{
- 		switch ($this->getTransmissionSecurityLevel()) {
+		$markerArray['###FORM_ONSUBMIT###'] = '';
+ 		switch (self::getTransmissionSecurityLevel()) {
 			case 'rsa':
+				$onSubmit = '';
+				$extraHiddenFields = '';
 				$extraHiddenFieldsArray = array();
+				$params = array();
 				if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['felogin']['loginFormOnSubmitFuncs'])) {
-					$_params = array();
 					foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['felogin']['loginFormOnSubmitFuncs'] as $funcRef) {
-						list($onSubmit, $hiddenFields) = GeneralUtility::callUserFunction($funcRef, $_params, $this);
+						list($onSubmit, $hiddenFields) = GeneralUtility::callUserFunction($funcRef, $params, $this);
 						$extraHiddenFieldsArray[] = $hiddenFields;
 					}
 				} else {
 					// Extension rsaauth not installed
 					// Should not happen
-					$message = sprintf(LocalizationUtility::translate('internal_required_extension_missing', $this->extensionName), 'rsaauth');
-					GeneralUtility::sysLog($message, $this->extKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
+					$message = sprintf(LocalizationUtility::translate('internal_required_extension_missing', self::$extensionName), 'rsaauth');
+					GeneralUtility::sysLog($message, self::$extensionKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
 				}
+				if ($usePasswordAgain) {
+					$onSubmit = 'if (this.pass.value != this[\'FE[fe_users][password_again]\'].value) {this.password_again_failure.value = 1; this.pass.value = \'X\'; this[\'FE[fe_users][password_again]\'].value = \'\'; return true;} else { this[\'FE[fe_users][password_again]\'].value = \'\'; ' . $onSubmit . '}';
+					$extraHiddenFieldsArray[] = '<input type="hidden" name="password_again_failure" value="0">';
+				}
+				$markerArray['###FORM_ONSUBMIT###'] = ' onsubmit="' . $onSubmit . '"';
 				if (count($extraHiddenFieldsArray)) {
 					$extraHiddenFields = implode(LF, $extraHiddenFieldsArray);
 				}
-				$GLOBALS['TSFE']->additionalHeaderData['sr_feuser_register_rsaauth'] = '<script type="text/javascript" src="' . $GLOBALS['TSFE']->absRefPrefix . GeneralUtility::createVersionNumberedFilename(ExtensionManagementUtility::siteRelPath('sr_feuser_register')  . 'scripts/rsaauth.js') . '"></script>';
-				$markerArray['###FORM_ONSUBMIT###'] = ' onsubmit="tx_srfeuserregister_encrypt(this); return true;"';
 				$markerArray['###HIDDENFIELDS###'] .= LF . $extraHiddenFields;
 				break;
 			case 'normal':
 			default:
-				$markerArray['###FORM_ONSUBMIT###'] = '';
 				$markerArray['###HIDDENFIELDS###'] .= LF;
 				break;
 		}

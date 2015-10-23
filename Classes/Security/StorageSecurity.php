@@ -36,44 +36,21 @@ class StorageSecurity
 	/**
 	 * @var string Extension name
 	 */
-	protected $extensionName = 'SrFeuserRegister';
-
-	// Extension key
-	protected $extKey = 'sr_feuser_register';
-	// The storage security level: normal or salted
-	protected $storageSecurityLevel = 'normal';
+	static protected $extensionName = 'SrFeuserRegister';
 
 	/**
-	 * Constructor
-	 *
-	 * @return void
+	 * @var string Extension key
 	 */
-	public function __construct()
-	{
-		$this->setStorageSecurityLevel();
-	}
-
-	/**
-	 * Sets the storage security level
-	 *
-	 * @return void
-	 */
-	protected function setStorageSecurityLevel()
-	{
-		$this->storageSecurityLevel = 'normal';
-		if (SaltedPasswordsUtility::isUsageEnabled('FE')) {
-			$this->storageSecurityLevel = 'salted';
-		}
-	}
+	static protected $extensionKey = 'sr_feuser_register';
 
 	/**
 	 * Gets the storage security level
 	 *
 	 * @return string the storage security level
 	 */
-	protected function getStorageSecurityLevel()
+	static protected function getStorageSecurityLevel()
 	{
-		return $this->storageSecurityLevel;
+		return SaltedPasswordsUtility::isUsageEnabled('FE') ? 'salted' : 'normal';
 	}
 
 	/**
@@ -82,13 +59,13 @@ class StorageSecurity
 	 * @param string $password: password to encrypt
 	 * @return string/boolean encrypted password, boolean false in case of an error
 	 */
-	public function encryptPasswordForStorage($password)
+	static public function encryptPasswordForStorage($password)
 	{
 		$encryptedPassword = $password;
 		if ($password != '') {
-			switch ($this->getStorageSecurityLevel()) {
+			switch (self::getStorageSecurityLevel()) {
 				case 'salted':
-					$objSalt = SaltFactory::getSaltingInstance(NULL);
+					$objSalt = SaltFactory::getSaltingInstance(null);
 					if (is_object($objSalt)) {
 						$encryptedPassword = $objSalt->getHashedPassword($password);
 					} else {
@@ -112,7 +89,7 @@ class StorageSecurity
 	 * @param array $dataArray
 	 * @return void
 	 */
-	public function initializeAutoLoginPassword(array &$dataArray)
+	static public function initializeAutoLoginPassword(array &$dataArray)
 	{
 		$dataArray['tx_srfeuserregister_password'] = '';
 		unset($dataArray['auto_login_key']);
@@ -125,7 +102,7 @@ class StorageSecurity
 	 * @param array $dataArray: fe_users row
 	 * @return boolean true, if auto-login should be attempted
 	 */
-	public function getAutoLoginIsRequested(array $feuData, array &$dataArray)
+	static public function getAutoLoginIsRequested(array $feuData, array &$dataArray)
 	{
 		$autoLoginIsRequested = false;
 		if (isset($feuData['key']) && $feuData['key'] !== '') {
@@ -141,7 +118,7 @@ class StorageSecurity
 	 * @param array $dataArray: array containing the password to be encrypted
 	 * @return void
 	 */
-	public function encryptPasswordForAutoLogin(array &$dataArray)
+	static public function encryptPasswordForAutoLogin(array &$dataArray)
 	{
 		$password = $dataArray['password'];
 		$privateKey = '';
@@ -168,7 +145,7 @@ class StorageSecurity
 	 * @param array $row: incoming data containing the auto-login private key
 	 * @return void
 	 */
-	public function decryptPasswordForAutoLogin(array &$dataArray, array $row)
+	static public function decryptPasswordForAutoLogin(array &$dataArray, array $row)
 	{
 		if (isset($row['auto_login_key'])) {
 			$privateKey = $row['auto_login_key'];
@@ -182,8 +159,8 @@ class StorageSecurity
 							$dataArray['password'] = $decryptedPassword;
 						} else {
 							// Failed to decrypt auto login password
-							$message = LocalizationUtility('internal_decrypt_auto_login_failed', $this->extensionName);
-							GeneralUtility::sysLog($message, $this->extKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
+							$message = LocalizationUtility('internal_decrypt_auto_login_failed', self::$extensionName);
+							GeneralUtility::sysLog($message, self::$extensionKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
 						}
 					} else {
 						// Required RSA auth backend not available

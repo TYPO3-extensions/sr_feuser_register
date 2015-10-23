@@ -97,10 +97,7 @@ class tx_srfeuserregister_data {
 			$bHtmlSpecialChars = FALSE;
 			$controlData->secureInput($feDataArray, $bHtmlSpecialChars);
 			$this->tca->modifyRow($theTable, $feDataArray, FALSE);
-
-			if ($theTable == 'fe_users') {
-				$controlData->securePassword($feDataArray);
-			}
+			$controlData->securePassword($feDataArray);
 			$this->setDataArray($feDataArray);
 		}
 

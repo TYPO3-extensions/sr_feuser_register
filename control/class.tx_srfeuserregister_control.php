@@ -405,7 +405,11 @@ class tx_srfeuserregister_control {
 					$controlData->clearSessionData();
 				}
 				$this->marker->setArray($markerArray);
-				$controlData->setFailure('submit'); // internal error simulation needed in order not to save in the next step
+				if (t3lib_div::inList($controlData->getFailure(), 'username')) {
+					// internal error simulation without any error message needed in order not to save in the next step.
+					// This happens e.g. at the first call to the create page
+					$controlData->setFailure('submit');
+				}
 			}
 			$this->data->setUsername($theTable, $finalDataArray, $cmdKey);
 			$this->data->setDataArray($finalDataArray);
@@ -416,14 +420,13 @@ class tx_srfeuserregister_control {
 				!$bDoNotSave
 			) {
 				$password = '';
-				if ($theTable == 'fe_users') {
-					$controlData->getStorageSecurity()->initializeAutoLoginPassword($finalDataArray);
-						// We generate an interim password in the case of an invitation
-					if ($cmdKey == 'invite') {
+				if ($theTable === 'fe_users') {
+					\SJBR\SrFeuserRegister\Security\StorageSecurity::initializeAutoLoginPassword($finalDataArray);
+					// We generate an interim password in the case of an invitation
+					if ($cmdKey === 'invite') {
 						$controlData->generatePassword($finalDataArray);
 					}
-
-						// If inviting or if auto-login will be required on confirmation, we store an encrypted version of the password
+					// If inviting or if auto login will be required on confirmation, we store an encrypted version of the password
 					if (
 						$cmdKey == 'invite' ||
 						$cmdKey == 'create' &&
@@ -432,7 +435,7 @@ class tx_srfeuserregister_control {
 								!$conf['enableAutoLoginOnCreate']
 							)
 					) {
-						$controlData->getStorageSecurity()->encryptPasswordForAutoLogin($finalDataArray);
+						\SJBR\SrFeuserRegister\Security\StorageSecurity::encryptPasswordForAutoLogin($finalDataArray);
 					}
 					$password = $controlData->readPasswordForStorage();
 				}
@@ -458,8 +461,15 @@ class tx_srfeuserregister_control {
 				}
 
 				if ($this->data->getSaved()) {
-					$controlData->clearSessionData();
+					// if auto login on create
+					if ($theTable === 'fe_users' && $cmd === 'create' && !$controlData->getSetfixedEnabled() && $conf['enableAutoLoginOnCreate']) {
+							// do nothing
+							// conserve the session for the following auto login
+					} else {
+							$controlData->clearSessionData();
+					}
 				}
+
 			}
 		} else if ($cmd == 'infomail') {
 			if ($bSubmit) {
@@ -669,26 +679,16 @@ class tx_srfeuserregister_control {
 					exit;
 				}
 
-					// Auto-login on create
-				if (
-					$theTable == 'fe_users' &&
-					$cmd == 'create' &&
-					!$controlData->getSetfixedEnabled() &&
-					$conf['enableAutoLoginOnCreate']
-				) {
-					$loginSuccess =
-						$this->login(
-							$conf,
-							$controlData,
-							$finalDataArray
-						);
-
+				// Auto login on create
+				if ($theTable === 'fe_users' && $cmd === 'create' && !$controlData->getSetfixedEnabled() && $conf['enableAutoLoginOnCreate']) {
+					$password = $controlData->readPassword();
+					$loginSuccess = $this->login($conf, $controlData, $dataArray['username'], $password);
 					if ($loginSuccess) {
-							// Login was successful
+						// Login was successful
 						exit;
 					} else {
-							// Login failed... should not happen...
-							// If it does, a login form will be displayed as if auto-login was not configured
+						// Login failed... should not happen...
+						// If it does, a login form will be displayed as if auto login was not configured
 						$content = '';
 					}
 				}
@@ -925,29 +925,27 @@ class tx_srfeuserregister_control {
 	/**
 	 * Perform user login and redirect to configured url, if any
 	 *
-	 * @param array	$row: incoming setfixed parameters
-	 * @param boolen $redirect: whether to redirect after login or not
-	 * @return boolean TRUE, if login was successful, FALSE otherwise
+	 * @param array conf: configuration array
+	 * @param object $controlData
+	 * @param array	$username: user name
+	 * @param array	$password: password (decrypted) 
+	 * @param boolean $redirect: whether to redirect after login or not; If true, then you must immediately call exit after this call
+	 * @return boolean true, if login was successful, flase otherwise
 	 */
-	public function login (
-		$conf,
-		$controlData,
-		array $row,
-		$redirect = TRUE
-	) {
-		$result = TRUE;
-			// Log the user in
+	public function login($conf, $controlData, $username, $password, $redirect = true)
+	{
+		$success = true;
+		$message = '';
+		// Log the user in
 		$loginData = array(
-			'uname' => $row['username'],
-			'uident' => $row['password'],
-			'uident_text' => $row['password'],
+			'uname' => $username,
+			'uident' => $password,
+			'uident_text' => $password,
 			'status' => 'login',
 		);
-
 		// Check against configured pid (defaulting to current page)
-		$GLOBALS['TSFE']->fe_user->checkPid = TRUE;
+		$GLOBALS['TSFE']->fe_user->checkPid = true;
 		$GLOBALS['TSFE']->fe_user->checkPid_value = $controlData->getPid();
-
 		// Get authentication info array
 		$authInfo = $GLOBALS['TSFE']->fe_user->getAuthInfoArray();
 		// Get user info
@@ -964,48 +962,51 @@ class tx_srfeuserregister_control {
 					$GLOBALS['TSFE']->initUserGroups();
 					$GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession();
 					$GLOBALS['TSFE']->loginUser = 1;
-
-					// Delete regHash
-					if (
-						$controlData->getValidRegHash()
-					) {
-						$regHash = $controlData->getRegHash();
-						$controlData->deleteShortUrl($regHash);
-					}
-
-					if ($redirect) {
-							// Redirect to configured page, if any
-						$redirectUrl = $controlData->readRedirectUrl();
-						if (!$redirectUrl) {
-							$redirectUrl = trim($conf['autoLoginRedirect_url']);
-						}
-						if (!$redirectUrl) {
-							if ($conf['loginPID']) {
-								$redirectUrl = $this->urlObj->get('', $conf['loginPID']);
-							} else {
-								$redirectUrl = $controlData->getSiteUrl();
-							}
-						}
-						header('Location: ' . t3lib_div::locationHeaderUrl($redirectUrl));
-					}
 				} else {
-						// Login failed...
-					$controlData->clearSessionData(FALSE);
-					$result = FALSE;
+					// Login failed...
+					$controlData->clearSessionData(false);
+					$message = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_auto_login_failed', $this->extensionName);
+					$success = false;
 				}
 			} else {
 				// Required authentication service not available
 				$message = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_required_authentication_service_not_available', $this->extensionName);
 				t3lib_div::sysLog($message, $controlData->getExtKey(), t3lib_div::SYSLOG_SEVERITY_ERROR);
-				$controlData->clearSessionData(FALSE);
-				$result = FALSE;
+				$controlData->clearSessionData(false);
+				$success = false;
 			}
 		} else {
-				// No enabled user of the given name
-			$controlData->clearSessionData(FALSE);
-			$result = FALSE;
+			// No enabled user of the given name
+			$message = sprintf(\SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('internal_no_enabled_user', $this->extensionName), $loginData['uname']);
+			$controlData->clearSessionData(false);
+			$success = false;
 		}
-
-		return $result;
+		// Delete regHash
+		if ($controlData->getValidRegHash()) {
+			$regHash = $controlData->getRegHash();
+			$controlData->deleteShortUrl($regHash);
+		}
+		if (!$success) {
+			$controlData->clearSessionData(false);
+		   if ($message !== '') {
+			   t3lib_div::sysLog($message, $controlData->getExtKey(), t3lib_div::SYSLOG_SEVERITY_ERROR);
+		   }
+        }
+		if ($redirect) {
+			// Redirect to configured page, if any
+			$redirectUrl = $controlData->readRedirectUrl();
+			if (!$redirectUrl && $success) {
+				$redirectUrl = trim($conf['autoLoginRedirect_url']);
+			}
+			if (!$redirectUrl) {
+				if ($conf['loginPID']) {
+					$redirectUrl = $this->urlObj->get('', $conf['loginPID']);
+				} else {
+					$redirectUrl = $controlData->getSiteUrl();
+				}
+			}
+			header('Location: ' . t3lib_div::locationHeaderUrl($redirectUrl));
+		}
+		return $success;
 	}
 }
