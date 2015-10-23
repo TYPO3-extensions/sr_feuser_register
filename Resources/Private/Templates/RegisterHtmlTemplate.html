@@ -1,0 +1,3508 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Frond End User Registration Template</title>
+</head>
+<body>
+
+<h1>FRONTEND USER REGISTRATION</h1>
+<h2>EXAMPLE</h2>
+<h3>Attention: Please don't forget to add '&nbsp;' after the data values in the preview mode. If you don't, you will get problems with your IE-browser users</h3>
+
+<h2>'CREATE' TEMPLATES:</h2>
+
+
+<p><em>Form for the registration of a frontend user:</em></p>
+<!-- ###TEMPLATE_CREATE### begin -->
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<fieldset>
+<legend>###LABEL_ENTER_ACCOUNT_INFO###</legend>
+<p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
+<dl>
+	<!-- ###SUB_INCLUDED_FIELD_username### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME### ###REQUIRED_USERNAME###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_username### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_username###</p>
+		<!-- ###SUB_ERROR_FIELD_username### -->
+		<!-- ###SUB_REQUIRED_FIELD_username### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_USERNAME###</p>
+		<!-- ###SUB_REQUIRED_FIELD_username### -->
+		<input id="tx-srfeuserregister-pi1-username" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_USERNAME###" name="###NAME_USERNAME###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_username### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_password### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-password">###LABEL_PASSWORD### ###REQUIRED_PASSWORD###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_password### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_password###</p>
+		<!-- ###SUB_ERROR_FIELD_password### -->
+		<!-- ###SUB_REQUIRED_FIELD_password### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
+		<!-- ###SUB_REQUIRED_FIELD_password### -->
+		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="40" title="###TOOLTIP_PASSWORD###" name="###NAME_PASSWORD###" value="" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
+	</dd>
+
+	<dt>
+		<label for="tx-srfeuserregister-pi1-password_again" class="tx-srfeuserregister-pi1-password-again">###LABEL_PASSWORD_AGAIN### ###REQUIRED_PASSWORD###</label>
+	</dt>
+	<dd>
+		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="40" title="###LABEL_TOOLTIP_PASSWORD_AGAIN###" name="###NAME_PASSWORD_AGAIN###" value="" class="tx-srfeuserregister-pi1-password" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_password### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_gender### -->
+	<dt>
+		<label>###LABEL_GENDER### ###REQUIRED_GENDER###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_gender### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_gender###</p>
+		<!-- ###SUB_ERROR_FIELD_gender### -->
+		<!-- ###SUB_REQUIRED_FIELD_gender### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_GENDER###</p>
+		<!-- ###SUB_REQUIRED_FIELD_gender### -->
+		###TCA_INPUT_gender###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_gender### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_name### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-name">###LABEL_NAME### ###REQUIRED_NAME###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_name###</p>
+		<!-- ###SUB_ERROR_FIELD_name### -->
+		<!-- ###SUB_REQUIRED_FIELD_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_NAME###</p>
+		<!-- ###SUB_REQUIRED_FIELD_name### -->
+		<input id="tx-srfeuserregister-pi1-name" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="100" title="###TOOLTIP_NAME###" name="###NAME_NAME###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-first_name">###LABEL_FIRST_NAME### ###REQUIRED_FIRST_NAME###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_first_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_first_name###</p>
+		<!-- ###SUB_ERROR_FIELD_first_name### -->
+		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_FIRST_NAME###</p>
+		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
+		<input id="tx-srfeuserregister-pi1-first_name" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_FIRST_NAME###" name="###NAME_FIRST_NAME###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-middle_name">###LABEL_MIDDLE_NAME### ###REQUIRED_MIDDLE_NAME###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_middle_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_middle_name###</p>
+		<!-- ###SUB_ERROR_FIELD_middle_name### -->
+		<!-- ###SUB_REQUIRED_FIELD_middle_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MIDDLE_NAME###</p>
+		<!-- ###SUB_REQUIRED_FIELD_middle_name### -->
+		<input id="tx-srfeuserregister-pi1-middle_name" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_MIDDLE_NAME###" name="###NAME_MIDDLE_NAME###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-last_name">###LABEL_LAST_NAME### ###REQUIRED_LAST_NAME###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_last_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_last_name###</p>
+		<!-- ###SUB_ERROR_FIELD_last_name### -->
+		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_LAST_NAME###</p>
+		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
+		<input id="tx-srfeuserregister-pi1-last_name" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_LAST_NAME###" name="###NAME_LAST_NAME###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_cnum### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-cnum">###LABEL_CNUM### ###REQUIRED_CNUM###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_cnum### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_cnum###</p>
+		<!-- ###SUB_ERROR_FIELD_cnum### -->
+		<!-- ###SUB_REQUIRED_FIELD_cnum### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_CNUM###</p>
+		<!-- ###SUB_REQUIRED_FIELD_cnum### -->
+		<input id="tx-srfeuserregister-pi1-cnum" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_CNUM###" name="###NAME_CNUM###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_cnum### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_status### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-status" onclick="document.getElementById(this.htmlFor).focus(); return false;">###LABEL_STATUS### ###REQUIRED_STATUS###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_status### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_status###</p>
+		<!-- ###SUB_ERROR_FIELD_status### -->
+		<!-- ###SUB_REQUIRED_FIELD_status### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_STATUS###</p>
+		<!-- ###SUB_REQUIRED_FIELD_status### -->
+		###TCA_INPUT_status###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_status### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-date_of_birth">###LABEL_DATE_OF_BIRTH### ###REQUIRED_DATE_OF_BIRTH###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_date_of_birth### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_date_of_birth###</p>
+		<!-- ###SUB_ERROR_FIELD_date_of_birth### -->
+		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_DATE_OF_BIRTH###</p>
+		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
+		<input id="tx-srfeuserregister-pi1-date_of_birth" type="text" class="tx-srfeuserregister-pi1-text" size="10" maxlength="10" title="###TOOLTIP_DATE_OF_BIRTH###" name="###NAME_DATE_OF_BIRTH###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_title### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-title">###LABEL_TITLE### ###REQUIRED_TITLE###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_title### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_title###</p>
+		<!-- ###SUB_ERROR_FIELD_title### -->
+		<!-- ###SUB_REQUIRED_FIELD_title### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_TITLE###</p>
+		<!-- ###SUB_REQUIRED_FIELD_title### -->
+		<input id="tx-srfeuserregister-pi1-title" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="40" title="###TOOLTIP_TITLE###" name="###NAME_TITLE###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_title### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_company### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-company">###LABEL_COMPANY### ###REQUIRED_COMPANY###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_company### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_company###</p>
+		<!-- ###SUB_ERROR_FIELD_company### -->
+		<!-- ###SUB_REQUIRED_FIELD_company### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COMPANY###</p>
+		<!-- ###SUB_REQUIRED_FIELD_company### -->
+		<input id="tx-srfeuserregister-pi1-company" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_COMPANY###" name="###NAME_COMPANY###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_company### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_address### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-address">###LABEL_ADDRESS### ###REQUIRED_ADDRESS###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_address### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_address###</p>
+		<!-- ###SUB_ERROR_FIELD_address### -->
+		<!-- ###SUB_REQUIRED_FIELD_address### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ADDRESS###</p>
+		<!-- ###SUB_REQUIRED_FIELD_address### -->
+		<input id="tx-srfeuserregister-pi1-address" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="60" title="###TOOLTIP_ADDRESS###" name="###NAME_ADDRESS###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_address### -->
+
+
+	<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-house_no">###LABEL_HOUSE_NO### ###REQUIRED_HOUSE_NO###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_house_no### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_house_no###</p>
+		<!-- ###SUB_ERROR_FIELD_house_no### -->
+		<!-- ###SUB_REQUIRED_FIELD_house_no### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_HOUSE_NO###</p>
+		<!-- ###SUB_REQUIRED_FIELD_house_no### -->
+		<input id="tx-srfeuserregister-pi1-house_no" type="text" class="tx-srfeuserregister-pi1-text" size="20" maxlength="20" title="###TOOLTIP_HOUSE_NO###" name="###NAME_HOUSE_NO###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_city### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-city">###LABEL_CITY### ###REQUIRED_CITY###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_city### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_city###</p>
+		<!-- ###SUB_ERROR_FIELD_city### -->
+		<!-- ###SUB_REQUIRED_FIELD_city### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_CITY###</p>
+		<!-- ###SUB_REQUIRED_FIELD_city### -->
+		<input id="tx-srfeuserregister-pi1-city" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="40" title="###TOOLTIP_CITY###" name="###NAME_CITY###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_city### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_zone### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-zone" onclick="document.getElementById(this.htmlFor).focus(); return false;">###LABEL_ZONE### ###REQUIRED_ZONE###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_REQUIRED_FIELD_zone### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ZONE###</p>
+		<!-- ###SUB_REQUIRED_FIELD_zone### -->
+		###SELECTOR_ZONE###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_zone### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-static_info_country" onclick="document.getElementById(this.htmlFor).focus(); return false;">###LABEL_COUNTRY### ###REQUIRED_STATIC_INFO_COUNTRY###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_STATIC_INFO_COUNTRY###</p>
+		<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
+		###SELECTOR_STATIC_INFO_COUNTRY###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_country### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-country">###LABEL_COUNTRY### ###REQUIRED_COUNTRY###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_country### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_country###</p>
+		<!-- ###SUB_ERROR_FIELD_country### -->
+		<!-- ###SUB_REQUIRED_FIELD_country### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COUNTRY###</p>
+		<!-- ###SUB_REQUIRED_FIELD_country### -->
+		<input id="tx-srfeuserregister-pi1-country" type="text" class="tx-srfeuserregister-pi1-text" size="20" maxlength="60" title="###TOOLTIP_COUNTRY###" name="###NAME_COUNTRY###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_country### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_zip### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-zip">###LABEL_ZIP### ###REQUIRED_ZIP###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_zip### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_zip###</p>
+		<!-- ###SUB_ERROR_FIELD_zip### -->
+		<!-- ###SUB_REQUIRED_FIELD_zip### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ZIP###</p>
+		<!-- ###SUB_REQUIRED_FIELD_zip### -->
+		<input id="tx-srfeuserregister-pi1-zip" type="text" class="tx-srfeuserregister-pi1-text" size="20" maxlength="20" title="###TOOLTIP_ZIP###" name="###NAME_ZIP###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_zip### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-telephone">###LABEL_TELEPHONE### ###REQUIRED_TELEPHONE###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_telephone### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_telephone###</p>
+		<!-- ###SUB_ERROR_FIELD_telephone### -->
+		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_TELEPHONE###</p>
+		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
+		<input id="tx-srfeuserregister-pi1-telephone" type="text" class="tx-srfeuserregister-pi1-text" size="25" maxlength="25" title="###TOOLTIP_TELEPHONE###" name="###NAME_TELEPHONE###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_fax### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-fax">###LABEL_FAX### ###REQUIRED_FAX###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_fax### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_fax###</p>
+		<!-- ###SUB_ERROR_FIELD_fax### -->
+		<!-- ###SUB_REQUIRED_FIELD_fax### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_FAX###</p>
+		<!-- ###SUB_REQUIRED_FIELD_fax### -->
+		<input id="tx-srfeuserregister-pi1-fax" type="text" class="tx-srfeuserregister-pi1-text" size="25" maxlength="25" title="###TOOLTIP_FAX###" name="###NAME_FAX###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_fax### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_email### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-email">###LABEL_EMAIL### ###REQUIRED_EMAIL###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_email### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_email###</p>
+		<!-- ###SUB_ERROR_FIELD_email### -->
+		<!-- ###SUB_REQUIRED_FIELD_email### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_EMAIL###</p>
+		<!-- ###SUB_REQUIRED_FIELD_email### -->
+		<input id="tx-srfeuserregister-pi1-email" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="255" title="###TOOLTIP_EMAIL###" name="###NAME_EMAIL###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_email### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-usergroup" onclick="document.getElementById(this.htmlFor).focus(); return false;">###LABEL_USERGROUP### ###REQUIRED_USERGROUP###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_usergroup### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_usergroup###</p>
+		<!-- ###SUB_ERROR_FIELD_usergroup### -->
+		<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_USERGROUP###</p>
+		<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
+		###TCA_INPUT_usergroup###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-module_sys_dmail_newsletter">###LABEL_MODULE_SYS_DMAIL_NEWSLETTER### ###REQUIRED_MODULE_SYS_DMAIL_NEWSLETTER###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_newsletter### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MODULE_SYS_DMAIL_NEWSLETTER###</p>
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_newsletter### -->
+		###TCA_INPUT_module_sys_dmail_newsletter###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-module_sys_dmail_category">###LABEL_MODULE_SYS_DMAIL_CATEGORY### ###REQUIRED_MODULE_SYS_DMAIL_CATEGORY###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_module_sys_dmail_category### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_module_sys_dmail_category###</p>
+		<!-- ###SUB_ERROR_FIELD_module_sys_dmail_category### -->
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MODULE_SYS_DMAIL_CATEGORY###</p>
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
+		###TCA_INPUT_module_sys_dmail_category###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-module_sys_dmail_html">###LABEL_MODULE_SYS_DMAIL_HTML### ###REQUIRED_MODULE_SYS_DMAIL_HTML###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MODULE_SYS_DMAIL_HTML###</p>
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
+		###TCA_INPUT_module_sys_dmail_html###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-terms_acknowledged">###LABEL_TERMS_ACKNOWLEDGED### ###REQUIRED_TERMS_ACKNOWLEDGED###</label>
+	</dt>
+	<dd>
+		<p class="tx-srfeuserregister-pi1-terms"><a href="###TERMS_URL###" title="###LABEL_TOOLTIP_CLICK_HERE_TO_SEE_TERMS###">###LABEL_CLICK_HERE_TO_SEE_TERMS###</a></p>
+		<!-- ###SUB_ERROR_FIELD_terms_acknowledged### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_terms_acknowledged###</p>
+		<!-- ###SUB_ERROR_FIELD_terms_acknowledged### -->
+		<!-- ###SUB_REQUIRED_FIELD_terms_acknowledged### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_TERMS_ACKNOWLEDGED###</p>
+		<!-- ###SUB_REQUIRED_FIELD_terms_acknowledged### -->
+		###TCA_INPUT_terms_acknowledged###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_language### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-language" onclick="document.getElementById(this.htmlFor).focus(); return false;">###LABEL_LANGUAGE### ###REQUIRED_LANGUAGE###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_REQUIRED_FIELD_language### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_LANGUAGE###</p>
+		<!-- ###SUB_REQUIRED_FIELD_language### -->
+		###SELECTOR_LANGUAGE###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_language### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_www### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-www">###LABEL_WWW### ###REQUIRED_WWW###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_www### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_www###</p>
+		<!-- ###SUB_ERROR_FIELD_www### -->
+		<!-- ###SUB_REQUIRED_FIELD_www### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_WWW###</p>
+		<!-- ###SUB_REQUIRED_FIELD_www### -->
+		<input id="tx-srfeuserregister-pi1-www" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="80" title="###TOOLTIP_WWW###" name="###NAME_WWW###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_www### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_image### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-image-0">###LABEL_IMAGE### ###REQUIRED_IMAGE###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_image### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_image###</p>
+		<!-- ###SUB_ERROR_FIELD_image### -->
+		<!-- ###SUB_REQUIRED_FIELD_image### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_IMAGE###</p>
+		<!-- ###SUB_REQUIRED_FIELD_image### -->
+		###UPLOAD_image###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_image### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_comments### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-comments">###LABEL_COMMENTS### ###REQUIRED_COMMENTS###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_comments### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_comments###</p>
+		<!-- ###SUB_ERROR_FIELD_comments### -->
+		<!-- ###SUB_REQUIRED_FIELD_comments### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COMMENTS###</p>
+		<!-- ###SUB_REQUIRED_FIELD_comments### -->
+		###TCA_INPUT_comments###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_comments### -->
+
+	<!--###SUB_INCLUDED_FIELD_captcha_response###-->
+	<dt class="tx-srfeuserregister-pi1-captcha-response">
+		<label for="tx-srfeuserregister-pi1-captcha-response">###SR_FREECAP_NOTICE###</label>
+		###SR_FREECAP_CANT_READ###
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_captcha_response### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_captcha_response###</p>
+		<!-- ###SUB_ERROR_FIELD_captcha_response### -->
+		<input type="text" size="15" id="tx-srfeuserregister-pi1-captcha-response" name="###NAME_CAPTCHA_RESPONSE###" title="###SR_FREECAP_NOTICE###" value="">
+		###SR_FREECAP_IMAGE######CAPTCHA_IMAGE###
+		###SR_FREECAP_ACCESSIBLE###
+	</dd>
+	<!--###SUB_INCLUDED_FIELD_captcha_response###-->
+
+	<dt>&nbsp;</dt>
+	<dd>
+		###HIDDENFIELDS###
+		<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_REGISTER###" />
+	</dd>
+</dl>
+</fieldset>
+</form>
+<!-- ###TEMPLATE_CREATE### end -->
+
+
+
+<p style="margin-top: 20px"><em>Here the user information is preview before final submission:</em></p>
+<!-- ###TEMPLATE_CREATE_PREVIEW### begin -->
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
+<fieldset>
+<legend>###LABEL_V_DEAR###<br />###LABEL_V_VERIFY_BEFORE_CREATE###</legend>
+<dl>
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+<dt>###LABEL_USERNAME###</dt>
+<dd>###FIELD_username###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+<dt>###LABEL_GENDER###</dt>
+<dd>###TCA_INPUT_gender###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+<dt>###LABEL_NAME###</dt>
+<dd>###FIELD_name###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+<dt>###LABEL_FIRST_NAME###</dt>
+<dd>###FIELD_first_name###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+<dt>###LABEL_MIDDLE_NAME###</dt>
+<dd>###FIELD_middle_name###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+<dt>###LABEL_LAST_NAME###</dt>
+<dd>###FIELD_last_name###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+<dt>###LABEL_STATUS###</dt>
+<dd>###TCA_INPUT_status###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+<dt>###LABEL_DATE_OF_BIRTH###</dt>
+<dd>###FIELD_date_of_birth###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+<dt>###LABEL_TITLE###</dt>
+<dd>###FIELD_title###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+<dt>###LABEL_COMPANY###</dt>
+<dd>###FIELD_company###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+<dt>###LABEL_ADDRESS###</dt>
+<dd>###FIELD_address###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+
+<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+<dt>###LABEL_HOUSE_NO###</dt>
+<dd>###FIELD_house_no###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+<dt>###LABEL_CITY###</dt>
+<dd>###FIELD_city###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+<dt>###LABEL_ZONE###</dt>
+<dd>###FIELD_zone###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+<dt>###LABEL_STATIC_INFO_COUNTRY###</dt>
+<dd>###FIELD_static_info_country###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+<dt>###LABEL_COUNTRY###</dt>
+<dd>###FIELD_country###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+<dt>###LABEL_ZIP###</dt>
+<dd>###FIELD_zip###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+<dt>###LABEL_TELEPHONE###</dt>
+<dd>###FIELD_telephone###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+<dt>###LABEL_FAX###</dt>
+<dd>###FIELD_fax###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+<dt>###LABEL_EMAIL###</dt>
+<dd>###FIELD_email###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+<dt>###LABEL_USERGROUP###</dt>
+<dd>###TCA_INPUT_usergroup###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+<dt>###LABEL_MODULE_SYS_DMAIL_NEWSLETTER###</dt>
+<dd>###TCA_INPUT_module_sys_dmail_newsletter###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+<dt>###LABEL_MODULE_SYS_DMAIL_CATEGORY###</dt>
+<dd>###TCA_INPUT_module_sys_dmail_category###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+<dt>###LABEL_MODULE_SYS_DMAIL_HTML###</dt>
+<dd>###TCA_INPUT_module_sys_dmail_html###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+
+<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+<dt>###LABEL_TERMS_ACKNOWLEDGED###</dt>
+<dd>###TCA_INPUT_terms_acknowledged###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+<dt>###LABEL_LANGUAGE###</dt>
+<dd>###FIELD_language###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+<dt>###LABEL_WWW###</dt>
+<dd>###FIELD_www###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+<dt>###LABEL_IMAGE###</dt>
+<dd>###UPLOAD_PREVIEW_image###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+<dt>###LABEL_COMMENTS###</dt>
+<dd>###TCA_INPUT_comments###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+
+<dt>&nbsp;</dt>
+<dd>
+	###HIDDENFIELDS###
+	<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_REGISTER###" />
+	<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_BACK_TO_FORM###" />
+</dd>
+</dl>
+</fieldset>
+</form>
+<!-- ###TEMPLATE_CREATE_PREVIEW### end -->
+
+
+
+<p style="margin-top: 20px"><em>Template, displayed if the user is already logged in.</em></p>
+<!-- ###TEMPLATE_CREATE_LOGIN### begin-->
+<p><a href="###EDIT_URL###" title="###LABEL_TOOLTIP_CLICK_HERE_TO_EDIT###">###LABEL_CLICK_HERE_TO_EDIT###</a></p>
+<!-- ###TEMPLATE_CREATE_LOGIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is shown when the user is created(without auto-login).</em></p>
+<!-- ###TEMPLATE_CREATE_SAVED### begin-->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_CREATED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CREATED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_CREATED_MESSAGE2###</p>
+<p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
+<form id="###FORM_NAME###" method="post" action="###LOGIN_FORM###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<fieldset>
+<dl>
+	<dt>###LABEL_USERNAME###</dt>
+	<dd><input type="text" class="tx-srfeuserregister-pi1-text" name="user" value="###FIELD_username###"  size="40" maxlength="50" /></dd>
+
+	<dt>###LABEL_PASSWORD###</dt>
+	<dd><input type="password" name="pass" value="" size="10" maxlength="40" ###PASSWORD_ONCHANGE### /></dd>
+
+	<dt>&nbsp;</dt>
+	<dd>
+		<input type="hidden" name="logintype" value="login" />
+		<input type="hidden" name="pid" value="###THE_PID###" />
+		<input type="hidden" name="redirect_url" value="" />
+		###HIDDENFIELDS###
+		<input type="submit" name="submit" value="###LABEL_BUTTON_ENTER###" />
+	</dd>
+</dl>
+</fieldset>
+</form>
+<!-- ###TEMPLATE_CREATE_SAVED### end-->
+
+
+<p style="margin-top: 20px"><em>This is shown when the user is created and the option setfixed is not configured, but an administrative review is required.</em></p>
+<!-- ###TEMPLATE_CREATE_SAVED_REVIEW### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_CREATED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_CREATED_MESSAGE2###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_REVIEW2###</p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_CREATE_SAVED_REVIEW### end-->
+
+
+<p style="margin-top: 20px"><em>This is shown when the user is created and the option setfixed is configured.
+The user is informed that a message has been sent to his email address.</em></p>
+<!-- ###TEMPLATE_SETFIXED_CREATE### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_YOUR_ACCOUNT_WAS_CREATED###</p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_CREATE### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is shown when the user is created, the option setfixed is configured and administrative review is required.
+The user is informed that a message has been sent to his email address and that he needs to confirm his registration.</em></p>
+<!-- ###TEMPLATE_SETFIXED_CREATE_REVIEW### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_PLEASE_CONFIRM###</p>
+<p>###LABEL_V_YOUR_ACCOUNT_WAS_CREATED###</p>
+<p>###LABEL_V_FOLLOW_INSTRUCTIONS_REVIEW1###</p>
+<p>###LABEL_V_FOLLOW_INSTRUCTIONS_REVIEW2###</p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_CREATE_REVIEW### end-->
+
+
+
+<h2>'INVITE' TEMPLATES:</h2>
+
+
+
+<p style="margin-top: 20px"><em>Form for the registration of an invited frontend user:</em></p>
+<!-- ###TEMPLATE_INVITE### begin -->
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<fieldset>
+<legend>###LABEL_ENTER_INVITATION_ACCOUNT_INFO###</legend>
+<p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
+<dl>
+	<!-- ###SUB_INCLUDED_FIELD_username### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME### ###REQUIRED_USERNAME###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_username### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_username###</p>
+		<!-- ###SUB_ERROR_FIELD_username### -->
+		<!-- ###SUB_REQUIRED_FIELD_username### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_USERNAME###</p>
+		<!-- ###SUB_REQUIRED_FIELD_username### -->
+		<input id="tx-srfeuserregister-pi1-username" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_INVITATION_USERNAME###" name="###NAME_USERNAME###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_username### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_gender### -->
+	<dt>
+		<label>###LABEL_GENDER### ###REQUIRED_GENDER###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_gender### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_gender###</p>
+		<!-- ###SUB_ERROR_FIELD_gender### -->
+		<!-- ###SUB_REQUIRED_FIELD_gender### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_GENDER###</p>
+		<!-- ###SUB_REQUIRED_FIELD_gender### -->
+		###TCA_INPUT_gender###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_gender### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_name### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-name">###LABEL_NAME### ###REQUIRED_NAME###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_name###</p>
+		<!-- ###SUB_ERROR_FIELD_name### -->
+		<!-- ###SUB_REQUIRED_FIELD_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_NAME###</p>
+		<!-- ###SUB_REQUIRED_FIELD_name### -->
+		<input id="tx-srfeuserregister-pi1-name" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="100" title="###TOOLTIP_INVITATION_NAME###" name="###NAME_NAME###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-first_name">###LABEL_FIRST_NAME### ###REQUIRED_FIRST_NAME###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_first_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_first_name###</p>
+		<!-- ###SUB_ERROR_FIELD_first_name### -->
+		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_FIRST_NAME###</p>
+		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
+		<input id="tx-srfeuserregister-pi1-first_name" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_INVITATION_FIRST_NAME###" name="###NAME_FIRST_NAME###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-middle_name">###LABEL_MIDDLE_NAME### ###REQUIRED_MIDDLE_NAME###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_middle_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_middle_name###</p>
+		<!-- ###SUB_ERROR_FIELD_middle_name### -->
+		<!-- ###SUB_REQUIRED_FIELD_middle_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MIDDLE_NAME###</p>
+		<!-- ###SUB_REQUIRED_FIELD_middle_name### -->
+		<input id="tx-srfeuserregister-pi1-middle_name" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_INVITATION_MIDDLE_NAME###" name="###NAME_MIDDLE_NAME###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-last_name">###LABEL_LAST_NAME### ###REQUIRED_LAST_NAME###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_last_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_last_name###</p>
+		<!-- ###SUB_ERROR_FIELD_last_name### -->
+		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_LAST_NAME###</p>
+		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
+		<input id="tx-srfeuserregister-pi1-last_name" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_INVITATION_LAST_NAME###" name="###NAME_LAST_NAME###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_status### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-status" onclick="document.getElementById(this.htmlFor).focus(); return false;">###LABEL_STATUS### ###REQUIRED_STATUS###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_status### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_status###</p>
+		<!-- ###SUB_ERROR_FIELD_status### -->
+		<!-- ###SUB_REQUIRED_FIELD_status### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_STATUS###</p>
+		<!-- ###SUB_REQUIRED_FIELD_status### -->
+		###TCA_INPUT_status###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_status### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-date_of_birth">###LABEL_DATE_OF_BIRTH### ###REQUIRED_DATE_OF_BIRTH###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_date_of_birth### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_date_of_birth###</p>
+		<!-- ###SUB_ERROR_FIELD_date_of_birth### -->
+		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_DATE_OF_BIRTH###</p>
+		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
+		<input id="tx-srfeuserregister-pi1-date_of_birth" type="text" class="tx-srfeuserregister-pi1-text" size="10" maxlength="10" title="###TOOLTIP_INVITATION_DATE_OF_BIRTH###" name="###NAME_DATE_OF_BIRTH###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_title### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-title">###LABEL_TITLE### ###REQUIRED_TITLE###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_title### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_title###</p>
+		<!-- ###SUB_ERROR_FIELD_title### -->
+		<!-- ###SUB_REQUIRED_FIELD_title### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_TITLE###</p>
+		<!-- ###SUB_REQUIRED_FIELD_title### -->
+		<input id="tx-srfeuserregister-pi1-title" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="40" title="###TOOLTIP_INVITATION_TITLE###" name="###NAME_TITLE###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_title### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_company### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-company">###LABEL_COMPANY### ###REQUIRED_COMPANY###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_company### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_company###</p>
+		<!-- ###SUB_ERROR_FIELD_company### -->
+		<!-- ###SUB_REQUIRED_FIELD_company### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COMPANY###</p>
+		<!-- ###SUB_REQUIRED_FIELD_company### -->
+		<input id="tx-srfeuserregister-pi1-company" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_INVITATION_COMPANY###" name="###NAME_COMPANY###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_company### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_address### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-address">###LABEL_ADDRESS### ###REQUIRED_ADDRESS###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_address### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_address###</p>
+		<!-- ###SUB_ERROR_FIELD_address### -->
+		<!-- ###SUB_REQUIRED_FIELD_address### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ADDRESS###</p>
+		<!-- ###SUB_REQUIRED_FIELD_address### -->
+		<input id="tx-srfeuserregister-pi1-address" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="60" title="###TOOLTIP_INVITATION_ADDRESS###" name="###NAME_ADDRESS###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_address### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-house_no">###LABEL_HOUSE_NO### ###REQUIRED_HOUSE_NO###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_house_no### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_house_no###</p>
+		<!-- ###SUB_ERROR_FIELD_house_no### -->
+		<!-- ###SUB_REQUIRED_FIELD_house_no### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_HOUSE_NO###</p>
+		<!-- ###SUB_REQUIRED_FIELD_house_no### -->
+		<input id="tx-srfeuserregister-pi1-house_no" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="60" title="###TOOLTIP_INVITATION_HOUSE_NO###" name="###NAME_HOUSE_NO###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_city### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-city">###LABEL_CITY### ###REQUIRED_CITY###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_city### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_city###</p>
+		<!-- ###SUB_ERROR_FIELD_city### -->
+		<!-- ###SUB_REQUIRED_FIELD_city### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_CITY###</p>
+		<!-- ###SUB_REQUIRED_FIELD_city### -->
+		<input id="tx-srfeuserregister-pi1-city" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="40" title="###TOOLTIP_INVITATION_CITY###" name="###NAME_CITY###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_city### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_zone### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-zone" onclick="document.getElementById(this.htmlFor).focus(); return false;">###LABEL_ZONE### ###REQUIRED_ZONE###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_REQUIRED_FIELD_zone### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ZONE###</p>
+		<!-- ###SUB_REQUIRED_FIELD_zone### -->
+		###SELECTOR_ZONE###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_zone### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-static_info_country" onclick="document.getElementById(this.htmlFor).focus(); return false;">###LABEL_COUNTRY### ###REQUIRED_STATIC_INFO_COUNTRY###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_STATIC_INFO_COUNTRY###</p>
+		<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
+		###SELECTOR_STATIC_INFO_COUNTRY###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_country### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-country">###LABEL_COUNTRY### ###REQUIRED_COUNTRY###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_country### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_country###</p>
+		<!-- ###SUB_ERROR_FIELD_country### -->
+		<!-- ###SUB_REQUIRED_FIELD_country### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COUNTRY###</p>
+		<!-- ###SUB_REQUIRED_FIELD_country### -->
+		<input id="tx-srfeuserregister-pi1-country" type="text" class="tx-srfeuserregister-pi1-text" size="20" maxlength="60" title="###TOOLTIP_INVITATION_COUNTRY###" name="###NAME_COUNTRY###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_country### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_zip### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-zip">###LABEL_ZIP### ###REQUIRED_ZIP###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_zip### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_zip###</p>
+		<!-- ###SUB_ERROR_FIELD_zip### -->
+		<!-- ###SUB_REQUIRED_FIELD_zip### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ZIP###</p>
+		<!-- ###SUB_REQUIRED_FIELD_zip### -->
+		<input id="tx-srfeuserregister-pi1-zip" type="text" class="tx-srfeuserregister-pi1-text" size="20" maxlength="20" title="###TOOLTIP_INVITATION_ZIP###" name="###NAME_ZIP###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_zip### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-telephone">###LABEL_TELEPHONE### ###REQUIRED_TELEPHONE###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_telephone### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_telephone###</p>
+		<!-- ###SUB_ERROR_FIELD_telephone### -->
+		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_TELEPHONE###</p>
+		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
+		<input id="tx-srfeuserregister-pi1-telephone" type="text" class="tx-srfeuserregister-pi1-text" size="25" maxlength="25" title="###TOOLTIP_INVITATION_TELEPHONE###" name="###NAME_TELEPHONE###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_fax### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-fax">###LABEL_FAX### ###REQUIRED_FAX###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_fax### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_fax###</p>
+		<!-- ###SUB_ERROR_FIELD_fax### -->
+		<!-- ###SUB_REQUIRED_FIELD_fax### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_FAX###</p>
+		<!-- ###SUB_REQUIRED_FIELD_fax### -->
+		<input id="tx-srfeuserregister-pi1-fax" type="text" class="tx-srfeuserregister-pi1-text" size="25" maxlength="25" title="###TOOLTIP_INVITATION_FAX###" name="###NAME_FAX###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_fax### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_email### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-email">###LABEL_EMAIL### ###REQUIRED_EMAIL###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_email### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_email###</p>
+		<!-- ###SUB_ERROR_FIELD_email### -->
+		<!-- ###SUB_REQUIRED_FIELD_email### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_EMAIL###</p>
+		<!-- ###SUB_REQUIRED_FIELD_email### -->
+		<input id="tx-srfeuserregister-pi1-email" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="255" title="###TOOLTIP_INVITATION_EMAIL###" name="###NAME_EMAIL###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_email### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-usergroup" onclick="document.getElementById(this.htmlFor).focus(); return false;">###LABEL_USERGROUP### ###REQUIRED_USERGROUP###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_usergroup### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_usergroup###</p>
+		<!-- ###SUB_ERROR_FIELD_usergroup### -->
+		<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_USERGROUP###</p>
+		<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
+		###TCA_INPUT_usergroup###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-module_sys_dmail_newsletter">###LABEL_MODULE_SYS_DMAIL_NEWSLETTER### ###REQUIRED_MODULE_SYS_DMAIL_NEWSLETTER###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_newsletter### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MODULE_SYS_DMAIL_NEWSLETTER###</p>
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_newsletter### -->
+		###TCA_INPUT_module_sys_dmail_newsletter###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-module_sys_dmail_category">###LABEL_MODULE_SYS_DMAIL_CATEGORY### ###REQUIRED_MODULE_SYS_DMAIL_CATEGORY###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_module_sys_dmail_category### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_module_sys_dmail_category###</p>
+		<!-- ###SUB_ERROR_FIELD_module_sys_dmail_category### -->
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MODULE_SYS_DMAIL_CATEGORY###</p>
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
+		###TCA_INPUT_module_sys_dmail_category###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-module_sys_dmail_html">###LABEL_MODULE_SYS_DMAIL_HTML### ###REQUIRED_MODULE_SYS_DMAIL_HTML###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MODULE_SYS_DMAIL_HTML###</p>
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
+		###TCA_INPUT_module_sys_dmail_html###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+
+
+	<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-terms_acknowledged">###LABEL_TERMS_ACKNOWLEDGED### ###REQUIRED_TERMS_ACKNOWLEDGED###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_terms_acknowledged### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_terms_acknowledged###</p>
+		<!-- ###SUB_ERROR_FIELD_terms_acknowledged### -->
+		<!-- ###SUB_REQUIRED_FIELD_terms_acknowledged### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_TERMS_ACKNOWLEDGED###</p>
+		<!-- ###SUB_REQUIRED_FIELD_terms_acknowledged### -->
+		###TCA_INPUT_terms_acknowledged###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+
+
+	<!-- ###SUB_INCLUDED_FIELD_language### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-language" onclick="document.getElementById(this.htmlFor).focus(); return false;">###LABEL_LANGUAGE### ###REQUIRED_LANGUAGE###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_REQUIRED_FIELD_language### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_LANGUAGE###</p>
+		<!-- ###SUB_REQUIRED_FIELD_language### -->
+		###SELECTOR_LANGUAGE###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_language### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_www### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-www">###LABEL_WWW### ###REQUIRED_WWW###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_www### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_www###</p>
+		<!-- ###SUB_ERROR_FIELD_www### -->
+		<!-- ###SUB_REQUIRED_FIELD_www### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_WWW###</p>
+		<!-- ###SUB_REQUIRED_FIELD_www### -->
+		<input id="tx-srfeuserregister-pi1-www" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="80" title="###TOOLTIP_INVITATION_WWW###" name="###NAME_WWW###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_www### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_image### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-image-0">###LABEL_IMAGE### ###REQUIRED_IMAGE###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_image### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_image###</p>
+		<!-- ###SUB_ERROR_FIELD_image### -->
+		<!-- ###SUB_REQUIRED_FIELD_image### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_IMAGE###</p>
+		<!-- ###SUB_REQUIRED_FIELD_image### -->
+		###UPLOAD_image###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_image### -->
+
+	<dt>&nbsp;</dt>
+	<dd>
+		###HIDDENFIELDS###
+		<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_REGISTER###" />
+	</dd>
+</dl>
+</fieldset>
+</form>
+<!-- ###TEMPLATE_INVITE### end-->
+
+
+
+<p style="margin-top: 20px"><em>Here the invited user information is previewed before final submission:</em></p>
+<!-- ###TEMPLATE_INVITE_PREVIEW### begin -->
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
+<fieldset>
+<legend>###LABEL_V_VERIFY_INVITATION_BEFORE_CREATE###</legend>
+<dl>
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+<dt>###LABEL_USERNAME###</dt>
+<dd>###FIELD_username###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+<dt>###LABEL_GENDER###</dt>
+<dd>###TCA_INPUT_gender###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+<dt>###LABEL_NAME###</dt>
+<dd>###FIELD_name###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+<dt>###LABEL_FIRST_NAME###</dt>
+<dd>###FIELD_first_name###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+<dt>###LABEL_MIDDLE_NAME###</dt>
+<dd>###FIELD_middle_name###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+<dt>###LABEL_LAST_NAME###</dt>
+<dd>###FIELD_last_name###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+<dt>###LABEL_STATUS###</dt>
+<dd>###TCA_INPUT_status###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+<dt>###LABEL_DATE_OF_BIRTH###</dt>
+<dd>###FIELD_date_of_birth###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+<dt>###LABEL_TITLE###</dt>
+<dd>###FIELD_title###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+<dt>###LABEL_COMPANY###</dt>
+<dd>###FIELD_company###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+<dt>###LABEL_ADDRESS###</dt>
+<dd>###FIELD_address###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+
+<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+<dt>###LABEL_HOUSE_NO###</dt>
+<dd>###FIELD_house_no###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+<dt>###LABEL_CITY###</dt>
+<dd>###FIELD_city###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+<dt>###LABEL_ZONE###</dt>
+<dd>###FIELD_zone###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+<dt>###LABEL_STATIC_INFO_COUNTRY###</dt>
+<dd>###FIELD_static_info_country###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+<dt>###LABEL_COUNTRY###</dt>
+<dd>###FIELD_country###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+<dt>###LABEL_ZIP###</dt>
+<dd>###FIELD_zip###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+<dt>###LABEL_TELEPHONE###</dt>
+<dd>###FIELD_telephone###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+<dt>###LABEL_FAX###</dt>
+<dd>###FIELD_fax###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+<dt>###LABEL_EMAIL###</dt>
+<dd>###FIELD_email###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+<dt>###LABEL_USERGROUP###</dt>
+<dd>###TCA_INPUT_usergroup###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+<dt>###LABEL_MODULE_SYS_DMAIL_NEWSLETTER###</dt>
+<dd>###TCA_INPUT_module_sys_dmail_newsletter###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+<dt>###LABEL_MODULE_SYS_DMAIL_CATEGORY###</dt>
+<dd>###TCA_INPUT_module_sys_dmail_category###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+<dt>###LABEL_MODULE_SYS_DMAIL_HTML###</dt>
+<dd>###TCA_INPUT_module_sys_dmail_html###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+
+<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+<dt>###LABEL_TERMS_ACKNOWLEDGED###</dt>
+<dd>###TCA_INPUT_terms_acknowledged###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+<dt>###LABEL_LANGUAGE###</dt>
+<dd>###FIELD_language###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+<dt>###LABEL_WWW###</dt>
+<dd>###FIELD_www###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+<dt>###LABEL_IMAGE###</dt>
+<dd>###UPLOAD_PREVIEW_image###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+
+<dt>&nbsp;</dt>
+<dd>
+	###HIDDENFIELDS###
+	<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_REGISTER###" />
+	<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_BACK_TO_FORM###" />
+</dd>
+
+</dl>
+</fieldset>
+</form>
+<!-- ###TEMPLATE_INVITE_PREVIEW### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is shown when the invited user is created and the option setfixed is configured, which should be the case if invitations are to be sent!
+The user is informed that a message has been sent to the email address and that the invited user will need to accept/confirm his registration.</em></p>
+<!-- ###TEMPLATE_SETFIXED_INVITE### begin -->
+<p>###LABEL_V_INVITATION_CONFIRM###</p>
+<p>###LABEL_V_INVITATION_ACCOUNT_WAS_CREATED###</p>
+<p>###LABEL_V_INVITATION_INSTRUCTIONS1###</p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_INVITE### end-->
+
+
+
+<h2>'EDIT' TEMPLATES:</h2>
+
+
+
+<p style="margin-top: 20px"><em>Form for editing of a fe_users record:</em></p>
+<!-- ###TEMPLATE_EDIT### begin -->
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<fieldset>
+<legend>###LABEL_V_DEAR###<br />###LABEL_V_EDIT_YOUR_ACCOUNT###</legend>
+	<p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
+	<p class="tx-srfeuserregister-pi1-trash"><a href="###DELETE_URL###" title="###LABEL_TOOLTIP_CLICK_HERE_TO_DELETE###">###LABEL_CLICK_HERE_TO_DELETE###</a></p>
+<dl>
+	<!-- ###SUB_INCLUDED_FIELD_password### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-password">###LABEL_NEW_PASSWORD### ###REQUIRED_PASSWORD###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_password### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_password###</p>
+		<!-- ###SUB_ERROR_FIELD_password### -->
+		<!-- ###SUB_REQUIRED_FIELD_password### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
+		<!-- ###SUB_REQUIRED_FIELD_password### -->
+		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="40" title="###TOOLTIP_PASSWORD###" name="###NAME_PASSWORD###" value="" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
+	</dd>
+	<dt>
+		<label for="tx-srfeuserregister-pi1-password_again">###LABEL_PASSWORD_AGAIN###</label>
+	</dt>
+	<dd>
+		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="40" title="###LABEL_TOOLTIP_PASSWORD_AGAIN###" name="###NAME_PASSWORD_AGAIN###" value="" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_password### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_gender### -->
+	<dt>
+		<label>###LABEL_GENDER### ###REQUIRED_GENDER###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_gender### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_gender###</p>
+		<!-- ###SUB_ERROR_FIELD_gender### -->
+		<!-- ###SUB_REQUIRED_FIELD_gender### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_GENDER###</p>
+		<!-- ###SUB_REQUIRED_FIELD_gender### -->
+		###TCA_INPUT_gender###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_gender### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_name### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-name">###LABEL_NAME### ###REQUIRED_NAME###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_name###</p>
+		<!-- ###SUB_ERROR_FIELD_name### -->
+		<!-- ###SUB_REQUIRED_FIELD_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_NAME###</p>
+		<!-- ###SUB_REQUIRED_FIELD_name### -->
+		<input id="tx-srfeuserregister-pi1-name" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="100" title="###TOOLTIP_NAME###" name="###NAME_NAME###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-first_name">###LABEL_FIRST_NAME### ###REQUIRED_FIRST_NAME###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_first_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_first_name###</p>
+		<!-- ###SUB_ERROR_FIELD_first_name### -->
+		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_FIRST_NAME###</p>
+		<!-- ###SUB_REQUIRED_FIELD_first_name### -->
+		<input id="tx-srfeuserregister-pi1-first_name" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_FIRST_NAME###" name="###NAME_FIRST_NAME###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-middle_name">###LABEL_MIDDLE_NAME### ###REQUIRED_MIDDLE_NAME###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_middle_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_middle_name###</p>
+		<!-- ###SUB_ERROR_FIELD_middle_name### -->
+		<!-- ###SUB_REQUIRED_FIELD_middle_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MIDDLE_NAME###</p>
+		<!-- ###SUB_REQUIRED_FIELD_middle_name### -->
+		<input id="tx-srfeuserregister-pi1-middle_name" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_MIDDLE_NAME###" name="###NAME_MIDDLE_NAME###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-last_name">###LABEL_LAST_NAME### ###REQUIRED_LAST_NAME###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_last_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_last_name###</p>
+		<!-- ###SUB_ERROR_FIELD_last_name### -->
+		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_LAST_NAME###</p>
+		<!-- ###SUB_REQUIRED_FIELD_last_name### -->
+		<input id="tx-srfeuserregister-pi1-last_name" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_LAST_NAME###" name="###NAME_LAST_NAME###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_status### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-status" onclick="document.getElementById(this.htmlFor).focus(); return false;">###LABEL_STATUS### ###REQUIRED_STATUS###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_status### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_status###</p>
+		<!-- ###SUB_ERROR_FIELD_status### -->
+		<!-- ###SUB_REQUIRED_FIELD_status### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_STATUS###</p>
+		<!-- ###SUB_REQUIRED_FIELD_status### -->
+		###TCA_INPUT_status###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_status### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-date_of_birth">###LABEL_DATE_OF_BIRTH### ###REQUIRED_DATE_OF_BIRTH###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_date_of_birth### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_date_of_birth###</p>
+		<!-- ###SUB_ERROR_FIELD_date_of_birth### -->
+		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_DATE_OF_BIRTH###</p>
+		<!-- ###SUB_REQUIRED_FIELD_date_of_birth### -->
+		<input id="tx-srfeuserregister-pi1-date_of_birth" type="text" class="tx-srfeuserregister-pi1-text" size="10" maxlength="10" title="###TOOLTIP_DATE_OF_BIRTH###" name="###NAME_DATE_OF_BIRTH###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_title### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-title">###LABEL_TITLE### ###REQUIRED_TITLE###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_title### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_title###</p>
+		<!-- ###SUB_ERROR_FIELD_title### -->
+		<!-- ###SUB_REQUIRED_FIELD_title### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_TITLE###</p>
+		<!-- ###SUB_REQUIRED_FIELD_title### -->
+		<input id="tx-srfeuserregister-pi1-title" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="40" title="###TOOLTIP_TITLE###" name="###NAME_TITLE###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_title### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_company### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-company">###LABEL_COMPANY### ###REQUIRED_COMPANY###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_company### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_company###</p>
+		<!-- ###SUB_ERROR_FIELD_company### -->
+		<!-- ###SUB_REQUIRED_FIELD_company### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COMPANY###</p>
+		<!-- ###SUB_REQUIRED_FIELD_company### -->
+		<input id="tx-srfeuserregister-pi1-company" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="50" title="###TOOLTIP_COMPANY###" name="###NAME_COMPANY###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_company### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_address### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-address">###LABEL_ADDRESS### ###REQUIRED_ADDRESS###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_address### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_address###</p>
+		<!-- ###SUB_ERROR_FIELD_address### -->
+		<!-- ###SUB_REQUIRED_FIELD_address### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ADDRESS###</p>
+		<!-- ###SUB_REQUIRED_FIELD_address### -->
+		<input id="tx-srfeuserregister-pi1-address" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="60" title="###TOOLTIP_ADDRESS###" name="###NAME_ADDRESS###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_address### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-address">###LABEL_HOUSE_NO### ###REQUIRED_HOUSE_NO###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_house_no### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_house_no###</p>
+		<!-- ###SUB_ERROR_FIELD_house_no### -->
+		<!-- ###SUB_REQUIRED_FIELD_house_no### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_HOUSE_NO###</p>
+		<!-- ###SUB_REQUIRED_FIELD_house_no### -->
+		<input id="tx-srfeuserregister-pi1-house_no" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="60" title="###TOOLTIP_HOUSE_NO###" name="###NAME_HOUSE_NO###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_city### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-city">###LABEL_CITY### ###REQUIRED_CITY###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_city### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_city###</p>
+		<!-- ###SUB_ERROR_FIELD_city### -->
+		<!-- ###SUB_REQUIRED_FIELD_city### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_CITY###</p>
+		<!-- ###SUB_REQUIRED_FIELD_city### -->
+		<input id="tx-srfeuserregister-pi1-city" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="40" title="###TOOLTIP_CITY###" name="###NAME_CITY###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_city### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_zone### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-zone" onclick="document.getElementById(this.htmlFor).focus(); return false;">###LABEL_ZONE### ###REQUIRED_ZONE###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_REQUIRED_FIELD_zone### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ZONE###</p>
+		<!-- ###SUB_REQUIRED_FIELD_zone### -->
+		###SELECTOR_ZONE###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_zone### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-static_info_country" onclick="document.getElementById(this.htmlFor).focus(); return false;">###LABEL_COUNTRY### ###REQUIRED_STATIC_INFO_COUNTRY###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_STATIC_INFO_COUNTRY###</p>
+		<!-- ###SUB_REQUIRED_FIELD_static_info_country### -->
+		###SELECTOR_STATIC_INFO_COUNTRY###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_country### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-country">###LABEL_COUNTRY### ###REQUIRED_COUNTRY###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_country### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_country###</p>
+		<!-- ###SUB_ERROR_FIELD_country### -->
+		<!-- ###SUB_REQUIRED_FIELD_country### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COUNTRY###</p>
+		<!-- ###SUB_REQUIRED_FIELD_country### -->
+		<input id="tx-srfeuserregister-pi1-country" type="text" class="tx-srfeuserregister-pi1-text" size="20" maxlength="60" title="###TOOLTIP_COUNTRY###" name="###NAME_COUNTRY###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_country### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_zip### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-zip">###LABEL_ZIP### ###REQUIRED_ZIP###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_zip### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_zip###</p>
+		<!-- ###SUB_ERROR_FIELD_zip### -->
+		<!-- ###SUB_REQUIRED_FIELD_zip### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_ZIP###</p>
+		<!-- ###SUB_REQUIRED_FIELD_zip### -->
+		<input id="tx-srfeuserregister-pi1-zip" type="text" class="tx-srfeuserregister-pi1-text" size="20" maxlength="20" title="###TOOLTIP_ZIP###" name="###NAME_ZIP###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_zip### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-telephone">###LABEL_TELEPHONE### ###REQUIRED_TELEPHONE###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_telephone### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_telephone###</p>
+		<!-- ###SUB_ERROR_FIELD_telephone### -->
+		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_TELEPHONE###</p>
+		<!-- ###SUB_REQUIRED_FIELD_telephone### -->
+		<input id="tx-srfeuserregister-pi1-telephone" type="text" class="tx-srfeuserregister-pi1-text" size="25" maxlength="25" title="###TOOLTIP_TELEPHONE###" name="###NAME_TELEPHONE###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_fax### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-fax">###LABEL_FAX### ###REQUIRED_FAX###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_fax### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_fax###</p>
+		<!-- ###SUB_ERROR_FIELD_fax### -->
+		<!-- ###SUB_REQUIRED_FIELD_fax### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_FAX###</p>
+		<!-- ###SUB_REQUIRED_FIELD_fax### -->
+		<input id="tx-srfeuserregister-pi1-fax" type="text" class="tx-srfeuserregister-pi1-text" size="25" maxlength="25" title="###TOOLTIP_FAX###" name="###NAME_FAX###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_fax### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_email### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-email">###LABEL_EMAIL### ###REQUIRED_EMAIL###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_email### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_email###</p>
+		<!-- ###SUB_ERROR_FIELD_email### -->
+		<!-- ###SUB_REQUIRED_FIELD_email### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_EMAIL###</p>
+		<!-- ###SUB_REQUIRED_FIELD_email### -->
+		<input id="tx-srfeuserregister-pi1-email" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="255" title="###TOOLTIP_EMAIL###" name="###NAME_EMAIL###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_email### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-usergroup" onclick="document.getElementById(this.htmlFor).focus(); return false;">###LABEL_USERGROUP### ###REQUIRED_USERGROUP###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_usergroup### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_usergroup###</p>
+		<!-- ###SUB_ERROR_FIELD_usergroup### -->
+		<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_USERGROUP###</p>
+		<!-- ###SUB_REQUIRED_FIELD_usergroup### -->
+		###TCA_INPUT_usergroup###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-module_sys_dmail_newsletter">###LABEL_MODULE_SYS_DMAIL_NEWSLETTER### ###REQUIRED_MODULE_SYS_DMAIL_NEWSLETTER###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_newsletter### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MODULE_SYS_DMAIL_NEWSLETTER###</p>
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_newsletter### -->
+		###TCA_INPUT_module_sys_dmail_newsletter###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-module_sys_dmail_category">###LABEL_MODULE_SYS_DMAIL_CATEGORY### ###REQUIRED_MODULE_SYS_DMAIL_CATEGORY###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_module_sys_dmail_category### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_module_sys_dmail_category###</p>
+		<!-- ###SUB_ERROR_FIELD_module_sys_dmail_category### -->
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MODULE_SYS_DMAIL_CATEGORY###</p>
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_category### -->
+		###TCA_INPUT_module_sys_dmail_category###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-module_sys_dmail_html">###LABEL_MODULE_SYS_DMAIL_HTML### ###REQUIRED_MODULE_SYS_DMAIL_HTML###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_MODULE_SYS_DMAIL_HTML###</p>
+		<!-- ###SUB_REQUIRED_FIELD_module_sys_dmail_html### -->
+		###TCA_INPUT_module_sys_dmail_html###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-terms_acknowledged">###LABEL_TERMS_ACKNOWLEDGED### ###REQUIRED_TERMS_ACKNOWLEDGED###</label>
+	</dt>
+	<dd>
+		<p class="tx-srfeuserregister-pi1-terms"><a href="###TERMS_URL###" title="###LABEL_TOOLTIP_CLICK_HERE_TO_SEE_TERMS###">###LABEL_CLICK_HERE_TO_SEE_TERMS###</a></p>
+		<!-- ###SUB_ERROR_FIELD_terms_acknowledged### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_terms_acknowledged###</p>
+		<!-- ###SUB_ERROR_FIELD_terms_acknowledged### -->
+		<!-- ###SUB_REQUIRED_FIELD_terms_acknowledged### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_TERMS_ACKNOWLEDGED###</p>
+		<!-- ###SUB_REQUIRED_FIELD_terms_acknowledged### -->
+		###TCA_INPUT_terms_acknowledged###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_language### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-language" onclick="document.getElementById(this.htmlFor).focus(); return false;">###LABEL_LANGUAGE### ###REQUIRED_LANGUAGE###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_REQUIRED_FIELD_language### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_LANGUAGE###</p>
+		<!-- ###SUB_REQUIRED_FIELD_language### -->
+		###SELECTOR_LANGUAGE###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_language### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_www### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-www">###LABEL_WWW### ###REQUIRED_WWW###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_www### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_www###</p>
+		<!-- ###SUB_ERROR_FIELD_www### -->
+		<!-- ###SUB_REQUIRED_FIELD_www### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_WWW###</p>
+		<!-- ###SUB_REQUIRED_FIELD_www### -->
+		<input id="tx-srfeuserregister-pi1-www" type="text" class="tx-srfeuserregister-pi1-text" size="40" maxlength="80" title="###TOOLTIP_WWW###" name="###NAME_WWW###" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_www### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_image### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-image-0">###LABEL_IMAGE### ###REQUIRED_IMAGE###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_image### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_image###</p>
+		<!-- ###SUB_ERROR_FIELD_image### -->
+		<!-- ###SUB_REQUIRED_FIELD_image### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_IMAGE###</p>
+		<!-- ###SUB_REQUIRED_FIELD_image### -->
+		###UPLOAD_image###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_image### -->
+
+	<!-- ###SUB_INCLUDED_FIELD_comments### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-comments">###LABEL_COMMENTS### ###REQUIRED_COMMENTS###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_comments### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_comments###</p>
+		<!-- ###SUB_ERROR_FIELD_comments### -->
+		<!-- ###SUB_REQUIRED_FIELD_comments### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_COMMENTS###</p>
+		<!-- ###SUB_REQUIRED_FIELD_comments### -->
+		###TCA_INPUT_comments###
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_comments### -->
+
+	<!--###SUB_INCLUDED_FIELD_captcha_response###-->
+	<dt class="tx-srfeuserregister-pi1-captcha-response">
+		<label for="tx-srfeuserregister-pi1-captcha-response">###SR_FREECAP_NOTICE###</label>
+		###SR_FREECAP_CANT_READ###
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_captcha_response### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_captcha_response###</p>
+		<!-- ###SUB_ERROR_FIELD_captcha_response### -->
+		<input type="text" size="15" id="tx-srfeuserregister-pi1-captcha-response" name="###NAME_CAPTCHA_RESPONSE###" title="###SR_FREECAP_NOTICE###" value="">
+		###SR_FREECAP_IMAGE######CAPTCHA_IMAGE###
+	</dd>
+	<!--###SUB_INCLUDED_FIELD_captcha_response###-->
+
+	<dt>&nbsp;</dt>
+	<dd>
+		###HIDDENFIELDS###
+		<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_UPDATE###" />
+		<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
+		<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[linkToPID]" value="###LABEL_BUTTON_UPDATE_AND_MORE###" />
+		<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
+	</dd>
+</dl>
+</fieldset>
+</form>
+<!-- ###TEMPLATE_EDIT### end-->
+
+
+
+<p style="margin-top: 20px"><em>Here the user information is preview before final submission:</em></p>
+<!-- ###TEMPLATE_EDIT_PREVIEW### begin-->
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data">
+<fieldset>
+<legend>###LABEL_V_DEAR###<br />###LABEL_V_VERIFY_BEFORE_UPDATE###</legend>
+<dl>
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+<dt> ###LABEL_USERNAME###</dt>
+<dd> ###FIELD_username###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+<dt> ###LABEL_GENDER###</dt>
+<dd> ###TCA_INPUT_gender###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+<dt> ###LABEL_NAME###</dt>
+<dd> ###FIELD_name###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+<dt> ###LABEL_FIRST_NAME###</dt>
+<dd> ###FIELD_first_name###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+<dt> ###LABEL_MIDDLE_NAME###</dt>
+<dd> ###FIELD_middle_name###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+<dt> ###LABEL_LAST_NAME###</dt>
+<dd> ###FIELD_last_name###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+<dt> ###LABEL_STATUS###</dt>
+<dd> ###TCA_INPUT_status###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+<dt> ###LABEL_DATE_OF_BIRTH###</dt>
+<dd> ###FIELD_date_of_birth###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+<dt> ###LABEL_TITLE### </dt>
+<dd> ###FIELD_title###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+<dt> ###LABEL_COMPANY###</dt>
+<dd> ###FIELD_company###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+<dt> ###LABEL_ADDRESS###</dt>
+<dd> ###FIELD_address###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+
+<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+<dt> ###LABEL_HOUSE_NO###</dt>
+<dd> ###FIELD_house_no###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+<dt> ###LABEL_CITY###</dt>
+<dd> ###FIELD_city###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+<dt> ###LABEL_ZONE###</dt>
+<dd> ###FIELD_zone###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+<dt> ###LABEL_STATIC_INFO_COUNTRY###</dt>
+<dd> ###FIELD_static_info_country###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+<dt> ###LABEL_COUNTRY###</dt>
+<dd> ###FIELD_country###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+<dt> ###LABEL_ZIP###</dt>
+<dd> ###FIELD_zip###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+<dt> ###LABEL_TELEPHONE###</dt>
+<dd> ###FIELD_telephone###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+<dt> ###LABEL_FAX###</dt>
+<dd> ###FIELD_fax###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+<dt> ###LABEL_EMAIL###</dt>
+<dd> ###FIELD_email###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+<dt>###LABEL_USERGROUP###</dt>
+<dd>###TCA_INPUT_usergroup###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+<dt>###LABEL_MODULE_SYS_DMAIL_NEWSLETTER###</dt>
+<dd>###TCA_INPUT_module_sys_dmail_newsletter###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+<dt>###LABEL_MODULE_SYS_DMAIL_CATEGORY###</dt>
+<dd>###TCA_INPUT_module_sys_dmail_category###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+<dt>###LABEL_MODULE_SYS_DMAIL_HTML###</dt>
+<dd>###TCA_INPUT_module_sys_dmail_html###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+
+<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+<dt>###LABEL_TERMS_ACKNOWLEDGED###</dt>
+<dd>###TCA_INPUT_terms_acknowledged###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+<dt>###LABEL_LANGUAGE###</dt>
+<dd>###FIELD_language###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+<dt>###LABEL_WWW###</dt>
+<dd>###FIELD_www###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+<dt>###LABEL_IMAGE###</dt>
+<dd>###UPLOAD_PREVIEW_image###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+<dt>###LABEL_COMMENTS###</dt>
+<dd>###TCA_INPUT_comments###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+
+<dt>&nbsp;</dt>
+<dd>
+	###HIDDENFIELDS###
+	<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_UPDATE###" />
+	<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
+	<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[linkToPID]" value="###LABEL_BUTTON_UPDATE_AND_MORE###" />
+	<!-- ###SUB_LINKTOPID_ADD_BUTTON### -->
+	<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[doNotSave]" value="###LABEL_BUTTON_BACK_TO_FORM###" />
+</dd>
+</dl>
+</fieldset>
+</form>
+<!-- ###TEMPLATE_EDIT_PREVIEW### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is shown when the user profile has been updated</em></p>
+<!-- ###TEMPLATE_EDIT_SAVED### begin-->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_UPDATED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_UPDATED_MESSAGE1###</p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_EDIT_SAVED### end-->
+
+
+
+<h2>'DELETE' TEMPLATES:</h2>
+
+
+
+<p style="margin-top: 20px"><em>This template is the response page when a user has deleted himself.</em></p>
+<!-- ###TEMPLATE_DELETE_SAVED### begin-->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_DELETED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_DELETED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_DELETED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_DELETE_SAVED### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is the verification page before the user finally deletes himself.</em></p>
+<!-- ###TEMPLATE_DELETE_PREVIEW### begin-->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REALLY_WISH_TO_DELETE###</p>
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###">
+	<p>
+		###HIDDENFIELDS###
+		<input type="submit" name="tx_srfeuserregister_pi1[doNotSave]" onclick="document.location.assign('###BACK_URL###'); return false;" value="###LABEL_BUTTON_CANCEL_DELETE###" />
+		<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_DELETE###" />
+	</p>
+</form>
+<!-- ###TEMPLATE_DELETE_PREVIEW### end-->
+
+
+
+<h2>'SETFIXED' TEMPLATES</h2>
+
+
+
+<p style="margin-top: 20px"><em>This template is the response page when the user confirms his subscription(without auto-login and without adminstrative review).</em></p>
+<!-- ###TEMPLATE_SETFIXED_OK### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE2###</p>
+<p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
+<form id="###FORM_NAME###" method="post" action="###LOGIN_FORM###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<fieldset>
+<dl>
+	<dt><label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME###</label></dt>
+	<dd> <input type="text" class="tx-srfeuserregister-pi1-text" id="tx-srfeuserregister-pi1-username" size="40" maxlength="50" title="###LABEL_TOOLTIP_LOGIN_USERNAME###" name="user" value="###FIELD_username###" /> </dd>
+
+	<dt><label for="tx-srfeuserregister-pi1-pass">###LABEL_PASSWORD###</label></dt>
+	<dd> <input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="pass" value="" size="10" maxlength="40" ###PASSWORD_ONCHANGE### /> </dd>
+
+	<dt>&nbsp;</dt>
+	<dd>
+		<input type="submit" name="submit" value="###LABEL_BUTTON_ENTER###" />
+		<input type="hidden" name="logintype" value="login" />
+		<input type="hidden" name="pid" value="###THE_PID###" />
+		<input type="hidden" name="redirect_url" value="" />
+		###HIDDENFIELDS###
+	</dd>
+</dl>
+</fieldset>
+</form>
+<!-- ###TEMPLATE_SETFIXED_OK### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is the response page when the user confirms his/her subscription, but it must be accepted by admin.</em></p>
+<!-- ###TEMPLATE_SETFIXED_OK_APPROVE_REVIEW### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_REVIEW1###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_REVIEW2###</p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_OK_APPROVE_REVIEW### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is the response page when the administrator accepts the account registration.</em></p>
+<!-- ###TEMPLATE_SETFIXED_OK_ACCEPT### begin -->
+<h4>###LABEL_V_TO_THE_ADMINISTRATOR###</h4>
+<p>###LABEL_V_REGISTRATION_ACCEPTED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_OK_ACCEPT### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is the response page when the user clicks on the link in the acceptation email (without auto-login).</em></p>
+<!-- ###TEMPLATE_SETFIXED_OK_ENTER### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_ENTERED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE2###</p>
+<p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
+<form id="###FORM_NAME###" method="post" action="###LOGIN_FORM###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<dl>
+	<dt><label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME###</label></dt>
+	<dd><input type="text" class="tx-srfeuserregister-pi1-text" id="tx-srfeuserregister-pi1-username" size="40" maxlength="50" title="###LABEL_TOOLTIP_LOGIN_USERNAME###" name="user" value="###FIELD_username###" /></dd>
+
+	<dt><label for="tx-srfeuserregister-pi1-pass">###LABEL_PASSWORD###</label></dt>
+	<dd><input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="pass" value="" size="10" maxlength="40" ###PASSWORD_ONCHANGE### /></dd>
+
+	<dt>&nbsp;</dt>
+	<dd>
+		<input type="submit" name="submit" value="###LABEL_BUTTON_ENTER###" />
+		<input type="hidden" name="logintype" value="login" />
+		<input type="hidden" name="pid" value="###THE_PID###" />
+		<input type="hidden" name="redirect_url" value="" />
+		###HIDDENFIELDS###
+	</dd>
+</dl>
+</form>
+<!-- ###TEMPLATE_SETFIXED_OK_ENTER### end-->
+
+<p style="margin-top: 20px"><em>This template is the response page when the invited person clicks on the link in the acceptation email.</em></p>
+<!-- ###TEMPLATE_SETFIXED_OK_APPROVE_INVITE### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_ENTERED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE2###</p>
+<p>###LABEL_V_NOW_CHOOSE_PASSWORD###</p>
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<fieldset>
+<dl>
+	<!-- ###SUB_INCLUDED_FIELD_password### -->
+	<dt>
+		<label for="tx-srfeuserregister-pi1-password">###LABEL_PASSWORD###</label>
+	</dt>
+	<dd>
+		<!-- ###SUB_ERROR_FIELD_password### -->
+		<p class="tx-srfeuserregister-pi1-error">###EVAL_ERROR_FIELD_password###</p>
+		<!-- ###SUB_ERROR_FIELD_password### -->
+		<!-- ###SUB_REQUIRED_FIELD_password### -->
+		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
+		<!-- ###SUB_REQUIRED_FIELD_password### -->
+		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="40" title="###TOOLTIP_PASSWORD###" name="###NAME_PASSWORD###" value="" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
+	</dd>
+	<dt>
+		<label for="tx-srfeuserregister-pi1-password_again" class="tx-srfeuserregister-pi1-password-again">###LABEL_PASSWORD_AGAIN###</label>
+	</dt>
+	<dd>
+		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="40" title="###LABEL_TOOLTIP_PASSWORD_AGAIN###" name="###NAME_PASSWORD_AGAIN###" value="" class="tx-srfeuserregister-pi1-password" />
+	</dd>
+	<!-- ###SUB_INCLUDED_FIELD_password### -->
+
+	<dt>&nbsp;</dt>
+	<dd>
+		###HIDDENFIELDS###
+		<input type="submit" class="tx-srfeuserregister-pi1-submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_UPDATE###" />
+	</dd>
+</dl>
+</fieldset>
+</form>
+<!-- ###TEMPLATE_SETFIXED_OK_APPROVE_INVITE### end-->
+
+
+<p style="margin-top: 20px"><em>This template is the response page when the administrator refuses the account registration.</em></p>
+<!-- ###TEMPLATE_SETFIXED_OK_REFUSE### begin -->
+<h4>###LABEL_V_TO_THE_ADMINISTRATOR###</h4>
+<p>###LABEL_V_REGISTRATION_REFUSED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_REFUSED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_REFUSED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_OK_REFUSE### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is the response page when a user deleted his account.</em></p>
+<!-- ###TEMPLATE_SETFIXED_OK_DELETE### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_CANCELLED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CANCELLED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_CANCELLED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS_DEL###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_OK_DELETE### end-->
+
+<p style="margin-top: 20px"><em>This template is the response page when a user was unsubscribed by following a link of a mailing application.</em></p>
+<!-- ###TEMPLATE_SETFIXED_OK_UNSUBSCRIBE### begin -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_UNSUBSCRIBED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_UNSUBSCRIBED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_UNSUBSCRIBED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS_DEL###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_OK_UNSUBSCRIBE### end-->
+
+<p style="margin-top: 20px"><em>This template is the response page when a user has clicked a setfixed link, but the link failed.</em></p>
+<!-- ###TEMPLATE_SETFIXED_FAILED### begin -->
+<h4>###LABEL_REGISTRATION_PROBLEM###</h4>
+<p>###LABEL_REGISTRATION_SORRY###</p>
+<p>###LABEL_REGISTRATION_CLICKED_TWICE###</p>
+<p>###LABEL_REGISTRATION_HELP### <a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_SETFIXED_FAILED### end-->
+
+
+
+<h2>'Authentication' templates:</h2>
+
+
+
+<p style="margin-top: 20px"><em>Authentication failed message.</em></p>
+<!-- ###TEMPLATE_AUTH### begin -->
+<p><a href="###REGISTER_URL###" title="###LABEL_TOOLTIP_CLICK_HERE_TO_REGISTER###">###LABEL_CLICK_HERE_TO_REGISTER###</a></p>
+<!-- ###TEMPLATE_AUTH### end-->
+
+
+
+<p style="margin-top: 20px"><em>No permission template</em></p>
+<!-- ###TEMPLATE_NO_PERMISSIONS### begin-->
+<h4>###LABEL_REGISTRATION_PROBLEM###</h4>
+<p>###LABEL_REGISTRATION_SORRY###</p>
+<p>###LABEL_REGISTRATION_HELP### <a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_NO_PERMISSIONS### end-->
+
+
+<h1>EMAIL TEMPLATES:</h1>
+
+
+
+<p style="margin-top: 20px">In these plain text email templates the first line with content is used as subject in the mails.</p>
+<p><em>This template is used to confirm to a person by email that he has created his account and no confirmation is requested.</em></p>
+<!-- ###EMAIL_TEMPLATE_CREATE_SAVED_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_CREATED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_CREATED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CREATED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_CREATED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_CREATE_SAVED_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has created his account and no confirmation is requested.</em></p>
+<!-- ###EMAIL_TEMPLATE_CREATE_SAVED### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CREATED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_CREATED_SUBJECT###
+###LABEL_V_REGISTRATION_CREATED_MESSAGE1###
+###LABEL_V_REGISTRATION_CREATED_MESSAGE2###
+
+###LABEL_KIND_REGARDS_CRE###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_CREATE_SAVED### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon creation of a user account and no confirmation is required.</em></p>
+<!-- ###EMAIL_TEMPLATE_CREATE_SAVED_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CREATED###
+###LABEL_V_NOTIFICATION###:
+
+###LABEL_V_REGISTRATION_CREATED###
+ 
+###LABEL_USERNAME###: ###FIELD_username###
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+###LABEL_GENDER### ###TCA_INPUT_gender###
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+###LABEL_NAME### ###FIELD_name###
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+###LABEL_FIRST_NAME###: ###FIELD_first_name###
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+###LABEL_MIDDLE_NAME###: ###FIELD_middle_name###
+<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+###LABEL_LAST_NAME###: ###FIELD_last_name###
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+###LABEL_STATUS### ###TCA_INPUT_status###
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+###LABEL_DATE_OF_BIRTH###: ###FIELD_date_of_birth###
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+###LABEL_TITLE###: ###FIELD_title###
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+###LABEL_COMPANY###: ###FIELD_company###
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+###LABEL_ADDRESS###: ###FIELD_address###
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+###LABEL_HOUSE_NO### ###FIELD_house_no###
+<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+###LABEL_CITY### ###FIELD_city###
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+###LABEL_ZONE### ###FIELD_zone###
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+###LABEL_COUNTRY###: ###FIELD_country###
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+###LABEL_STATIC_INFO_COUNTRY###: ###FIELD_static_info_country###
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+###LABEL_ZIP###: ###FIELD_zip###
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+###LABEL_TELEPHONE###: ###FIELD_telephone###
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+###LABEL_FAX###: ###FIELD_fax###
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+###LABEL_EMAIL###: ###FIELD_email###
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+###LABEL_USERGROUP###:
+###TCA_INPUT_usergroup###
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+###LABEL_MODULE_SYS_DMAIL_NEWSLETTER### ###LABEL_MODULE_SYS_DMAIL_NEWSLETTER_CHECKED###
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+###LABEL_MODULE_SYS_DMAIL_CATEGORY###:
+###TCA_INPUT_module_sys_dmail_category###
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+###LABEL_MODULE_SYS_DMAIL_HTML### ###LABEL_MODULE_SYS_DMAIL_HTML_CHECKED###
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+###LABEL_TERMS_ACKNOWLEDGED###: ###LABEL_TERMS_ACKNOWLEDGED_CHECKED###
+<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+###LABEL_LANGUAGE###: ###FIELD_language###
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+###LABEL_WWW###: ###FIELD_www###
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+###LABEL_IMAGE###: ###UPLOAD_PREVIEW_image###
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+###LABEL_COMMENTS###
+###TCA_INPUT_comments###
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+ 
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_CREATE_SAVED_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has updated his account.</em></p>
+<!-- ###EMAIL_TEMPLATE_EDIT_SAVED_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_UPDATED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_UPDATED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_UPDATED_MESSAGE1###</p>
+<p>###LABEL_KIND_REGARDS_UPD###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_EDIT_SAVED_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has updated his account.</em></p>
+<!-- ###EMAIL_TEMPLATE_EDIT_SAVED### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_UPDATED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_UPDATED_SUBJECT###
+###LABEL_V_REGISTRATION_UPDATED_MESSAGE1###
+
+###LABEL_KIND_REGARDS_UPD###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_EDIT_SAVED### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon update of a user profile.></em></p>
+<!-- ###EMAIL_TEMPLATE_EDIT_SAVED_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_UPDATED###
+###LABEL_V_NOTIFICATION###:
+
+###LABEL_V_REGISTRATION_UPDATED###
+ 
+###LABEL_USERNAME###: ###FIELD_username###
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+###LABEL_GENDER### ###TCA_INPUT_gender###
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+###LABEL_NAME### ###FIELD_name###
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+###LABEL_FIRST_NAME###: ###FIELD_first_name###
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+###LABEL_MIDDLE_NAME###: ###FIELD_middle_name###
+<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+###LABEL_LAST_NAME###: ###FIELD_last_name###
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+###LABEL_STATUS### ###TCA_INPUT_status###
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+###LABEL_DATE_OF_BIRTH###: ###FIELD_date_of_birth###
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+###LABEL_TITLE###: ###FIELD_title###
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+###LABEL_COMPANY###: ###FIELD_company###
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+###LABEL_ADDRESS###: ###FIELD_address###
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+###LABEL_HOUSE_NO### ###FIELD_house_no###
+<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+###LABEL_CITY### ###FIELD_city###
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+###LABEL_ZONE### ###FIELD_zone###
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+###LABEL_COUNTRY###: ###FIELD_country###
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+###LABEL_STATIC_INFO_COUNTRY###: ###FIELD_static_info_country###
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+###LABEL_ZIP###: ###FIELD_zip###
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+###LABEL_TELEPHONE###: ###FIELD_telephone###
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+###LABEL_FAX###: ###FIELD_fax###
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+###LABEL_EMAIL###: ###FIELD_email###
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+###LABEL_USERGROUP###:
+###TCA_INPUT_usergroup###
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+###LABEL_MODULE_SYS_DMAIL_NEWSLETTER### ###LABEL_MODULE_SYS_DMAIL_NEWSLETTER_CHECKED###
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+###LABEL_MODULE_SYS_DMAIL_CATEGORY###:
+###TCA_INPUT_module_sys_dmail_category###
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+###LABEL_MODULE_SYS_DMAIL_HTML### ###LABEL_MODULE_SYS_DMAIL_HTML_CHECKED###
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+###LABEL_TERMS_ACKNOWLEDGED###: ###LABEL_TERMS_ACKNOWLEDGED_CHECKED###
+<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+###LABEL_LANGUAGE###: ###FIELD_language###
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+###LABEL_WWW###: ###FIELD_www###
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+###LABEL_IMAGE###: ###UPLOAD_PREVIEW_image###
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+###LABEL_COMMENTS###
+###TCA_INPUT_comments###
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+ 
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_EDIT_SAVED_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account, but confirmation is required.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_INITIATED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE1###<br />
+<a href="###SETFIXED_APPROVE_URL###">###SETFIXED_APPROVE_URL###</a><br />
+###LABEL_COPY_PASTE_LINK###</p>
+<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE2###<br />
+<a href="###SETFIXED_DELETE_URL###">###SETFIXED_DELETE_URL###</a><br />
+###LABEL_COPY_PASTE_LINK###<br />
+###LABEL_EXCUSE_US###</p>
+<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE3### <a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<p>###LABEL_KIND_REGARDS_INI###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account, but confirmation is required.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_INITIATED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_INITIATED_MESSAGE1###
+<###SETFIXED_APPROVE_URL###>
+###LABEL_COPY_PASTE_LINK###
+
+###LABEL_V_REGISTRATION_INITIATED_MESSAGE2###
+<###SETFIXED_DELETE_URL###>
+###LABEL_COPY_PASTE_LINK###
+###LABEL_EXCUSE_US###
+
+###LABEL_KIND_REGARDS_INI###
+###SITE_NAME###
+<###SITE_URL###>
+###SITE_EMAIL###
+
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon a new user registration, but confirmation is required.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_INITIATED###
+###LABEL_V_NOTIFICATION###:
+
+###LABEL_V_REGISTRATION_INITIATED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account, he needs to confirm and administrative review is required.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_INITIATED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_INITIATED_REVIEW1###<br />
+<a href="###SETFIXED_APPROVE_URL###">###SETFIXED_APPROVE_URL###</a><br />
+###LABEL_COPY_PASTE_LINK###</p>
+<p>###LABEL_V_REGISTRATION_INITIATED_REVIEW2###</p>
+<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE2###<br />
+<a href="###SETFIXED_DELETE_URL###">###SETFIXED_DELETE_URL###</a><br />
+###LABEL_COPY_PASTE_LINK###<br />
+###LABEL_EXCUSE_US###</p>
+<p>###LABEL_V_REGISTRATION_INITIATED_MESSAGE3### <a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<p>###LABEL_KIND_REGARDS_INI###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to notify a person by email that he has created his account, he needs to confirm and administrative review is required.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_INITIATED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_INITIATED_REVIEW1###
+<###SETFIXED_APPROVE_URL###>
+###LABEL_COPY_PASTE_LINK###
+
+###LABEL_V_REGISTRATION_INITIATED_REVIEW2###
+
+###LABEL_V_REGISTRATION_INITIATED_MESSAGE2###
+<###SETFIXED_DELETE_URL###>
+###LABEL_COPY_PASTE_LINK###
+
+###LABEL_EXCUSE_US###
+
+###LABEL_V_REGISTRATION_INITIATED_MESSAGE3### ###SITE_EMAIL###
+
+###LABEL_KIND_REGARDS_INI###
+###SITE_NAME###
+<###SITE_URL###>
+###SITE_EMAIL###
+
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon a new user registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_INITIATED###
+###LABEL_V_NOTIFICATION###:
+
+###LABEL_V_REGISTRATION_INITIATED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_CREATE_REVIEW_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to notify admin by email that a person has approved his/her registration and requires accept/refuse decision.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW_ADMIN_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_REVIEW_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_TO_THE_ADMINISTRATOR###</h4>
+<p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE3###</p>
+<dl>
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+<dt>###LABEL_USERNAME###</dt>
+<dd>###FIELD_username###</dd>
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+<dt>###LABEL_GENDER###</dt>
+<dd>###TCA_INPUT_gender###</dd>
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+<dt>###LABEL_NAME###</dt>
+<dd>###FIELD_name###</dd>
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+<dt>###LABEL_FIRST_NAME###</dt>
+<dd>###FIELD_first_name###</dd>
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+<dt>###LABEL_MIDDLE_NAME###</dt>
+<dd>###FIELD_middle_name###</dd>
+<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+<dt>###LABEL_LAST_NAME###</dt>
+<dd>###FIELD_last_name###</dd>
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+<dt>###LABEL_STATUS###</dt>
+<dd>###TCA_INPUT_status###</dd>
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+<dt>###LABEL_DATE_OF_BIRTH###</dt>
+<dd>###FIELD_date_of_birth###</dd>
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+<dt>###LABEL_TITLE###</dt>
+<dd>###FIELD_title###</dd>
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+<dt>###LABEL_COMPANY###</dt>
+<dd>###FIELD_company###</dd>
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+<dt>###LABEL_ADDRESS###</dt>
+<dd>###FIELD_address###</dd>
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+
+<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+<dt>###LABEL_HOUSE_NO###</dt>
+<dd>###FIELD_house_no###</dd>
+<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+<dt>###LABEL_CITY###</dt>
+<dd>###FIELD_city###</dd>
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+<dt>###LABEL_ZONE###</dt>
+<dd>###FIELD_zone###</dd>
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+<dt>###LABEL_COUNTRY###</dt>
+<dd>###FIELD_country###</dd>
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+<dt>###LABEL_STATIC_INFO_COUNTRY###</dt>
+<dd>###FIELD_static_info_country###</dd>
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+<dt>###LABEL_ZIP###</dt>
+<dd>###FIELD_zip###</dd>
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+<dt>###LABEL_TELEPHONE###</dt>
+<dd>###FIELD_telephone###</dd>
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+<dt>###LABEL_FAX###</dt>
+<dd>###FIELD_fax###</dd>
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+<dt>###LABEL_EMAIL###</dt>
+<dd>###FIELD_email###</dd>
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+<dt>###LABEL_USERGROUP###</dt>
+<dd>###TCA_INPUT_usergroup###</dd>
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+<dt>###LABEL_MODULE_SYS_DMAIL_NEWSLETTER###</dt>
+<dd>###TCA_INPUT_module_sys_dmail_newsletter###&nbsp;</dd>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+<dt>###LABEL_MODULE_SYS_DMAIL_CATEGORY###</dt>
+<dd>###TCA_INPUT_module_sys_dmail_category###</dd>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+<dt>###LABEL_MODULE_SYS_DMAIL_HTML###</dt>
+<dd>###LABEL_MODULE_SYS_DMAIL_HTML_CHECKED###</dd>
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+
+<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+<dt>###LABEL_TERMS_ACKNOWLEDGED###</dt>
+<dd>###LABEL_TERMS_ACKNOWLEDGED_CHECKED###</dd>
+<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+<dt>###LABEL_LANGUAGE###</dt>
+<dd>###FIELD_language###</dd>
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+<dt>###LABEL_WWW###</dt>
+<dd>###FIELD_www###</dd>
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+<dt>###LABEL_IMAGE###</dt>
+<dd>###UPLOAD_PREVIEW_image###</dd>
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+<dt>###LABEL_COMMENTS###</dt>
+<dd>###TCA_INPUT_comments###</dd>
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+</dl>
+<div style="clear: both;"></div>
+<p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE1###<br />
+<a href="###SETFIXED_ACCEPT_URL###">###SETFIXED_ACCEPT_URL###</a></p>
+<p>###LABEL_V_REGISTRATION_REVIEW_MESSAGE2###<br />
+<a href="###SETFIXED_REFUSE_URL###">###SETFIXED_REFUSE_URL###</a></p>
+<p>###LABEL_KIND_REGARDS###<br />
+<h4>###SITE_NAME###</h4>
+<!-- ###SUB_RECORD### -->
+</body></html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW_ADMIN_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to notify admin by email that a person has approved his/her registration and requires accept/refuse decision.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_REVIEW_SUBJECT###
+
+###LABEL_V_TO_THE_ADMINISTRATOR###
+
+###LABEL_V_REGISTRATION_REVIEW_MESSAGE3###
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+###LABEL_USERNAME###: ###FIELD_username###
+<!-- ###SUB_INCLUDED_FIELD_username### -->
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+###LABEL_GENDER###: ###TCA_INPUT_gender###
+<!-- ###SUB_INCLUDED_FIELD_gender### -->
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+###LABEL_NAME### ###FIELD_name###
+<!-- ###SUB_INCLUDED_FIELD_name### -->
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+###LABEL_FIRST_NAME###: ###FIELD_first_name###
+<!-- ###SUB_INCLUDED_FIELD_first_name### -->
+<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+###LABEL_MIDDLE_NAME###: ###FIELD_middle_name###
+<!-- ###SUB_INCLUDED_FIELD_middle_name### -->
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+###LABEL_LAST_NAME###: ###FIELD_last_name###
+<!-- ###SUB_INCLUDED_FIELD_last_name### -->
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+###LABEL_STATUS### ###TCA_INPUT_status###
+<!-- ###SUB_INCLUDED_FIELD_status### -->
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+###LABEL_DATE_OF_BIRTH###: ###FIELD_date_of_birth###
+<!-- ###SUB_INCLUDED_FIELD_date_of_birth### -->
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+###LABEL_TITLE###: ###FIELD_title###
+<!-- ###SUB_INCLUDED_FIELD_title### -->
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+###LABEL_COMPANY###: ###FIELD_company###
+<!-- ###SUB_INCLUDED_FIELD_company### -->
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+###LABEL_ADDRESS###: ###FIELD_address###
+<!-- ###SUB_INCLUDED_FIELD_address### -->
+<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+###LABEL_HOUSE_NO###: ###FIELD_house_no###
+<!-- ###SUB_INCLUDED_FIELD_house_no### -->
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+###LABEL_CITY###: ###FIELD_city###
+<!-- ###SUB_INCLUDED_FIELD_city### -->
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+###LABEL_ZONE###: ###FIELD_zone###
+<!-- ###SUB_INCLUDED_FIELD_zone### -->
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+###LABEL_COUNTRY###: ###FIELD_country###
+<!-- ###SUB_INCLUDED_FIELD_country### -->
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+###LABEL_STATIC_INFO_COUNTRY###: ###FIELD_static_info_country###
+<!-- ###SUB_INCLUDED_FIELD_static_info_country### -->
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+###LABEL_ZIP###: ###FIELD_zip###
+<!-- ###SUB_INCLUDED_FIELD_zip### -->
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+###LABEL_TELEPHONE###: ###FIELD_telephone###
+<!-- ###SUB_INCLUDED_FIELD_telephone### -->
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+###LABEL_FAX###: ###FIELD_fax###
+<!-- ###SUB_INCLUDED_FIELD_fax### -->
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+###LABEL_EMAIL###: ###FIELD_email###
+<!-- ###SUB_INCLUDED_FIELD_email### -->
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+###LABEL_USERGROUP###:
+###TCA_INPUT_usergroup###
+<!-- ###SUB_INCLUDED_FIELD_usergroup### -->
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+###LABEL_MODULE_SYS_DMAIL_NEWSLETTER###: ###LABEL_MODULE_SYS_DMAIL_NEWSLETTER_CHECKED###
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_newsletter### -->
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+###LABEL_MODULE_SYS_DMAIL_CATEGORY###:
+###TCA_INPUT_module_sys_dmail_category###
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_category### -->
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+###LABEL_MODULE_SYS_DMAIL_HTML###: ###LABEL_MODULE_SYS_DMAIL_HTML_CHECKED###
+<!-- ###SUB_INCLUDED_FIELD_module_sys_dmail_html### -->
+<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+###LABEL_TERMS_ACKNOWLEDGED###: ###LABEL_TERMS_ACKNOWLEDGED_CHECKED###
+<!-- ###SUB_INCLUDED_FIELD_terms_acknowledged### -->
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+###LABEL_LANGUAGE###: ###FIELD_language###
+<!-- ###SUB_INCLUDED_FIELD_language### -->
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+###LABEL_WWW###: ###FIELD_www###
+<!-- ###SUB_INCLUDED_FIELD_www### -->
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+###LABEL_IMAGE###: ###UPLOAD_PREVIEW_image###
+<!-- ###SUB_INCLUDED_FIELD_image### -->
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+###LABEL_COMMENTS### ###TCA_INPUT_comments###
+<!-- ###SUB_INCLUDED_FIELD_comments### -->
+
+###LABEL_V_REGISTRATION_REVIEW_MESSAGE1###
+<###SETFIXED_ACCEPT_URL###>
+
+###LABEL_V_REGISTRATION_REVIEW_MESSAGE2###
+<###SETFIXED_REFUSE_URL###>
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REVIEW_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to notify an invited person by email that an account has been created for him/her.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_INVITED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_INVITED_MESSAGE1A###<br />
+<a href="###SETFIXED_APPROVE_URL###">###SETFIXED_APPROVE_URL###</a><br />
+###LABEL_COPY_PASTE_LINK###</p>
+<p>###LABEL_V_REGISTRATION_INVITED_MESSAGE2###<br />
+<a href="###SETFIXED_DELETE_URL###">###SETFIXED_DELETE_URL###</a><br />
+###LABEL_COPY_PASTE_LINK###<br />
+###LABEL_EXCUSE_US###</p>
+<p>###LABEL_KIND_REGARDS_INV###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to notify an invited person by email that an account has been created for him/her.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_INVITED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_INVITED_MESSAGE1A###
+<###SETFIXED_APPROVE_URL###>
+###LABEL_COPY_PASTE_LINK###
+
+###LABEL_V_REGISTRATION_INVITED_MESSAGE2###
+<###SETFIXED_DELETE_URL###>
+###LABEL_COPY_PASTE_LINK###
+###LABEL_EXCUSE_US###
+
+###LABEL_KIND_REGARDS_INV###
+###SITE_NAME###
+<###SITE_URL###>
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon a new user registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_INVITED###
+###LABEL_V_NOTIFICATION###:
+
+###LABEL_V_REGISTRATION_INVITED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_INVITE_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to send a welcome email when a person has confirmed his(her) registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS_CRE###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to send a welcome email when a person has confirmed his(her) registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###
+
+###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE1###
+
+###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE2###
+
+###LABEL_KIND_REGARDS_CRE###
+###SITE_NAME###
+<###SITE_URL###>
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon user confirmation of his registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CONFIRMED###
+###LABEL_V_NOTIFICATION###:
+
+###LABEL_V_REGISTRATION_CONFIRMED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to send a welcome email when a person has confirmed his(her) registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_REVIEW_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_REVIEW1###</p>
+<p>###LABEL_V_REGISTRATION_CONFIRMED_REVIEW2###</p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_REVIEW_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to send a welcome email when a person has confirmed his(her) registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_REVIEW### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_CONFIRMED_SUBJECT###
+
+###LABEL_V_REGISTRATION_CONFIRMED_REVIEW1###
+
+###LABEL_V_REGISTRATION_CONFIRMED_REVIEW2###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<###SITE_URL###>
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_REVIEW### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon user confirmation of his registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_REVIEW_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CONFIRMED###
+###LABEL_V_NOTIFICATION###:
+
+###LABEL_V_REGISTRATION_CONFIRMED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_APPROVE_REVIEW_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to send a welcome email when the registration of a person was confirmed.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_ACCEPT_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_ACCEPTED_SUBJECT2###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_ACCEPTED_SUBJECT2###</p>
+<p>###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE3###</p>
+<p>###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE4### <a href="###SETFIXED_ENTER_URL###">###SETFIXED_ENTER_URL###</a></p>
+<p>###LABEL_KIND_REGARDS_CRE###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_ACCEPT_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to send a welcome email when the registration of a person was confirmed.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_ACCEPT### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_ACCEPTED_SUBJECT2###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_ACCEPTED_SUBJECT2###
+
+###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE3###
+
+###LABEL_V_REGISTRATION_ACCEPTED_MESSAGE4### <###SETFIXED_ENTER_URL###>
+
+###LABEL_KIND_REGARDS_CRE###
+###SITE_NAME###
+<###SITE_URL###>
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_ACCEPT### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon acceptation of the user registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_ACCEPT_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_ACCEPTED###
+###LABEL_V_NOTIFICATION###:
+
+###LABEL_V_REGISTRATION_ACCEPTED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_ACCEPT_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to send a sorry email when the registration of a person was refused.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REFUSE_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_REFUSED_SUBJECT2###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_REFUSED_SUBJECT2###</p>
+<p>###LABEL_V_REGISTRATION_REFUSED_MESSAGE3###</p>
+<p>###LABEL_V_REGISTRATION_REFUSED_MESSAGE4### <a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<p>###LABEL_KIND_REGARDS_DEL###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REFUSE_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to send a sorry email when the registration of a person was refused.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REFUSE### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_REFUSED_SUBJECT2###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_REFUSED_SUBJECT2###
+
+###LABEL_V_REGISTRATION_REFUSED_MESSAGE3###
+
+###LABEL_V_REGISTRATION_REFUSED_MESSAGE4### ###SITE_EMAIL###
+
+###LABEL_KIND_REGARDS_DEL###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REFUSE### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon refusal of the user registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REFUSE_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_REFUSED###
+###LABEL_V_NOTIFICATION###:
+
+###LABEL_V_REGISTRATION_REFUSED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_REFUSE_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon user access to login form after user acceptation.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_ENTER_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_ENTERED###
+###LABEL_V_NOTIFICATION###:
+
+###LABEL_V_REGISTRATION_ENTERED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_ENTER_ADMIN### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has cancelles his registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_CANCELLED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_CANCELLED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_CANCELLED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_CANCELLED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS_DEL###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CANCELLED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_CANCELLED_SUBJECT###
+
+###LABEL_V_REGISTRATION_CANCELLED_MESSAGE1###
+
+###LABEL_V_REGISTRATION_CANCELLED_MESSAGE2###
+
+###LABEL_KIND_REGARDS_DEL###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE### end-->
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon user refusal to confirm his registration.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_CANCELLED###
+###LABEL_V_NOTIFICATION###:
+
+###LABEL_V_REGISTRATION_CANCELLED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_DELETE_ADMIN### end-->
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he was unsubscribed, but that his account is still active.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_UNSUBSCRIBE_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_UNSUBSCRIBED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_UNSUBSCRIBED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_UNSUBSCRIBED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_UNSUBSCRIBED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS_DEL###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_UNSUBSCRIBE_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he was unsubscribed, but that his account is still active.</em></p>
+<!-- ###EMAIL_TEMPLATE_SETFIXED_UNSUBSCRIBE### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_UNSUBSCRIBED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_UNSUBSCRIBED_SUBJECT###
+
+###LABEL_V_REGISTRATION_UNSUBSCRIBED_MESSAGE1###
+
+###LABEL_V_REGISTRATION_UNSUBSCRIBED_MESSAGE2###
+
+###LABEL_KIND_REGARDS_DEL###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_SETFIXED_UNSUBSCRIBE### end-->
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
+<!-- ###EMAIL_TEMPLATE_DELETE_SAVED_HTML### begin -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+###CSS_STYLES###
+</style>
+<title>###LABEL_V_REGISTRATION_DELETED_SUBJECT###</title>
+<meta http-equiv="Content-Type" content="text/html; charset=###CHARSET###">
+<meta name="generator" content="TYPO3 CMS">
+</head>
+<body>
+<!-- ###SUB_RECORD### -->
+<h4>###LABEL_V_DEAR###</h4>
+<p>###LABEL_V_REGISTRATION_DELETED_SUBJECT###</p>
+<p>###LABEL_V_REGISTRATION_DELETED_MESSAGE1###</p>
+<p>###LABEL_V_REGISTRATION_DELETED_MESSAGE2###</p>
+<p>###LABEL_KIND_REGARDS_DEL###</p>
+<h4>###SITE_NAME###</h4>
+<p><a href="###SITE_URL###">###SITE_WWW###</a><br />
+<a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<!-- ###SUB_RECORD### -->
+</body>
+</html>
+<!-- ###EMAIL_TEMPLATE_DELETE_SAVED_HTML### end-->
+
+
+
+<p style="margin-top: 20px"><em>This template is used to confirm to a person by email that he has deleted his account.</em></p>
+<!-- ###EMAIL_TEMPLATE_DELETE_SAVED### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_DELETED_SUBJECT###
+
+###LABEL_V_DEAR###
+
+###LABEL_V_REGISTRATION_DELETED_SUBJECT###
+
+###LABEL_V_REGISTRATION_DELETED_MESSAGE1###
+
+###LABEL_V_REGISTRATION_DELETED_MESSAGE2###
+
+###LABEL_KIND_REGARDS_DEL###
+###SITE_NAME###
+###SITE_URL###
+###SITE_EMAIL###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_DELETE_SAVED### end-->
+
+
+
+<p style="margin-top: 20px"><em>This is the template used for the administrator notification email upon deletion of a user account.</em></p>
+<!-- ###EMAIL_TEMPLATE_DELETE_SAVED_ADMIN### begin -->
+<!-- ###SUB_RECORD### -->###LABEL_V_REGISTRATION_DELETED###
+###LABEL_V_NOTIFICATION###:
+
+###LABEL_V_REGISTRATION_DELETED###
+
+###LABEL_NAME### ###FIELD_name###
+###LABEL_EMAIL### ###FIELD_email###
+###LABEL_USERNAME### ###FIELD_username###
+
+###LABEL_KIND_REGARDS###
+###SITE_NAME###
+<!-- ###SUB_RECORD### -->
+<!-- ###EMAIL_TEMPLATE_DELETE_SAVED_ADMIN### end-->
+
+</body>
+</html>
