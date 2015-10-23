@@ -15,11 +15,11 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Terms url: Page (id or id,type) or url where the terms of usage are shown. If set, overrides terms file.
   termsUrl =
 
-  # cat=plugin.tx_srfeuserregister_pi1/file; type=file[gif]; label= Icon used for deletion of uploaded files.
-  file.icon_delete = EXT:sr_feuser_register/pi1/icon_delete.gif
+  # cat=plugin.tx_srfeuserregister_pi1/file; type=file[png]; label= Icon used for deletion of uploaded files.
+  file.icon_delete = EXT:sr_feuser_register/Resources/Public/Images/icon_delete.png
 
     # cat=plugin.tx_srfeuserregister_pi1/file; type=file[css]; label= HTML emails stylesheet: If HTML emails are enabled, this file contains the CSS stylesheet to be incorporated in these mails.
-  HTMLMailCSS = EXT:sr_feuser_register/pi1/tx_srfeuserregister_htmlmail_xhtml.css
+  HTMLMailCSS = EXT:sr_feuser_register/Resources/Public/StyleSheets/htmlmail.css
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Administration email: Enter the administration email address here. This email address will be the sender email and also receive administration notifications.
   email = MyTYPO3Site@mydomain.org
