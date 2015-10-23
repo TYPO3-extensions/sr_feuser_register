@@ -7,10 +7,10 @@ plugin.tx_srfeuserregister_pi1 {
   forceFileDelete = 1
 
     # cat=plugin.tx_srfeuserregister_pi1/file; type=file[pdf,doc,sxw,txt]; label= Attachment file: File to be attached to the confirmation email.
-  file.attachmentFile = EXT:sr_feuser_register/pi1/tx_srfeuserregister_pi1_sample.txt
+  file.attachmentFile = EXT:sr_feuser_register/Resources/Public/TextFiles/attachment.txt
 
     # cat=plugin.tx_srfeuserregister_pi1/file; type=file[pdf,doc,sxw,txt]; label= Terms file: File to be shown as the terms of usage.
-  file.termsFile = EXT:sr_feuser_register/pi1/tx_srfeuserregister_pi1_terms.txt
+  file.termsFile = EXT:sr_feuser_register/Resources/Public/TextFiles/terms.txt
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Terms url: Page (id or id,type) or url where the terms of usage are shown. If set, overrides terms file.
   termsUrl =

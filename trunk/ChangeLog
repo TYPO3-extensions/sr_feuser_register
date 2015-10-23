@@ -1,5 +1,6 @@
 2015-10-23 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #70981: [!!!] Move default style sheets to Resources directory and add static template
+	* Resolves #70984: Move example text files to Resources directory
 
 2015-10-22 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #67629: RSA authentication didn't work from TYPO3 6.2.4
