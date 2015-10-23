@@ -2,7 +2,7 @@ Front End User Registration
 
 Typo3 Extention sr_feuser_register
 
-This is just a sample terms file
+This is just a example terms file
 
 The terms are
 
