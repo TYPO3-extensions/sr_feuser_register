@@ -22,11 +22,9 @@ return array(
 	'tx_srfeuserregister_model_feusers' => $sr_feuser_registerExtensionPath . 'model/class.tx_srfeuserregister_model_feusers.php',
 	'tx_srfeuserregister_model_setfixed' => $sr_feuser_registerExtensionPath . 'model/class.tx_srfeuserregister_model_setfixed.php',
 	'tx_srfeuserregister_model_table_base' => $sr_feuser_registerExtensionPath . 'model/class.tx_srfeuserregister_model_table_base.php',
-	'tx_srfeuserregister_url' => $sr_feuser_registerExtensionPath . 'model/class.tx_srfeuserregister_url.php',
 	'tx_srfeuserregister_model_field_base' => $sr_feuser_registerExtensionPath . 'model/field/class.tx_srfeuserregister_model_field_base.php',
 	'tx_srfeuserregister_model_field_usergroup' => $sr_feuser_registerExtensionPath . 'model/field/class.tx_srfeuserregister_model_field_usergroup.php',
 	'tx_srfeuserregister_dmstatic' => $sr_feuser_registerExtensionPath . 'scripts/class.tx_srfeuserregister_dmstatic.php',
 	'tx_srfeuserregister_select_dmcategories' => $sr_feuser_registerExtensionPath . 'scripts/class.tx_srfeuserregister_select_dmcategories.php',
-	'tx_srfeuserregister_display' => $sr_feuser_registerExtensionPath . 'view/class.tx_srfeuserregister_display.php',
-	'tx_srfeuserregister_utility_urlutility' => $sr_feuser_registerExtensionPath . 'Classes/Utility/UrlUtility.php',
+	'tx_srfeuserregister_display' => $sr_feuser_registerExtensionPath . 'view/class.tx_srfeuserregister_display.php'
 );

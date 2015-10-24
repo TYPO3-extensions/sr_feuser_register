@@ -54,7 +54,6 @@ class tx_srfeuserregister_control_main {
 	public $control; // object of type tx_srfeuserregister_control
 	public $controlData; // data used for the control
 	public $data; // object of type tx_srfeuserregister_data
-	public $urlObj;
 	public $display; // object of type tx_srfeuserregister_display
 	public $email; // object of type tx_srfeuserregister_email
 	public $tca;  // object of type tx_srfeuserregister_tca
@@ -174,7 +173,6 @@ class tx_srfeuserregister_control_main {
 			}
 		}
 
-		$this->urlObj = t3lib_div::getUserObj('&tx_srfeuserregister_url');
 		$this->data = t3lib_div::getUserObj('&tx_srfeuserregister_data');
 		$this->data->extensionName = $this->extensionName;
 		$this->marker = t3lib_div::getUserObj('&tx_srfeuserregister_marker');
@@ -189,11 +187,6 @@ class tx_srfeuserregister_control_main {
 		$this->control = t3lib_div::getUserObj('&tx_srfeuserregister_control');
 		$this->control->extensionName = $this->extensionName;
 
-		$this->urlObj->init(
-			$this->controlData,
-			$cObj
-		);
-
 		$success = TRUE;
 		if ($this->controlData->isTokenValid()) {
 			$this->control->init(
@@ -204,7 +197,6 @@ class tx_srfeuserregister_control_main {
 				$this->email,
 				$this->tca,
 				$this->setfixedObj,
-				$this->urlObj,
 				$this->conf,
 				$pibaseObj
 			);
@@ -233,7 +225,6 @@ class tx_srfeuserregister_control_main {
 				$this->data,
 				$this->tca,
 				$this->controlData,
-				$this->urlObj,
 				$uid,
 				$this->controlData->readToken(),
 				$pibaseObj

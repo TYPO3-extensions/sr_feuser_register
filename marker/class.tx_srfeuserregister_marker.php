@@ -72,7 +72,6 @@ class tx_srfeuserregister_marker
 		$data,
 		$tca,
 		$controlData,
-		$urlObj,
 		$uid,
 		$token,
 		$pibaseObj
@@ -96,9 +95,7 @@ class tx_srfeuserregister_marker
 		$markerArray['###PREFIXID###'] = $prefixId;
 
 			// Setting URL, HIDDENFIELDS and signature markers
-		$urlMarkerArray =
-			$this->generateURLMarkers(
-				$urlObj,
+		$urlMarkerArray = $this->generateURLMarkers(
 				$this->controlData->getBackURL(),
 				$uid,
 				$token,
@@ -315,7 +312,7 @@ class tx_srfeuserregister_marker
 	* @param array  $TCA[tablename]['columns']
 	* @return void
 	*/
-	public function addLabelMarkers (
+	public function addLabelMarkers(
 		&$markerArray,
 		$conf,
 		$cObj,
@@ -328,10 +325,10 @@ class tx_srfeuserregister_marker
 		$requiredArray,
 		$infoFields,
 		$tcaColumns,
-		$bChangesOnly = FALSE
+		$bChangesOnly = false,
+		$prefixId
 	) {
-		$urlObj = t3lib_div::getUserObj('&tx_srfeuserregister_url');
-		$formUrlMarkerArray = $this->generateFormURLMarkers($urlObj);
+		$formUrlMarkerArray = $this->generateFormURLMarkers($prefixId);
 		$urlMarkerArray = $this->getUrlMarkerArray();
 		$formUrlMarkerArray = array_merge($urlMarkerArray, $formUrlMarkerArray);
 
@@ -532,7 +529,7 @@ class tx_srfeuserregister_marker
 			$markerkey = $cObj->caseshift($value, 'upper');
 			$markerArray['###LABEL_' . $markerkey . '###'] = $label;
 		}
-	}	// addLabelMarkers
+	}
 
 
 	public function setRow ($row) {
@@ -551,8 +548,7 @@ class tx_srfeuserregister_marker
 	* @param string auth code
 	* @return void
 	*/
-	public function generateURLMarkers (
-		$urlObj,
+	protected function generateURLMarkers (
 		$backUrl,
 		$uid,
 		$token,
@@ -567,7 +563,7 @@ class tx_srfeuserregister_marker
 		$unsetVars['cmd'] = 'cmd';
 		$unsetVarsAll = $unsetVars;
 		$unsetVarsAll[] = 'token';
-		$formUrl = $urlObj->get('', $GLOBALS['TSFE']->id . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVarsAll);
+		$formUrl = \SJBR\SrFeuserRegister\Utility\UrlUtility::get($prefixId, '', $GLOBALS['TSFE']->id . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVarsAll);
 
 		unset($unsetVars['cmd']);
 		$markerArray['###FORM_URL###'] = $formUrl;
@@ -586,26 +582,26 @@ class tx_srfeuserregister_marker
 		$vars['rU'] = $uid;
 		$vars['preview'] = '1';
 
-		$markerArray['###DELETE_URL###'] = $urlObj->get('', $this->controlData->getPid('edit') . ',' . $GLOBALS['TSFE']->type, $vars);
+		$markerArray['###DELETE_URL###'] = \SJBR\SrFeuserRegister\Utility\UrlUtility::get($prefixId, '', $this->controlData->getPid('edit') . ',' . $GLOBALS['TSFE']->type, $vars);
 
 		$vars['cmd'] = 'create';
 
 		$unsetVars[] = 'regHash';
-		$url = $urlObj->get('', $this->controlData->getPid('register') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
+		$url = \SJBR\SrFeuserRegister\Utility\UrlUtility::get($prefixId, '', $this->controlData->getPid('register') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
 		$markerArray['###REGISTER_URL###'] = $url;
 
 		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,doNotSave,preview';
 		$unsetVars = t3lib_div::trimExplode(',', $unsetVarsList);
 
 		$vars['cmd'] = 'login';
-		$markerArray['###LOGIN_FORM###'] = $urlObj->get('', $this->controlData->getPid('login') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
+		$markerArray['###LOGIN_FORM###'] = \SJBR\SrFeuserRegister\Utility\UrlUtility::get($prefixId, '', $this->controlData->getPid('login') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
 
 		$vars['cmd'] = 'infomail';
-		$markerArray['###INFOMAIL_URL###'] = $urlObj->get('', $this->controlData->getPid('infomail') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
+		$markerArray['###INFOMAIL_URL###'] = \SJBR\SrFeuserRegister\Utility\UrlUtility::get($prefixId, '', $this->controlData->getPid('infomail') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
 
 		$vars['cmd'] = 'edit';
 
-		$markerArray['###EDIT_URL###'] = $urlObj->get('', $this->controlData->getPid('edit') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
+		$markerArray['###EDIT_URL###'] = \SJBR\SrFeuserRegister\Utility\UrlUtility::get($prefixId, '', $this->controlData->getPid('edit') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
 		$markerArray['###THE_PID###'] = $this->controlData->getPid();
 		$markerArray['###THE_PID_TITLE###'] = $this->controlData->getPidTitle();
 		$markerArray['###BACK_URL###'] = $backUrl;
@@ -619,18 +615,19 @@ class tx_srfeuserregister_marker
 		} else {
 			$termsUrlParam = ($this->conf['terms.']['file'] ? $GLOBALS['TSFE']->tmpl->getFileName($this->conf['terms.']['file']) : '');
 		}
-		$markerArray['###TERMS_URL###'] = $urlObj->get('', $termsUrlParam, array(), array(), FALSE);
+		$markerArray['###TERMS_URL###'] = \SJBR\SrFeuserRegister\Utility\UrlUtility::get($prefixId, '', $termsUrlParam, array(), array(), false);
 		return $markerArray;
-	}	// generateURLMarkers
+	}
 
 
 	/**
-	* Generates the form URL markers
-	*
-	* @param string auth code
-	* @return void
-	*/
-	public function generateFormURLMarkers ($urlObj) {
+	 * Generates the form URL markers
+	 *
+	 * @param string $prefixId
+	 * @return void
+	 */
+	protected function generateFormURLMarkers($prefixId)
+	{
 		$commandArray = array('register', 'edit', 'delete', 'confirm', 'login');
 		$markerArray = array();
 		$vars = array();
@@ -647,7 +644,7 @@ class tx_srfeuserregister_marker
 			if (!$pid) {
 				$pid = $GLOBALS['TSFE']->id;
 			}
-			$formUrl = $urlObj->get('', $pid . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVarsAll);
+			$formUrl = \SJBR\SrFeuserRegister\Utility\UrlUtility::get($prefixId, '', $pid . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVarsAll);
 			$markerArray['###FORM_' . $upperCommand . '_URL###'] = $formUrl;
 		}
 		return $markerArray;
@@ -1039,7 +1036,7 @@ class tx_srfeuserregister_marker
 		$markerArray,
 		$viewOnly = FALSE
 	) {
-		$cObj = t3lib_div::makeInstance('tslib_cObj');;
+		$cObj = t3lib_div::makeInstance('tslib_cObj');
 
 		if (!$markerArray) {
 			$markerArray = $this->getArray();

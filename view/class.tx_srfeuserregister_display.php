@@ -181,7 +181,8 @@ class tx_srfeuserregister_display {
 			$controlData->getRequiredArray(),
 			$dataObj->getFieldList(),
 			$GLOBALS['TCA'][$theTable]['columns'],
-			FALSE
+			false,
+			$controlData->getPrefixId()
 		);
 
 		foreach ($GLOBALS['TCA'][$theTable]['columns'] as $theField => $fieldConfig) {
@@ -421,7 +422,8 @@ class tx_srfeuserregister_display {
 				$controlData->getRequiredArray(),
 				$infoFields,
 				$GLOBALS['TCA'][$theTable]['columns'],
-				FALSE
+				false,
+				$controlData->getPrefixId()
 			);
 
 			$templateCode =
@@ -860,7 +862,8 @@ class tx_srfeuserregister_display {
 				$controlData->getRequiredArray(),
 				$dataObj->getFieldList(),
 				$GLOBALS['TCA'][$theTable]['columns'],
-				FALSE
+				false,
+				$controlData->getPrefixId()
 			);
 			$templateCode =
 				$markerObj->removeStaticInfoSubparts(
@@ -1190,7 +1193,8 @@ class tx_srfeuserregister_display {
 				$controlData->getRequiredArray(),
 				$dataObj->getFieldList(),
 				$GLOBALS['TCA'][$theTable]['columns'],
-				FALSE
+				false,
+				$controlData->getPrefixId()
 			);
 
 			if (
