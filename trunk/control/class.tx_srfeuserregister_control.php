@@ -998,7 +998,7 @@ class tx_srfeuserregister_control {
 			}
 			if (!$redirectUrl) {
 				if ($conf['loginPID']) {
-					$redirectUrl = \SJBR\SrFeuserRegister\Utility\UrlUtility::get($controlData->getPrefixId(), '', $conf['loginPID']);
+					$redirectUrl = \SJBR\SrFeuserRegister\Utility\UrlUtility::get($controlData->getPrefixId(), '', $conf['loginPID'], array(), array(), false);
 				} else {
 					$redirectUrl = $controlData->getSiteUrl();
 				}

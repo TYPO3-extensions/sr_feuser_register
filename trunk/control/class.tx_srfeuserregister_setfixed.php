@@ -614,29 +614,14 @@ class tx_srfeuserregister_setfixed {
 					$setfixedpiVars = array($prefixId . '%5BregHash%5D' => $thisHash);
 				}
 				$urlConf = array();
-				$urlConf['disableGroupAccessCheck'] = TRUE;
-				$bconfirmTypeIsInt = (
-					class_exists('t3lib_utility_Math') ?
-						t3lib_utility_Math::canBeInterpretedAsInteger($confirmType) :
-						t3lib_div::testInt($confirmType)
-				);
-
-				$confirmType = ($bconfirmTypeIsInt ? intval($confirmType) : $GLOBALS['TSFE']->type);
-				
-				$url =
-					Tx_SrFeuserRegister_Utility_UrlUtility::getTypoLink_URL(
-						$cObj,
-						$linkPID . ',' . $confirmType,
-						$setfixedpiVars,
-						'',
-						$urlConf
-					);
-
+				$urlConf['disableGroupAccessCheck'] = true;
+				$confirmType = t3lib_utility_Math::canBeInterpretedAsInteger($confirmType) ? intval($confirmType) : $GLOBALS['TSFE']->type;
+				$url = \SJBR\SrFeuserRegister\Utility\UrlUtility::getTypoLink_URL($linkPID . ',' . $confirmType, $setfixedpiVars, '', $urlConf);
 				$bIsAbsoluteURL = ((strncmp($url, 'http://', 7) == 0) || (strncmp($url, 'https://', 8) == 0));
 				$markerKey = '###SETFIXED_' . $cObj->caseshift($theKey, 'upper') . '_URL###';
 				$url = ($bIsAbsoluteURL ? '' : $controlData->getSiteUrl()) . ltrim($url, '/');
 				$markerArray[$markerKey] = str_replace(array('[',']'), array('%5B', '%5D'), $url);
-			}	// foreach
+			}
 		}
 	}
 
