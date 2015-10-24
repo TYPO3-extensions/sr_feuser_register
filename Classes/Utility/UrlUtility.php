@@ -75,9 +75,64 @@ class UrlUtility
 		foreach ($vars as $key => $val) {
 			$piVars[$prefixId . '%5B' . $key . '%5D'] = $val;
 		}
-		$url = $tag ? $cObj->getTypoLink($tag, $id, $piVars) : $cObj->getTypoLink_URL($id, $piVars);
+		$url = $tag ? self::$cObj->getTypoLink($tag, $id, $piVars) : self::$cObj->getTypoLink_URL($id, $piVars);
 		$url = htmlspecialchars(str_replace(array('[',']'), array('%5B', '%5D'), $url));
 		return $url;
+	}
+
+	/**
+	 * Returns the URL of a "typolink" create from the input parameter string, url-parameters and target
+	 *
+	 * @param string Link parameter; eg. "123" for page id, "kasperYYYY@typo3.com" for email address, "http://...." for URL, "fileadmin/blabla.txt" for file.
+	 * @param array An array with key/value pairs representing URL parameters to set. Values NOT URL-encoded yet.
+	 * @param string Specific target set, if any. (Default is using the current)
+	 * @param array Configuration
+	 * @return string The URL
+	 */
+	static public function getTypoLink_URL($params, $urlParameters = array(), $target = '', $conf = array())
+	{
+		self::initializeUrlUtility();
+		$result = false;
+		$result = self::getTypoLink('', $params, $urlParameters, $target, $conf);
+		if ($url !== false) {
+			$url = self::$cObj->lastTypoLinkUrl;
+		}
+        return $url;
+    }
+
+	/**
+	 * Returns a linked string made from typoLink parameters.
+	 *
+	 * This function takes $label as a string, wraps it in a link-tag based on the $params string, which should contain data like that you would normally pass to the popular <LINK>-tag in the TSFE.
+	 * Optionally you can supply $urlParameters which is an array with key/value pairs that are rawurlencoded and appended to the resulting url.
+	 *
+	 * @param string Text string being wrapped by the link.
+	 * @param string Link parameter; eg. "123" for page id, "kasperYYYY@typo3.com" for email address, "http://...." for URL, "fileadmin/blabla.txt" for file.
+	 * @param array An array with key/value pairs representing URL parameters to set. Values NOT URL-encoded yet.
+	 * @param string Specific target set, if any. (Default is using the current)
+	 * @param array Configuration
+	 * @return string The wrapped $label-text string
+	 */
+	 static public function getTypoLink($label, $params, $urlParameters = array(), $target = '', $conf = array())
+	 {
+	 	 $url = false;
+	 	 $conf['parameter'] = $params;
+	 	 if ($target) {
+	 	 	 if (!isset($conf['target'])) {
+	 	 	 	 $conf['target'] = $target;
+	 	 	 }
+	 	 	 if (!isset($conf['extTarget'])) {
+	 	 	 	 $conf['extTarget'] = $target;
+	 	 	 }
+	 	 }
+	 	 if (is_array($urlParameters)) {
+	 	 	 if (count($urlParameters)) {
+	 	 	 	 $conf['additionalParams'] .= GeneralUtility::implodeArrayForUrl('', $urlParameters);
+	 	 	 }
+	 	 } else {
+	 	 	 $conf['additionalParams'] .= $urlParameters;
+	 	 }
+	 	 $url = self::$cObj->typolink($label, $conf);
 	}
 
 	/**
@@ -86,12 +141,12 @@ class UrlUtility
 	 * @param string $prefixId: prefix id of variables
 	 * @return void
 	 */
-	static protected function initializeUrlUtility($prefixId)
+	static protected function initializeUrlUtility($prefixId = '')
 	{
 		if (self::$cObj === null) {
 			self::$cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		}
-		if (empty(self::$piVars[$prefixId])) {
+		if ($prefixId && empty(self::$piVars[$prefixId])) {
 				self::$piVars[$prefixId] = GeneralUtility::_GPmerged($prefixId);
 		}
 	}
