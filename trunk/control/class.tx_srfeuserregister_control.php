@@ -69,7 +69,6 @@ class tx_srfeuserregister_control {
 		$email,
 		$tca,
 		$setfixedObj,
-		$urlObj,
 		$conf,
 		$pibaseObj
 	) {
@@ -79,7 +78,6 @@ class tx_srfeuserregister_control {
 		$this->email = $email;
 		$this->tca = $tca;
 		$this->setfixedObj = $setfixedObj;
-		$this->urlObj = $urlObj;
 			// Retrieve the extension key
 		$extKey = $controlData->getExtKey();
 		// Get the command as set in piVars
@@ -1000,7 +998,7 @@ class tx_srfeuserregister_control {
 			}
 			if (!$redirectUrl) {
 				if ($conf['loginPID']) {
-					$redirectUrl = $this->urlObj->get('', $conf['loginPID']);
+					$redirectUrl = \SJBR\SrFeuserRegister\Utility\UrlUtility::get($controlData->getPrefixId(), '', $conf['loginPID']);
 				} else {
 					$redirectUrl = $controlData->getSiteUrl();
 				}
