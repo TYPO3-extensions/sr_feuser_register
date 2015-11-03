@@ -28,7 +28,7 @@
  ***************************************************************/
 
 /**
- * @author		Kasper Skårhøj <kasper@typo3.com>
+ * @author		Kasper Skï¿½rhï¿½j <kasper@typo3.com>
  * @author  	Jan-Erik Revsbech <jer@moccompany.com>
  * @author  	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
  *
@@ -113,9 +113,3 @@ class tx_srfeuserregister_dmstatic {
 
 
 }
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/scripts/class.tx_srfeuserregister_dmstatic.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/scripts/class.tx_srfeuserregister_dmstatic.php']);
-}
-
-?>
