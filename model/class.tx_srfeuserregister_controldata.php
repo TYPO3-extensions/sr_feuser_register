@@ -1051,9 +1051,3 @@ class tx_srfeuserregister_controldata {
 		$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery('cache_md5params', 'tstamp<' . $max_life . ' AND type=99');
 	}	// cleanShortUrlCache
 }
-
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_controldata.php'])  {
-  include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_controldata.php']);
-}
-?>

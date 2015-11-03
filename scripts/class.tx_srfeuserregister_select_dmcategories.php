@@ -116,7 +116,3 @@ class tx_srfeuserregister_select_dmcategories {
 		}
 	}
 }
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/scripts/class.tx_srfeuserregister_select_dmcategories.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/scripts/class.tx_srfeuserregister_select_dmcategories.php']);
-}

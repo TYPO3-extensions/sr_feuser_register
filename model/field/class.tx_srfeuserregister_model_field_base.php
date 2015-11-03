@@ -71,11 +71,3 @@ class tx_srfeuserregister_model_field_base  {
 		$parsedArr[$fieldname] = $dataArray[$fieldname];	// just copied the original value
 	}
 }
-
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/field/class.tx_srfeuserregister_model_field_base.php']) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/field/class.tx_srfeuserregister_model_field_base.php']);
-}
-
-
-?>

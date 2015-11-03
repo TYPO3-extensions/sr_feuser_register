@@ -42,8 +42,3 @@ class tx_srfeuserregister_model_feusers extends tx_srfeuserregister_model_table_
 		'usergroup' => 'tx_srfeuserregister_model_field_usergroup',
 	);
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_model_feusers.php']) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/sr_feuser_register/model/class.tx_srfeuserregister_model_feusers.php']);
-}
-?>
