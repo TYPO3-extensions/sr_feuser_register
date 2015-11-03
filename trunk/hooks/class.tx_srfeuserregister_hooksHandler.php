@@ -1,4 +1,5 @@
 <?php
+
 /*
  *  Copyright notice
  *
@@ -19,10 +20,10 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
+ 
 /**
  * Example of hook handler for extension Front End User Registration (sr_feuser_register)
  */
-
 class tx_srfeuserregister_hooksHandler {
 	public function registrationProcess_beforeConfirmCreate (&$recordArray, &$controlDataObj) {
 		// in the case of this hook, the record array is passed by reference

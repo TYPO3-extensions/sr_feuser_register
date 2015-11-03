@@ -1,8 +1,9 @@
 <?php
-/***************************************************************
+
+/*
  *  Copyright notice
  *
- *  (c) 2013-2014 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2013-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -13,43 +14,15 @@
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
-/**
- * @author		Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
- *
- * @package 	TYPO3
- * @subpackage sr_feuser_register
- * @version		$Id$
  */
-
-/**
- * [CLASS/FUNCTION INDEX of SCRIPT]
- *
- *
- *
- *   56: class tx_directmail_select_categories
- *   67:     function get_localized_categories($params)
- *
- * TOTAL FUNCTIONS: 1
- * (This index is automatically created/updated by the extension "extdeveval")
- *
- */
-
 
 /**
  * Localize categories in backend forms
- *
  */
 class tx_srfeuserregister_select_dmcategories {
 	public $sys_language_uid = 0;

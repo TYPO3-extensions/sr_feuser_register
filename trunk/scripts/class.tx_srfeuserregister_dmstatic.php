@@ -1,10 +1,11 @@
 <?php
-/***************************************************************
+
+/*
  *  Copyright notice
  *
- *  (c) 1999-2004 Kasper Skaarhoj (kasper@typo3.com)
+ *  (c) 1999-2004 Kasper Skaarhoj <kasper@typo3.com>
  *  (c) 2005-2006 Jan-Erik Revsbech <jer@moccompany.com>
- *  (c) 2013 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2013-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -15,30 +16,12 @@
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
-/**
- * @author		Kasper Sk�rh�j <kasper@typo3.com>
- * @author  	Jan-Erik Revsbech <jer@moccompany.com>
- * @author  	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
- *
- * @package 	TYPO3
- * @subpackage	tx_directmail
- *
- * @version 	$Id$
  */
-
-
 
 /**
  * Static class.

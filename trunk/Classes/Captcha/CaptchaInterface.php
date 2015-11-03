@@ -1,5 +1,6 @@
 <?php
 namespace SJBR\SrFeuserRegister\Captcha;
+
 /*
  *  Copyright notice
  *

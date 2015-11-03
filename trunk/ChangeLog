@@ -1,5 +1,6 @@
 2015-11-03 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #71286: [!!!] Remove xclass assignments
+	* Adjust copyright notices
 
 2015-10-24 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #70999: Add configuration check utility
