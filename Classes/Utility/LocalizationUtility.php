@@ -22,6 +22,9 @@ namespace SJBR\SrFeuserRegister\Utility;
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+
 /**
  * Translate a key from locallang. The files are loaded from the folder "Resources/Private/Language/".
  */
@@ -35,12 +38,12 @@ class LocalizationUtility
 	/**
 	 * @var string Configured suffix
 	 */
-	static protected $suffix = NULL;
+	static protected $suffix = null;
 
 	/**
 	 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
 	 */
-	static protected $configurationManager = NULL;
+	static protected $configurationManager = null;
 
 	/**
 	 * Returns the localized label of the LOCAL_LANG key, $key.
@@ -50,16 +53,16 @@ class LocalizationUtility
 	 * @param array $arguments the arguments of the extension, being passed over to vsprintf
 	 * @return string|NULL The value from LOCAL_LANG or NULL if no translation was found.
 	 */
-	static public function translate($key, $extensionName, $arguments = NULL)
+	static public function translate($key, $extensionName, $arguments = null)
 	{
-		$value = NULL;
+		$value = null;
 		self::initializeLocalization($extensionName);
 		// If the suffix is set and we have a localized string for the desired salutation, we'll take that.
 		if (self::$suffix) {
 			$expandedKey = $key . '_' . self::$suffix;
 			$value = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($expandedKey, $extensionName, $arguments);
 		}
-		if ($value === NULL) {
+		if ($value === null) {
 			$value = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($key, $extensionName, $arguments);
 		}
 		return $value;
@@ -79,14 +82,14 @@ class LocalizationUtility
 		if (empty($valuesArray)) {
 			for ($i = 0; $i < 999; ++$i) {
 				$text = self::translate($textSchema . $i, $extensionName);
-				if ($text !== NULL) {
+				if ($text !== null) {
 					$value[] = array($text, $i);
 				}
 			}
 		} else {
 			foreach ($valuesArray as $k => $i) {
 				$text = self::translate($textSchema . $i, $extensionName);
-				if ($text !== NULL) {
+				if ($text !== null) {
 					$value[] = array($text, $i);
 				}
 			}
@@ -106,9 +109,9 @@ class LocalizationUtility
 			return;
 		}
 		$configurationManager = static::getConfigurationManager();
-		$settings = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $extensionName);
+		$settings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $extensionName);
 		if (isset($settings['salutation']) && in_array($settings['salutation'], self::$allowedSuffixes, true)) {
-			self::$suffix = $settings['salutation'];
+			self::$suffix = ($settings['salutation'] === 'formal' ? '' : $settings['salutation']);
 		} else {
 			self::$suffix = '';
 		}
@@ -123,7 +126,7 @@ class LocalizationUtility
 		if (!is_null(static::$configurationManager)) {
 			return static::$configurationManager;
 		}
-		$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+		$objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 		$configurationManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManagerInterface');
 		static::$configurationManager = $configurationManager;
 		return $configurationManager;
