@@ -465,7 +465,7 @@ class Data
 	{
 		if (is_array($this->conf[$cmdKey . '.']['overrideValues.'])) {
 			foreach ($this->conf[$cmdKey . '.']['overrideValues.'] as $theField => $theValue) {
-				if ($theField == 'usergroup' && $this->theTable == 'fe_users' && $this->conf[$cmdKey.'.']['allowUserGroupSelection']) {
+				if ($theField === 'usergroup' && $this->theTable === 'fe_users' && $this->conf[$cmdKey . '.']['allowUserGroupSelection']) {
 					$overrideArray = GeneralUtility::trimExplode(',', $theValue, true);
 					if (is_array($dataArray[$theField])) {
 						$dataValue = array_merge($dataArray[$theField], $overrideArray);
@@ -474,7 +474,7 @@ class Data
 					}
 					$dataValue = array_unique($dataValue);
 				} else {
-					$stdWrap = $this->conf[$cmdKey . '.']['overrideValues.'][$theField.'.'];
+					$stdWrap = $this->conf[$cmdKey . '.']['overrideValues.'][$theField . '.'];
 					if ($stdWrap) {
 						$dataValue = $this->cObj->stdWrap($theValue, $stdWrap);
 					} else if (isset($this->conf[$cmdKey . '.']['overrideValues.'][$theField])) {
@@ -913,18 +913,13 @@ class Data
 	public function parseValues(array &$dataArray, array $origArray, $cmdKey)
 	{
 		if (is_array($this->conf['parseValues.'])) {
-			foreach($this->conf['parseValues.'] as $theField => $theValue) {
+			foreach ($this->conf['parseValues.'] as $theField => $theValue) {
 				$listOfCommands = GeneralUtility::trimExplode(',', $theValue, true);
 				if (in_array('setEmptyIfAbsent', $listOfCommands)) {
 					$this->setEmptyIfAbsent($theField, $dataArray);
 				}
 				$internalType = $GLOBALS['TCA'][$this->theTable]['columns'][$theField]['config']['internal_type'];
-
-				if (
-					isset($dataArray[$theField]) ||
-					isset($origArray[$theField]) ||
-					$internalType === 'file'
-				) {
+				if (isset($dataArray[$theField]) || isset($origArray[$theField]) || $internalType === 'file') {
 					foreach ($listOfCommands as $cmd) {
 						// Enable parameters after each command enclosed in brackets [..].
 						$cmdParts = preg_split('/\[|\]/', $cmd);
@@ -985,7 +980,7 @@ class Data
 								if (!empty($dataArray[$theField])) {
 									if (is_array($dataArray[$theField])) {
 										$fieldDataArray = $dataArray[$theField];
-									} else if (is_string($dataArray[$theField]) && $dataArray[$theField]) {
+									} else if (is_string($dataArray[$theField])) {
 										$fieldDataArray = GeneralUtility::trimExplode(',', $dataArray[$theField], true);
 									}
 								}
@@ -1761,12 +1756,12 @@ class Data
 		$fieldsList = array_keys($parsedArray);
 		// Invoke the hooks for additional parsing
 		foreach ($GLOBALS['TCA'][$this->theTable]['columns'] as $colName => $colSettings) {
-			if (isset($parsedArray[$colName])) {
+			if (isset($parsedArray[$colName]) || isset($origArray[$colName])) {
 				$foreignTable = $GLOBALS['TCA'][$this->theTable]['columns'][$colName]['config']['foreign_table'] ?: '';
-				$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId][$this->theTable][$colName]) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId][$this->theTable][$colName] : array();
+				$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable][$colName]) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable][$colName] : array();
 				foreach ($hookClassArray as $classRef) {
 					$hookObject = GeneralUtility::makeInstance($classRef);
-					if (is_object($hookObject) && method_exists($hookObject, 'parseOutgoingData')) {					
+					if (is_object($hookObject) && method_exists($hookObject, 'parseOutgoingData')) {
 						$hookObject->parseOutgoingData($this->theTable, $colName, $foreignTable, $cmdKey, $pid, $this->conf, $dataArray, $origArray, $parsedArray);
 					}
 				}

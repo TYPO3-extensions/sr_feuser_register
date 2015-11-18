@@ -1402,7 +1402,7 @@ class Marker
 					
 					if ($this->theTable === 'fe_users' && $colName === 'usergroup') {
 						$userGroupObj = null;
-						$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId][$this->theTable][$colName]) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId][$this->theTable][$colName] : array();
+						$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable][$colName]) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable][$colName] : array();
 						foreach ($hookClassArray as $classRef) {
 							$userGroupObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($classRef);
 							if (is_object($userGroupObj)) {
@@ -1510,7 +1510,7 @@ class Marker
 									$textSchema = $this->theTable . '.' . $colName . '.I.';
 									$itemArray = LocalizationUtility::getItemsLL($textSchema, $this->extensionName);
 
-									if (!count($itemArray)) {
+									if (empty($itemArray)) {
 										if ($colConfig['itemsProcFunc']) {
 											$itemArray = GeneralUtility::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this, '');
 										}
@@ -1522,7 +1522,7 @@ class Marker
 
 									if (is_array($itemArray)) {
 										$itemKeyArray = $this->getItemKeyArray($itemArray);
-										for ($i = 0; $i < count ($valuesArray); $i++) {
+										for ($i = 0; $i < count($valuesArray); $i++) {
 											$label = LocalizationUtility::translate($itemKeyArray[$valuesArray[$i]][0], $this->extensionName);
 											if ($HSC) {
 												$label = htmlspecialchars($label, ENT_QUOTES, $charset);
@@ -1555,7 +1555,7 @@ class Marker
 													if ($HSC) {
 														$text = htmlspecialchars($text, ENT_QUOTES, $charset);
 													}
-													$colContent .= (($bNotLast || $i < count($foreignRows) - 1 ) ?  $this->cObj->stdWrap($text, $stdWrap) : $text);
+													$colContent .= (($bNotLast || $i < count($foreignRows) - 1) ?  $this->cObj->stdWrap($text, $stdWrap) : $text);
 												}
 											}
 										}

@@ -195,7 +195,7 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=string; label= Denied user groups: Comma separated list of user groups to be never selectable. These user groups supersede the user groups resulting from allowedUserGroups and allowedSubgroups.
   deniedUserGroups =
 
-    # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Keep unselectable user groups: If set then the user groups which the TYPO3 admin has assigned are not removed after editing.
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Keep unselectable user groups: If set then the user groups that the TYPO3 admin has assigned are not removed after editing. Also applies to any allowed user groups when the field is not editable.
   keepUnselectableUserGroups = 0
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Minimum password length: The minimum number of characters that the password must contain.

@@ -32,13 +32,14 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 class UsergroupHooks
 {
 	/**
-	 * Modifies the form fields configuration depending on the $cmdKey
+	 * Modify the form fields configuration depending on the $cmdKey
 	 *
 	 * @param array $conf: the configuration array
 	 * @param string $cmdKey: the command key
 	 * @return void
 	 */
-	public function modifyConf(&$conf, $cmdKey) {
+	public function modifyConf(array &$conf, $cmdKey)
+	{
 		// Add usergroup to the list of fields and required fields if the user is allowed to select user groups
 		// Except when only updating password
 		if ($cmdKey !== 'password') {
@@ -51,38 +52,15 @@ class UsergroupHooks
 				$conf[$cmdKey . '.']['required'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['required'], true), array('usergroup')));
 			}
 		}
-		// If inviting and administrative review is enabled, save original reserved user groups
-		if ($cmdKey === 'invite' && $conf['enableAdminReview']) {
-			$this->savedReservedValues = $this->getReservedValues();
-		}
 	}
 
 	/**
-	 * Gets allowed values for user groups
-	 *
-	 * @param array $conf: the configuration array
-	 * @param string $cmdKey: the command key
-	 * @return void
-	 */
-	public function getAllowedValues(
-		$conf,
-		$cmdKey,
-		&$allowedUserGroupArray,
-		&$allowedSubgroupArray,
-		&$deniedUserGroupArray
-	) {
-		$allowedUserGroupArray = GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['allowedUserGroups'], true);
-		$allowedSubgroupArray = GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['allowedSubgroups'], true);
-		$deniedUserGroupArray = GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['deniedUserGroups'], true);
-	}
-
-	/**
-	 * Gets the array of user groups reserved for control of the registration process
+	 * Get the array of user groups reserved for control of the registration process
 	 *
 	 * @param array $conf: the plugin configuration
 	 * @return array the reserved user groups
 	 */
-	public function getReservedValues($conf)
+	public function getReservedValues(array $conf)
 	{
 		$reservedValues = array_merge(
 			GeneralUtility::trimExplode(',', $conf['create.']['overrideValues.']['usergroup'], true),
@@ -94,14 +72,15 @@ class UsergroupHooks
 	}
 
 	/**
-	 * Removes reserved user groups from the usergroup field of an array
+	 * Remove reserved user groups from the usergroup field of an array
 	 *
 	 * @param array $row: array
 	 * @return void
 	 */
-	public function removeReservedValues(&$row){
+	public function removeReservedValues(array &$row, array $conf)
+	{
 		if (isset($row['usergroup'])) {
-			$reservedValues = $this->getReservedValues();
+			$reservedValues = $this->getReservedValues($conf);
 			if (is_array($row['usergroup'])) {
 				$userGroupArray = $row['usergroup'];
 				$bUseArray = true;
@@ -118,26 +97,50 @@ class UsergroupHooks
 		}
 	}
 
-	public function removeInvalidValues(
-		$conf,
-		$cmdKey,
-		&$row
-	) {
+	public function removeInvalidValues(array $conf, $cmdKey, array &$row)
+	{
 		if (isset($row['usergroup']) && $conf[$cmdKey . '.']['allowUserGroupSelection']) {
-
-// Todo
+			// Todo
 		} else {
-			$row['usergroup'] = ''; // the setting of the usergropus has not been allowed
+			// The setting of the usergroups is allowed
+			$row['usergroup'] = '';
 		}
 	}
 
-	public function getAllowedWhereClause(
-		$theTable,
-		$pid,
-		$conf,
-		$cmdKey,
-		$bAllow = true
-	) {
+	/**
+	 * Processes data before entering the database
+	 *
+	 * @return void
+	 */
+	public function parseOutgoingData($theTable, $fieldname, $foreignTable, $cmdKey, $pid, array $conf, array $dataArray, array $origArray, array &$parsedArray)
+	{
+		$valuesArray = array();
+		if (isset($origArray[$fieldname]) && is_array($origArray[$fieldname])) {
+			$valuesArray = $origArray[$fieldname];
+			if ($conf[$cmdKey . '.']['keepUnselectableUserGroups']) {
+				$whereClause = $this->getAllowedWhereClause($foreignTable, $pid, $conf, $cmdKey);
+				$rowArray = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid', $foreignTable, $whereClause, '', '', '', 'uid');
+				if (!empty($rowArray) && is_array($rowArray)) {
+					$keepValues = array_keys($rowArray);
+				}
+			} else {
+				$keepValues = $this->getReservedValues($conf);
+			}
+			$valuesArray = array_intersect($valuesArray, $keepValues);
+		}
+		if (isset($dataArray[$fieldname]) && is_array($dataArray[$fieldname])) {
+			$dataArray[$fieldname] = array_unique(array_merge($dataArray[$fieldname], $valuesArray));
+			$parsedArray[$fieldname] = $dataArray[$fieldname];
+		}
+	}
+
+	/**
+	 * Contruct a where clause to select the user groups that are allowed to be kept
+	 *
+	 * @return string the where clause
+	 */
+	public function getAllowedWhereClause($theTable, $pid, array $conf, $cmdKey, $bAllow = true)
+	{
 		$whereClause = '';
 		$subgroupWhereClauseArray = array();
 		$pidArray = array();
@@ -146,95 +149,57 @@ class UsergroupHooks
 			foreach ($tmpArray as $value) {
 				$valueIsInt = MathUtility::canBeInterpretedAsInteger($value);
 				if ($valueIsInt) {
-					$pidArray[] = intval($value);
+					$pidArray[] = (int) $value;
 				}
 			}
 		}
 		if (count($pidArray) > 0) {
 			$whereClause = ' pid IN (' . implode(',', $pidArray) . ') ';
 		} else {
-			$whereClause = ' pid=' . intval($pid) . ' ';
+			$whereClause = ' pid=' . (int) $pid . ' ';
 		}
 
 		$whereClausePart2 = '';
 		$whereClausePart2Array = array();
 
-		$this->getAllowedValues(
-			$conf,
-			$cmdKey,
-			$allowedUserGroupArray,
-			$allowedSubgroupArray,
-			$deniedUserGroupArray
-		);
-
-		if ($allowedUserGroupArray['0'] != 'ALL') {
+		$allowedUserGroupArray = array();
+		$allowedSubgroupArray = array();
+		$deniedUserGroupArray = array();
+		$this->getAllowedValues($conf, $cmdKey, $allowedUserGroupArray, $allowedSubgroupArray, $deniedUserGroupArray);
+		if ($allowedUserGroupArray['0'] !== 'ALL') {
 			$uidArray = $GLOBALS['TYPO3_DB']->fullQuoteArray($allowedUserGroupArray, $theTable);
 			$subgroupWhereClauseArray[] = 'uid ' . ($bAllow ? 'IN' : 'NOT IN') . ' (' . implode(',', $uidArray) . ')';
 		}
-
 		if (count($allowedSubgroupArray)) {
 			$subgroupArray = $GLOBALS['TYPO3_DB']->fullQuoteArray($allowedSubgroupArray, $theTable);
 			$subgroupWhereClauseArray[] = 'subgroup ' . ($bAllow ? 'IN' : 'NOT IN') . ' (' . implode(',', $subgroupArray) . ')';
 		}
-
 		if (count($subgroupWhereClauseArray)) {
 			$subgroupWhereClause .= implode(' ' . ($bAllow ? 'OR' : 'AND') . ' ', $subgroupWhereClauseArray);
 			$whereClausePart2Array[] = '( ' . $subgroupWhereClause . ' )';
 		}
-
 		if (count($deniedUserGroupArray)) {
 			$uidArray = $GLOBALS['TYPO3_DB']->fullQuoteArray($deniedUserGroupArray, $theTable);
 			$whereClausePart2Array[] = 'uid ' . ($bAllow ? 'NOT IN' : 'IN') . ' (' . implode(',', $uidArray) . ')';
 		}
-
 		if (count($whereClausePart2Array)) {
 			$whereClausePart2 = implode(' ' . ($bAllow ? 'AND' : 'OR') . ' ', $whereClausePart2Array);
 			$whereClause .= ' AND (' . $whereClausePart2 . ')';
 		}
-
 		return $whereClause;
 	}
 
-	public function parseOutgoingData(
-		$theTable,
-		$fieldname,
-		$foreignTable,
-		$cmdKey,
-		$pid,
-		$conf,
-		$dataArray,
-		$origArray,
-		&$parsedArray
-	) {
-		$valuesArray = array();
-		if (
-			isset($origArray) &&
-			is_array($origArray) &&
-			isset($origArray[$fieldname]) &&
-			is_array($origArray[$fieldname])
-		) {
-			$valuesArray = $origArray[$fieldname];
-
-			if ($conf[$cmdKey . '.']['keepUnselectableUserGroups']) {
-				$whereClause = $this->getAllowedWhereClause($foreignTable, $pid, $conf, $cmdKey, false);
-				$rowArray = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid', $foreignTable, $whereClause, '', '', '', 'uid');
-				if (!empty($rowArray) && is_array($rowArray)) {
-					$keepValues = array_keys($rowArray);
-				}
-			} else {
-				$keepValues = $this->getReservedValues();
-			}
-			$valuesArray = array_intersect($valuesArray, $keepValues);
-		}
-
-		if (
-			isset($dataArray) &&
-			is_array($dataArray) &&
-			isset($dataArray[$fieldname]) &&
-			is_array($dataArray[$fieldname])
-		) {
-			$dataArray[$fieldname] = array_unique(array_merge($dataArray[$fieldname], $valuesArray));
-			$parsedArray[$fieldname] = $dataArray[$fieldname];
-		}
+	/**
+	 * Get the allowed values for user groups
+	 *
+	 * @param array $conf: the configuration array
+	 * @param string $cmdKey: the command key
+	 * @return void
+	 */
+	protected function getAllowedValues(array $conf, $cmdKey, array &$allowedUserGroupArray, array &$allowedSubgroupArray, array &$deniedUserGroupArray)
+	{
+		$allowedUserGroupArray = GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['allowedUserGroups'], true);
+		$allowedSubgroupArray = GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['allowedSubgroups'], true);
+		$deniedUserGroupArray = GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['deniedUserGroups'], true);
 	}
 }
