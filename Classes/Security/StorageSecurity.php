@@ -159,7 +159,7 @@ class StorageSecurity
 							$dataArray['password'] = $decryptedPassword;
 						} else {
 							// Failed to decrypt auto login password
-							$message = LocalizationUtility('internal_decrypt_auto_login_failed', self::$extensionName);
+							$message = LocalizationUtility::translate('internal_decrypt_auto_login_failed', self::$extensionName);
 							GeneralUtility::sysLog($message, self::$extensionKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
 						}
 					} else {

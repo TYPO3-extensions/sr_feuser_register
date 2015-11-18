@@ -30,9 +30,28 @@ use TYPO3\CMS\Core\SingletonInterface;
 interface CaptchaInterface extends SingletonInterface
 {
 	/**
-	 * Sets the value of captcha markers
+	 * Determines whether the required captcha extension is loaded
+	 *
+	 * @return boolean true if the required captcha extension is loaded
 	 */
-	public function addGlobalMarkers(&$markerArray, $markerObject);
+	public function isLoaded();
+
+	/**
+	 * Returns the eval rule for this captcha
+	 *
+	 * @return string the eval rule for this captcha
+	 */
+	public function getEvalRule();
+
+	/**
+	 * Sets the value of captcha markers
+	 *
+	 * @param array $markerArray: a marker array
+	 * @param string $cmdKey: the cmd being processed
+	 * @param array $conf: the plugin configuration
+	 * @return void
+	 */
+	public function addGlobalMarkers(array &$markerArray, $cmdKey, array $conf);
 
 	/**
 	 * Evaluates the captcha word
@@ -44,5 +63,5 @@ interface CaptchaInterface extends SingletonInterface
 	 * @param array $cmdParts: parts of the 'eval' command
 	 * @return string The name of the field in error or empty string
 	 */
-	public function evalValues($theTable, $dataArray, $theField, $cmdKey, $cmdParts);
+	public function evalValues($theTable, array $dataArray, $theField, $cmdKey, array $cmdParts);
 }

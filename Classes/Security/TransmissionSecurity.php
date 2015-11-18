@@ -103,7 +103,7 @@ class TransmissionSecurity
 							// May happen if the key was already removed
 							$success = false;
 							$message = LocalizationUtility::translate('internal_rsaauth_retrieve_private_key_failed', self::$extensionName);
-							GeneralUtility::sysLog($message, self::$extensionKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
+							GeneralUtility::sysLog($message, self::$extensionKey, GeneralUtility::SYSLOG_SEVERITY_WARNING);
 						}
 					} else {
 						// Required RSA auth backend not available
@@ -137,18 +137,7 @@ class TransmissionSecurity
 				$onSubmit = '';
 				$extraHiddenFields = '';
 				$extraHiddenFieldsArray = array();
-				$params = array();
-				if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['felogin']['loginFormOnSubmitFuncs'])) {
-					foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['felogin']['loginFormOnSubmitFuncs'] as $funcRef) {
-						list($onSubmit, $hiddenFields) = GeneralUtility::callUserFunction($funcRef, $params, $this);
-						$extraHiddenFieldsArray[] = $hiddenFields;
-					}
-				} else {
-					// Extension rsaauth not installed
-					// Should not happen
-					$message = sprintf(LocalizationUtility::translate('internal_required_extension_missing', self::$extensionName), 'rsaauth');
-					GeneralUtility::sysLog($message, self::$extensionKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
-				}
+				list($onSubmit, $hiddenFields) = self::getPasswordEncryptionCode();
 				if ($usePasswordAgain) {
 					$onSubmit = 'if (this.pass.value != this[\'FE[fe_users][password_again]\'].value) {this.password_again_failure.value = 1; this.pass.value = \'X\'; this[\'FE[fe_users][password_again]\'].value = \'\'; return true;} else { this[\'FE[fe_users][password_again]\'].value = \'\'; ' . $onSubmit . '}';
 					$extraHiddenFieldsArray[] = '<input type="hidden" name="password_again_failure" value="0">';
@@ -164,5 +153,38 @@ class TransmissionSecurity
 				$markerArray['###HIDDENFIELDS###'] .= LF;
 				break;
 		}
+	}
+	/**
+	 * Provide additional code for FE password encryption
+	 *
+	 * @return array 0 => onSubmit function, 1 => extra fields and required files
+	 * @see \TYPO3\CMS\Rsaauth\Hook\FrontendLoginHook
+	 */
+	protected static function getPasswordEncryptionCode()
+	{
+		$result = array(0 => '', 1 => '');
+		if (trim($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel']) === 'rsa') {
+			$backend = BackendFactory::getBackend();
+			if ($backend) {
+				$result[0] = 'return TYPO3FrontendLoginFormRsaEncryption.submitForm(this, TYPO3FrontendLoginFormRsaEncryptionPublicKeyUrl);';
+				$javascriptPath = ExtensionManagementUtility::siteRelPath('rsaauth') . 'resources/';
+				$files = array(
+					'jsbn/jsbn.js',
+					'jsbn/prng4.js',
+					'jsbn/rng.js',
+					'jsbn/rsa.js',
+					'jsbn/base64.js'
+				);
+				$eIdUrl = GeneralUtility::quoteJSvalue($GLOBALS['TSFE']->absRefPrefix . 'index.php?eID=FrontendLoginRsaPublicKey');
+				$additionalHeader = '<script type="text/javascript">var TYPO3FrontendLoginFormRsaEncryptionPublicKeyUrl = ' . $eIdUrl . ';</script>';
+				foreach ($files as $file) {
+					$additionalHeader .= '<script type="text/javascript" src="' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $javascriptPath . $file . '"></script>';
+				}
+				// See TYPO3/CMS/rsaauth/resources/FrontendLoginFormRsaEncryption.js
+				$additionalHeader .= '<script type="text/javascript" src="' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . ExtensionManagementUtility::siteRelPath(self::$extensionKey) . 'Resources/Public/JavaScript/FormRsaEncryption.js"></script>';
+				$GLOBALS['TSFE']->additionalHeaderData['rsaauth_js'] = $additionalHeader;
+			}
+		}
+		return $result;
 	}
 }

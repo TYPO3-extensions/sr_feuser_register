@@ -64,8 +64,6 @@ plugin.tx_srfeuserregister_pi1 {
 		allowedUserGroups = {$plugin.tx_srfeuserregister_pi1.allowedUserGroups}
 		allowedSubgroups = {$plugin.tx_srfeuserregister_pi1.allowedSubgroups}
 		deniedUserGroups = {$plugin.tx_srfeuserregister_pi1.deniedUserGroups}
-		marker {
-		}
 
 		defaultValues {
 			module_sys_dmail_html = {$plugin.tx_srfeuserregister_pi1.dmailCheckedUponRegistration}

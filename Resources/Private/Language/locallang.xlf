@@ -1504,7 +1504,7 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 				<source>According to our verifications, the website address you entered is not valid. Perhaps it was not entered correctly?</source>
 			</trans-unit>
 			<trans-unit id="internal_no_subtemplate" xml:space="preserve">
-				<source>The subpart %s has not been found inside of the template file.</source>
+				<source>The subpart %s was not found in the template file.</source>
 			</trans-unit>
 			<trans-unit id="internal_edit_option" xml:space="preserve">
 				<source>Edit-option is not set in TypoScript.</source>
@@ -1562,6 +1562,9 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 			</trans-unit>
 			<trans-unit id="internal_no_enabled_user" xml:space="preserve">
 				<source>The user "%s" is not existent or enabled.</source>
+			</trans-unit>
+			<trans-unit id="table_not_defined_in_TCA" xml:space="preserve">
+				<source>The table "%s" is not defined in TCA.</source>
 			</trans-unit>
 		</body>
 	</file>
