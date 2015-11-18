@@ -32,12 +32,31 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 class Captcha implements CaptchaInterface
 {
 	/**
+	 * Determines whether the required captcha extension is loaded
+	 *
+	 * @return boolean true if the required captcha extension is loaded
+	 */
+	public function isLoaded()
+	{
+		return ExtensionManagementUtility::isLoaded('captcha');
+	}
+
+	/**
+	 * Returns the eval rule for this captcha
+	 *
+	 * @return string the eval rule for this captcha
+	 */
+	public function getEvalRule()
+	{
+		return 'captcha';
+	}
+	
+	/**
 	 * Sets the value of captcha markers
 	 */
-	public function addGlobalMarkers(&$markerArray, $markerObject)
+	public function addGlobalMarkers(array &$markerArray, $cmdKey, array $conf)
 	{
-		$cmdKey = $markerObject->controlData->getCmdKey();
-		if (ExtensionManagementUtility::isLoaded('captcha') && $markerObject->conf[$cmdKey . '.']['evalValues.']['captcha_response'] === 'captcha') {
+		if ($this->isLoaded() && $conf[$cmdKey . '.']['evalValues.']['captcha_response'] === 'captcha') {
 			$markerArray['###CAPTCHA_IMAGE###'] = '<img src="' . ExtensionManagementUtility::siteRelPath('captcha') . 'captcha/captcha.php" alt="" />';
 		} else {
 			$markerArray['###CAPTCHA_IMAGE###'] = '';
@@ -54,10 +73,10 @@ class Captcha implements CaptchaInterface
 	 * @param array $cmdParts: parts of the 'eval' command
 	 * @return string The name of the field in error or empty string
 	 */
-	public function evalValues($theTable, $dataArray, $theField, $cmdKey, $cmdParts)
+	public function evalValues($theTable, array $dataArray, $theField, $cmdKey, array $cmdParts)
 	{
 		$errorField = '';
-		if (trim($cmdParts[0]) === 'captcha' && ExtensionManagementUtility::isLoaded('captcha') && isset($dataArray[$theField])) {
+		if (trim($cmdParts[0]) === 'captcha' && $this->isLoaded() && isset($dataArray[$theField])) {
 			$captchaString = '';
 			$started = session_start();
 			if (isset($_SESSION['tx_captcha_string'])) {

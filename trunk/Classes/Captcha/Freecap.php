@@ -32,14 +32,39 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Freecap implements CaptchaInterface
 {
 	/**
+	 * SrFreecap object
+	 *
+	 * @var \SJBR\SrFreecap\PiBaseApi
+	 */
+	protected $srFreecap = null;
+
+	/**
+	 * Determines whether the required captcha extension is loaded
+	 *
+	 * @return boolean true if the required captcha extension is loaded
+	 */
+	public function isLoaded()
+	{
+		return ExtensionManagementUtility::isLoaded('sr_freecap');
+	}
+
+	/**
+	 * Returns the eval rule for this captcha
+	 *
+	 * @return string the eval rule for this captcha
+	 */
+	public function getEvalRule()
+	{
+		return 'freecap';
+	}
+
+	/**
 	 * Sets the value of captcha markers
 	 */
-	public function addGlobalMarkers(&$markerArray, $markerObject)
+	public function addGlobalMarkers(array &$markerArray, $cmdKey, array $conf)
 	{
-		$cmdKey = $markerObject->controlData->getCmdKey();
-		if (ExtensionManagementUtility::isLoaded('sr_freecap') && $markerObject->conf[$cmdKey . '.']['evalValues.']['captcha_response'] === 'freecap') {
-			$freeCap = GeneralUtility::makeInstance('SJBR\\SrFreecap\\PiBaseApi');
-			$captchaMarkerArray = $freeCap->makeCaptcha();
+		if ($conf[$cmdKey . '.']['evalValues.']['captcha_response'] === 'freecap' && $this->initialize() !== null) {
+			$captchaMarkerArray = $this->srFreecap->makeCaptcha();
 		} else {
 			$captchaMarkerArray = array('###SR_FREECAP_NOTICE###' => '', '###SR_FREECAP_CANT_READ###' => '', '###SR_FREECAP_IMAGE###' => '', '###SR_FREECAP_ACCESSIBLE###' => '');
 		}
@@ -56,11 +81,10 @@ class Freecap implements CaptchaInterface
 	 * @param array $cmdParts: parts of the 'eval' command
 	 * @return string The name of the field in error or empty string
 	 */
-	public function evalValues($theTable, $dataArray, $theField, $cmdKey, $cmdParts)
+	public function evalValues($theTable, array $dataArray, $theField, $cmdKey, array $cmdParts)
 	{
 		$errorField = '';
-		if (trim($cmdParts[0]) === 'freecap' && ExtensionManagementUtility::isLoaded('sr_freecap') && isset($dataArray[$theField])) {
-			$freeCap = GeneralUtility::makeInstance('SJBR\\SrFreecap\\PiBaseApi');
+		if (trim($cmdParts[0]) === 'freecap' && isset($dataArray[$theField]) && $this->initialize() !== null) {
 			$sessionNameSpace = '';
 			if (isset($GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['sr_freecap_EidDispatcher'])) {
 				$sessionNameSpace = 'tx_srfreecap';
@@ -68,7 +92,7 @@ class Freecap implements CaptchaInterface
 			// Save the sr_freecap word_hash
 			// sr_freecap will invalidate the word_hash after calling checkWord
 			$sessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', $sessionNameSpace);
-			if (!$freeCap->checkWord($dataArray[$theField])) {
+			if (!$this->srFreecap->checkWord($dataArray[$theField])) {
 				$errorField = $theField;
 			} else {
 				// Restore sr_freecap word_hash
@@ -81,5 +105,16 @@ class Freecap implements CaptchaInterface
 			}
 		}
 		return $errorField;
+	}
+
+	/**
+	 * Initializes de SrFreecap object
+	 */
+	protected function initialize()
+	{
+		if ($this->srFreecap === null && $this->isLoaded()) {
+			$this->srFreecap = GeneralUtility::makeInstance('SJBR\\SrFreecap\\PiBaseApi');
+		}
+		return $this->srFreecap;
 	}
 }

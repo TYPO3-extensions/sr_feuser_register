@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
- * Generates a typolink
+ * Generates a typolinks and URL's
  */
 class UrlUtility
 {
@@ -36,13 +36,6 @@ class UrlUtility
 	 * @var ContentObjectRenderer
 	 */
 	 static protected $cObj = null;
-
-	/**
-	 * Pi vars
-	 *
-	 * @var array
-	 */
-	 static protected $piVars = array();
 
 	/**
 	 * Generates a pibase-compliant typolink
@@ -55,23 +48,25 @@ class UrlUtility
 	 * @param boolean $usePiVars: if set, input vars and incoming piVars arrays are merge
 	 * @return string generated link or url
 	 */
-	static public function get($prefixId, $tag = '', $id, $vars = array(), $unsetVars = array(), $usePiVars = true)
+	static public function get($prefixId, $tag = '', $id, array $vars = array(), $unsetVars = array(), $usePiVars = true)
 	{
 		self::initializeUrlUtility($prefixId);
-
 		$vars = (array) $vars;
 		$unsetVars = (array) $unsetVars;
-		$piVars = array();
 		if ($usePiVars) {
 			// vars override pivars
-			$vars = array_merge(self::$piVars[$prefixId], $vars);
-			foreach ($unsetVars as $key) {
-				if (isset($vars[$key])) {
-					// unsetvars override anything
-					unset($vars[$key]);
+			$piVars = GeneralUtility::_GPmerged($prefixId);
+			if (isset($piVars) && is_array($piVars)) {
+				$vars = array_merge($piVars, $vars);
+				foreach ($unsetVars as $key) {
+					if (isset($vars[$key])) {
+						// unsetVars override anything
+						unset($vars[$key]);
+					}
 				}
 			}
 		}
+		$piVars = array();
 		foreach ($vars as $key => $val) {
 			$piVars[$prefixId . '%5B' . $key . '%5D'] = $val;
 		}
@@ -89,7 +84,7 @@ class UrlUtility
 	 * @param array Configuration
 	 * @return string The URL
 	 */
-	static public function getTypoLink_URL($params, $urlParameters = array(), $target = '', $conf = array())
+	static public function getTypoLink_URL($params, array $urlParameters = array(), $target = '', $conf = array())
 	{
 		self::initializeUrlUtility();
 		$result = false;
@@ -113,7 +108,7 @@ class UrlUtility
 	 * @param array Configuration
 	 * @return string The wrapped $label-text string
 	 */
-	 static public function getTypoLink($label, $params, $urlParameters = array(), $target = '', $conf = array())
+	 static public function getTypoLink($label, $params, array $urlParameters = array(), $target = '', $conf = array())
 	 {
 	 	 $url = false;
 	 	 $conf['parameter'] = $params;
@@ -125,13 +120,9 @@ class UrlUtility
 	 	 	 	 $conf['extTarget'] = $target;
 	 	 	 }
 	 	 }
-	 	 if (is_array($urlParameters)) {
-	 	 	 if (count($urlParameters)) {
-	 	 	 	 $conf['additionalParams'] .= GeneralUtility::implodeArrayForUrl('', $urlParameters);
-	 	 	 }
-	 	 } else {
-	 	 	 $conf['additionalParams'] .= $urlParameters;
-	 	 }
+		 if (!empty($urlParameters)) {
+			 $conf['additionalParams'] .= GeneralUtility::implodeArrayForUrl('', $urlParameters);
+		 }
 	 	 $url = self::$cObj->typolink($label, $conf);
 	}
 
@@ -146,8 +137,23 @@ class UrlUtility
 		if (self::$cObj === null) {
 			self::$cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		}
-		if ($prefixId && empty(self::$piVars[$prefixId])) {
-				self::$piVars[$prefixId] = GeneralUtility::_GPmerged($prefixId);
+	}
+
+	/**
+	 * Get the site URL
+	 *
+	 * @return string the site URL
+	 */
+	static public function getSiteUrl()
+	{
+		$siteUrl = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
+		if ($GLOBALS['TSFE']->absRefPrefix) {
+			if(strpos($GLOBALS['TSFE']->absRefPrefix, 'http://') === 0 || strpos($GLOBALS['TSFE']->absRefPrefix, 'https://') === 0) {
+				$siteUrl = $GLOBALS['TSFE']->absRefPrefix;
+			} else {
+				$siteUrl .= ltrim($GLOBALS['TSFE']->absRefPrefix, '/');
+			}
 		}
+		return $siteUrl;
 	}
 }
