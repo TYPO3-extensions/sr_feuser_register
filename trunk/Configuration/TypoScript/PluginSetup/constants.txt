@@ -216,8 +216,8 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Number of images: Number of images that may be uploaded (should be smaller than 7).
   maxImages = 6
 
-    # cat=plugin.tx_srfeuserregister_pi1//; type=options[,formal,informal]; label= Salutation mode to use: Possible value are 'formal' or 'informal'.
-  salutation =
+    # cat=plugin.tx_srfeuserregister_pi1//; type=options[formal,informal]; label= Salutation mode to use: Possible value are 'formal' or 'informal'.
+  salutation = formal
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= PID list for Direct Mail categories: The Direct mail categories used by the plugin will be restricted to those found in these PID's.
   module_sys_dmail_category_PIDLIST =
