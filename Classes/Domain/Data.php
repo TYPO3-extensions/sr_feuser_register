@@ -568,7 +568,7 @@ class Data
 		$this->processSettings($cmdKey);
 		// Check required fields, set failure if missing.
 		foreach ($requiredArray as $theField) {
-			$isMissing = !isset($dataArray[$theField]) || (empty($dataArray[$theField]) && $dataArray[$theField] != '0');
+			$isMissing = empty($dataArray[$theField]);
 			if ($isMissing) {
 				$failureArray[] = $theField;
 				$this->missing[$theField] = true;
@@ -929,36 +929,35 @@ class Data
 							$bValueAssigned = false;
 						}
 						$dataValue = (isset($dataArray[$theField]) ? $dataArray[$theField] : $origArray[$theField]);
-
-						switch($theCmd) {
+						switch ($theCmd) {
 							case 'int':
-								$dataValue = intval($dataValue);
-							break;
+								$dataValue = (int) $dataValue;
+								break;
 							case 'lower':
 							case 'upper':
 								$dataValue = $this->cObj->caseshift($dataValue, $theCmd);
-							break;
+								break;
 							case 'nospace':
 								$dataValue = str_replace(' ', '', $dataValue);
-							break;
+								break;
 							case 'alpha':
 								$dataValue = preg_replace('/[^a-zA-Z]/', '', $dataValue);
-							break;
+								break;
 							case 'num':
 								$dataValue = preg_replace('/[^0-9]/', '', $dataValue);
-							break;
+								break;
 							case 'alphanum':
 								$dataValue = preg_replace('/[^a-zA-Z0-9]/', '', $dataValue);
-							break;
+								break;
 							case 'alphanum_x':
 								$dataValue = preg_replace('/[^a-zA-Z0-9_-]/', '', $dataValue);
-							break;
+								break;
 							case 'trim':
 								$dataValue = trim($dataValue);
-							break;
+								break;
 							case 'random':
 								$dataValue = substr(md5(uniqid(microtime(), 1)), 0, intval($cmdParts[1]));
-							break;
+								break;
 							case 'files':
 								$fieldDataArray = array();
 								if ($dataArray[$theField]) {
@@ -968,13 +967,8 @@ class Data
 										$fieldDataArray = GeneralUtility::trimExplode(',', $dataValue, true);
 									}
 								}
-								$dataValue =
-									$this->processFiles(
-										$theField,
-										$fieldDataArray,
-										$cmdKey
-									);
-							break;
+								$dataValue = $this->processFiles($theField, $fieldDataArray, $cmdKey);
+								break;
 							case 'multiple':
 								$fieldDataArray = array();
 								if (!empty($dataArray[$theField])) {
@@ -985,11 +979,11 @@ class Data
 									}
 								}
 								$dataValue = $fieldDataArray;
-							break;
+								break;
 							case 'checkArray':
 								if (is_array($dataValue)) {
 									$newDataValue = 0;
-									foreach($dataValue as $kk => $vv) {
+									foreach ($dataValue as $kk => $vv) {
 										$kk = MathUtility::forceIntegerInRange($kk, 0);
 										if ($kk <= 30) {
 											if ($vv) {
@@ -999,7 +993,7 @@ class Data
 									}
 									$dataValue = $newDataValue;
 								}
-							break;
+								break;
 							case 'uniqueHashInt':
 								$otherFields = GeneralUtility::trimExplode(';', $cmdParts[1], true);
 								$hashArray = array();
@@ -1011,7 +1005,7 @@ class Data
 									$hashArray[] = $vv;
 								}
 								$dataValue = hexdec(substr(md5(serialize($hashArray)), 0, 8));
-							break;
+								break;
 							case 'wwwURL':
 								if ($dataValue) {
 									$urlParts = parse_url($dataValue);
@@ -1029,7 +1023,7 @@ class Data
 										}
 									}
 								}
-							break;
+								break;
 							case 'date':
 								if ($dataValue && $this->evalDate($dataValue, $this->conf['dateFormat'])) {
 									$dateArray = $this->fetchDate($dataValue, $this->conf['dateFormat']);
@@ -1048,13 +1042,12 @@ class Data
 								} else if (!isset($dataArray[$theField])) {
 									$bValueAssigned = false;
 								}
-							break;
+								break;
 							default:
 								$bValueAssigned = false;
-							break;
+								break;
 						}
-
-						if ($bValueAssigned)	{
+						if ($bValueAssigned) {
 							$dataArray[$theField] = $dataValue;
 						}
 					}

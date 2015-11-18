@@ -209,8 +209,10 @@ plugin.tx_srfeuserregister_pi1 {
 		zip = trim
 		image = files
 		module_sys_dmail_category = multiple
-		www = wwwURL
+		status = int
+		terms_acknowledged = int
 		usergroup = multiple
+		www = wwwURL
 	}
 
 	parseFromDBValues {
