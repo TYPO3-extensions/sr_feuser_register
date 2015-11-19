@@ -262,3 +262,4 @@ plugin.tx_srfeuserregister_pi1 {
 plugin.tx_srfeuserregister.settings {
 		salutation = {$plugin.tx_srfeuserregister_pi1.salutation}
 }
+tt_content.list.20.sr_feuser_register_pi1 = < plugin.tx_srfeuserregister_pi1
