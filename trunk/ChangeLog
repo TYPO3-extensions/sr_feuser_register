@@ -5,6 +5,7 @@
 	* Resolves #61659: Usergroups are removed on update
 	* Fix error regarding salutation in static TS template
 	* Resolves #60167: Missing_terms_acknowlegded doesn't work
+	* Correction to composer.json
 
 2015-11-03 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #71286: [!!!] Remove xclass assignments
