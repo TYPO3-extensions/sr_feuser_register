@@ -1,6 +1,6 @@
 {
   "name": "sjbr/sr_feuser_register",
-  "description": "A self-registration variant of Kasper Skårhøj\'s Front End User Admin extension.",
+  "description": "A self-registration variant of Kasper Skårhøjs Front End User Admin extension.",
   "version": "4.0.0",
   "type": "typo3-cms-extension",
   "license": "GPL-2.0+",
@@ -14,11 +14,11 @@
     "sr_feuser_register": "*"
   },
   "require": {
-  	  "typo3/cms-core": "6.2.4 - 7.99.99",
-  	  "felogin" => "~6.2.0",
-  	  "rsaauth" => "~6.2.0",
-  	  "saltedpasswords" => "~6.2.0",
-  	  "sjbr/static_info_tables": "~6.3.1"
+  	 "typo3/cms-core": "6.2.4 - 7.99.99",
+  	 "typo3/cms-felogin": "~6.2.0",
+  	 "typo3/cms-rsaauth": "~6.2.0",
+  	 "typo3/cms-saltedpasswords": "~6.2.0",
+  	 "sjbr/static_info_tables": "~6.3.1"
   },
   "autoload": {
     "psr-4": {
