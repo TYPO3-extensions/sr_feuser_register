@@ -66,7 +66,7 @@ class AfterSaveView extends AbstractView
 			$this->marker->addTcaMarkers($dataArray, $origArray, $cmd, $cmdKey, $viewOnly, $requiredFields);
 			$this->marker->addLabelMarkers($dataArray, $origArray, $securedArray, array(), $requiredFields, $this->data->getFieldList(), $this->data->getSpecialFieldList());
 			if ($cmdKey === 'create' && !$this->conf['enableEmailConfirmation'] && !$this->conf['enableAutoLoginOnCreate']) {
-				$this->marker->addPasswordTransmissionMarkers($this->getUsePassword(), $this->getUsePasswordAgain());
+				$this->marker->addPasswordTransmissionMarkers($this->getUsePassword(), false);
 			}
 			$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $viewOnly);
 			$uppercase = false;
