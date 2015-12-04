@@ -172,7 +172,7 @@ class SetfixedActionController extends AbstractActionController
 			if ($this->theTable === 'fe_users' && in_array($sFK, array('APPROVE', 'ENTER', 'LOGIN'))) {
 				$this->marker->addGeneralHiddenFieldsMarkers($row['by_invitation'] ? 'password' : 'login', $this->parameters->getAuthCode(), $this->parameters->getBackURL());
 				if (!$row['by_invitation']) {
-					$this->marker->addPasswordTransmissionMarkers($this->getUsePassword(), $this->getUsePasswordAgain());
+					$this->marker->addPasswordTransmissionMarkers($this->getUsePassword(), false);
 				}
 			} else {
 				$this->marker->addGeneralHiddenFieldsMarkers('setfixed', $this->parameters->getAuthCode(), $this->parameters->getBackURL());
