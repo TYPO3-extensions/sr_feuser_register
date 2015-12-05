@@ -139,7 +139,7 @@ class RegisterPluginController extends AbstractPlugin
 	 * Commands that may be processed when no user is logged in
 	 * @var array
 	 */
-	protected $noLoginCommands = array('create', 'invite', 'setfixed', 'infomail', 'login');
+	protected $noLoginCommands = array('create', 'invite', 'setfixed', 'infomail');
 
 	/**
 	 * Plugin entry script
@@ -200,8 +200,8 @@ class RegisterPluginController extends AbstractPlugin
 		$feUserdata = $this->parameters->getFeUserData();
 		$uid = $dataArray['uid'] ? $dataArray['uid'] : ($feUserdata['rU'] ? $feUserdata['rU'] : (!in_array($cmd, $this->noLoginCommands) ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0));
 		if ($uid) {
-			$this->data->setRecUid($uid);
-			$newOrigArray = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $uid);
+			$this->data->setRecUid((int) $uid);
+			$newOrigArray = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, (int) $uid);
 			if (isset($newOrigArray) && is_array($newOrigArray)) {
 				$this->data->modifyRow($newOrigArray, true);
 				$origArray = $newOrigArray;
@@ -228,7 +228,7 @@ class RegisterPluginController extends AbstractPlugin
 		if ($cmd === 'edit' || $cmd === 'invite' || $cmd === 'password' || $cmd === 'infomail') {
 			$cmdKey = $cmd;
 		} else {
-			if (($cmd == '' || $cmd === 'setfixed') && (($this->theTable !== 'fe_users' || $uid == $GLOBALS['TSFE']->fe_user->user['uid']) && $nonEmptyRecord)) {
+			if (($cmd === '' || $cmd === 'setfixed') && (($this->theTable !== 'fe_users' || $uid == $GLOBALS['TSFE']->fe_user->user['uid']) && $nonEmptyRecord)) {
 				$cmdKey = 'edit';
 			} else {
 				$cmdKey = 'create';
@@ -342,9 +342,6 @@ class RegisterPluginController extends AbstractPlugin
 	public function doProcessing($cmd, $cmdKey, array $origArray, array $dataArray) {
 		$finalDataArray = array();
 		$securedArray = array();
-
-		// Commands with which the data will not be saved by $this->data->save
-		$noSaveCommands = array('infomail', 'login', 'delete');
 		$uid = $this->data->getRecUid();
 
 		// Check if the login user is the right one
@@ -375,6 +372,7 @@ class RegisterPluginController extends AbstractPlugin
 				break;
 			case 'edit':
 			case 'password':
+			case 'login':
 				$controllerClass = 'SJBR\\SrFeuserRegister\\Controller\\EditActionController';
 				break;
 			case 'delete':

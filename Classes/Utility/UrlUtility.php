@@ -50,7 +50,7 @@ class UrlUtility
 	 */
 	static public function get($prefixId, $tag = '', $id, array $vars = array(), $unsetVars = array(), $usePiVars = true)
 	{
-		self::initializeUrlUtility($prefixId);
+		self::initializeUrlUtility();
 		$vars = (array) $vars;
 		$unsetVars = (array) $unsetVars;
 		if ($usePiVars) {
@@ -129,10 +129,9 @@ class UrlUtility
 	/**
 	 * Initializes variables
 	 *
-	 * @param string $prefixId: prefix id of variables
 	 * @return void
 	 */
-	static protected function initializeUrlUtility($prefixId = '')
+	static protected function initializeUrlUtility()
 	{
 		if (self::$cObj === null) {
 			self::$cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');

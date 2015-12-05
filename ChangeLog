@@ -1,5 +1,6 @@
 2015-12-04 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for the login forms
+	* Fix for edit link after login
 
 2015-11-18 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* [!!!] Use namespacing

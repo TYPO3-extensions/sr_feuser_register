@@ -461,14 +461,20 @@ class Parameters
 	}
 
 	/**
-	 * Set the cmd
+	 * Set the command
 	 *
 	 * @return void
 	 */
 	protected function setCmd()
 	{
-		$this->cmd = '';
-		// Query variable &cmd used by Direct Mail
+		$this->cmd = $this->conf['defaultCODE'] ?: '';
+		// flexform overrides TS config
+		$this->pibaseObj->pi_initPIflexForm();
+		$cmd = $this->pibaseObj->pi_getFFvalue($this->pibaseObj->cObj->data['pi_flexform'], 'display_mode', 'sDEF');
+		if (!empty($cmd)) {
+			$this->cmd = $cmd;
+		}
+		// Query variable &cmd used by Direct Mail overrides flexform
 		$cmd = htmlspecialchars(GeneralUtility::_GP('cmd'));
 		if (!empty($cmd)) {
 			$this->cmd = $cmd;
@@ -478,24 +484,13 @@ class Parameters
 		if (!empty($cmd)) {
 			$this->cmd = $cmd;
 		}
-		// If not set, get the command from the flexform
-		if (empty($this->cmd)) {
-			$this->pibaseObj->pi_initPIflexForm();
-			$cmd = $this->pibaseObj->pi_getFFvalue($this->pibaseObj->cObj->data['pi_flexform'], 'display_mode', 'sDEF');
-			if (!empty($cmd)) {
-				$this->cmd = $cmd;
-			}
-		}
-		if (empty($this->cmd)) {
-			$this->cmd = $this->conf['defaultCODE'] ?: '';
-		}
-		$this->cmd = $this->pibaseObj->cObj->caseshift($cmd, 'lower');
+		$this->cmd = strtolower($this->cmd);
 	}
 
 	/**
 	 * Get the cmd
 	 *
-	 * @return string the site URL
+	 * @return string the command
 	 */
 	public function getCmd()
 	{
