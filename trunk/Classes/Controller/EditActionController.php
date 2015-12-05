@@ -67,7 +67,7 @@ class EditActionController extends AbstractActionController
 		if ($isDoNotSave) {
 			SessionData::clearSessionData($this->extensionKey);
 		}
-		if ($cmd === '' && empty($dataArray)) {
+		if (($cmd === '' && empty($dataArray)) || $cmd === 'login') {
 			// Displaying a link to edit or a no permission to edit message
 			$createView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\CreateView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 			$content = $createView->render($dataArray, $origArray, $securedArray, $cmd, $cmdKey, $mode);
@@ -88,13 +88,14 @@ class EditActionController extends AbstractActionController
 				// This is either a country change submitted through the onchange event or a file deletion already processed by the parsing function
 				// You also come here after a click on the text "Not a member yet? click here to register."
 				// We are going to redisplay
+				$mode = AbstractView::MODE_NORMAL;
 				if (GeneralUtility::inList($this->data->getFailure(), 'username')) {
 					$isDoNotSave = true;
 				}
 			}
 			$this->data->setUsername($dataArray, $cmdKey);
 			$this->data->setDataArray($dataArray);
-			if (!$this->data->getFailure() && $mode === AbstractView::MODE_NORMAL && !$isDoNotSave && !$this->parameters->getFeUserData('rU')) {
+			if (!$this->data->getFailure() && $mode === AbstractView::MODE_NORMAL && $isSubmit && !$isDoNotSave && !$this->parameters->getFeUserData('rU')) {
 				$this->data->setPassword($dataArray, $cmdKey);
 				$newDataArray = array();
 				$theUid = $this->data->save($dataArray, $origArray, SessionData::readToken($this->extensionKey), $newDataArray, $cmd, $cmdKey, $this->parameters->getPid());
