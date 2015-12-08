@@ -216,7 +216,7 @@ class Parameters
 		if ($this->theTable === 'fe_users' && isset($this->conf['create.']['evalValues.']['password'])) {
 			// Establish compatibility with the extension Felogin
 			$value = GeneralUtility::_GP('pass');
-			if (!empty($value)) {
+			if (isset($value)) {
 				SessionData::writePassword($this->extensionKey, $value, '');
 			}
 		}

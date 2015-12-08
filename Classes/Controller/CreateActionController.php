@@ -53,8 +53,6 @@ class CreateActionController extends AbstractActionController
 		if ($this->conf[$cmdKey . '.']['preview'] && (int) $this->parameters->getFeUserData('preview')) {
 			$mode = AbstractView::MODE_PREVIEW;
 		}
-		$isSubmit = $this->parameters->getFeUserData('submit');
-		$isSubmit = !empty($isSubmit);
 		$isDoNotSave = $this->parameters->getFeUserData('doNotSave');
 		$isDoNotSave = !empty($isDoNotSave);
 		if ($isDoNotSave) {
@@ -80,13 +78,15 @@ class CreateActionController extends AbstractActionController
 			if ($this->data->getFailure()) {
 				$mode = AbstractView::MODE_NORMAL;
 			}
-			if (!$isSubmit && !$isDoNotSave && !$this->parameters->getFeUserData('linkToPID')) {
+			if (GeneralUtility::inList($this->data->getFailure(), 'username')) {
+				$isDoNotSave = true;
+			}
+			if ($this->parameters->getFeUserData('countryChange')) {
 				// This is either a country change submitted through the onchange event or a file deletion already processed by the parsing function
 				// You also come here after a click on the text "Not a member yet? click here to register."
 				// We are going to redisplay
-				if (GeneralUtility::inList($this->data->getFailure(), 'username')) {
-					$isDoNotSave = true;
-				}
+				$mode = AbstractView::MODE_NORMAL;
+				$isDoNotSave = true;
 			}
 			$this->data->setUsername($finalDataArray, $cmdKey);
 			$this->data->setDataArray($finalDataArray);
