@@ -48,7 +48,7 @@ class EditActionController extends AbstractActionController
 	 */
 	public function doProcessing(array $dataArray, $cmd, $cmdKey) {
 		// If editing is enabled
-		if (empty($this->conf['edit'])) {
+		if (empty($this->conf['edit']) || empty($this->conf['edit.'])) {
 			$errorText = LocalizationUtility::translate('internal_edit_option', $this->extensionName);
 			throw new Exception($errorText, Exception::MISCONFIGURATION);
 		}
@@ -84,14 +84,15 @@ class EditActionController extends AbstractActionController
 			if ($this->data->getFailure()) {
 				$mode = AbstractView::MODE_NORMAL;
 			}
-			if (!$isSubmit && !$isDoNotSave && !$this->parameters->getFeUserData('linkToPID')) {
+			if (GeneralUtility::inList($this->data->getFailure(), 'username')) {
+				$isDoNotSave = true;
+			}
+			if ($this->parameters->getFeUserData('countryChange')) {
 				// This is either a country change submitted through the onchange event or a file deletion already processed by the parsing function
 				// You also come here after a click on the text "Not a member yet? click here to register."
 				// We are going to redisplay
 				$mode = AbstractView::MODE_NORMAL;
-				if (GeneralUtility::inList($this->data->getFailure(), 'username')) {
-					$isDoNotSave = true;
-				}
+				$isDoNotSave = true;
 			}
 			$this->data->setUsername($dataArray, $cmdKey);
 			$this->data->setDataArray($dataArray);

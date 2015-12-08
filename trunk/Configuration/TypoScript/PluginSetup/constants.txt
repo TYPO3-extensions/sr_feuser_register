@@ -52,7 +52,7 @@ plugin.tx_srfeuserregister_pi1 {
   tableName = fe_users
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Country onchange attribute: Javascript to execute when the selected country is changed in the country selector box.
-  onChangeCountryAttribute = javascript:window.document.getElementById('tx-srfeuserregister-pi1-fe_users_form').submit();
+  onChangeCountryAttribute = javascript:var form = window.document.getElementById('tx-srfeuserregister-pi1-fe_users_form'); form['tx_srfeuserregister_pi1[countryChange]'].value = 1; form.submit();
 
     # cat=plugin.tx_srfeuserregister_pi1//; type=int+; label= Front end user records PID: If the records edited/created are located in another page than the current, enter the PID of that page here.
   pid =

@@ -621,7 +621,7 @@ class Marker
 	public function generateURLMarkers($uid)
 	{
 		$vars = array();
-		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,rU,aC,sFK,doNotSave,preview';
+		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,rU,aC,sFK,doNotSave,preview,countryChange';
 		$unsetVars = GeneralUtility::trimExplode(',', $unsetVarsList);
 		$unsetVars['cmd'] = 'cmd';
 		$unsetVarsAll = $unsetVars;
@@ -637,28 +637,31 @@ class Marker
 		$form = CssUtility::getClassName($this->prefixId, $this->theTable . '_form');
 		$markerArray['###FORM_NAME###'] = $this->conf['formName'] ?: $form;
 
+		$unsetVarsList = 'mode,pointer,sort,sword,submit,doNotSave,countryChange';
+		$unsetVars = GeneralUtility::trimExplode(',', $unsetVarsList);	
 		$ac = $this->parameters->getFeUserData('aC');
 		if ($ac) {
 			$vars['aC'] = $ac;
-		}
+		}	
 		$vars['token'] = $this->token;
 		$vars['backURL'] = rawurlencode($formUrl);
 		$vars['cmd'] = 'delete';
 		$vars['rU'] = $uid;
 		$vars['preview'] = '1';
-		$markerArray['###DELETE_URL###'] = UrlUtility::get($this->prefixId, '', $this->parameters->getPid('edit') . ',' . $GLOBALS['TSFE']->type, $vars);
+		$markerArray['###DELETE_URL###'] = UrlUtility::get($this->prefixId, '', $this->parameters->getPid('edit') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
 
+		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,rU,aC,sFK,doNotSave,preview,countryChange,regHash';
+		$unsetVars = GeneralUtility::trimExplode(',', $unsetVarsList);
 		$vars['cmd'] = 'create';
-		$unsetVars[] = 'regHash';
 		$url = UrlUtility::get($this->prefixId, '', $this->parameters->getPid('register') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
 		$markerArray['###REGISTER_URL###'] = $url;
 
-		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,aC,sFK,doNotSave,preview';
+		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,aC,sFK,doNotSave,preview,countryChange';
 		$unsetVars = GeneralUtility::trimExplode(',', $unsetVarsList);
 		$vars['cmd'] = 'login';
 		$markerArray['###LOGIN_FORM###'] = UrlUtility::get($this->prefixId, '', $this->parameters->getPid('login') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
 
-		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,doNotSave,preview';
+		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,doNotSave,preview,countryChange';
 		$unsetVars = GeneralUtility::trimExplode(',', $unsetVarsList);
 		$vars['cmd'] = 'infomail';
 		$markerArray['###INFOMAIL_URL###'] = UrlUtility::get($this->prefixId, '', $this->parameters->getPid('infomail') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
@@ -696,7 +699,7 @@ class Marker
 		$commandArray = array('register', 'edit', 'delete', 'confirm', 'login');
 		$markerArray = array();
 		$vars = array();
-		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,rU,aC,sFK,doNotSave,preview,cmd,token';
+		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,rU,aC,sFK,doNotSave,preview,cmd,token,countryChange';
 		$unsetVars = GeneralUtility::trimExplode(',', $unsetVarsList);
 		$commandPidArray = array();
 		foreach ($commandArray as $command) {
@@ -807,7 +810,7 @@ class Marker
 				$markerArray['###FIELD_static_info_country###'] = $this->staticInfoObj->getStaticInfoName('COUNTRIES', is_array($row) ? $row['static_info_country']:'');
 				$markerArray['###FIELD_zone###'] = $this->staticInfoObj->getStaticInfoName('SUBDIVISIONS', is_array($row)?$row['zone']:'', is_array($row)?$row['static_info_country']:'');
 				if (!$markerArray['###FIELD_zone###'] ) {
-					$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE[' . $this->theTable . '][zone]" value="" />';
+					$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE[' . $this->theTable . '][zone]" value="" />' . LF;
 				}
 				$markerArray['###FIELD_language###'] = $this->staticInfoObj->getStaticInfoName('LANGUAGES',  is_array($row) ? $row['language'] : '');
 			} else {
@@ -852,7 +855,7 @@ class Marker
 						$where
 					);
 				if (!$markerArray['###SELECTOR_ZONE###'] ) {
-					$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE[' . $this->theTable . '][zone]" value="" />';
+					$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE[' . $this->theTable . '][zone]" value="" />' . LF;
 				}
 
 				$where = '';
@@ -873,6 +876,7 @@ class Marker
 						$where
 					);
 			}
+			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="tx_srfeuserregister_pi1[countryChange]" value="0" />' . LF;
 		}
 		$this->setMarkerArray($markerArray);
 	}
