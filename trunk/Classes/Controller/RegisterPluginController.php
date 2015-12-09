@@ -30,8 +30,6 @@ use SJBR\SrFeuserRegister\Request\Parameters;
 use SJBR\SrFeuserRegister\Security\SessionData;
 use SJBR\SrFeuserRegister\Utility\CssUtility;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
-use SJBR\SrFeuserRegister\View\AbstractView;
-use SJBR\SrFeuserRegister\View\Email;
 use SJBR\SrFeuserRegister\View\Marker;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -122,13 +120,6 @@ class RegisterPluginController extends AbstractPlugin
 	protected $marker;
 
 	/**
-	 * The email object
-	 *
-	 * @var Email
-	 */
-	protected $email;
-
-	/**
 	 * The mode (normal or preview)
 	 *
 	 * @var int
@@ -173,19 +164,23 @@ class RegisterPluginController extends AbstractPlugin
 		if (!$content) {
 			// Validate the token and initialize request parameters
 			$this->parameters = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\Request\\Parameters', $this->extKey, $this->prefixId, $this->theTable, $this->conf, $this->piVars, $this);
-				// Initialize the incoming and original data
-				$this->data = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\Domain\\Data', $this->extKey, $this->prefixId, $this->theTable, $this->conf, $this->cObj, $this->parameters, $this->adminFieldList);
-				// Initialize the controller
-				$this->initialize();
-				// Initialize marker class
-				$this->marker = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\Marker', $this->extKey, $this->prefixId, $this->theTable, $this->conf, $this->parameters, $this->buttonLabelsList, $this->otherLabelsList);
+			// Initialize the incoming and original data
+			$this->data = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\Domain\\Data', $this->extKey, $this->prefixId, $this->theTable, $this->conf, $this->cObj, $this->parameters, $this->adminFieldList);
+			// Initialize the controller
+			$this->initialize();
+			// Initialize marker class
+			$this->marker = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\Marker', $this->extKey, $this->prefixId, $this->theTable, $this->conf, $this->parameters, $this->buttonLabelsList, $this->otherLabelsList);
 			if ($this->parameters->isTokenValid()) {
 				// Process the request
 				$content = $this->doProcessing($this->parameters->getCmd(), $this->parameters->getCmdKey(), $this->data->getOrigArray(), $this->data->getDataArray());
 			} else {
 				$this->marker->generateURLMarkers();
 				$plainView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\PlainView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
-				$content = $plainView->render('###TEMPLATE_INVALID_TOKEN###', array(), array(), array(), '', '');
+				if ($this->parameters->getCmd() === 'setfixed') {
+					$content = $plainView->render('###TEMPLATE_SETFIXED_FAILED###', array(), array(), array(), '', '');
+				} else {
+					$content = $plainView->render('###TEMPLATE_INVALID_TOKEN###', array(), array(), array(), '', '');
+				}
 			}
 		}
 		return CssUtility::wrapInBaseClass($this->prefixId, $content);

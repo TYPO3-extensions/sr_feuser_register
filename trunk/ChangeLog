@@ -1,6 +1,7 @@
 2015-12-09 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for password edition after invitation acceptation
 	* Add template for invalid token
+	* Follow-up to Add template for invalid token
 
 2015-12-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for password edition
