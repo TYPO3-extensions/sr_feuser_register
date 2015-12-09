@@ -876,7 +876,9 @@ class Marker
 						$where
 					);
 			}
-			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="tx_srfeuserregister_pi1[countryChange]" value="0" />' . LF;
+			if (!$viewOnly) {
+				$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId . '[countryChange]" value="0" />' . LF;
+			}
 		}
 		$this->setMarkerArray($markerArray);
 	}
@@ -926,28 +928,19 @@ class Marker
 	 * @param array $filenames: array of uploaded file names
 	 * @return string generated HTML uploading tags
 	 */
-	public function buildFileUploader (
-		$theField,
-		$config,
-		$cmd,
-		$cmdKey,
-		$filenameArray,
-		$viewOnly = false,
-		$activity = '',
-		$bHtml = true
-	) {
+	protected function buildFileUploader($theField, $config, $cmd, $cmdKey, array $filenameArray, $viewOnly = false, $activity = '', $bHtml = true)
+	{
 		$HTMLContent = '';
 		$size = $config['maxitems'];
 		$cmdParts = preg_split('/\[|\]/', $this->conf[$cmdKey . '.']['evalValues.'][$theField]);
-		if(!empty($cmdParts[1])) {
-			$size = min($size, intval($cmdParts[1]));
+		if (!empty($cmdParts[1])) {
+			$size = min($size, (int) $cmdParts[1]);
 		}
 		$size = $size ? $size : 1;
-		$number = $size - sizeof($filenameArray);
+		$number = $size - count($filenameArray);
 		$dir = $config['uploadfolder'];
-
 		if ($viewOnly) {
-			for ($i = 0; $i < sizeof($filenameArray); $i++) {
+			for ($i = 0; $i < count($filenameArray); $i++) {
 				$HTMLContent .= $filenameArray[$i];
 				if ($activity == 'email') {
 					if ($bHtml)	{
@@ -962,21 +955,22 @@ class Marker
 				}
 			}
 		} else {
-			for($i = 0; $i < sizeof($filenameArray); $i++) {
+			$formName = $this->conf['formName'] ?: CssUtility::getClassName($this->prefixId, $this->theTable . '_form');
+			for ($i = 0; $i < count($filenameArray); $i++) {
 				$HTMLContent .=
-					$filenameArray[$i] . '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="' . $this->prefixId . '[' . $theField . '][' . $i . '][submit_delete]" value="1" title="' . LocalizationUtility::translate('icon_delete', $this->extensionName) . '" alt="' . LocalizationUtility::translate('icon_delete', $this->extensionName) . '"' .
+					$filenameArray[$i] . '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="' . 'FE[' . $this->theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]" value="1" title="' . LocalizationUtility::translate('icon_delete', $this->extensionName) . '" alt="' . LocalizationUtility::translate('icon_delete', $this->extensionName) . '"' .
 					CssUtility::classParam($this->prefixId, 'delete-view') .
-					' onclick=\'if(confirm("' . LocalizationUtility::translate('confirm_file_delete', $this->extensionName) . '")) return true; else return false;\' />'
+					' onclick=\'if(confirm("' . LocalizationUtility::translate('confirm_file_delete', $this->extensionName) . '")) { var form = window.document.getElementById("' . $formName . '"); form["' . $this->prefixId . '[fileDelete]"].value = 1; return true;} else { return false;} \' />'
 					. '<a href="' . $dir . '/' . $filenameArray[$i] . '" ' .
 					CssUtility::classParam($this->prefixId, 'file-view') .
 					' target="_blank" title="' . LocalizationUtility::translate('file_view', $this->extensionName) . '">' .
 					LocalizationUtility::translate('file_view', $this->extensionName) . '</a><br />';
-				$HTMLContent .= '<input type="hidden" name="' . $this->prefixId . '[' . $theField . '][' . $i . '][name]' . '" value="' . $filenameArray[$i] . '" />';
+				$HTMLContent .= '<input type="hidden" name="' . 'FE[' . $this->theTable . ']' . '[' . $theField . '][' . $i . '][name]' . '" value="' . $filenameArray[$i] . '" />';
 			}
-			for ($i = sizeof($filenameArray); $i < $number + sizeof($filenameArray); $i++) {
+			for ($i = count($filenameArray); $i < $number + count($filenameArray); $i++) {
 				$HTMLContent .= '<input id="' .
 				CssUtility::getClassName($this->prefixId, $theField) .
-				'-' . ($i-sizeof($filenameArray)) . '" name="' . $this->prefixId . '[' . $theField . '][' . $i . ']" title="' . LocalizationUtility::translate('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'image', $this->extensionName) . '" size="40" type="file" ' .
+				'-' . ($i - count($filenameArray)) . '" name="' . 'FE[' . $this->theTable . ']' . '[' . $theField . '][' . $i . ']" title="' . LocalizationUtility::translate('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'image', $this->extensionName) . '" size="40" type="file" ' .
 				CssUtility::classParam($this->prefixId, 'uploader-view') .
 				' /><br />';
 			}
@@ -988,53 +982,25 @@ class Marker
 	 * Adds uploading markers to a marker array
 	 *
 	 * @param string $theField: the field name
+	 * @param array $fieldConfig: the field configuration in TCA
 	 * @param array $dataArray: the record array
 	 * @return void
 	 */
-	public function addFileUploadMarkers(
-		$theField,
-		$fieldConfig,
-		$cmd,
-		$cmdKey,
-		$dataArray = array(),
-		$viewOnly = false,
-		$activity = '',
-		$bHtml = true
-	) {
+	public function addFileUploadMarkers($theField, array $fieldConfig, $cmd, $cmdKey, $dataArray = array(), $viewOnly = false, $activity = '', $bHtml = true)
+	{
 		$markerArray = $this->getMarkerArray();
 		$filenameArray = array();
 		if ($dataArray[$theField]) {
 			$filenameArray = $dataArray[$theField];
 		}
-
+		$fileUploader = $this->buildFileUploader($theField, $fieldConfig['config'], $cmd, $cmdKey, $filenameArray, $viewOnly, $activity, $bHtml);
 		if ($viewOnly) {
-			$markerArray['###UPLOAD_PREVIEW_' . $theField . '###'] =
-				$this->buildFileUploader(
-					$theField,
-					$fieldConfig['config'],
-					$cmd,
-					$cmdKey,
-					$filenameArray,
-					'FE[' . $this->theTable . ']',
-					true,
-					$activity,
-					$bHtml
-				);
+			$markerArray['###UPLOAD_PREVIEW_' . $theField . '###'] = $fileUploader;
 		} else {
-			$markerArray['###UPLOAD_' . $theField . '###'] =
-				$this->buildFileUploader(
-					$theField,
-					$fieldConfig['config'],
-					$cmd,
-					$cmdKey,
-					$filenameArray,
-					'FE[' . $this->theTable . ']',
-					false,
-					$activity,
-					$bHtml
-				);
+			$markerArray['###UPLOAD_' . $theField . '###'] = $fileUploader;
 			$max_size = $fieldConfig['config']['max_size'] * 1024;
 			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="MAX_FILE_SIZE" value="' . $max_size . '" />';
+			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId . '[fileDelete]" value="0" />' . LF;
 		}
 		$this->setMarkerArray($markerArray);
 	}

@@ -81,9 +81,8 @@ class CreateActionController extends AbstractActionController
 			if (GeneralUtility::inList($this->data->getFailure(), 'username')) {
 				$isDoNotSave = true;
 			}
-			if ($this->parameters->getFeUserData('countryChange')) {
+			if ($this->parameters->getFeUserData('countryChange') || $this->parameters->getFeUserData('fileDelete')) {
 				// This is either a country change submitted through the onchange event or a file deletion already processed by the parsing function
-				// You also come here after a click on the text "Not a member yet? click here to register."
 				// We are going to redisplay
 				$mode = AbstractView::MODE_NORMAL;
 				$isDoNotSave = true;
