@@ -45,10 +45,13 @@ class EditView extends AbstractView
 	 */
 	public function render(array $dataArray, array $origArray, array $securedArray, $cmd, $cmdKey, $mode) {
 		$content = '';
+		$currentArray = $origArray;
 		if (isset($dataArray) && is_array($dataArray)) {
-			$currentArray = array_merge($origArray, $dataArray);
-		} else {
-			$currentArray = $origArray;
+			foreach ($dataArray as $key => $value) {
+				if (!is_array($value) || !empty($value)) {
+					$currentArray[$key] = $value;
+				}
+			}
 		}
 		$requiredFields = $this->data->getRequiredFieldsArray($cmdKey);
 		if ($cmdKey === 'password') {
@@ -73,7 +76,7 @@ class EditView extends AbstractView
 		$this->marker->addTcaMarkers($currentArray, $origArray, $cmd, $cmdKey, $isPreview, $requiredFields);
 		$this->marker->addLabelMarkers($currentArray, $origArray, $securedArray, array(), $requiredFields, $this->data->getFieldList(), $this->data->getSpecialFieldList());
 		foreach ($GLOBALS['TCA'][$this->theTable]['columns'] as $theField => $fieldConfig) {
-			if ($fieldConfig['config']['internal_type'] == 'file' && $fieldConfig['config']['allowed'] != '' && $fieldConfig['config']['uploadfolder'] != '') {
+			if ($fieldConfig['config']['internal_type'] === 'file' && !empty($fieldConfig['config']['allowed']) && !empty($fieldConfig['config']['uploadfolder'])) {
 				$this->marker->addFileUploadMarkers($theField, $fieldConfig, $cmd, $cmdKey, $currentArray, $isPreview);
 			}
 		}

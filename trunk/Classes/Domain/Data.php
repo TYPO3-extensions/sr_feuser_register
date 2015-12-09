@@ -737,10 +737,7 @@ class Data
 												$fI = pathinfo($filename);
 												$fileExtension = strtolower($fI['extension']);
 												$fullfilename = PATH_site . $uploadPath . '/' . $filename;
-												if (
-													$bAllowedFilename
-													&& (!count($allowedExtArray) || in_array($fileExtension, $allowedExtArray))
-												) {
+												if ($bAllowedFilename && (!count($allowedExtArray) || in_array($fileExtension, $allowedExtArray))) {
 													if (@is_file($fullfilename)) {
 														if (!$maxSize || (filesize(PATH_site.$uploadPath.'/'.$filename) < ($maxSize * 1024))) {
 															$newFileNameArray[] = $filename;
@@ -754,25 +751,9 @@ class Data
 															}
 														}
 													} else {
-														if (
-															isset($_FILES) &&
-															is_array($_FILES) &&
-															isset($_FILES['FE']) &&
-															is_array($_FILES['FE']) &&
-															isset($_FILES['FE']['tmp_name']) &&
-															is_array($_FILES['FE']['tmp_name']) &&
-															isset($_FILES['FE']['tmp_name'][$this->theTable]) &&
-															is_array($_FILES['FE']['tmp_name'][$this->theTable]) &&
-															isset($_FILES['FE']['tmp_name'][$this->theTable][$theField]) &&
-															is_array($_FILES['FE']['tmp_name'][$this->theTable][$theField]) &&
-															isset($_FILES['FE']['tmp_name'][$this->theTable][$theField][$k])
-														) {
-															$bWritePermissionError = true;
-														} else {
-															$bWritePermissionError = false;
-														}
+														$writePermissionError = isset($_FILES) && isset($_FILES['FE']['tmp_name'][$this->theTable][$theField][$k]);
 														$this->evalErrors[$theField][] = $theCmd;
-														$failureMsg[$theField][] = sprintf($this->getFailureText($theField, 'isfile', ($bWritePermissionError ? 'evalErrors_write_permission' : 'evalErrors_file_upload')), $filename);
+														$failureMsg[$theField][] = sprintf($this->getFailureText($theField, 'isfile', ($writePermissionError ? 'evalErrors_write_permission' : 'evalErrors_file_upload')), $filename);
 														$failureArray[] = $theField;
 													}
 												} else {
@@ -908,6 +889,9 @@ class Data
 	/**
 	 * Transforms fields into certain things...
 	 *
+	 * @param array $dataArray: the incoming data array
+	 * @param array $origArray: the original data array
+	 * @param string $cmdKey: the comman key being processed
 	 * @return void all parsing done directly on input array $dataArray
 	 */
 	public function parseValues(array &$dataArray, array $origArray, $cmdKey)
@@ -1062,7 +1046,7 @@ class Data
 	 * @param string  $filename: the name of the file
 	 * @return bool true, if the filename is allowed
 	 */
-	public function checkFilename($filename)
+	protected function checkFilename($filename)
 	{
 		$fI = pathinfo($filename);
 		$fileExtension = strtolower($fI['extension']);
@@ -1072,19 +1056,20 @@ class Data
 	/**
 	 * Processes uploaded files
 	 *
-	 * @param string  $theField: the name of the field
+	 * @param string $theField: the name of the field
+	 * @param array $fieldData: field value
+	 * @param string $cmdKe: the command key being processed
 	 * @return array file names
 	 */
-	public function processFiles($theField, array $fieldDataArray, $cmdKey) {
-
+	protected function processFiles($theField, array $fieldData, $cmdKey)
+	{
 		if (is_array($GLOBALS['TCA'][$this->theTable]['columns'][$theField])) {
 			$uploadPath = $GLOBALS['TCA'][$this->theTable]['columns'][$theField]['config']['uploadfolder'];
 		}
 		$fileNameArray = array();
-
 		if ($uploadPath) {
-			if (count($fieldDataArray)) {
-				foreach ($fieldDataArray as $file) {
+			if (count($fieldData)) {
+				foreach ($fieldData as $file) {
 					if (is_array($file)) {
 						if ($this->checkFilename($file['name'])) {
 							if ($file['submit_delete']) {
@@ -1106,14 +1091,12 @@ class Data
 			}
 			if (is_array($_FILES['FE']['name'][$this->theTable][$theField])) {
 				foreach($_FILES['FE']['name'][$this->theTable][$theField] as $i => $filename) {
-
 					if (
 						$filename &&
 						$this->checkFilename($filename) &&
 						$this->evalFileError($_FILES['FE']['error'][$this->theTable][$theField][$i])
 					) {
 						$fI = pathinfo($filename);
-
 						if (GeneralUtility::verifyFilenameAgainstDenyPattern($fI['name'])) {
 							$tmpFilename = basename($filename, '.' . $fI['extension']) . '_' . GeneralUtility::shortmd5(uniqid($filename)) . '.' . $fI['extension'];
 							$cleanFilename = $this->fileFunc->cleanFileName($tmpFilename);
@@ -1132,6 +1115,8 @@ class Data
 	/**
 	 * Saves the data into the database
 	 *
+	 * @param array $dataArray: the incoming data array
+	 * @param array $origArray: the original data array
 	 * @return void  sets $this->saved
 	 */
 	public function save(array $dataArray, array $origArray, $token, array &$newRow, $cmd, $cmdKey, $pid)
@@ -1686,7 +1671,7 @@ class Data
 	 *
 	 * @return parsedArray
 	 */
-	public function parseOutgoingData($cmdKey, $pid, array $dataArray, array $origArray)
+	protected function parseOutgoingData($cmdKey, $pid, array $dataArray, array $origArray)
 	{
 		$parsedArray = $dataArray;
 
@@ -1714,12 +1699,7 @@ class Data
 							break;
 						case 'deleteUnreferencedFiles':
 							$fieldConfig = $GLOBALS['TCA'][$this->theTable]['columns'][$theField]['config'];
-							if (
-								is_array($fieldConfig) &&
-								$fieldConfig['type'] === 'group' &&
-								$fieldConfig['internal_type'] === 'file' &&
-								$fieldConfig['uploadfolder']
-							) {
+							if (is_array($fieldConfig) && $fieldConfig['type'] === 'group' && $fieldConfig['internal_type'] === 'file' && $fieldConfig['uploadfolder']) {
 								$uploadPath = $fieldConfig['uploadfolder'];
 								$origFiles = array();
 								if (is_array($origArray[$theField])) {
