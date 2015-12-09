@@ -245,6 +245,17 @@ class Data
 	}
 
 	/**
+	 * Set configuration
+	 *
+	 * @param array $conf: the configuration array
+	 * @return void
+	 */
+	public function setConfiguration(array $conf)
+	{
+		$this->conf = $conf;
+	}
+
+	/**
 	 * Get the incoming data array
 	 *
 	 * @return array the incoming data array
@@ -262,24 +273,6 @@ class Data
 	public function resetDataArray()
 	{
 		$this->dataArray = array();
-	}
-
-	/**
-	 * Adjust some configuration settings
-	 *
-	 * @param string $cmdKey: the cmd key that will be used
-	 * @return void
-	 */
-	protected function processSettings($cmdKey)
-	{
-		if ($cmdKey === 'invite') {
-			// Do not evaluate any password when inviting
-			unset($this->conf[$cmdKey . '.']['evalValues.']['password']);
-		}
-		// Do not evaluate the username if it is generated or if email is used
-		if ($this->conf[$cmdKey . '.']['useEmailAsUsername'] || ($this->conf[$cmdKey . '.']['generateUsername'] && $cmdKey !== 'edit' && $cmdKey !== 'password')) {
-			unset($this->conf[$cmdKey . '.']['evalValues.']['username']);
-		}
 	}
 
 	/**
@@ -564,9 +557,8 @@ class Data
 		if (CaptchaManager::useCaptcha($cmdKey, $this->conf, $this->extensionKey)) {
 			$displayFieldArray = array_merge($displayFieldArray, array('captcha_response'));
 		}
-		$requiredArray = $this->getRequiredFieldsArray($cmdKey);
-		$this->processSettings($cmdKey);
 		// Check required fields, set failure if missing.
+		$requiredArray = $this->getRequiredFieldsArray($cmdKey);
 		foreach ($requiredArray as $theField) {
 			$isMissing = empty($dataArray[$theField]);
 			if ($isMissing) {

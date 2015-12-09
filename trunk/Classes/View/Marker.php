@@ -621,7 +621,7 @@ class Marker
 	public function generateURLMarkers($uid)
 	{
 		$vars = array();
-		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,rU,aC,sFK,doNotSave,preview,countryChange';
+		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,rU,aC,sFK,doNotSave,preview,countryChange,fileDelete,key';
 		$unsetVars = GeneralUtility::trimExplode(',', $unsetVarsList);
 		$unsetVars['cmd'] = 'cmd';
 		$unsetVarsAll = $unsetVars;
@@ -637,7 +637,7 @@ class Marker
 		$form = CssUtility::getClassName($this->prefixId, $this->theTable . '_form');
 		$markerArray['###FORM_NAME###'] = $this->conf['formName'] ?: $form;
 
-		$unsetVarsList = 'mode,pointer,sort,sword,submit,doNotSave,countryChange';
+		$unsetVarsList = 'mode,pointer,sort,sword,submit,doNotSave,countryChange,fileDelete,key';
 		$unsetVars = GeneralUtility::trimExplode(',', $unsetVarsList);	
 		$ac = $this->parameters->getFeUserData('aC');
 		if ($ac) {
@@ -650,18 +650,18 @@ class Marker
 		$vars['preview'] = '1';
 		$markerArray['###DELETE_URL###'] = UrlUtility::get($this->prefixId, '', $this->parameters->getPid('edit') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
 
-		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,rU,aC,sFK,doNotSave,preview,countryChange,regHash';
+		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,rU,aC,sFK,doNotSave,preview,countryChange,fileDelete,key,regHash';
 		$unsetVars = GeneralUtility::trimExplode(',', $unsetVarsList);
 		$vars['cmd'] = 'create';
 		$url = UrlUtility::get($this->prefixId, '', $this->parameters->getPid('register') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
 		$markerArray['###REGISTER_URL###'] = $url;
 
-		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,aC,sFK,doNotSave,preview,countryChange';
+		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,aC,sFK,doNotSave,preview,countryChange,fileDelete,key';
 		$unsetVars = GeneralUtility::trimExplode(',', $unsetVarsList);
 		$vars['cmd'] = 'login';
 		$markerArray['###LOGIN_FORM###'] = UrlUtility::get($this->prefixId, '', $this->parameters->getPid('login') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
 
-		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,doNotSave,preview,countryChange';
+		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,doNotSave,preview,countryChange,fileDelete,key';
 		$unsetVars = GeneralUtility::trimExplode(',', $unsetVarsList);
 		$vars['cmd'] = 'infomail';
 		$markerArray['###INFOMAIL_URL###'] = UrlUtility::get($this->prefixId, '', $this->parameters->getPid('infomail') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
@@ -699,7 +699,7 @@ class Marker
 		$commandArray = array('register', 'edit', 'delete', 'confirm', 'login');
 		$markerArray = array();
 		$vars = array();
-		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,rU,aC,sFK,doNotSave,preview,cmd,token,countryChange';
+		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,rU,aC,sFK,doNotSave,preview,cmd,token,countryChange,fileDelete,key';
 		$unsetVars = GeneralUtility::trimExplode(',', $unsetVarsList);
 		$commandPidArray = array();
 		foreach ($commandArray as $command) {

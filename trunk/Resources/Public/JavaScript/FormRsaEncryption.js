@@ -119,8 +119,11 @@ TYPO3FrontendLoginFormRsaEncryption = function() {
 			rsa.setPublic(publicKeyModulus, exponent);
 			encryptedPassword = rsa.encrypt(this.userPasswordField.value);
 
-			// replace password value with encrypted password
+			// Replace password value with encrypted password
 			this.userPasswordField.value = 'rsa:' + hex2b64(encryptedPassword);
+
+			// Replace password value with encrypted password
+			this.form.submit.value = '1';
 
 			// Submit the form again but now with encrypted pass
 			document.createElement("form").submit.call(this.form);

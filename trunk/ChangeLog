@@ -1,6 +1,7 @@
 2015-12-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for password edition
 	* Fixes for files upload
+	* Fix for password edition after invitation acceptation
 
 2015-12-04 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for the login forms
