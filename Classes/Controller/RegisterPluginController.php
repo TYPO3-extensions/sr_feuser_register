@@ -249,13 +249,11 @@ class RegisterPluginController extends AbstractPlugin
 			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), array('module_sys_dmail_category,module_sys_dmail_newsletter')));
 			$this->conf[$cmdKey . '.']['required'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['required'], 1), array('module_sys_dmail_category, module_sys_dmail_newsletter')));
 		}
-
+		// Make lists ready for GeneralUtility::inList which does not yet allow blanks
 		$fieldConfArray = array('fields', 'required');
 		foreach ($fieldConfArray as $k => $v) {
-			// make it ready for GeneralUtility::inList which does not yet allow blanks
-			$this->conf[$cmdKey . '.'][$v] = implode(',',  array_unique(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.'][$v])));
+			$this->conf[$cmdKey . '.'][$v] = implode(',',  array_unique(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.'][$v], true)));
 		}
-
 		if ($this->theTable === 'fe_users') {
 			// When not in edit mode, add username to lists of fields and required fields unless explicitly disabled
 			if (empty($this->conf[$cmdKey.'.']['doNotEnforceUsername'])) {
@@ -328,6 +326,9 @@ class RegisterPluginController extends AbstractPlugin
 				unset($this->conf[$cmdKey . '.']['evalValues.']['username']);
 			}
 		}
+		
+		// Forward the modified settings to the data object
+		$this->data->setConfiguration($this->conf);
 	}
 
 	/**

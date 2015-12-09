@@ -140,11 +140,12 @@ class TransmissionSecurity
 				list($onSubmit, $hiddenFields) = self::getPasswordEncryptionCode();
 				if ($usePasswordAgain) {
 					$onSubmit = 'if (this.pass.value != this[\'FE[fe_users][password_again]\'].value) {this.password_again_failure.value = 1; this.pass.value = \'X\'; this[\'FE[fe_users][password_again]\'].value = \'\'; return true;} else { this[\'FE[fe_users][password_again]\'].value = \'\'; ' . $onSubmit . '}';
-					$extraHiddenFieldsArray[] = '<input type="hidden" name="password_again_failure" value="0">' .  LF;
+					$extraHiddenFieldsArray[] = '<input type="hidden" name="password_again_failure" value="0">';
+					$extraHiddenFieldsArray[] = '<input type="hidden" name="submit" value="0">';
 				}
 				$markerArray['###FORM_ONSUBMIT###'] = ' onsubmit="' . $onSubmit . '"';
 				if (count($extraHiddenFieldsArray)) {
-					$extraHiddenFields = implode(LF, $extraHiddenFieldsArray);
+					$extraHiddenFields = implode(LF, $extraHiddenFieldsArray) .  LF;
 				}
 				$markerArray['###HIDDENFIELDS###'] .= LF . $extraHiddenFields;
 				break;

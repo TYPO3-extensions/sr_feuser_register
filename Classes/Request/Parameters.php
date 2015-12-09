@@ -363,8 +363,8 @@ class Parameters
 				}
 			}
 		}
-		// Establishing compatibility with Direct Mail extension
-		$piVarArray = array('rU', 'aC', 'sFK');
+		// Establishing compatibility with Direct Mail and Rsaauth
+		$piVarArray = array('rU', 'aC', 'sFK', 'submit');
 		foreach ($piVarArray as $pivar) {
 			$value = htmlspecialchars(GeneralUtility::_GP($pivar));
 			if ($value != '') {

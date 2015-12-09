@@ -28,6 +28,7 @@ use SJBR\SrFeuserRegister\Security\Authentication;
 use SJBR\SrFeuserRegister\Security\SessionData;
 use SJBR\SrFeuserRegister\Security\StorageSecurity;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
+use SJBR\SrFeuserRegister\View\AbstractView;
 use SJBR\SrFeuserRegister\View\Marker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -101,7 +102,7 @@ class SetfixedActionController extends AbstractActionController
 					$securedArray,
 					'setfixed',
 					$cmdKey,
-					$this->parameters->getMode(),
+					AbstractView::MODE_NORMAL,
 					$this->data->inError
 				);
 			} else if ($sFK === 'DELETE' || $sFK === 'REFUSE') {
@@ -192,7 +193,7 @@ class SetfixedActionController extends AbstractActionController
 							$securedArray,
 							'password',
 							'password',
-							$this->parameters->getMode()
+							AbstractView::MODE_NORMAL
 						);
 					} else {
 						// Login failed
