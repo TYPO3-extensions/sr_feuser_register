@@ -4,7 +4,7 @@
 		<header/>
 		<body>
 			<trans-unit id="invalidToken" xml:space="preserve">
-				<source>Apparently, this link has expired.</source>
+				<source>This access is not authorized.</source>
 			</trans-unit>
 			<trans-unit id="unsupported" xml:space="preserve">
 				<source>unsupported</source>

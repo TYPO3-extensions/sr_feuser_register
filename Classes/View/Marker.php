@@ -229,11 +229,12 @@ class Marker
 	 */
 	protected function setOtherLabelsList($otherLabelsList)
 	{
-		$this->otherLabelsList = 'yes,no,new_password,password_again,tooltip_password_again,tooltip_invitation_password_again,click_here_to_register,tooltip_click_here_to_register,click_here_to_edit,tooltip_click_here_to_edit,click_here_to_delete,tooltip_click_here_to_delete,click_here_to_see_terms,tooltip_click_here_to_see_terms'.
-			',copy_paste_link,enter_account_info,enter_invitation_account_info,required_info_notice,excuse_us,'.
-			',tooltip_login_username,tooltip_login_password,'.
-			',registration_problem,registration_sorry,registration_clicked_twice,registration_help,kind_regards,kind_regards_cre,kind_regards_del,kind_regards_ini,kind_regards_inv,kind_regards_upd'.
-			',v_dear,v_verify_before_create,v_verify_invitation_before_create,v_verify_before_update,v_really_wish_to_delete,v_edit_your_account'.
+		$this->otherLabelsList = 'yes,no,new_password,password_again,tooltip_password_again,tooltip_invitation_password_again,click_here_to_register,tooltip_click_here_to_register,click_here_to_edit,tooltip_click_here_to_edit,click_here_to_delete,tooltip_click_here_to_delete,click_here_to_see_terms,tooltip_click_here_to_see_terms'
+			. ',copy_paste_link,enter_account_info,enter_invitation_account_info,required_info_notice,excuse_us'
+			. ',tooltip_login_username,tooltip_login_password'
+			. ',invalidToken'
+			. ',registration_problem,registration_sorry,registration_clicked_twice,registration_help,kind_regards,kind_regards_cre,kind_regards_del,kind_regards_ini,kind_regards_inv,kind_regards_upd'
+			. ',v_dear,v_verify_before_create,v_verify_invitation_before_create,v_verify_before_update,v_really_wish_to_delete,v_edit_your_account'.
 			',v_now_enter_your_username,v_now_choose_password,v_notification'.
 			',v_registration_created,v_registration_created_subject,v_registration_created_message1,v_registration_created_message2,v_registration_created_message3'.
 			',v_to_the_administrator'.
@@ -618,7 +619,7 @@ class Marker
 	 * @param string $uid of the current record
 	 * @return void
 	 */
-	public function generateURLMarkers($uid)
+	public function generateURLMarkers($uid = 0)
 	{
 		$vars = array();
 		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,rU,aC,sFK,doNotSave,preview,countryChange,fileDelete,key';
