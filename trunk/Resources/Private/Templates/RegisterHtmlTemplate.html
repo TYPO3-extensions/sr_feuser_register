@@ -2195,14 +2195,10 @@ The user is informed that a message has been sent to the email address and that 
 
 <h2>'Authentication' templates:</h2>
 
-
-
 <p style="margin-top: 20px"><em>Authentication failed message.</em></p>
 <!-- ###TEMPLATE_AUTH### begin -->
 <p><a href="###REGISTER_URL###" title="###LABEL_TOOLTIP_CLICK_HERE_TO_REGISTER###">###LABEL_CLICK_HERE_TO_REGISTER###</a></p>
 <!-- ###TEMPLATE_AUTH### end-->
-
-
 
 <p style="margin-top: 20px"><em>No permission template</em></p>
 <!-- ###TEMPLATE_NO_PERMISSIONS### begin-->
@@ -2212,6 +2208,15 @@ The user is informed that a message has been sent to the email address and that 
 <p>###LABEL_KIND_REGARDS###</p>
 <h4>###SITE_NAME###</h4>
 <!-- ###TEMPLATE_NO_PERMISSIONS### end-->
+
+<p style="margin-top: 20px"><em>Invalid token template</em></p>
+<!-- ###TEMPLATE_INVALID_TOKEN### begin-->
+<h4>###LABEL_INVALIDTOKEN###</h4>
+<p>###LABEL_REGISTRATION_SORRY###</p>
+<p>###LABEL_REGISTRATION_HELP### <a href="mailto:###SITE_EMAIL###">###SITE_EMAIL###</a></p>
+<p>###LABEL_KIND_REGARDS###</p>
+<h4>###SITE_NAME###</h4>
+<!-- ###TEMPLATE_INVALID_TOKEN### end-->
 
 
 <h1>EMAIL TEMPLATES:</h1>
