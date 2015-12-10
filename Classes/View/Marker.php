@@ -1386,7 +1386,6 @@ class Marker
 							case 'text':
 								$colContent = ($HSC ? nl2br(htmlspecialchars($mrow[$colName], ENT_QUOTES, $charset)) : $mrow[$colName]);
 								break;
-
 							case 'check':
 								if (is_array($colConfig['items'])) {
 
@@ -1440,7 +1439,6 @@ class Marker
 									$colContent = $label;
 								}
 								break;
-
 							case 'radio':
 								if ($mrow[$colName] != '') {
 									$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',', $mrow[$colName]);
@@ -1471,7 +1469,6 @@ class Marker
 									}
 								}
 								break;
-
 							case 'select':
 								if ($mrow[$colName] != '') {
 									$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',', $mrow[$colName]);
@@ -1530,7 +1527,6 @@ class Marker
 									}
 								}
 								break;
-
 							default:
 								// unsupported input type
 								$label = LocalizationUtility::translate('unsupported', $this->extensionName);
@@ -1560,9 +1556,7 @@ class Marker
 									$bUseTCA = true;
 								}
 						}
-
 						switch ($type) {
-
 							case 'input':
 								$colContent = '<input type="input" name="FE[' . $this->theTable . '][' . $colName . ']"' .
 									' title="###TOOLTIP_' . (($cmd == 'invite') ? 'INVITATION_' : '') . $this->cObj->caseshift($colName, 'upper') . '###"' .
@@ -1576,8 +1570,8 @@ class Marker
 									$colContent .= ' value="' . $label . '"';
 								}
 								$colContent .= ' />';
+								$markerArray['###MAXLENGTH_' . $colName . '###'] = $colConfig['max'] ?: ($colConfig['size'] ?: 20);
 								break;
-
 							case 'text':
 								$label = LocalizationUtility::translate($colConfig['default'], $this->extensionName);
 								$label = htmlspecialchars($label, ENT_QUOTES, $charset);
@@ -1586,8 +1580,8 @@ class Marker
 									' cols="' . ($colConfig['cols'] ? $colConfig['cols'] : 30) . '"' .
 									' rows="' . ($colConfig['rows'] ? $colConfig['rows'] : 5) . '"' .
 									'>' . ($colConfig['default'] ? $label : '') . '</textarea>';
+								$markerArray['###MAXLENGTH_' . $colName . '###'] = $colConfig['max'] ?: ($colConfig['cols'] ? $colConfig['cols'] : 30)*($colConfig['rows'] ? $colConfig['rows'] : 5);
 								break;
-
 							case 'check':
 								$label = LocalizationUtility::translate('tooltip_' . $colName, $this->extensionName);
 								$label = htmlspecialchars($label, ENT_QUOTES, $charset);
@@ -1624,7 +1618,6 @@ class Marker
 									'" name="FE[' . $this->theTable . '][' . $colName . ']" title="' . $label . '"' . ($mrow[$colName] ? ' checked="checked"' : '') . ' />';
 								}
 								break;
-
 							case 'radio':
 								if (
 									//$this->parameters->getSubmit() ||
@@ -1662,7 +1655,6 @@ class Marker
 									}
 								}
 								break;
-
 							case 'select':
 								$colContent ='';
 								if ($colConfig['maxitems'] > 1) {
