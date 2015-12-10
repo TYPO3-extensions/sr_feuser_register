@@ -532,6 +532,8 @@ class Parameters
 			|| (count($feUserData) === 1 && in_array($feUserData['cmd'], array('create', 'edit', 'password')))
 			// Submit from form of other extension (felogin) with no other data
 			|| (count($feUserData) === 1 && isset($feUserData['submit']) && !$GLOBALS['TSFE']->loginUser && $feUserData['submit'] != 1)
+			// Cancel button
+			|| (count($feUserData) === 2 && isset($feUserData['doNotSave']) && !empty($token))
 			// Valid token
 			|| (!empty($token) && $feUserData['token'] === $token)
 		) {
