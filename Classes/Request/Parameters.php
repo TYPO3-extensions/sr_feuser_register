@@ -531,9 +531,9 @@ class Parameters
 			// Initial command with no data
 			|| (count($feUserData) === 1 && in_array($feUserData['cmd'], array('create', 'edit', 'password')))
 			// Submit from form of other extension (felogin) with no other data
-			|| (count($feUserData) === 1 && isset($feUserData['submit']) && !$GLOBALS['TSFE']->loginUser && $feUserData['submit'] != 1)
+			|| (count($feUserData) === 1 && isset($feUserData['submit']) && !$GLOBALS['TSFE']->loginUser && $feUserData['submit'] != 1 && strpos(GeneralUtility::getIndpEnv('HTTP_REFERER'), GeneralUtility::getIndpEnv('HTTP_HOST')) !== false)
 			// Cancel button
-			|| (count($feUserData) === 2 && isset($feUserData['doNotSave']) && !empty($token))
+			|| (count($feUserData) === 2 && isset($feUserData['doNotSave']) && !empty($token) && strpos(GeneralUtility::getIndpEnv('HTTP_REFERER'), GeneralUtility::getIndpEnv('HTTP_HOST')) !== false)
 			// Valid token
 			|| (!empty($token) && $feUserData['token'] === $token)
 		) {
