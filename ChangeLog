@@ -3,12 +3,13 @@
 	* Check referer in some cases
 	* Require static_info_tables version 6.3.6
 	* Update the manual
+	* Resolves #48635: fe_users pid as comma-separated list
 
 2015-12-09 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for password edition after invitation acceptation
 	* Add template for invalid token
 	* Follow-up to Add template for invalid token
-	* Resolves: 59446: Template: dynamic field length using TCA
+	* Resolves: #59446: Template: dynamic field length using TCA
 
 2015-12-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for password edition

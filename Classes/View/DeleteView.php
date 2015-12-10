@@ -47,7 +47,7 @@ class DeleteView extends AbstractView
 			$bMayEdit = $cObj->DBmayFEUserEdit($this->theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf']);
 			if ($aCAuth || $bMayEdit) {
 				// Display the form, if access granted.
-				$backUrl = $this->parameters->getBackURL() ?: UrlUtility::getTypoLink_URL($conf['loginPID'] . ',' . $GLOBALS['TSFE']->type);
+				$backUrl = $this->parameters->getBackURL() ?: UrlUtility::getTypoLink_URL($this->parameters->getPid('login') . ',' . $GLOBALS['TSFE']->type);
 				$this->marker->addBackUrlMarker($backUrl);
 				$this->marker->addGeneralHiddenFieldsMarkers('delete', $this->parameters->getAuthCode(), $backUrl);
 				$content = $plainView->render('###TEMPLATE_DELETE_PREVIEW###', $origArray, $origArray, $securedArray, $cmd, $cmdKey);

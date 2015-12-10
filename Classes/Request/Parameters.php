@@ -259,7 +259,17 @@ class Parameters
 					$pid = $this->getPid('confirm');
 					break;
 				default:
-					$pid = MathUtility::canBeInterpretedAsInteger($this->conf['pid']) ? (int) $this->conf['pid'] : $GLOBALS['TSFE']->id;
+					$pidArray = array();
+					$tmpArray = GeneralUtility::trimExplode(',', $this->conf['pid'], true);
+					if (count($tmpArray)) {
+						foreach ($tmpArray as $value) {
+							$valueIsInt = MathUtility::canBeInterpretedAsInteger($value);
+							if ($valueIsInt) {
+								$pidArray[] = (int) $value;
+							}
+						}
+					}
+					$pid = count($pidArray) ? $pidArray[0] : $GLOBALS['TSFE']->id;
 					break;
 			}
 		}
@@ -283,13 +293,27 @@ class Parameters
 		if (!$pid) {
 			if ($this->cObj->data['pages']) {
 				$pids = explode(',', $this->cObj->data['pages']);
-				$pid = $pids['0'];
 			}
-			if (!$pid) {
-				$pid = MathUtility::canBeInterpretedAsInteger($this->conf['pid']) ? (int) $this->conf['pid'] : $GLOBALS['TSFE']->id;
+			if (count($pids)) {
+				$pid = $type ? $pids['0'] : $pids;
+			}
+			if (empty($pid)) {
+				$pidArray = array();
+				$tmpArray = GeneralUtility::trimExplode(',', $this->conf['pid'], true);
+				if (count($tmpArray)) {
+					foreach ($tmpArray as $value) {
+						$valueIsInt = MathUtility::canBeInterpretedAsInteger($value);
+						if ($valueIsInt) {
+							$pidArray[] = (int) $value;
+						}
+					}
+				}
+				if (count($pidArray)) {
+					$pid = $type ? $pidArray[0] : implode(',', $pidArray);
+				}
 			}
 		}
-		return $pid;
+		return !empty($pid) ? $pid : $GLOBALS['TSFE']->id;
 	}
 
 	/**
@@ -302,7 +326,7 @@ class Parameters
 		$pidRecord = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 		$pidRecord->init(0);
 		$pidRecord->sys_language_uid = (int) $GLOBALS['TSFE']->config['config']['sys_language_uid'];
-		$row = $pidRecord->getPage($this->getPid());
+		$row = $pidRecord->getPage((int) $this->getPid());
 		$this->pidTitle = $this->conf['pidTitleOverride'] ?: $row['title'];
 	}
 

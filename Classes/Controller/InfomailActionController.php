@@ -62,7 +62,7 @@ class InfomailActionController extends AbstractActionController
 		$fetch = $this->parameters->getFeUserData('fetch');
 		$failure = $this->data->getFailure();
 		if (!empty($fetch) && empty($failure)) {
-			$pidLock = 'AND pid = ' . (int) $this->parameters->getPid();
+			$pidLock = 'AND pid IN (\'' . implode('\',\'', GeneralUtility::trimExplode(',', $this->parameters->getPid(), true)) . '\')';
 			$enable = $GLOBALS['TSFE']->sys_page->enableFields($this->theTable);
 			$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->theTable, $this->conf['email.']['field'], $fetch, $pidLock . $enable, '', '', '100');
 			if (is_array($DBrows)) {

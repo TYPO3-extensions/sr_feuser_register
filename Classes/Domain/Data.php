@@ -567,7 +567,7 @@ class Data
 			}
 		}
 
-		$pid = (int) $dataArray['pid'];
+		$pid = $dataArray['pid'];
 
 		// Evaluate: This evaluates for more advanced things than "required" does.
 		// But it returns the same error code, so you must let the required-message, if further evaluation has failed!
@@ -575,17 +575,17 @@ class Data
 		if (is_array($this->conf[$cmdKey . '.']['evalValues.'])) {
 			$cmd = $this->parameters->getCmd();
 			if ($cmd === 'edit' || $cmdKey === 'edit') {
-				if ($pid) {
+				if ((int) $pid) {
 					// This may be tricked if the input has the pid-field set but the edit-field list does NOT allow the pid to be edited. Then the pid may be false.
-					$recordTestPid = $pid;
+					$recordTestPid = (int) $pid;
 				} else {
 					$tempRecArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $dataArray['uid']);
 					$recordTestPid = (int) $tempRecArr['pid'];
 				}
-				$bRecordExists = ($recordTestPid != 0);
+				$bRecordExists = ($recordTestPid !== 0);
 			} else {
 				$thePid = $this->parameters->getPid();
-				$recordTestPid = $thePid ? $thePid : MathUtility::convertToPositiveInteger($pid);
+				$recordTestPid = $thePid ? $thePid : $pid;
 			}
 			$countArray = array();
 			$countArray['hook'] = array();
@@ -624,10 +624,10 @@ class Data
 							case 'uniqueLocal':
 							case 'uniqueDeletedLocal':
 								$where = $theField . '=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dataArray[$theField], $this->theTable);
-								if ($theCmd == 'uniqueLocal' || $theCmd == 'uniqueGlobal') {
+								if ($theCmd === 'uniqueLocal' || $theCmd === 'uniqueGlobal') {
 									$where .= $GLOBALS['TSFE']->sys_page->deleteClause($this->theTable);
 								}
-								if ($theCmd == 'uniqueLocal' || $theCmd == 'uniqueDeletedLocal') {
+								if ($theCmd === 'uniqueLocal' || $theCmd === 'uniqueDeletedLocal') {
 									$where .= ' AND pid IN (' . $recordTestPid.')';
 								}
 
@@ -1193,7 +1193,7 @@ class Data
 						$parsedArray['token'] = $token;
 						$newFieldList  .= ',token';
 					}
-					$res = $this->cObj->DBgetInsert($this->theTable, $pid, $parsedArray, $newFieldList, true);
+					$res = $this->cObj->DBgetInsert($this->theTable, (int) $pid, $parsedArray, $newFieldList, true);
 					$newId = $GLOBALS['TYPO3_DB']->sql_insert_id();
 					$rc = $newId;
 					// Enable users to own themselves.
