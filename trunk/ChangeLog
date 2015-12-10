@@ -1,5 +1,6 @@
 2015-12-10 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for token validation
+	* Check referer in some cases
 
 2015-12-09 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for password edition after invitation acceptation
