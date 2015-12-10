@@ -367,9 +367,14 @@ class Parameters
 		$piVarArray = array('rU', 'aC', 'sFK', 'submit');
 		foreach ($piVarArray as $pivar) {
 			$value = htmlspecialchars(GeneralUtility::_GP($pivar));
-			if ($value != '') {
+			if (!empty($value)) {
 				$this->feUserData[$pivar] = $value;
 			}
+		}
+		// Value of submit POST variable
+		$value = htmlspecialchars(GeneralUtility::_POST('submit'));
+		if (!empty($value)) {
+			$this->feUserData['submit'] = $value;
 		}
 		// Cleanup input values
 		SecuredData::secureInput($this->feUserData);
@@ -504,7 +509,6 @@ class Parameters
 	 */
 	protected function validateToken() {
 		$feUserData = $this->getFeUserData();
-		$startCmdIsSecure = (count($feUserData) === 1 && in_array($feUserData['cmd'], array('create', 'edit', 'password')));
 		// Get the data for the uid provided in query parameters
 		$theUid = 0;
 		if (MathUtility::canBeInterpretedAsInteger($feUserData['rU'])) {
@@ -521,7 +525,23 @@ class Parameters
 			$token = SessionData::readToken($this->extensionKey);
 		}
 		// Validate the token
-		if (empty($feUserData) || $startCmdIsSecure || (!empty($token) && $feUserData['token'] === $token)) {
+		if (
+			// No data received
+			empty($feUserData)
+			// Initial command with no data
+			|| (count($feUserData) === 1 && in_array($feUserData['cmd'], array('create', 'edit', 'password')))
+			// Submit from form of other extension (felogin) with no other data
+			|| (count($feUserData) === 1 && isset($feUserData['submit']) && !$GLOBALS['TSFE']->loginUser && $feUserData['submit'] != 1)
+			// Valid token
+			|| (!empty($token) && $feUserData['token'] === $token)
+		) {
+			$this->setTokenValid(true);
+		} else if (
+			in_array($feUserData['cmd'], array('edit', 'password', 'delete')) 
+			&& isset($origArray) && is_array($origArray)
+			&& $GLOBALS['TSFE']->loginUser
+			&& $theUid > 0 && $GLOBALS['TSFE']->fe_user->user['uid'] == $theUid
+		) {
 			$this->setTokenValid(true);
 		} else if ($theUid > 0) {
 			// When processing a setfixed link from other extensions,
