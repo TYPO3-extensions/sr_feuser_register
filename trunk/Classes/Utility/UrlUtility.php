@@ -87,12 +87,8 @@ class UrlUtility
 	static public function getTypoLink_URL($params, array $urlParameters = array(), $target = '', $conf = array())
 	{
 		self::initializeUrlUtility();
-		$result = false;
-		$result = self::getTypoLink('', $params, $urlParameters, $target, $conf);
-		if ($url !== false) {
-			$url = self::$cObj->lastTypoLinkUrl;
-		}
-        return $url;
+		$conf['returnLast'] = 'url';
+		return self::getTypoLink('', $params, $urlParameters, $target, $conf);
     }
 
 	/**
@@ -110,7 +106,6 @@ class UrlUtility
 	 */
 	 static public function getTypoLink($label, $params, array $urlParameters = array(), $target = '', $conf = array())
 	 {
-	 	 $url = false;
 	 	 $conf['parameter'] = $params;
 	 	 if ($target) {
 	 	 	 if (!isset($conf['target'])) {
@@ -123,7 +118,7 @@ class UrlUtility
 		 if (!empty($urlParameters)) {
 			 $conf['additionalParams'] .= GeneralUtility::implodeArrayForUrl('', $urlParameters);
 		 }
-	 	 $url = self::$cObj->typolink($label, $conf);
+	 	 return self::$cObj->typolink($label, $conf);
 	}
 
 	/**

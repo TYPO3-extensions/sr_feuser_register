@@ -4,6 +4,7 @@
 	* Require static_info_tables version 6.3.6
 	* Update the manual
 	* Resolves #48635: fe_users pid as comma-separated list
+	* Fix for url generation
 
 2015-12-09 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for password edition after invitation acceptation
