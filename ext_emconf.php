@@ -23,7 +23,7 @@ $EM_CONF[$_EXTKEY] = array (
 			'felogin' => '6.2.0-7.99.99',
 			'rsaauth' => '6.2.0-7.99.99',
 			'saltedpasswords' => '6.2.0-7.99.99',
-			'static_info_tables' => '6.3.1-6.3.99'
+			'static_info_tables' => '6.3.6-6.3.99'
 		),
 		'conflicts' => array(
 			'germandates' => '0.0.0-99.99.99',
