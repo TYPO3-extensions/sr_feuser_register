@@ -217,7 +217,7 @@ abstract class AbstractActionController
 		);
 		// Check against configured pid (defaulting to current page)
 		$GLOBALS['TSFE']->fe_user->checkPid = true;
-		$GLOBALS['TSFE']->fe_user->checkPid_value = $this->parameters->getPid();
+		$GLOBALS['TSFE']->fe_user->checkPid_value = (int) $this->parameters->getPid();
 		// Get authentication info array
 		$authInfo = $GLOBALS['TSFE']->fe_user->getAuthInfoArray();
 		// Get user info

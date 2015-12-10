@@ -669,7 +669,7 @@ class Marker
 
 		$vars['cmd'] = 'edit';
 		$markerArray['###EDIT_URL###'] = UrlUtility::get($this->prefixId, '', $this->parameters->getPid('edit') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
-		$markerArray['###THE_PID###'] = $this->parameters->getPid();
+		$markerArray['###THE_PID###'] = (int) $this->parameters->getPid();
 		$markerArray['###THE_PID_TITLE###'] = $this->parameters->getPidTitle();
 		$markerArray['###BACK_URL###'] = $backUrl;
 		$markerArray['###SITE_NAME###'] = $this->conf['email.']['fromName'];

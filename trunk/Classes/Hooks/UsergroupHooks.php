@@ -154,9 +154,9 @@ class UsergroupHooks
 			}
 		}
 		if (count($pidArray) > 0) {
-			$whereClause = ' pid IN (' . implode(',', $pidArray) . ') ';
+			$whereClause = ' pid IN (\'' . implode('\',\'', $pidArray) . '\') ';
 		} else {
-			$whereClause = ' pid=' . (int) $pid . ' ';
+			$whereClause = ' pid IN (\'' . implode('\',\'', GeneralUtility::trimExplode(',', $pid, true)) . '\') ';
 		}
 
 		$whereClausePart2 = '';
