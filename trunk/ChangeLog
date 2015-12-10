@@ -1,6 +1,8 @@
 2015-12-10 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for token validation
 	* Check referer in some cases
+	* Require static_info_tables version 6.3.6
+	* Update the manual
 
 2015-12-09 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for password edition after invitation acceptation

@@ -18,7 +18,7 @@
   	 "typo3/cms-felogin": "~6.2.0",
   	 "typo3/cms-rsaauth": "~6.2.0",
   	 "typo3/cms-saltedpasswords": "~6.2.0",
-  	 "sjbr/static_info_tables": "~6.3.1"
+  	 "sjbr/static_info_tables": "~6.3.6"
   },
   "autoload": {
     "psr-4": {
