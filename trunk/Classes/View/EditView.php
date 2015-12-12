@@ -28,7 +28,6 @@ use SJBR\SrFeuserRegister\Security\SecuredData;
 use SJBR\SrFeuserRegister\Utility\CssUtility;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\View\AbstractView;
-use TYPO3\CMS\Core\Html\HtmlParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -59,7 +58,7 @@ class EditView extends AbstractView
 		} else {
 			$subpartMarker = '###TEMPLATE_EDIT' . ($mode ? Marker::PREVIEW_SUFFIX : '') . '###';
 		}
-		$templateCode = HtmlParser::getSubpart($this->marker->getTemplateCode(), $subpartMarker);
+		$templateCode = $this->marker->getSubpart($this->marker->getTemplateCode(), $subpartMarker);
 		if (empty($templateCode)) {
 			$errorText = LocalizationUtility::translate('internal_no_subtemplate', $this->extensionName);
 			$errorText = sprintf($errorText, $subpartMarker);
@@ -67,7 +66,7 @@ class EditView extends AbstractView
 		}
 		$isPreview = ($mode === self::MODE_PREVIEW);
 		if (!$this->conf['linkToPID'] || !$this->conf['linkToPIDAddButton'] || !$isPreview) {
-			$templateCode = HtmlParser::substituteSubpart($templateCode, '###SUB_LINKTOPID_ADD_BUTTON###', '');
+			$templateCode = $this->marker->substituteSubpart($templateCode, '###SUB_LINKTOPID_ADD_BUTTON###', '');
 		}
 		$this->marker->addPasswordTransmissionMarkers($this->getUsePassword(), $this->getUsePasswordAgain());
 		$templateCode = $this->marker->removeRequired($templateCode, $this->data->getFailure(), $requiredFields, $this->data->getFieldList(), $this->data->getSpecialFieldList(), $cmdKey, $isPreview);
@@ -85,7 +84,7 @@ class EditView extends AbstractView
 		$this->marker->addHiddenFieldsMarkers($cmdKey, $mode, $this->conf[$cmdKey . '.']['useEmailAsUsername'], $this->conf[$cmdKey . '.']['fields'], $currentArray);
 		$this->marker->removePasswordMarkers();
 		$deleteUnusedMarkers = true;
-		$content .= HtmlParser::substituteMarkerArray($templateCode, $this->marker->getMarkerArray(), '', false, $deleteUnusedMarkers);
+		$content .= $this->marker->substituteMarkerArray($templateCode, $this->marker->getMarkerArray(), '', false, $deleteUnusedMarkers);
 		if (!$isPreview) {
 			$form = $this->conf['formName'] ?: CssUtility::getClassName($this->prefixId, $this->theTable . '_form');
 			$modData = $this->data->modifyDataArrForFormUpdate($currentArray, $cmdKey);

@@ -25,7 +25,6 @@ namespace SJBR\SrFeuserRegister\View;
 use SJBR\SrFeuserRegister\Exception;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\View\AbstractView;
-use TYPO3\CMS\Core\Html\HtmlParser;
 
 /**
  * Display functions
@@ -42,7 +41,7 @@ class PlainView extends AbstractView
 	 */
 	public function render($subpartMarker, array $dataArray, array $origArray, array $securedArray, $cmd, $cmdKey) {
 		$content = '';
-		$templateCode = HtmlParser::getSubpart($this->marker->getTemplateCode(), $subpartMarker);
+		$templateCode = $this->marker->getSubpart($this->marker->getTemplateCode(), $subpartMarker);
 		if (empty($templateCode)) {
 			$errorText = LocalizationUtility::translate('internal_no_subtemplate', $this->extensionName);
 			$errorText = sprintf($errorText, $subpartMarker);
@@ -59,7 +58,7 @@ class PlainView extends AbstractView
 		$this->marker->removePasswordMarkers();
 		$uppercase = false;
 		$deleteUnusedMarkers = true;
-		$content .= HtmlParser::substituteMarkerArray($templateCode, $this->marker->getMarkerArray(), '', $uppercase, $deleteUnusedMarkers);
+		$content .= $this->marker->substituteMarkerArray($templateCode, $this->marker->getMarkerArray(), '', $uppercase, $deleteUnusedMarkers);
 		return $content;
 	}
 }

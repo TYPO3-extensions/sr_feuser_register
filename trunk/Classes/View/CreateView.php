@@ -28,7 +28,6 @@ use SJBR\SrFeuserRegister\Utility\CssUtility;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\View\AbstractView;
 use SJBR\SrFeuserRegister\View\Marker;
-use TYPO3\CMS\Core\Html\HtmlParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -78,7 +77,7 @@ class CreateView extends AbstractView
 					$subpartMarker = '###TEMPLATE_AUTH###';
 				}
 			}
-			$templateCode = HtmlParser::getSubpart($this->marker->getTemplateCode(), $subpartMarker);
+			$templateCode = $this->marker->getSubpart($this->marker->getTemplateCode(), $subpartMarker);
 			if (empty($templateCode)) {
 				$errorText = LocalizationUtility::translate('internal_no_subtemplate', $this->extensionName);
 				$errorText = sprintf($errorText, $subpartMarker);
@@ -102,7 +101,7 @@ class CreateView extends AbstractView
 			$this->marker->addHiddenFieldsMarkers($cmdKey, $mode, $this->conf[$cmdKey . '.']['useEmailAsUsername'], $this->conf[$cmdKey . '.']['fields'], $dataArray);
 			$this->marker->removePasswordMarkers();
 			$deleteUnusedMarkers = true;
-			$content .= HtmlParser::substituteMarkerArray($templateCode, $this->marker->getMarkerArray(), '', false, $deleteUnusedMarkers);
+			$content .= $this->marker->substituteMarkerArray($templateCode, $this->marker->getMarkerArray(), '', false, $deleteUnusedMarkers);
 			if (!$isPreview && $bNeedUpdateJS) {
 				$fields = $this->data->getFieldList() . ',' . $this->data->getAdditionalUpdateFields();
 				$fields = implode(',', array_intersect(explode(',', $fields), GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1)));	

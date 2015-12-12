@@ -31,7 +31,6 @@ use SJBR\SrFeuserRegister\Utility\CssUtility;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\Utility\UrlUtility;
 use SJBR\SrFeuserRegister\View\AbstractView;
-use TYPO3\CMS\Core\Html\HtmlParser;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -150,6 +149,13 @@ class Marker
 	 */
 	protected $urlMarkerArray = array();
 
+	/**
+	 * Marker-based template service (TYPO3 7+)
+	 *
+	 * @var \TYPO3\CMS\Core\Service\MarkerBasedTemplateService
+	 */
+	protected $markerBasedTemplateService = null;
+
 	public $previewLabel;
 
 	/**
@@ -191,6 +197,9 @@ class Marker
 			if ($this->staticInfoObj->needsInit()) {
 				$this->staticInfoObj->init();
 			}
+		}
+		if (class_exists('TYPO3\\CMS\\Core\\Service\\MarkerBasedTemplateService')) {
+			$markerBasedTemplateService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Service\\MarkerBasedTemplateService');
 		}
 		$this->setButtonLabelsList($buttonLabelsList);
 		$this->setOtherLabelsList($otherLabelsList);
@@ -538,7 +547,7 @@ class Marker
 						$attributesArray[] = $key . '="' . $value . '"';
 					}
 					$attributes = implode(' ', $attributesArray);
-					$attributes = HtmlParser::substituteMarkerArray($attributes, $formUrlMarkerArray);
+					$attributes = $this->substituteMarkerArray($attributes, $formUrlMarkerArray);
 				}
 				$markerArray['###ATTRIBUTE_BUTTON_' . $buttonKey . '###'] = $attributes;
 			}
@@ -895,11 +904,11 @@ class Marker
 		$markerArray = $this->getMarkerArray();
 		if ($viewOnly) {
 			if (!$markerArray['###FIELD_zone###']) {
-				return HtmlParser::substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_zone###', '');
+				return $this->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_zone###', '');
 			}
 		} else {
 			if (!$markerArray['###SELECTOR_ZONE###']) {
-				return HtmlParser::substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_zone###', '');
+				return $this->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_zone###', '');
 			}
 		}
 		return $templateCode;
@@ -1212,30 +1221,30 @@ class Marker
 			$includedFields = array_diff($includedFields, array('module_sys_dmail_category', 'module_sys_dmail_newsletter'));
 		}
 		if (!CaptchaManager::useCaptcha($cmdKey, $this->conf, $this->extensionKey)) {
-			$templateCode = HtmlParser::substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_captcha_response###', '');
+			$templateCode = $this->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_captcha_response###', '');
 		}
 		// Honour Address List (tt_address) configuration setting
 		if ($this->theTable === 'tt_address' && ExtensionManagementUtility::isLoaded('tt_address')) {
 			$settings = \TYPO3\TtAddress\Utility\SettingsUtility::getSettings();
 				if (!$settings->isStoreBackwardsCompatName()) {
-				$templateCode = HtmlParser::substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_name###', '');
+				$templateCode = $this->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_name###', '');
 			}
 		}
 		foreach ($infoFields as $k => $theField) {
 			// Remove field required subpart, if field is not missing
 			if (in_array(trim($theField), $requiredArray)) {
 				if (!GeneralUtility::inList($failure, $theField)) {
-					$templateCode = HtmlParser::substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_' . $theField . '###', '');
-					$templateCode = HtmlParser::substituteSubpart($templateCode, '###SUB_ERROR_FIELD_' . $theField . '###', '');
+					$templateCode = $this->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_' . $theField . '###', '');
+					$templateCode = $this->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_' . $theField . '###', '');
 				}
 			} else {
 				// Remove field included subpart, if field is not included and is not in failure list
 				if (!in_array(trim($theField), $includedFields) && !GeneralUtility::inList($failure, $theField)) {
-					$templateCode = HtmlParser::substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_' . $theField . '###', '');
+					$templateCode = $this->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_' . $theField . '###', '');
 				} else {
-					$templateCode = HtmlParser::substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_' . $theField . '###', '');
+					$templateCode = $this->substituteSubpart($templateCode, '###SUB_REQUIRED_FIELD_' . $theField . '###', '');
 					if (!GeneralUtility::inList($failure, $theField)) {
-						$templateCode = HtmlParser::substituteSubpart($templateCode, '###SUB_ERROR_FIELD_' . $theField . '###', '');
+						$templateCode = $this->substituteSubpart($templateCode, '###SUB_ERROR_FIELD_' . $theField . '###', '');
 					}
 					if (is_array($this->conf['parseValues.']) && strstr($this->conf['parseValues.'][$theField], 'checkArray')) {
 						$listOfCommands = GeneralUtility::trimExplode(',', $this->conf['parseValues.'][$theField], true);
@@ -1248,7 +1257,7 @@ class Marker
 									$positions = GeneralUtility::trimExplode(';', $cmdParts[1]);
 									for ($i = 0; $i < 10; $i++) {
 										if (!in_array($i, $positions)) {
-											$templateCode = HtmlParser::substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_' . $theField . '_' . $i . '###', '');
+											$templateCode = $this->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_' . $theField . '_' . $i . '###', '');
 										}
 									}
 								break;
@@ -1921,5 +1930,35 @@ class Marker
 		}
 
 		return $whereClause;
+	}
+
+	public function getSubpart($content, $marker)
+	{
+		if (is_object($markerBasedTemplateService)) {
+			return $markerBasedTemplateService->getSubpart($content, $marker);
+		} else {
+			// In TYPO3 6.2
+			return \TYPO3\CMS\Core\Html\HtmlParser::getSubpart($content, $marker);
+		}
+	}
+
+	public function substituteSubpart($content, $marker, $subpartContent, $recursive = true, $keepMarker = false)
+	{
+		if (is_object($markerBasedTemplateService)) {
+			return $markerBasedTemplateService->substituteSubpart($content, $marker, $subpartContent, $recursive, $keepMarker);
+		} else {
+			// In TYPO3 6.2
+			return \TYPO3\CMS\Core\Html\HtmlParser::substituteSubpart($content, $marker, $subpartContent, $recursive, $keepMarker);
+		}
+	}
+
+	public function substituteMarkerArray($content, $markContentArray, $wrap = '', $uppercase = false, $deleteUnused = false)
+	{
+		if (is_object($markerBasedTemplateService)) {
+			return $markerBasedTemplateService->substituteMarkerArray($content, $markContentArray, $wrap, $uppercase, $deleteUnused);
+		} else {
+			// In TYPO3 6.2
+			return \TYPO3\CMS\Core\Html\HtmlParser::substituteMarkerArray($content, $markContentArray, $wrap, $uppercase, $deleteUnused);
+		}
 	}
 }

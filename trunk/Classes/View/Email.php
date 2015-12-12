@@ -31,7 +31,6 @@ use SJBR\SrFeuserRegister\Utility\CssUtility;
 use SJBR\SrFeuserRegister\Utility\HtmlUtility;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\View\Marker;
-use TYPO3\CMS\Core\Html\HtmlParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -202,7 +201,7 @@ class Email
 			)
 		) {
 			$subpartMarker = '###' . $this->emailMarkPrefix . $key . '###';
-			$content['user']['all'] = trim(HtmlParser::getSubpart($this->marker->getTemplateCode(), $subpartMarker));
+			$content['user']['all'] = trim($this->marker->getSubpart($this->marker->getTemplateCode(), $subpartMarker));
 			if ($content['user']['all'] == '') {
 				$missingSubpartArray[] = $subpartMarker;
 			} else {
@@ -211,7 +210,7 @@ class Email
 			}
 			if ($bHTMLMailEnabled && $bHTMLallowed) {
 				$subpartMarker = '###' . $this->emailMarkPrefix . $key . $this->emailMarkHTMLSuffix . '###';
-				$content['userhtml']['all'] = trim(HtmlParser::getSubpart($this->marker->getTemplateCode(),  $subpartMarker));
+				$content['userhtml']['all'] = trim($this->marker->getSubpart($this->marker->getTemplateCode(),  $subpartMarker));
 				if ($content['userhtml']['all'] == '') {
 					$missingSubpartArray[] = $subpartMarker;
 				} else {
@@ -223,7 +222,7 @@ class Email
 
 		if (!isset($this->conf['notify.'][$key]) || $this->conf['notify.'][$key]) {
 			$subpartMarker = '###' . $this->emailMarkPrefix . $key . $this->emailMarkAdminSuffix . '###';
-			$content['admin']['all'] = trim(HtmlParser::getSubpart($this->marker->getTemplateCode(), $subpartMarker));
+			$content['admin']['all'] = trim($this->marker->getSubpart($this->marker->getTemplateCode(), $subpartMarker));
 
 			if ($content['admin']['all'] == '') {
 				$missingSubpartArray[] = $subpartMarker;
@@ -234,7 +233,7 @@ class Email
 
 			if ($bHTMLMailEnabled) {
 				$subpartMarker =  '###' . $this->emailMarkPrefix . $key . $this->emailMarkAdminSuffix . $this->emailMarkHTMLSuffix . '###';
-				$content['adminhtml']['all'] = trim(HtmlParser::getSubpart($this->marker->getTemplateCode(), $subpartMarker));
+				$content['adminhtml']['all'] = trim($this->marker->getSubpart($this->marker->getTemplateCode(), $subpartMarker));
 
 				if ($content['adminhtml']['all'] == '')	{
 					$missingSubpartArray[] = $subpartMarker;
@@ -250,19 +249,19 @@ class Email
 		$contentIndexArray['html'] = array();
 
 		if ($content['user']['all']) {
-			$content['user']['rec'] = HtmlParser::getSubpart($content['user']['all'], '###SUB_RECORD###');
+			$content['user']['rec'] = $this->marker->getSubpart($content['user']['all'], '###SUB_RECORD###');
 			$contentIndexArray['text'][] = 'user';
 		}
 		if ($content['userhtml']['all']) {
-			$content['userhtml']['rec'] = HtmlParser::getSubpart($content['userhtml']['all'], '###SUB_RECORD###');
+			$content['userhtml']['rec'] = $this->marker->getSubpart($content['userhtml']['all'], '###SUB_RECORD###');
 			$contentIndexArray['html'][] = 'userhtml';
 		}
 		if ($content['admin']['all']) {
-			$content['admin']['rec'] = HtmlParser::getSubpart($content['admin']['all'], '###SUB_RECORD###');
+			$content['admin']['rec'] = $this->marker->getSubpart($content['admin']['all'], '###SUB_RECORD###');
 			$contentIndexArray['text'][] = 'admin';
 		}
 		if ($content['adminhtml']['all']) {
-			$content['adminhtml']['rec'] = HtmlParser::getSubpart($content['adminhtml']['all'], '###SUB_RECORD###');
+			$content['adminhtml']['rec'] = $this->marker->getSubpart($content['adminhtml']['all'], '###SUB_RECORD###');
 			$contentIndexArray['html'][] = 'adminhtml';
 		}
 		$bChangesOnly = ($this->conf['email.']['EDIT_SAVED'] == '2' && $cmd == 'edit');
@@ -273,10 +272,10 @@ class Email
 		}
 		$this->marker->fillInMarkerArray($DBrows[0], $securedArray, '', false);
 		$this->marker->addLabelMarkers($DBrows[0], $origRows[0], $securedArray, $keepFields, $requiredFields, $this->data->getFieldList(), $this->data->getSpecialFieldList(), $bChangesOnly);
-		$content['user']['all'] = HtmlParser::substituteMarkerArray($content['user']['all'], $this->marker->getMarkerArray());
-		$content['userhtml']['all'] = HtmlParser::substituteMarkerArray($content['userhtml']['all'], $this->marker->getMarkerArray());
-		$content['admin']['all'] = HtmlParser::substituteMarkerArray($content['admin']['all'], $this->marker->getMarkerArray());
-		$content['adminhtml']['all'] = HtmlParser::substituteMarkerArray($content['adminhtml']['all'], $this->marker->getMarkerArray());
+		$content['user']['all'] = $this->marker->substituteMarkerArray($content['user']['all'], $this->marker->getMarkerArray());
+		$content['userhtml']['all'] = $this->marker->substituteMarkerArray($content['userhtml']['all'], $this->marker->getMarkerArray());
+		$content['admin']['all'] = $this->marker->substituteMarkerArray($content['admin']['all'], $this->marker->getMarkerArray());
+		$content['adminhtml']['all'] = $this->marker->substituteMarkerArray($content['adminhtml']['all'], $this->marker->getMarkerArray());
 
 		foreach ($DBrows as $k => $row) {
 			$origRow = $origRows[$k];
@@ -327,7 +326,7 @@ class Email
 				$this->marker->addTcaMarkers($row, $origRow, $cmd, $cmdKey, $viewOnly, $this->data->getRequiredFieldsArray($cmdKey), 'email', $bChangesOnly, ($emailType === 'html'));
 				foreach ($indexArray as $index) {
 					$content[$index]['rec'] = $this->marker->removeStaticInfoSubparts($content[$index]['rec'], $viewOnly);
-					$content[$index]['accum'] .= HtmlParser::substituteMarkerArray($content[$index]['rec'], $this->marker->getMarkerArray());
+					$content[$index]['accum'] .= $this->marker->substituteMarkerArray($content[$index]['rec'], $this->marker->getMarkerArray());
 					if ($emailType === 'text') {
 						$content[$index]['accum'] = htmlSpecialChars_decode($content[$index]['accum'], ENT_QUOTES);
 					}
@@ -337,7 +336,7 @@ class Email
 
 		// Substitute the markers and eliminate HTML markup from plain text versions
 		if ($content['user']['all']) {
-			$content['user']['final'] = HtmlParser::substituteSubpart($content['user']['all'], '###SUB_RECORD###', $content['user']['accum']);
+			$content['user']['final'] = $this->marker->substituteSubpart($content['user']['all'], '###SUB_RECORD###', $content['user']['accum']);
 			$content['user']['final'] = HtmlUtility::removeHTMLComments($content['user']['final']);
 			$content['user']['final'] = HtmlUtility::replaceHTMLBr($content['user']['final']);
 			$content['user']['final'] = HtmlUtility::removeHtmlTags($content['user']['final']);
@@ -346,14 +345,14 @@ class Email
 			$content['user']['final'] = str_replace('\n', '', $content['user']['final']);
 		}
 		if ($content['userhtml']['all']) {
-			$content['userhtml']['final'] = HtmlParser::substituteSubpart($content['userhtml']['all'], '###SUB_RECORD###', CssUtility::wrapInBaseClass($this->prefixId, $content['userhtml']['accum']));
+			$content['userhtml']['final'] = $this->marker->substituteSubpart($content['userhtml']['all'], '###SUB_RECORD###', CssUtility::wrapInBaseClass($this->prefixId, $content['userhtml']['accum']));
 			// Remove HTML comments
 			$content['userhtml']['final'] = HtmlUtility::removeHTMLComments($content['userhtml']['final']);
 			// Remove erroneous \n from locallang file
 			$content['userhtml']['final'] = str_replace('\n', '', $content['userhtml']['final']);
 		}
 		if ($content['admin']['all']) {
-			$content['admin']['final'] = HtmlParser::substituteSubpart($content['admin']['all'], '###SUB_RECORD###', $content['admin']['accum']);
+			$content['admin']['final'] = $this->marker->substituteSubpart($content['admin']['all'], '###SUB_RECORD###', $content['admin']['accum']);
 			$content['admin']['final'] = HtmlUtility::removeHTMLComments($content['admin']['final']);
 			$content['admin']['final'] = HtmlUtility::replaceHTMLBr($content['admin']['final']);
 			$content['admin']['final'] = HtmlUtility::removeHtmlTags($content['admin']['final']);
@@ -363,7 +362,7 @@ class Email
 		}
 
 		if ($content['adminhtml']['all']) {
-			$content['adminhtml']['final'] = HtmlParser::substituteSubpart($content['adminhtml']['all'], '###SUB_RECORD###', CssUtility::wrapInBaseClass($this->prefixId, $content['adminhtml']['accum']));
+			$content['adminhtml']['final'] = $this->marker->substituteSubpart($content['adminhtml']['all'], '###SUB_RECORD###', CssUtility::wrapInBaseClass($this->prefixId, $content['adminhtml']['accum']));
 			// Remove HTML comments
 			$content['adminhtml']['final'] = HtmlUtility::removeHTMLComments($content['adminhtml']['final']);
 			// Remove erroneous \n from locallang file
