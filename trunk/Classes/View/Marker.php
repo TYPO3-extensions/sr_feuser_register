@@ -199,7 +199,7 @@ class Marker
 			}
 		}
 		if (class_exists('TYPO3\\CMS\\Core\\Service\\MarkerBasedTemplateService')) {
-			$markerBasedTemplateService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Service\\MarkerBasedTemplateService');
+			$this->markerBasedTemplateService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Service\\MarkerBasedTemplateService');
 		}
 		$this->setButtonLabelsList($buttonLabelsList);
 		$this->setOtherLabelsList($otherLabelsList);
@@ -1934,8 +1934,8 @@ class Marker
 
 	public function getSubpart($content, $marker)
 	{
-		if (is_object($markerBasedTemplateService)) {
-			return $markerBasedTemplateService->getSubpart($content, $marker);
+		if (is_object($this->markerBasedTemplateService)) {
+			return $this->markerBasedTemplateService->getSubpart($content, $marker);
 		} else {
 			// In TYPO3 6.2
 			return \TYPO3\CMS\Core\Html\HtmlParser::getSubpart($content, $marker);
@@ -1944,8 +1944,8 @@ class Marker
 
 	public function substituteSubpart($content, $marker, $subpartContent, $recursive = true, $keepMarker = false)
 	{
-		if (is_object($markerBasedTemplateService)) {
-			return $markerBasedTemplateService->substituteSubpart($content, $marker, $subpartContent, $recursive, $keepMarker);
+		if (is_object($this->markerBasedTemplateService)) {
+			return $this->markerBasedTemplateService->substituteSubpart($content, $marker, $subpartContent, $recursive, $keepMarker);
 		} else {
 			// In TYPO3 6.2
 			return \TYPO3\CMS\Core\Html\HtmlParser::substituteSubpart($content, $marker, $subpartContent, $recursive, $keepMarker);
@@ -1954,8 +1954,8 @@ class Marker
 
 	public function substituteMarkerArray($content, $markContentArray, $wrap = '', $uppercase = false, $deleteUnused = false)
 	{
-		if (is_object($markerBasedTemplateService)) {
-			return $markerBasedTemplateService->substituteMarkerArray($content, $markContentArray, $wrap, $uppercase, $deleteUnused);
+		if (is_object($this->markerBasedTemplateService)) {
+			return $this->markerBasedTemplateService->substituteMarkerArray($content, $markContentArray, $wrap, $uppercase, $deleteUnused);
 		} else {
 			// In TYPO3 6.2
 			return \TYPO3\CMS\Core\Html\HtmlParser::substituteMarkerArray($content, $markContentArray, $wrap, $uppercase, $deleteUnused);
