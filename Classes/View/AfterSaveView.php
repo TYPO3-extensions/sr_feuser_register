@@ -28,7 +28,6 @@ use SJBR\SrFeuserRegister\Security\SecuredData;
 use SJBR\SrFeuserRegister\Utility\CssUtility;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\View\AbstractView;
-use TYPO3\CMS\Core\Html\HtmlParser;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -51,7 +50,7 @@ class AfterSaveView extends AbstractView
 		$errorContent = '';
 		// Display confirmation message
 		$subpartMarker = '###TEMPLATE_' . $key . '###';
-		$templateCode = HtmlParser::getSubpart($this->marker->getTemplateCode(), '###TEMPLATE_' . $key . '###');
+		$templateCode = $this->marker->getSubpart($this->marker->getTemplateCode(), '###TEMPLATE_' . $key . '###');
 		if (empty($templateCode)) {
 			$errorText = LocalizationUtility::translate('internal_no_subtemplate', $this->extensionName);
 			$errorText = sprintf($errorText, $subpartMarker);
@@ -71,7 +70,7 @@ class AfterSaveView extends AbstractView
 			$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $viewOnly);
 			$uppercase = false;
 			$deleteUnusedMarkers = true;
-			$content = HtmlParser::substituteMarkerArray($templateCode, $this->marker->getMarkerArray(), '', $uppercase, $deleteUnusedMarkers);
+			$content = $this->marker->substituteMarkerArray($templateCode, $this->marker->getMarkerArray(), '', $uppercase, $deleteUnusedMarkers);
 		}
 		return $content;
 	}

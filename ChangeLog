@@ -1,3 +1,6 @@
+2015-12-12 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves 72189: Use MarkerBasedTemplateService when available
+
 2015-12-10 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for token validation
 	* Check referer in some cases
