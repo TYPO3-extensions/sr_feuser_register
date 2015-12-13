@@ -51,15 +51,12 @@ class InfomailActionController extends AbstractActionController
 		$content = '';
 		$origArray = $this->data->getOrigArray();
 		$securedArray = array();
-		$isSubmit = $this->parameters->getFeUserData('submit');
-		$isSubmit = !empty($isSubmit);
-		if ($isSubmit) {
-			$fetch = $this->parameters->getFeUserData('fetch');
+		$fetch = $this->parameters->getFeUserData('fetch');
+		if (!empty($fetch)) {
 			$dataArray['email'] = $fetch;
 			$evalErrors = $this->data->evalValues($dataArray, $origArray, $this->marker, $cmdKey);
 		}
 		$origArray = $this->data->parseIncomingData($origArray, false);
-		$fetch = $this->parameters->getFeUserData('fetch');
 		$failure = $this->data->getFailure();
 		if (!empty($fetch) && empty($failure)) {
 			$pidLock = 'AND pid IN (\'' . implode('\',\'', GeneralUtility::trimExplode(',', $this->parameters->getPid(), true)) . '\')';

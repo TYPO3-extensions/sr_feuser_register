@@ -1117,7 +1117,6 @@ class Marker
 			$theField = 'username';
 			$value = htmlspecialchars($dataArray[$theField]);
 			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE[' . $this->theTable . '][' . $theField . ']" value="' . $value . '" />' . LF;
-			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="submit" value="1" />' . LF;
 		}
 		$this->setMarkerArray($markerArray);
 	}
