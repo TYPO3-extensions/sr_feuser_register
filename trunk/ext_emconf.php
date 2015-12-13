@@ -35,7 +35,8 @@ $EM_CONF[$_EXTKEY] = array (
 			'cc_random_image' => '0.0.0-99.99.99'
 		),
 		'suggests' => array(
-			'sr_freecap' => '2.3.0-2.3.99'
+			'sr_freecap' => '2.3.0-2.3.99',
+			'direct_mail' => ''
 		)
 	)
 );
