@@ -398,18 +398,13 @@ class Parameters
 				}
 			}
 		}
-		// Establishing compatibility with Direct Mail and Rsaauth
-		$piVarArray = array('rU', 'aC', 'sFK', 'submit');
+		// Establishing compatibility with Direct Mail
+		$piVarArray = array('rU', 'aC', 'sFK');
 		foreach ($piVarArray as $pivar) {
 			$value = htmlspecialchars(GeneralUtility::_GP($pivar));
 			if (!empty($value)) {
 				$this->feUserData[$pivar] = $value;
 			}
-		}
-		// Value of submit POST variable
-		$value = htmlspecialchars(GeneralUtility::_POST('submit'));
-		if (isset($value) && !empty($value)) {
-			$this->feUserData['submit'] = $value;
 		}
 		// Cleanup input values
 		SecuredData::secureInput($this->feUserData);
