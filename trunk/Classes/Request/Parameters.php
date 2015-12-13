@@ -29,6 +29,7 @@ use SJBR\SrFeuserRegister\Security\SessionData;
 use SJBR\SrFeuserRegister\Utility\HashUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
 /**
@@ -214,10 +215,20 @@ class Parameters
 	protected function setPassword()
 	{
 		if ($this->theTable === 'fe_users' && isset($this->conf['create.']['evalValues.']['password'])) {
-			// Establish compatibility with the extension Felogin
-			$value = GeneralUtility::_GP('pass');
-			if (isset($value)) {
-				SessionData::writePassword($this->extensionKey, $value, '');
+			// Establish compatibility with the extension Felogin (TYPO3 6.2)
+			$password = GeneralUtility::_GP('pass');
+			$password_again = '';
+			if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getNumericTypo3Version()) >= 7000000) {
+				$fe = GeneralUtility::_POST('FE');
+				if (isset($fe) && is_array($fe)) {
+					$feDataArray = $fe[$this->theTable];
+					if (isset($feDataArray['password_again'])) {
+						$password_again = $feDataArray['password_again'];
+					}
+				}
+			}
+			if (isset($password)) {
+				SessionData::writePassword($this->extensionKey, $password, $password_again);
 			}
 		}
 	}
@@ -397,7 +408,7 @@ class Parameters
 		}
 		// Value of submit POST variable
 		$value = htmlspecialchars(GeneralUtility::_POST('submit'));
-		if (!empty($value)) {
+		if (isset($value) && !empty($value)) {
 			$this->feUserData['submit'] = $value;
 		}
 		// Cleanup input values

@@ -1,3 +1,6 @@
+2015-12-13 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #72196: Adapt to Rsaauth of TYPO3 CMS 7
+
 2015-12-12 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #72189: Use MarkerBasedTemplateService when available
 	* Resolves #72193: Remove extension configuration property enableDirectMail

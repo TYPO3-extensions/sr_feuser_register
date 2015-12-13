@@ -1009,7 +1009,7 @@ class Marker
 		} else {
 			$markerArray['###UPLOAD_' . $theField . '###'] = $fileUploader;
 			$max_size = $fieldConfig['config']['max_size'] * 1024;
-			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="MAX_FILE_SIZE" value="' . $max_size . '" />';
+			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="MAX_FILE_SIZE" value="' . $max_size . '" />' . LF;
 			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId . '[fileDelete]" value="0" />' . LF;
 		}
 		$this->setMarkerArray($markerArray);
@@ -1023,12 +1023,12 @@ class Marker
 	 * @param string $backUrl: the back URL
 	 * @return void
 	 */
-	public function addGeneralHiddenFieldsMarkers($cmd, $authCode, $backUrl)
+	public function addGeneralHiddenFieldsMarkers($cmd, $authCode = '', $backUrl = '')
 	{
 		$markerArray = $this->getMarkerArray();
-		$markerArray['###HIDDENFIELDS###'] = $markerArray['###HIDDENFIELDS###'] . ($cmd ? '<input type="hidden" name="' . $this->prefixId . '[cmd]" value="' . $cmd . '" />' : '');
-		$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($authCode ? '<input type="hidden" name="' . $this->prefixId . '[aC]" value="' . $authCode . '" />':'');
-		$markerArray['###HIDDENFIELDS###'] .= chr(10) . ($backUrl ? '<input type="hidden" name="' . $this->prefixId . '[backURL]" value="' . htmlspecialchars($backUrl) . '" />' : '');
+		$markerArray['###HIDDENFIELDS###'] .= ($cmd ? '<input type="hidden" name="' . $this->prefixId . '[cmd]" value="' . $cmd . '" />' . LF : '');
+		$markerArray['###HIDDENFIELDS###'] .= ($authCode ? '<input type="hidden" name="' . $this->prefixId . '[aC]" value="' . $authCode . '" />' . LF : '');
+		$markerArray['###HIDDENFIELDS###'] .= ($backUrl ? '<input type="hidden" name="' . $this->prefixId . '[backURL]" value="' . htmlspecialchars($backUrl) . '" />' . LF : '');
 		$this->addFormToken($markerArray, $this->prefixId);
 		$this->setMarkerArray($markerArray);
 	}
@@ -1040,7 +1040,7 @@ class Marker
 	 */
 	protected function addFormToken(array &$markerArray)
 	{
-		$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="' . $this->prefixId . '[token]" value="' . $this->token . '" />';
+		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId . '[token]" value="' . $this->token . '" />' . LF;
 	}
 
 	/**
@@ -1050,14 +1050,14 @@ class Marker
 	 * @param string $authCode: the authcode
 	 * @return void
 	 */
-	public function addEditFormHiddenFieldsMarkers($uid, $authCode)
+	public function addEditFormHiddenFieldsMarkers($uid, $authCode, $cmd = 'edit')
 	{
 		$markerArray = $this->getMarkerArray();
-		$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $this->theTable . '][uid]" value="' . $uid . '" />';
+		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE[' . $this->theTable . '][uid]" value="' . $uid . '" />' . LF;
+		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId . '[cmd]" value="' . $cmd . '" />' . LF;
 		$this->addFormToken($markerArray);
 		if ($this->theTable !== 'fe_users') {
-			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="' . $this->prefixId . '[aC]" value="' . $authCode . '" />';
-			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="' . $this->prefixId . '[cmd]" value="edit" />';
+			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId . '[aC]" value="' . $authCode . '" />' . LF;
 		}
 		$this->setMarkerArray($markerArray);
 	}
@@ -1071,11 +1071,11 @@ class Marker
 	) {
 		$markerArray = $this->getMarkerArray();
 		if ($this->conf[$cmdKey.'.']['preview'] && $mode !== AbstractView::MODE_PREVIEW) {
-			$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="' . $this->prefixId .  '[preview]" value="1" />';
+			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId .  '[preview]" value="1" />' . LF;
 			if ($this->theTable === 'fe_users' && $cmdKey === 'edit' && $bUseEmailAsUsername
 			) {
-				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $this->theTable . '][username]" value="' . htmlspecialchars($dataArray['username']) . '" />';
-				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $this->theTable . '][email]" value="' . htmlspecialchars($dataArray['email']) . '" />';
+				$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE[' . $this->theTable . '][username]" value="' . htmlspecialchars($dataArray['username']) . '" />' . LF;
+				$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE[' . $this->theTable . '][email]" value="' . htmlspecialchars($dataArray['email']) . '" />' . LF;
 			}
 		}
 		$fieldArray = GeneralUtility::trimExplode(',', $cmdKeyFields, true);
@@ -1105,7 +1105,7 @@ class Marker
 				} else {
 					$value = htmlspecialchars($dataArray[$theField]);
 				}
-				$markerArray['###HIDDENFIELDS###'] .= chr(10) . '<input type="hidden" name="FE[' . $this->theTable . '][' . $theField . ']" value="' . $value . '" />';
+				$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE[' . $this->theTable . '][' . $theField . ']" value="' . $value . '" />' . LF;
 			}
 		} else if (
 				($this->theTable === 'fe_users')
@@ -1116,7 +1116,8 @@ class Marker
 			// Password change form probably contains neither email nor username
 			$theField = 'username';
 			$value = htmlspecialchars($dataArray[$theField]);
-			$markerArray['###HIDDENFIELDS###'] .= LF . '<input type="hidden" name="FE[' . $this->theTable . '][' . $theField . ']" value="' . $value . '" />';
+			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE[' . $this->theTable . '][' . $theField . ']" value="' . $value . '" />' . LF;
+			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="submit" value="1" />' . LF;
 		}
 		$this->setMarkerArray($markerArray);
 	}

@@ -25,6 +25,7 @@ namespace SJBR\SrFeuserRegister\Security;
 use SJBR\SrFeuserRegister\Security\SecuredData;
 use SJBR\SrFeuserRegister\Security\StorageSecurity;
 use SJBR\SrFeuserRegister\Security\TransmissionSecurity;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -86,10 +87,10 @@ class SessionData
 					unset($allSessionData[$extensionKey][$key]);
 				}
 			}
-			\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($allSessionData[$extensionKey], $data);
 		} else {
-			$allSessionData[$extensionKey] = $data;
+			$allSessionData[$extensionKey] = array();
 		}
+		ArrayUtility::mergeRecursiveWithOverrule($allSessionData[$extensionKey], $data);
 		$GLOBALS['TSFE']->fe_user->setKey('ses', 'feuser', $allSessionData);
 		// The feuser session data shall not get lost when coming back from external scripts
 		$GLOBALS['TSFE']->fe_user->storeSessionData($extensionKey);
@@ -202,7 +203,10 @@ class SessionData
 	static public function readPassword($extensionKey)
 	{
 		$sessionData = self::readSessionData($extensionKey);
-		return isset($sessionData['password']) ? $sessionData['password'] : '';
+		return array(
+			'password' => isset($sessionData['password']) ? $sessionData['password'] : '',
+			'password_again' => isset($sessionData['password_again']) ? $sessionData['password_again'] : ''
+		);
 	}
 
 	/**
@@ -236,7 +240,7 @@ class SessionData
 	static public function readPasswordForStorage($extensionKey)
 	{
 		$password = self::readPassword($extensionKey);
-		$result = StorageSecurity::encryptPasswordForStorage($password);
+		$result = StorageSecurity::encryptPasswordForStorage($password['password']);
 		return $result;
 	}
 
@@ -250,10 +254,10 @@ class SessionData
 	static public function securePassword($extensionKey, array $row)
 	{
 		// Decrypt incoming password
-		$passwordRow = array('password' => self::readPassword($extensionKey));
+		$passwordRow = self::readPassword($extensionKey);
 		$passwordDecrypted = TransmissionSecurity::decryptIncomingFields($passwordRow);
 		if ($passwordDecrypted) {
-			self::writePassword($extensionKey, $passwordRow['password'], $passwordRow['password']);
+			self::writePassword($extensionKey, $passwordRow['password'], $passwordRow['password_again']);
 		} else if (TransmissionSecurity::getTransmissionSecurityLevel() !== 'rsa') {
 			self::writePassword($extensionKey, $passwordRow['password'], $row['password_again']);
 		}
