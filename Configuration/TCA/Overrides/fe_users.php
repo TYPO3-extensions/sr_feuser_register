@@ -171,46 +171,4 @@ $GLOBALS['TCA']['fe_users']['palettes']['2']['showitem'] = 'gender,--linebreak--
 
 $GLOBALS['TCA']['fe_users']['ctrl']['thumbnail'] = 'image';
 
-// fe_users further modified when extension direct_mail is not loaded
-if (
-	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['enableDirectMail'] && !\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('direct_mail')
-) {
-	$addColumnArray = array(
-		'module_sys_dmail_newsletter' => array(
-			'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.module_sys_dmail_newsletter',
-			'exclude' => '1',
-			'config'=> array(
-				'type'=>'check'
-			)
-		),
-		'module_sys_dmail_category' => array(
-			'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.module_sys_dmail_category',
-			'exclude' => '1',
-			'config' => array(
-				'type' => 'select',
-				'foreign_table' => 'sys_dmail_category',
-				'foreign_table_where' => 'AND sys_dmail_category.l18n_parent=0 AND sys_dmail_category.pid IN (###PAGE_TSCONFIG_IDLIST###) ORDER BY sys_dmail_category.uid',
-				'itemsProcFunc' => 'tx_srfeuserregister_select_dmcategories->get_localized_categories',
-				'itemsProcFunc_config' => array(
-					'table' => 'sys_dmail_category',
-					'indexField' => 'uid'
-				),
-				'size' => 5,
-				'minitems' => 0,
-				'maxitems' => 60,
-				'renderMode' => 'checkbox',
-				'MM' => 'sys_dmail_feuser_category_mm'
-			)
-		),
-		'module_sys_dmail_html' => array(
-			'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.module_sys_dmail_html',
-			'exclude' => '1',
-			'config'=>Array(
-				'type'=>'check'
-			)
-		)
-	);
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('fe_users', $addColumnArray);
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCATypes('fe_users','--div--;Direct mail,module_sys_dmail_newsletter;;;;1-1-1,module_sys_dmail_category,module_sys_dmail_html');
-}
 unset($addColumnArray);

@@ -1,5 +1,6 @@
 2015-12-12 Stanislas Rolland  <typo3(arobas)sjbr.ca>
-	* Resolves 72189: Use MarkerBasedTemplateService when available
+	* Resolves #72189: Use MarkerBasedTemplateService when available
+	* Resolves #72193: Remove extension configuration property enableDirectMail
 
 2015-12-10 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for token validation
