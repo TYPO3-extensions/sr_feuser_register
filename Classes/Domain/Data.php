@@ -229,6 +229,7 @@ class Data
 			SecuredData::secureInput($feDataArray, false);
 			$this->modifyRow($feDataArray, false);
 			SessionData::securePassword($this->extensionKey, $feDataArray);
+			unset($feDataArray['password_again']);
 			$this->setDataArray($feDataArray);
 		}	
 	}
@@ -595,24 +596,15 @@ class Data
 				$this->evalErrors[$theField] = array();
 				$failureMsg[$theField] = array();
 				$listOfCommands = GeneralUtility::trimExplode(',', $theValue, true);
-					// Unset the incoming value is empty and unsetEmpty is specified
+				// Unset the incoming value is empty and unsetEmpty is specified
 				if (array_search('unsetEmpty', $listOfCommands) !== false) {
-					if (
-						isset($dataArray[$theField]) &&
-						empty($dataArray[$theField]) &&
-						trim($dataArray[$theField]) !== '0'
-					) {
+					if (isset($dataArray[$theField]) && empty($dataArray[$theField]) && trim($dataArray[$theField]) !== '0') {
 						unset($dataArray[$theField]);
 					}
-					if (
-						isset($dataArray[$theField . '_again']) &&
-						empty($dataArray[$theField . '_again']) &&
-						trim($dataArray[$theField . '_again']) !== '0'
-					) {
+					if (isset($dataArray[$theField . '_again']) && empty($dataArray[$theField . '_again']) && trim($dataArray[$theField . '_again']) !== '0') {
 						unset($dataArray[$theField . '_again']);
 					}
 				}
-
 				if (isset($dataArray[$theField]) || isset($dataArray[$theField . '_again']) || !count($origArray) || !isset($origArray[$theField])) {
 					foreach ($listOfCommands as $k => $cmd) {
 						// Enable parameters after each command enclosed in brackets [..]
@@ -901,7 +893,7 @@ class Data
 						$cmdParts = preg_split('/\[|\]/', $cmd);
 						$theCmd = trim($cmdParts[0]);
 						$bValueAssigned = true;
-						if ($theField === 'password' && !isset($dataArray[$theField])) {
+						if (($theField === 'password' || $theField === 'password_again') && !isset($dataArray[$theField])) {
 							$bValueAssigned = false;
 						}
 						$dataValue = (isset($dataArray[$theField]) ? $dataArray[$theField] : $origArray[$theField]);
@@ -1137,8 +1129,8 @@ class Data
 
 					if ($aCAuth || $this->cObj->DBmayFEUserEdit($this->theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 						$outGoingData = $this->parseOutgoingData($cmdKey, $pid, $dataArray, $origArray);
+						// Do not set the outgoing password if the incoming password was unset
  						if ($this->theTable === 'fe_users' && !empty($dataArray['password'])) {
- 							// Do not set the outgoing password if the incoming password was unset
 							$outGoingData['password'] = SessionData::readPasswordForStorage($this->extensionKey);
  						}
 						$newFieldList = implode (',', $newFieldArray);

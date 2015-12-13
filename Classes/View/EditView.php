@@ -74,13 +74,14 @@ class EditView extends AbstractView
 		$this->marker->addStaticInfoMarkers($currentArray, $isPreview);
 		$this->marker->addTcaMarkers($currentArray, $origArray, $cmd, $cmdKey, $isPreview, $requiredFields);
 		$this->marker->addLabelMarkers($currentArray, $origArray, $securedArray, array(), $requiredFields, $this->data->getFieldList(), $this->data->getSpecialFieldList());
-		foreach ($GLOBALS['TCA'][$this->theTable]['columns'] as $theField => $fieldConfig) {
+		$fieldList = $this->data->getFieldList();
+		foreach ($fieldList as $theField => $fieldConfig) {
 			if ($fieldConfig['config']['internal_type'] === 'file' && !empty($fieldConfig['config']['allowed']) && !empty($fieldConfig['config']['uploadfolder'])) {
 				$this->marker->addFileUploadMarkers($theField, $fieldConfig, $cmd, $cmdKey, $currentArray, $isPreview);
 			}
 		}
 		$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $isPreview);
-		$this->marker->addEditFormHiddenFieldsMarkers($currentArray['uid'], Authentication::authCode($origArray, $this->conf, $this->conf['setfixed.']['EDIT.']['_FIELDLIST']));
+		$this->marker->addEditFormHiddenFieldsMarkers($currentArray['uid'], Authentication::authCode($origArray, $this->conf, $this->conf['setfixed.']['EDIT.']['_FIELDLIST']), $cmd);
 		$this->marker->addHiddenFieldsMarkers($cmdKey, $mode, $this->conf[$cmdKey . '.']['useEmailAsUsername'], $this->conf[$cmdKey . '.']['fields'], $currentArray);
 		$this->marker->removePasswordMarkers();
 		$deleteUnusedMarkers = true;
@@ -91,7 +92,9 @@ class EditView extends AbstractView
 			$fields = $this->data->getFieldList() . ',' . $this->data->getAdditionalUpdateFields();
 			$fields = implode(',', array_intersect(explode(',', $fields), GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], true)));
 			$fields = SecuredData::getOpenFields($fields);
-			$updateJS = $this->getUpdateJS($modData, $form, 'FE[' . $this->theTable . ']', $fields);
+			if (!empty($fields)) {
+				$updateJS = $this->getUpdateJS($modData, $form, 'FE[' . $this->theTable . ']', $fields);
+			}
 			$content .= $updateJS;
 		}
 		return $content;

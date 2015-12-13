@@ -25,7 +25,9 @@ namespace SJBR\SrFeuserRegister\Security;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Rsaauth\Backend\BackendFactory;
+use TYPO3\CMS\Rsaauth\Hook\FrontendLoginHook;
 use TYPO3\CMS\Rsaauth\Storage\StorageFactory;
 
 /**
@@ -83,7 +85,7 @@ class TransmissionSecurity
 									if (substr($value, 0, 4) === 'rsa:') {
 										// Decode password
 										$result = $backend->decrypt($key, substr($value, 4));
-										if ($result) {
+										if ($result !== null) {
 											$row[$field] = $result;
 										} else {
 											// RSA auth service failed to process incoming password
@@ -138,12 +140,12 @@ class TransmissionSecurity
 				$extraHiddenFields = '';
 				$extraHiddenFieldsArray = array();
 				list($onSubmit, $hiddenFields) = self::getPasswordEncryptionCode();
-				if ($usePasswordAgain) {
+				if ($usePasswordAgain && !empty($onSubmit)) {
 					$onSubmit = 'if (this.pass.value != this[\'FE[fe_users][password_again]\'].value) {this.password_again_failure.value = 1; this.pass.value = \'X\'; this[\'FE[fe_users][password_again]\'].value = \'\'; return true;} else { this[\'FE[fe_users][password_again]\'].value = \'\'; ' . $onSubmit . '}';
 					$extraHiddenFieldsArray[] = '<input type="hidden" name="password_again_failure" value="0">';
 					$extraHiddenFieldsArray[] = '<input type="hidden" name="submit" value="0">';
 				}
-				$markerArray['###FORM_ONSUBMIT###'] = ' onsubmit="' . $onSubmit . '"';
+				$markerArray['###FORM_ONSUBMIT###'] = !empty($onSubmit) ? ' onsubmit="' . $onSubmit . '"' : '';
 				if (count($extraHiddenFieldsArray)) {
 					$extraHiddenFields = implode(LF, $extraHiddenFieldsArray) .  LF;
 				}
@@ -165,25 +167,30 @@ class TransmissionSecurity
 	{
 		$result = array(0 => '', 1 => '');
 		if (trim($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel']) === 'rsa') {
-			$backend = BackendFactory::getBackend();
-			if ($backend) {
-				$result[0] = 'return TYPO3FrontendLoginFormRsaEncryption.submitForm(this, TYPO3FrontendLoginFormRsaEncryptionPublicKeyUrl);';
-				$javascriptPath = ExtensionManagementUtility::siteRelPath('rsaauth') . 'resources/';
-				$files = array(
-					'jsbn/jsbn.js',
-					'jsbn/prng4.js',
-					'jsbn/rng.js',
-					'jsbn/rsa.js',
-					'jsbn/base64.js'
-				);
-				$eIdUrl = GeneralUtility::quoteJSvalue($GLOBALS['TSFE']->absRefPrefix . 'index.php?eID=FrontendLoginRsaPublicKey');
-				$additionalHeader = '<script type="text/javascript">var TYPO3FrontendLoginFormRsaEncryptionPublicKeyUrl = ' . $eIdUrl . ';</script>';
-				foreach ($files as $file) {
-					$additionalHeader .= '<script type="text/javascript" src="' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $javascriptPath . $file . '"></script>';
-				}
-				// See TYPO3/CMS/rsaauth/resources/FrontendLoginFormRsaEncryption.js
-				$additionalHeader .= '<script type="text/javascript" src="' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . ExtensionManagementUtility::siteRelPath(self::$extensionKey) . 'Resources/Public/JavaScript/FormRsaEncryption.js"></script>';
-				$GLOBALS['TSFE']->additionalHeaderData['rsaauth_js'] = $additionalHeader;
+			if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getNumericTypo3Version()) >= 7000000) {
+				$frontendLoginHook = GeneralUtility::makeInstance('TYPO3\\CMS\\Rsaauth\\Hook\\FrontendLoginHook');
+				$result = $frontendLoginHook->loginFormHook();
+			} else {
+					$backend = BackendFactory::getBackend();
+					if ($backend) {
+						$result[0] = 'return TYPO3FrontendLoginFormRsaEncryption.submitForm(this, TYPO3FrontendLoginFormRsaEncryptionPublicKeyUrl);';
+						$javascriptPath = ExtensionManagementUtility::siteRelPath('rsaauth') . 'resources/';
+						$files = array(
+							'jsbn/jsbn.js',
+							'jsbn/prng4.js',
+							'jsbn/rng.js',
+							'jsbn/rsa.js',
+							'jsbn/base64.js'
+						);
+						$eIdUrl = GeneralUtility::quoteJSvalue($GLOBALS['TSFE']->absRefPrefix . 'index.php?eID=FrontendLoginRsaPublicKey');
+						$additionalHeader = '<script type="text/javascript">var TYPO3FrontendLoginFormRsaEncryptionPublicKeyUrl = ' . $eIdUrl . ';</script>';
+						foreach ($files as $file) {
+							$additionalHeader .= '<script type="text/javascript" src="' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $javascriptPath . $file . '"></script>';
+						}
+						// See TYPO3/CMS/rsaauth/resources/FrontendLoginFormRsaEncryption.js
+						$additionalHeader .= '<script type="text/javascript" src="' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . ExtensionManagementUtility::siteRelPath(self::$extensionKey) . 'Resources/Public/JavaScript/FormRsaEncryption.js"></script>';
+						$GLOBALS['TSFE']->additionalHeaderData['rsaauth_js'] = $additionalHeader;
+					}
 			}
 		}
 		return $result;
