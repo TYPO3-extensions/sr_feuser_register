@@ -1,7 +1,6 @@
 {
   "name": "sjbr/sr_feuser_register",
   "description": "A self-registration variant of Kasper Skårhøjs Front End User Admin extension.",
-  "version": "4.0.0",
   "type": "typo3-cms-extension",
   "license": "GPL-2.0+",
   "authors": [
@@ -10,15 +9,24 @@
       "role": "Developer"
     }
   ],
+  "homepage": "https://forge.typo3.org/projects/extension-sr_feuser_register",
+  "support": {
+	"issues": "https://forge.typo3.org/projects/extension-sr_feuser_register/issues"
+  },
   "replace": {
-    "sr_feuser_register": "*"
+    "sr_feuser_register": "self.version",
+	"typo3-ter/sr_feuser_register": "self.version"
   },
   "require": {
-  	 "typo3/cms-core": "6.2.4 - 7.6.99",
-  	 "typo3/cms-felogin": "~6.2.0",
-  	 "typo3/cms-rsaauth": "~6.2.0",
-  	 "typo3/cms-saltedpasswords": "~6.2.0",
-  	 "sjbr/static_info_tables": "~6.3.6"
+  	 "typo3/cms-core": ">=6.2.4,<8.0",
+  	 "typo3/cms-felogin": ">=6.2.0,<8.0",
+  	 "typo3/cms-rsaauth": ">=6.2.0,<8.0",
+  	 "typo3/cms-saltedpasswords": ">=6.2.0,<8.0",
+  	 "sjbr/static_info_tables": ">=6.3.6,<6.4",
+  },
+  "suggest": {
+  	 "sjbr/sr_freecap": "Allows to add a captcha to the registration form.",
+  	 "directmailteam/direct-mail" : "Allows to send newsletters to registered users."
   },
   "autoload": {
     "psr-4": {
