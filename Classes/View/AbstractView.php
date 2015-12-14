@@ -158,7 +158,7 @@ abstract class AbstractView
 	/*]]>*/
 </script>
 ';
-		$GLOBALS['TSFE']->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->absRefPrefix . ExtensionManagementUtility::siteRelPath('sr_feuser_register')  . 'Resources/Public/JavaScript/jsfunc.updateform.js') . '"></script>';
+		$GLOBALS['TSFE']->additionalHeaderData['JSincludeFormupdate'] = '<script type="text/javascript" src="' . GeneralUtility::createVersionNumberedFilename(ExtensionManagementUtility::siteRelPath('sr_feuser_register')  . 'Resources/Public/JavaScript/jsfunc.updateform.js') . '"></script>';
 		return $JSPart;
 	}
 
