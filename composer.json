@@ -14,7 +14,7 @@
     "sr_feuser_register": "*"
   },
   "require": {
-  	 "typo3/cms-core": "6.2.4 - 7.99.99",
+  	 "typo3/cms-core": "6.2.4 - 7.6.99",
   	 "typo3/cms-felogin": "~6.2.0",
   	 "typo3/cms-rsaauth": "~6.2.0",
   	 "typo3/cms-saltedpasswords": "~6.2.0",
