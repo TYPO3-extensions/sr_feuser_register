@@ -1,5 +1,6 @@
 2015-12-14 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Add version to js file name
+	* Update extension requirements
 
 2015-12-13 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #72196: Adapt to Rsaauth of TYPO3 CMS 7
