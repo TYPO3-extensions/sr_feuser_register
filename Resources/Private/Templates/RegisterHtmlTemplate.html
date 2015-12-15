@@ -2013,7 +2013,7 @@ The user is informed that a message has been sent to the email address and that 
 <form id="###FORM_NAME###" method="post" action="###FORM_URL###">
 	<p>
 		###HIDDENFIELDS###
-		<input type="submit" name="tx_srfeuserregister_pi1[doNotSave]" onclick="document.location.assign('###BACK_URL###'); return false;" value="###LABEL_BUTTON_CANCEL_DELETE###" />
+		<input type="submit" name="tx_srfeuserregister_pi1[doNotSave]" onclick="this.form['tx_srfeuserregister_pi1[cmd]'].value='edit'; return true;" value="###LABEL_BUTTON_CANCEL_DELETE###" />
 		<input type="submit" name="tx_srfeuserregister_pi1[submit]" value="###LABEL_BUTTON_CONFIRM_DELETE###" />
 	</p>
 </form>

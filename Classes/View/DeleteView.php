@@ -24,14 +24,14 @@ namespace SJBR\SrFeuserRegister\View;
 
 use SJBR\SrFeuserRegister\Security\Authentication;
 use SJBR\SrFeuserRegister\Utility\UrlUtility;
-use SJBR\SrFeuserRegister\View\AbstractView;
+use SJBR\SrFeuserRegister\View\PlainView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Delete view rendering
  */
 
-class DeleteView extends AbstractView
+class DeleteView extends PlainView
 {
 	/**
 	 * This is the display of delete
@@ -40,7 +40,6 @@ class DeleteView extends AbstractView
 	 */
 	public function render(array $dataArray, array $origArray, array $securedArray, $cmd, $cmdKey) {
 		$aCAuth = Authentication::aCAuth($this->parameters->getAuthCode(), $origArray, $this->conf, $this->conf['setfixed.']['DELETE.']['_FIELDLIST']);
-		$plainView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\PlainView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 		if (($this->theTable === 'fe_users' && $GLOBALS['TSFE']->loginUser) || $aCAuth) {
 			// Must be logged in OR be authenticated by the aC code in order to delete
 			$cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
@@ -49,18 +48,18 @@ class DeleteView extends AbstractView
 				// Display the form, if access granted.
 				$backUrl = $this->parameters->getBackURL() ?: UrlUtility::getTypoLink_URL($this->parameters->getPid('login') . ',' . $GLOBALS['TSFE']->type);
 				$this->marker->addBackUrlMarker($backUrl);
-				$this->marker->addGeneralHiddenFieldsMarkers('delete', $this->parameters->getAuthCode(), $backUrl);
-				$content = $plainView->render('###TEMPLATE_DELETE_PREVIEW###', $origArray, $origArray, $securedArray, $cmd, $cmdKey);
+				$this->marker->addGeneralHiddenFieldsMarkers('delete');
+				$content = parent::render('###TEMPLATE_DELETE_PREVIEW###', $origArray, $origArray, $securedArray, $cmd, $cmdKey);
 			} else {
 				// Else display error, that you could not edit that particular record...
-				$content = $plainView->render('###TEMPLATE_NO_PERMISSIONS###', array(), $origArray, $securedArray, $cmd, $cmdKey);
+				$content = parent::render('###TEMPLATE_NO_PERMISSIONS###', array(), $origArray, $securedArray, $cmd, $cmdKey);
 			}
 		} else {
 			// Finally this is if there is no login user. This must tell that you must login. Perhaps link to a page with create-user or login information.
 			if ($this->theTable === 'fe_users' ) {
-				$content = $plainView->render('###TEMPLATE_AUTH###', array(), $origArray, $securedArray, $cmd, $cmdKey);
+				$content = parent::render('###TEMPLATE_AUTH###', array(), $origArray, $securedArray, $cmd, $cmdKey);
 			} else {
-				$content = $plainView->render('###TEMPLATE_NO_PERMISSIONS###', array(), $origArray, $securedArray, $cmd, $cmdKey);
+				$content = parent::render('###TEMPLATE_NO_PERMISSIONS###', array(), $origArray, $securedArray, $cmd, $cmdKey);
 			}
 		}
 		return $content;
