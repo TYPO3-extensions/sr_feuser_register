@@ -189,22 +189,21 @@ class Parameters
 	
 		// Validate the token
 		$this->validateToken();
-
 		if ($this->isTokenValid()) {
 			SessionData::writeRedirectUrl($this->extensionKey);
 			// Generate a new token for the next created forms
 			$token = Authentication::generateToken();
 			SessionData::writeToken($this->extensionKey, $token);
-			$this->setTokenValid(true);
-			// Initialize various data
-			$this->setPids();
-			$this->setPidTitle();
 		} else {
 			// Erase all FE user data when the token is not valid
 			$this->resetFeUserData();
 			// Erase any stored password
 			SessionData::writePassword($this->extensionKey, '');
 		}
+
+		// Initialize various data
+		$this->setPids();
+		$this->setPidTitle();
 	}
 
 	/**
@@ -540,40 +539,21 @@ class Parameters
 	protected function validateToken() {
 		$feUserData = $this->getFeUserData();
 		// Get the data for the uid provided in query parameters
-		$theUid = 0;
-		if (MathUtility::canBeInterpretedAsInteger($feUserData['rU'])) {
-			$theUid = (int) $feUserData['rU'];
+		$theUid = MathUtility::canBeInterpretedAsInteger($feUserData['rU']) ? (int) $feUserData['rU'] : 0;
+		if ($theUid > 0) {
 			$origArray = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $theUid);
 		}
 		// Get the token
 		$token = '';
-		if (isset($origArray) && is_array($origArray) && $this->getCmd() === 'setfixed' && !empty($origArray['token'])) {
-			// Use the token from the FE user data
-			$token = $origArray['token'];
-		} else if ($this->getCmd() !== 'setfixed') {
+		if ($this->getCmd() !== 'setfixed') {
 			// Get latest token from session data
 			$token = SessionData::readToken($this->extensionKey);
+		} else if (isset($origArray) && is_array($origArray) && !empty($origArray['token'])) {
+			// Use the token from the FE user data
+			$token = $origArray['token'];
 		}
 		// Validate the token
-		if (
-			// No data received
-			empty($feUserData)
-			// Initial command with no data
-			|| (count($feUserData) === 1 && in_array($feUserData['cmd'], array('create', 'edit', 'password')))
-			// Submit from form of other extension (felogin) with no other data
-			|| (count($feUserData) === 1 && isset($feUserData['submit']) && !$GLOBALS['TSFE']->loginUser && $feUserData['submit'] != 1 && strpos(GeneralUtility::getIndpEnv('HTTP_REFERER'), GeneralUtility::getIndpEnv('HTTP_HOST')) !== false)
-			// Cancel button
-			|| (count($feUserData) === 2 && isset($feUserData['doNotSave']) && !empty($token) && strpos(GeneralUtility::getIndpEnv('HTTP_REFERER'), GeneralUtility::getIndpEnv('HTTP_HOST')) !== false)
-			// Valid token
-			|| (!empty($token) && $feUserData['token'] === $token)
-		) {
-			$this->setTokenValid(true);
-		} else if (
-			in_array($feUserData['cmd'], array('edit', 'password', 'delete')) 
-			&& isset($origArray) && is_array($origArray)
-			&& $GLOBALS['TSFE']->loginUser
-			&& $theUid > 0 && $GLOBALS['TSFE']->fe_user->user['uid'] == $theUid
-		) {
+		if (empty($feUserData) || empty($token) || $feUserData['token'] === $token) {
 			$this->setTokenValid(true);
 		} else if ($theUid > 0) {
 			// When processing a setfixed link from other extensions,
