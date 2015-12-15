@@ -60,13 +60,15 @@ class DeleteActionController extends AbstractActionController
 		if ($this->conf[$cmdKey . '.']['preview'] && (int) $this->parameters->getFeUserData('preview')) {
 			$mode = AbstractView::MODE_PREVIEW;
 		}
+		$isSubmit = $this->parameters->getFeUserData('submit');
+		$isSubmit = !empty($isSubmit);		
 		$isDoNotSave = $this->parameters->getFeUserData('doNotSave');
 		$isDoNotSave = !empty($isDoNotSave);
 		if ($isDoNotSave) {
 			SessionData::clearSessionData($this->extensionKey);
 		}
 		// If data is submitted, we take care of it here.
-		if ($mode === AbstractView::MODE_NORMAL && !$isDoNotSave) {
+		if ($mode === AbstractView::MODE_NORMAL && $isSubmit && !$isDoNotSave) {
 			$this->data->deleteRecord($origArray, $dataArray);
 			if ($this->data->getSaved()) {
 				$key =  'DELETE' . Marker::SAVED_SUFFIX;

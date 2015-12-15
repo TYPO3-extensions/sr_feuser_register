@@ -223,15 +223,17 @@ class Data
 	protected function getIncomingData()
 	{
 		// Get POST parameters
-		$fe = GeneralUtility::_POST('FE');
-		if (isset($fe) && is_array($fe)) {
-			$feDataArray = $fe[$this->theTable];
-			SecuredData::secureInput($feDataArray, false);
-			$this->modifyRow($feDataArray, false);
-			SessionData::securePassword($this->extensionKey, $feDataArray);
-			unset($feDataArray['password_again']);
-			$this->setDataArray($feDataArray);
-		}	
+		if ($this->parameters->isTokenValid()) {
+			$fe = GeneralUtility::_POST('FE');
+			if (isset($fe) && is_array($fe)) {
+				$feDataArray = $fe[$this->theTable];
+				SecuredData::secureInput($feDataArray, false);
+				$this->modifyRow($feDataArray, false);
+				SessionData::securePassword($this->extensionKey, $feDataArray);
+				unset($feDataArray['password_again']);
+				$this->setDataArray($feDataArray);
+			}
+		}
 	}
 
 	/**
@@ -1109,7 +1111,7 @@ class Data
 		switch ($cmdKey) {
 			case 'edit':
 			case 'password':
-				$theUid = (int) $dataArray['uid'];
+				$theUid = (int) $origArray['uid'];
 				$rc = $theUid;
 				$aCAuth = Authentication::aCAuth($this->parameters->getAuthCode(), $origArray, $this->conf, $this->conf['setfixed.']['EDIT.']['_FIELDLIST']);
 				// Fetch the original record to check permissions

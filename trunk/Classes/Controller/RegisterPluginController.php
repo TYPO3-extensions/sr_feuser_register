@@ -170,7 +170,7 @@ class RegisterPluginController extends AbstractPlugin
 			$this->initialize();
 			// Initialize marker class
 			$this->marker = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\Marker', $this->extKey, $this->prefixId, $this->theTable, $this->conf, $this->parameters, $this->buttonLabelsList, $this->otherLabelsList);
-			if ($this->parameters->isTokenValid()) {
+			if ($this->parameters->isTokenValid() || $this->parameters->getCmd() !== 'setfixed') {
 				// Process the request
 				$content = $this->doProcessing($this->parameters->getCmd(), $this->parameters->getCmdKey(), $this->data->getOrigArray(), $this->data->getDataArray());
 			} else {

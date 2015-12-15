@@ -26,6 +26,7 @@ use SJBR\SrFeuserRegister\Captcha\CaptchaManager;
 use SJBR\SrFeuserRegister\Request\Parameters;
 use SJBR\SrFeuserRegister\Security\Authentication;
 use SJBR\SrFeuserRegister\Security\SecuredData;
+use SJBR\SrFeuserRegister\Security\SessionData;
 use SJBR\SrFeuserRegister\Security\TransmissionSecurity;
 use SJBR\SrFeuserRegister\Utility\CssUtility;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
@@ -191,7 +192,7 @@ class Marker
 	 	$this->conf = $conf;
 	 	$this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 	 	$this->parameters = $parameters;
-	 	$this->token = \SJBR\SrFeuserRegister\Security\SessionData::readToken($this->extensionKey);
+	 	$this->token = SessionData::readToken($this->extensionKey);
 		if (ExtensionManagementUtility::isLoaded('static_info_tables')) {
 			$this->staticInfoObj = GeneralUtility::makeInstance('SJBR\\StaticInfoTables\\PiBaseApi');
 			if ($this->staticInfoObj->needsInit()) {

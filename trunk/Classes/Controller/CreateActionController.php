@@ -53,6 +53,8 @@ class CreateActionController extends AbstractActionController
 		if ($this->conf[$cmdKey . '.']['preview'] && (int) $this->parameters->getFeUserData('preview')) {
 			$mode = AbstractView::MODE_PREVIEW;
 		}
+		$isSubmit = $this->parameters->getFeUserData('submit');
+		$isSubmit = !empty($isSubmit);
 		$isDoNotSave = $this->parameters->getFeUserData('doNotSave');
 		$isDoNotSave = !empty($isDoNotSave);
 		if ($isDoNotSave) {
@@ -89,7 +91,7 @@ class CreateActionController extends AbstractActionController
 			}
 			$this->data->setUsername($finalDataArray, $cmdKey);
 			$this->data->setDataArray($finalDataArray);
-			if (!$this->data->getFailure() && $mode === AbstractView::MODE_NORMAL && !$isDoNotSave) {
+			if (!$this->data->getFailure() && $mode === AbstractView::MODE_NORMAL && $isSubmit && !$isDoNotSave) {
 				$this->data->setPassword($finalDataArray, $cmdKey);
 				$newDataArray = array();
 				$theUid = $this->data->save($finalDataArray, $origArray, SessionData::readToken($this->extensionKey), $newDataArray, $cmd, $cmdKey, $this->parameters->getPid());
