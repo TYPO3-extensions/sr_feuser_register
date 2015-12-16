@@ -116,6 +116,12 @@ class Marker
 	protected $staticInfoObj = null;
 
 	/**
+	 * The usergroup hook object
+	 *
+	 */
+	protected $userGroupObj = null;
+
+	/**
 	 * List of button label names
 	 *
 	 * @var string
@@ -193,14 +199,26 @@ class Marker
 	 	$this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 	 	$this->parameters = $parameters;
 	 	$this->token = SessionData::readToken($this->extensionKey);
+	 	// Static Info object
 		if (ExtensionManagementUtility::isLoaded('static_info_tables')) {
 			$this->staticInfoObj = GeneralUtility::makeInstance('SJBR\\StaticInfoTables\\PiBaseApi');
 			if ($this->staticInfoObj->needsInit()) {
 				$this->staticInfoObj->init();
 			}
 		}
+		// Marker-based service
 		if (class_exists('TYPO3\\CMS\\Core\\Service\\MarkerBasedTemplateService')) {
 			$this->markerBasedTemplateService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Service\\MarkerBasedTemplateService');
+		}
+		// Usergroup hook object
+		if ($this->theTable === 'fe_users') {
+			$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable]['usergroup']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable]['usergroup'] : array();
+			foreach ($hookClassArray as $classRef) {
+				$this->userGroupObj = GeneralUtility::makeInstance($classRef);
+				if (is_object($this->userGroupObj)) {
+					break;
+				}
+			}
 		}
 		$this->setButtonLabelsList($buttonLabelsList);
 		$this->setOtherLabelsList($otherLabelsList);
@@ -1357,18 +1375,6 @@ class Marker
 					} else {
 						$listWrap['wrap'] = '<ul class="tx-srfeuserregister-multiple-checked-values">|</ul>';
 					}
-					
-					if ($this->theTable === 'fe_users' && $colName === 'usergroup') {
-						$userGroupObj = null;
-						$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable][$colName]) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable][$colName] : array();
-						foreach ($hookClassArray as $classRef) {
-							$userGroupObj = GeneralUtility::makeInstance($classRef);
-							if (is_object($userGroupObj)) {
-								break;
-							}
-						}
-					}
-
 					if ($viewOnly) {
 						// Configure preview or email based on input type
 						switch ($type) {
@@ -1484,21 +1490,8 @@ class Marker
 										}
 									}
 									if ($colConfig['foreign_table']) {
-										$reservedValues = array();
-										if ($colName === 'usergroup' && is_object($userGroupObj)) {
-											$reservedValues = $userGroupObj->getReservedValues($this->conf);
-											$allowedUserGroupArray = array();
-											$allowedSubgroupArray = array();
-											$deniedUserGroupArray = array();
-											$userGroupObj->getAllowedValues($this->conf, $cmdKey, $allowedUserGroupArray, $allowedSubgroupArray, $deniedUserGroupArray);
-											if (!empty($allowedUserGroupArray) && $allowedUserGroupArray['0'] !== 'ALL') {
-												$valuesArray = array_intersect($valuesArray, $allowedUserGroupArray);
-											}
-											if (!empty($allowedSubgroupArray)) {
-												$valuesArray = array_intersect($valuesArray, $allowedSubgroupArray);	
-											}
-											$valuesArray = array_diff($valuesArray, $deniedUserGroupArray);
-											$valuesArray = array_diff($valuesArray, $reservedValues);
+										if ($colName === 'usergroup' && is_object($this->userGroupObj)) {
+											$valuesArray = $this->userGroupObj->restrictToSelectableValues($valuesArray, $this->conf, $cmdKey);
 										}
 										reset($valuesArray);
 										$firstValue = current($valuesArray);
@@ -1538,7 +1531,6 @@ class Marker
 						// Configure inputs based on TCA type
 						if (in_array($type, array('check', 'radio', 'select')))	{
 								$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',', $mrow[$colName]);
-
 								if (!$valuesArray[0] && $colConfig['default']) {
 									$valuesArray[] = $colConfig['default'];
 								}
@@ -1589,16 +1581,11 @@ class Marker
 										$uidText .= '-' . $mrow['uid'];
 									}
 									$colContent = '<ul id="' . $uidText . '" class="tx-srfeuserregister-multiple-checkboxes">';
-									if (
-										//$this->parameters->getSubmit() ||
-										//$this->parameters->getDoNotSave() ||
-										$cmd === 'edit'
-									) {
+									if ($this->parameters->getFeUserData('submit') || $this->parameters->getFeUserData('doNotSave') ||  $cmd === 'edit') {
 										$startVal = $mrow[$colName];
 									} else {
 										$startVal = $colConfig['default'];
 									}
-
 									foreach ($itemArray as $key => $value) {
 										$checked = ($startVal & (1 << $key)) ? ' checked="checked"' : '';
 										$label = LocalizationUtility::translate($itemArray[$key][0], $this->extensionName);
@@ -1616,11 +1603,7 @@ class Marker
 								}
 								break;
 							case 'radio':
-								if (
-									//$this->parameters->getSubmit() ||
-									//$this->parameters->getDoNotSave() ||
-									$cmd === 'edit'
-								) {
+								if ($this->parameters->getFeUserData('submit') || $this->parameters->getFeUserData('doNotSave') ||  $cmd === 'edit') {
 									$startVal = $mrow[$colName];
 								} else {
 									$startVal = $colConfig['default'];
@@ -1637,7 +1620,7 @@ class Marker
 
 								if (isset($itemArray) && is_array($itemArray)) {
 									$i = 0;
-									foreach($itemArray as $key => $confArray) {
+									foreach ($itemArray as $key => $confArray) {
 										$value = $confArray[1];
 										$label = LocalizationUtility::translate($confArray[0], $this->extensionName);
 										$label = htmlspecialchars($label, ENT_QUOTES, $charset);
@@ -1684,14 +1667,15 @@ class Marker
 									$i = 0;
 									foreach ($itemArray as $k => $item)	{
 										$label = LocalizationUtility::translate($item[0], $this->extensionName);
-										$label = htmlspecialchars($label, ENT_QUOTES, $charset);
+										$label = $label ?: $item[0];
+										$label = $label ? htmlspecialchars($label, ENT_QUOTES, $charset) : '';
 										if ($colConfig['renderMode'] === 'checkbox') {
 											$colContent .= '<dt><input class="' .
 											CssUtility::getClassName($this->prefixId, 'checkbox-checkboxes') .
 											 '" id="' . CssUtility::getClassName($this->prefixId, $colName) . '-' . $i . '" name="FE[' . $this->theTable . '][' . $colName . '][' . $k . ']" value="' . $k . '" type="checkbox"  ' . (in_array($k, $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
 												<dd><label for="' . CssUtility::getClassName($this->prefixId, $colName) . '-' . $i . '">' . $label . '</label></dd>';
 										} else {
-											$colContent .= '<option value="' . $k . '" ' . (in_array($k, $valuesArray) ? 'selected="selected"' : '') . '>' . $label . '</option>';
+											$colContent .= '<option value="' . ($k || !$colConfig['foreign_table'] ? $k : '') . '" ' . (in_array($k, $valuesArray) ? 'selected="selected"' : '') . '>' . $label . '</option>';
 										}
 										$i++;
 									}
@@ -1701,9 +1685,9 @@ class Marker
 									$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
 									$reservedValues = array();
 									$whereClause = '1=1';
-									if ($colName === 'usergroup' && is_object($userGroupObj)) {
-										$reservedValues = $userGroupObj->getReservedValues($this->conf);
-										$whereClause = $userGroupObj->getAllowedWhereClause($colConfig['foreign_table'], $this->parameters->getPid(), $this->conf, $cmdKey);
+									if ($colName === 'usergroup' && is_object($this->userGroupObj)) {
+										$reservedValues = $this->userGroupObj->getReservedValues($this->conf);
+										$whereClause = $this->userGroupObj->getAllowedWhereClause($colConfig['foreign_table'], $this->parameters->getPid(), $this->conf, $cmdKey);
 									}
 									if (
 										$this->conf['useLocalization']
@@ -1736,14 +1720,19 @@ class Marker
 										if ($colConfig['renderMode'] === 'checkbox' || $colContent) {
 											// nothing
 										} else {
-											$colContent .= '<option value="" ' . ($valuesArray[0] ? '' : 'selected="selected"') . '></option>';
+											if (!empty($itemArray)) {
+												$label = LocalizationUtility::translate($itemArray[0][0], $this->extensionName);
+												$label = $label ?: $itemArray[0][0];
+											}
+											$label = $label ? htmlspecialchars($label, ENT_QUOTES, $charset) : '';
+											$colContent .= '<option value="" ' . ($valuesArray[0] ? '' : 'selected="selected"') . '>' . $label . '</option>';
 										}
 									}
 
 									$selectedValue = false;
 									while ($row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 											// Handle usergroup case
-										if ($colName === 'usergroup' && is_object($userGroupObj)) {
+										if ($colName === 'usergroup' && is_object($this->userGroupObj)) {
 											if (!in_array($row2['uid'], $reservedValues)) {
 												$row2 = $this->getUsergroupOverlay($row2);
 												$titleText = htmlspecialchars($row2[$titleField], ENT_QUOTES, $charset);
@@ -1791,10 +1780,6 @@ class Marker
 								$colContent .= $colConfig['type'] . ':' . LocalizationUtility::translate('unsupported', $this->extensionName);
 								break;
 						}
-					}
-
-					if (is_object($userGroupObj)) {
-						unset($userGroupObj);
 					}
 				} else {
 					$colContent = '';

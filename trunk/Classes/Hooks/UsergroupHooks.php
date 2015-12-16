@@ -202,4 +202,31 @@ class UsergroupHooks
 		$allowedSubgroupArray = GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['allowedSubgroups'], true);
 		$deniedUserGroupArray = GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['deniedUserGroups'], true);
 	}
+
+	/**
+	 * Restrict the input values array to allowed values
+	 *
+	 * @param array $values: input values array
+	 * @param array $conf: the configuration array
+	 * @param string $cmdKey: the command key
+	 * @return void
+	 */
+	public function restrictToSelectableValues(array $values, array $conf, $cmdKey)
+	{
+		$restrictedValues = $values;
+		$reservedValues = $this->getReservedValues($conf);
+		$allowedUserGroupArray = array();
+		$allowedSubgroupArray = array();
+		$deniedUserGroupArray = array();
+		$this->getAllowedValues($conf, $cmdKey, $allowedUserGroupArray, $allowedSubgroupArray, $deniedUserGroupArray);
+		if (!empty($allowedUserGroupArray) && $allowedUserGroupArray['0'] !== 'ALL') {
+			$restrictedValues = array_intersect($restrictedValues, $allowedUserGroupArray);
+		}
+		if (!empty($allowedSubgroupArray)) {
+			$restrictedValues = array_intersect($restrictedValues, $allowedSubgroupArray);	
+		}
+		$restrictedValues = array_diff($restrictedValues, $deniedUserGroupArray);
+		$restrictedValues = array_diff($restrictedValues, $reservedValues);
+		return $restrictedValues;
+	}
 }
