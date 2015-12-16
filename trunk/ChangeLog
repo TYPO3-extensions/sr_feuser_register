@@ -2,6 +2,7 @@
 	* Fix for the length of the language field on fe_users table
 	* Resolves #51278: Cannot use empty option in select field with evalValues = required
 	* Fix for superfluous line feeds in plain text emails
+	* Correction to composer.json
 
 2015-12-15 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #65270: Security issue in sr_feuser_register 3.1.3

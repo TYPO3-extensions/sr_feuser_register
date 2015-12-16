@@ -22,7 +22,7 @@
   	 "typo3/cms-felogin": ">=6.2.0,<8.0",
   	 "typo3/cms-rsaauth": ">=6.2.0,<8.0",
   	 "typo3/cms-saltedpasswords": ">=6.2.0,<8.0",
-  	 "sjbr/static_info_tables": ">=6.3.6,<6.4",
+  	 "sjbr/static_info_tables": ">=6.3.6,<6.4"
   },
   "suggest": {
   	 "sjbr/sr_freecap": "Allows to add a captcha to the registration form.",
