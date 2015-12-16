@@ -95,6 +95,12 @@ class Data
 	protected $staticInfoObj = null;
 
 	/**
+	 * The usergroup hook object
+	 *
+	 */
+	protected $userGroupObj = null;
+
+	/**
 	 * The basic file functions utility object
 	 *
 	 * @var \TYPO3\CMS\Core\Utility\File\BasicFileUtility
@@ -207,6 +213,16 @@ class Data
 			$this->staticInfoObj = GeneralUtility::makeInstance('SJBR\\StaticInfoTables\\PiBaseApi');
 			if ($this->staticInfoObj->needsInit()) {
 				$this->staticInfoObj->init();
+			}
+		}
+		// Usergroup hook object
+		if ($this->theTable === 'fe_users') {
+			$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable]['usergroup']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable]['usergroup'] : array();
+			foreach ($hookClassArray as $classRef) {
+				$this->userGroupObj = GeneralUtility::makeInstance($classRef);
+				if (is_object($this->userGroupObj)) {
+					break;
+				}
 			}
 		}
 		// Set the lists of admin fields
@@ -552,7 +568,7 @@ class Data
 	 * @param string $cmdKey: the command being processed
 	 * @return void on return, the parameters failure will contain the list of fields which were not ok
 	 */
-	public function evalValues(array &$dataArray, array &$origArray, $markerObj, $cmdKey) {
+	public function evalValues(array &$dataArray, array $origArray, $markerObj, $cmdKey) {
 		$failureArray = array();
 		$failureMsg = array();
 		$markerArray = array();
@@ -563,7 +579,11 @@ class Data
 		// Check required fields, set failure if missing.
 		$requiredArray = $this->getRequiredFieldsArray($cmdKey);
 		foreach ($requiredArray as $theField) {
-			$isMissing = empty($dataArray[$theField]);
+			$value = $dataArray[$theField];
+			if ($theField === 'usergroup' && is_object($this->userGroupObj) && is_array($value)) {
+				$value = $this->userGroupObj->restrictToSelectableValues($value, $this->conf, $cmdKey);
+			}
+			$isMissing = empty($value);
 			if ($isMissing) {
 				$failureArray[] = $theField;
 				$this->missing[$theField] = true;
@@ -662,7 +682,11 @@ class Data
 								}
 							break;
 							case 'required':
-								if (empty($dataArray[$theField]) && $dataArray[$theField] !== '0') {
+								$value = $dataArray[$theField];
+								if ($theField === 'usergroup' && is_object($this->userGroupObj) && is_array($value)) {
+									$value = $this->userGroupObj->restrictToSelectableValues($value, $this->conf, $cmdKey);
+								}
+								if (empty($value) && $dataArray[$theField] !== '0') {
 									$failureArray[] = $theField;
 									$this->inError[$theField] = true;
 									$this->evalErrors[$theField][] = $theCmd;
@@ -930,7 +954,7 @@ class Data
 								break;
 							case 'files':
 								$fieldDataArray = array();
-								if ($dataArray[$theField]) {
+								if ($dataValue) {
 									if (is_array($dataValue)) {
 										$fieldDataArray = $dataValue;
 									} else if (is_string($dataValue) && $dataValue) {
@@ -941,11 +965,11 @@ class Data
 								break;
 							case 'multiple':
 								$fieldDataArray = array();
-								if (!empty($dataArray[$theField])) {
-									if (is_array($dataArray[$theField])) {
-										$fieldDataArray = $dataArray[$theField];
-									} else if (is_string($dataArray[$theField])) {
-										$fieldDataArray = GeneralUtility::trimExplode(',', $dataArray[$theField], true);
+								if (!empty($dataValue)) {
+									if (is_array($dataValue)) {
+										$fieldDataArray = $dataValue;
+									} else if (is_string($dataValue)) {
+										$fieldDataArray = GeneralUtility::trimExplode(',', $dataValue, true);
 									}
 								}
 								$dataValue = $fieldDataArray;
