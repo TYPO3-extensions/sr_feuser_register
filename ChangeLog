@@ -4,6 +4,7 @@
 	* Fix for superfluous line feeds in plain text emails
 	* Correction to composer.json
 	* Correction to labels of the gender field
+	* Update to the manual
 
 2015-12-15 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #65270: Security issue in sr_feuser_register 3.1.3
