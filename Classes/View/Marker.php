@@ -416,63 +416,43 @@ class Marker
 	/**
 	 * Adds language-dependant label markers
 	 *
-	 * @param array  $row: the record array
-	 * @param array  $origRow: the original record array as stored in the database
-	 * @param array  $requiredArray: the required fields array
-	 * @param array  info fields
-	 * @param array  special fields
-	 * @param bool $bChangesOnly
+	 * @param array $row: the record array
+	 * @param array $origArray: the original record array as stored in the database
+	 * @param array $requiredArray: the required fields array
+	 * @param string list of info fields
+	 * @param string list of special fields
+	 * @param bool $changesOnly
 	 * @return void
 	 */
-	public function addLabelMarkers(
-		$row,
-		$origArray,
-		$securedArray,
-		$keepFields,
-		$requiredArray,
-		$infoFields,
-		$specialFieldList,
-		$bChangesOnly = false
-		
-	) {
+	public function addLabelMarkers(array $row, array $origArray, array $securedArray, array $keepFields, array $requiredArray, $infoFields, $specialFieldList, $changesOnly = false) {
 		$markerArray = $this->getMarkerArray();
 		$tcaColumns = $GLOBALS['TCA'][$this->theTable]['columns'];
 		$formUrlMarkerArray = $this->getUrlMarkerArray();
-
-		if (is_array($securedArray)) {
-			foreach ($securedArray as $field => $value) {
-				$row[$field] = $securedArray[$field];
-			}
-		}
+		$row = array_merge($row, $securedArray);
 
 		// Data field labels
 		$infoFieldArray = GeneralUtility::trimExplode(',', $infoFields, true);
 		$charset = $GLOBALS['TSFE']->renderCharset ?: 'utf-8';
 		$specialFieldArray = GeneralUtility::trimExplode(',', $specialFieldList, true);
-
-		if ($specialFieldArray[0] != '') {
-			$infoFieldArray = array_merge($infoFieldArray, $specialFieldArray);
-			$requiredArray = array_merge($requiredArray, $specialFieldArray);
-		}
+		$infoFieldArray = array_merge($infoFieldArray, $specialFieldArray);
+		$requiredArray = array_merge($requiredArray, $specialFieldArray);
 
 		foreach ($infoFieldArray as $theField) {
 			$markerkey = $this->cObj->caseshift($theField, 'upper');
-			$bValueChanged = false;
-
-			if (isset($row[$theField]) && isset($origArray[$theField])) {
-				if (is_array($row[$theField]) && is_array($origArray[$theField])) {
-					$diffArray = array_diff($row[$theField], $origArray[$theField]);
-					if (count($diffArray)) {
-						$bValueChanged = true;
+			// Determine whether the value of the field was changed
+			$valueChanged = !isset($row[$theField]) && isset($origArray[$theField]);
+			if (isset($row[$theField])) {
+				if (isset($origArray[$theField])) {
+					if (is_array($row[$theField]) && is_array($origArray[$theField])) {
+						$valueChanged = count(array_diff($row[$theField], $origArray[$theField])) || count(array_diff($origArray[$theField], $row[$theField]));
+					} else {
+						$valueChanged = !isset($origArray[$theField]) || ($row[$theField] != $origArray[$theField]);
 					}
 				} else {
-					if ($row[$theField] != $origArray[$theField]) {
-						$bValueChanged = true;
-					}
+					$valueChanged = true;
 				}
 			}
-
-			if (!$bChangesOnly || $bValueChanged || in_array($theField, $keepFields)) {
+			if (!$changesOnly || $valueChanged || in_array($theField, $keepFields)) {
 				$label = LocalizationUtility::translate($this->theTable . '.' . $theField, $this->extensionName);
 				if (empty($label)) {
 					$label = LocalizationUtility::translate($theField, $this->extensionName);
@@ -1132,14 +1112,7 @@ class Marker
 	 * @param boolean If set, all values are passed through htmlspecialchars() - RECOMMENDED to avoid most obvious XSS and maintain XHTML compliance.
 	 * @return array The modified $markContentArray
 	 */
-	public function fillInMarkerArray(
-		array $row,
-		array $securedArray,
-		$fieldList = '',
-		$nl2br = true,
-		$prefix = 'FIELD_',
-		$hsc = true
-	) {
+	public function fillInMarkerArray(array $row, array $securedArray, $fieldList = '', $nl2br = true, $prefix = 'FIELD_', $hsc = true) {
 		$markerArray = $this->getMarkerArray();
 		if (is_array($securedArray)) {
 			foreach ($securedArray as $field => $value) {
@@ -1209,10 +1182,7 @@ class Marker
 		if ($isPreview && !in_array('username', $includedFields)) {
 			$includedFields[] = 'username';
 		}
-		$infoFields = explode(',', $fieldList);
-		if (!is_array($infoFields)) {
-			return false;
-		}
+		$infoFields = GeneralUtility::trimExplode(',', $fieldList, true);
 		$specialFields = explode(',', $specialFieldList);
 		if (is_array($specialFields) && count($specialFields)) {
 			$infoFields = array_merge($infoFields, $specialFields);
@@ -1266,6 +1236,16 @@ class Marker
 						}
 					}
 				}
+			}
+		}
+		return $templateCode;
+	}
+
+	public function removeNonIncluded($templateCode, array $keepFields, $cmdKey) {
+		$includedFields = GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], true);
+		foreach ($includedFields as $field) {
+			if (!in_array($field, $keepFields)) {
+				$templateCode = $this->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_' . $field . '###', '');
 			}
 		}
 		return $templateCode;
@@ -1382,7 +1362,7 @@ class Marker
 						$userGroupObj = null;
 						$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable][$colName]) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable][$colName] : array();
 						foreach ($hookClassArray as $classRef) {
-							$userGroupObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($classRef);
+							$userGroupObj = GeneralUtility::makeInstance($classRef);
 							if (is_object($userGroupObj)) {
 								break;
 							}
@@ -1484,7 +1464,6 @@ class Marker
 									$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',', $mrow[$colName]);
 									$textSchema = $this->theTable . '.' . $colName . '.I.';
 									$itemArray = LocalizationUtility::getItemsLL($textSchema, $this->extensionName);
-
 									if (empty($itemArray)) {
 										if ($colConfig['itemsProcFunc']) {
 											$itemArray = GeneralUtility::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this, '');
@@ -1494,7 +1473,6 @@ class Marker
 									if (!$bStdWrap) {
 										$stdWrap['wrap'] = '|<br />';
 									}
-
 									if (is_array($itemArray)) {
 										$itemKeyArray = $this->getItemKeyArray($itemArray);
 										for ($i = 0; $i < count($valuesArray); $i++) {
@@ -1505,23 +1483,32 @@ class Marker
 											$colContent .= ((!$bNotLast || $i < count($valuesArray) - 1 ) ?  $this->cObj->stdWrap($label,$stdWrap) : $label);
 										}
 									}
-
 									if ($colConfig['foreign_table']) {
 										$reservedValues = array();
-										if (is_object($userGroupObj)) {
+										if ($colName === 'usergroup' && is_object($userGroupObj)) {
 											$reservedValues = $userGroupObj->getReservedValues($this->conf);
+											$allowedUserGroupArray = array();
+											$allowedSubgroupArray = array();
+											$deniedUserGroupArray = array();
+											$userGroupObj->getAllowedValues($this->conf, $cmdKey, $allowedUserGroupArray, $allowedSubgroupArray, $deniedUserGroupArray);
+											if (!empty($allowedUserGroupArray) && $allowedUserGroupArray['0'] !== 'ALL') {
+												$valuesArray = array_intersect($valuesArray, $allowedUserGroupArray);
+											}
+											if (!empty($allowedSubgroupArray)) {
+												$valuesArray = array_intersect($valuesArray, $allowedSubgroupArray);	
+											}
+											$valuesArray = array_diff($valuesArray, $deniedUserGroupArray);
+											$valuesArray = array_diff($valuesArray, $reservedValues);
 										}
-										$valuesArray = array_diff($valuesArray, $reservedValues);
 										reset($valuesArray);
 										$firstValue = current($valuesArray);
-
 										if (!empty($firstValue) || count($valuesArray) > 1) {
 											$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
 											$where = 'uid IN (' . implode(',', $valuesArray) . ')';
 											$foreignRows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', $colConfig['foreign_table'], $where);
 											if (is_array($foreignRows) && count($foreignRows) > 0) {
 												for ($i = 0; $i < count($foreignRows); $i++) {
-													if ($this->theTable === 'fe_users' && $colName == 'usergroup') {
+													if ($this->theTable === 'fe_users' && $colName === 'usergroup') {
 														$foreignRows[$i] = $this->getUsergroupOverlay($foreignRows[$i]);
 													} else if ($localizedRow = $GLOBALS['TSFE']->sys_page->getRecordOverlay($colConfig['foreign_table'], $foreignRows[$i], $languageUid)) {
 														$foreignRows[$i] = $localizedRow;
@@ -1710,19 +1697,14 @@ class Marker
 									}
 								}
 
-								if (
-									$colConfig['foreign_table'] &&
-									isset($GLOBALS['TCA'][$colConfig['foreign_table']])
-								) {
+								if ($colConfig['foreign_table'] && isset($GLOBALS['TCA'][$colConfig['foreign_table']])) {
 									$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
 									$reservedValues = array();
 									$whereClause = '1=1';
-
-									if (is_object($userGroupObj)) {
+									if ($colName === 'usergroup' && is_object($userGroupObj)) {
 										$reservedValues = $userGroupObj->getReservedValues($this->conf);
 										$whereClause = $userGroupObj->getAllowedWhereClause($colConfig['foreign_table'], $this->parameters->getPid(), $this->conf, $cmdKey);
 									}
-
 									if (
 										$this->conf['useLocalization']
 										&& $GLOBALS['TCA'][$colConfig['foreign_table']]
@@ -1733,8 +1715,8 @@ class Marker
 									}
 
 									if (
-										$colName == 'module_sys_dmail_category'
-										&& $colConfig['foreign_table'] == 'sys_dmail_category'
+										$colName === 'module_sys_dmail_category'
+										&& $colConfig['foreign_table'] === 'sys_dmail_category'
 										&& $this->conf['module_sys_dmail_category_PIDLIST']
 									) {
 										$tmpArray = GeneralUtility::trimExplode(',', $this->conf['module_sys_dmail_category_PIDLIST']);
@@ -1761,7 +1743,7 @@ class Marker
 									$selectedValue = false;
 									while ($row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 											// Handle usergroup case
-										if ($colName == 'usergroup' && is_object($userGroupObj)) {
+										if ($colName === 'usergroup' && is_object($userGroupObj)) {
 											if (!in_array($row2['uid'], $reservedValues)) {
 												$row2 = $this->getUsergroupOverlay($row2);
 												$titleText = htmlspecialchars($row2[$titleField], ENT_QUOTES, $charset);

@@ -114,7 +114,7 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable email on registration: If set, an email will be sent to the front end user confirming his(her) registration. This is ignored if email confirmation request is enabled.
   enableEmailOnRegister = 1
 
-    # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable email on profile update: If set to 1, an email will be sent to the front end user to confirm the update of his profile. If set to 2, only the changed fields will be sent.
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable email on profile update: If set to 1, an email will be sent to the front end user to confirm the update of his profile.
   enableEmailOnUpdate = 1
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable email on delete: If set, an email will be sent to the front end user to confirm the deletion of his(her) account.
@@ -135,7 +135,7 @@ plugin.tx_srfeuserregister_pi1 {
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable admin notification on registration: If set, an email will be sent to the site administration when a user registers. This is ignored if email confirmation request is enabled.
   enableAdminNotifyOnRegister = 1
 
-    # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable admin notification on update: If set, an email will be sent to the site administration when a user updates his(her) profile.
+    # cat=plugin.tx_srfeuserregister_pi1/enable; type=int[0-2]; label= Enable admin notification on update: If set, an email will be sent to the site administration when a user updates his(her) profile. If set to 2, only the changed fields will be sent. 
   enableAdminNotifyOnUpdate = 1
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Enable admin notification on deletion: If set, an email will be sent to the site administration when a user deletes his(her) account.
