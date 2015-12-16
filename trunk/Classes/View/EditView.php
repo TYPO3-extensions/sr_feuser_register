@@ -52,7 +52,6 @@ class EditView extends AbstractView
 				}
 			}
 		}
-		$requiredFields = $this->data->getRequiredFieldsArray($cmdKey);
 		if ($cmdKey === 'password') {
 			$subpartMarker = '###TEMPLATE_SETFIXED_OK_APPROVE_INVITE###';
 		} else {
@@ -68,15 +67,18 @@ class EditView extends AbstractView
 		if (!$this->conf['linkToPID'] || !$this->conf['linkToPIDAddButton'] || !$isPreview) {
 			$templateCode = $this->marker->substituteSubpart($templateCode, '###SUB_LINKTOPID_ADD_BUTTON###', '');
 		}
+		$infoFields = $this->data->getFieldList();
+		$requiredFields = $this->data->getRequiredFieldsArray($cmdKey);
 		$this->marker->addPasswordTransmissionMarkers($this->getUsePassword(), $this->getUsePasswordAgain());
-		$templateCode = $this->marker->removeRequired($templateCode, $this->data->getFailure(), $requiredFields, $this->data->getFieldList(), $this->data->getSpecialFieldList(), $cmdKey, $isPreview);
+		$templateCode = $this->marker->removeRequired($templateCode, $this->data->getFailure(), $requiredFields, $infoFields, $this->data->getSpecialFieldList(), $cmdKey, $isPreview);
 		$this->marker->fillInMarkerArray($currentArray, $securedArray, '', true);
 		$this->marker->addStaticInfoMarkers($currentArray, $isPreview);
 		$this->marker->addTcaMarkers($currentArray, $origArray, $cmd, $cmdKey, $isPreview, $requiredFields);
-		$this->marker->addLabelMarkers($currentArray, $origArray, $securedArray, array(), $requiredFields, $this->data->getFieldList(), $this->data->getSpecialFieldList());
-		$fieldList = $this->data->getFieldList();
-		foreach ($fieldList as $theField => $fieldConfig) {
-			if ($fieldConfig['config']['internal_type'] === 'file' && !empty($fieldConfig['config']['allowed']) && !empty($fieldConfig['config']['uploadfolder'])) {
+		$this->marker->addLabelMarkers($currentArray, $origArray, $securedArray, array(), $requiredFields, $infoFields, $this->data->getSpecialFieldList());
+		$fieldArray = GeneralUtility::trimExplode(',', $infoFields, true);
+		foreach ($fieldArray as $theField) {
+			$fieldConfig = $GLOBALS['TCA'][$this->theTable]['columns'][$theField];
+			if (!empty($fieldConfig) && $fieldConfig['config']['internal_type'] === 'file' && !empty($fieldConfig['config']['allowed']) && !empty($fieldConfig['config']['uploadfolder'])) {
 				$this->marker->addFileUploadMarkers($theField, $fieldConfig, $cmd, $cmdKey, $currentArray, $isPreview);
 			}
 		}
@@ -89,7 +91,7 @@ class EditView extends AbstractView
 		if (!$isPreview) {
 			$form = $this->conf['formName'] ?: CssUtility::getClassName($this->prefixId, $this->theTable . '_form');
 			$modData = $this->data->modifyDataArrForFormUpdate($currentArray, $cmdKey);
-			$fields = $this->data->getFieldList() . ',' . $this->data->getAdditionalUpdateFields();
+			$fields = $infoFields . ',' . $this->data->getAdditionalUpdateFields();
 			$fields = implode(',', array_intersect(explode(',', $fields), GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], true)));
 			$fields = SecuredData::getOpenFields($fields);
 			if (!empty($fields)) {

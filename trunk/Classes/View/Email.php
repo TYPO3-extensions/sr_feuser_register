@@ -264,14 +264,10 @@ class Email
 			$content['adminhtml']['rec'] = $this->marker->getSubpart($content['adminhtml']['all'], '###SUB_RECORD###');
 			$contentIndexArray['html'][] = 'adminhtml';
 		}
-		$bChangesOnly = ($this->conf['email.']['EDIT_SAVED'] == '2' && $cmd == 'edit');
-		if ($bChangesOnly) {
-			$keepFields = array('uid', 'pid', 'tstamp', 'name', 'username');
-		} else {
-			$keepFields = array();
-		}
+		$changesOnly = (($this->conf['email.']['EDIT_SAVED'] == '2' || $this->conf['notify.']['EDIT_SAVED'] == '2') && $cmd == 'edit');
+		$keepFields = $changesOnly ? array('uid', 'pid', 'tstamp', 'name', 'username') : array();
 		$this->marker->fillInMarkerArray($DBrows[0], $securedArray, '', false);
-		$this->marker->addLabelMarkers($DBrows[0], $origRows[0], $securedArray, $keepFields, $requiredFields, $this->data->getFieldList(), $this->data->getSpecialFieldList(), $bChangesOnly);
+		$this->marker->addLabelMarkers($DBrows[0], $origRows[0], $securedArray, $keepFields, $requiredFields, $this->data->getFieldList(), $this->data->getSpecialFieldList(), $changesOnly);
 		$content['user']['all'] = $this->marker->substituteMarkerArray($content['user']['all'], $this->marker->getMarkerArray());
 		$content['userhtml']['all'] = $this->marker->substituteMarkerArray($content['userhtml']['all'], $this->marker->getMarkerArray());
 		$content['admin']['all'] = $this->marker->substituteMarkerArray($content['admin']['all'], $this->marker->getMarkerArray());
@@ -288,21 +284,31 @@ class Email
 			} else {
 				$currentRow = $row;
 			}
-			if ($bChangesOnly) {
+			$mrow = $currentRow;
+			if ($changesOnly) {
 				$mrow = array();
-				foreach ($row as $field => $v) {
-					if (in_array($field, $keepFields)) {
-						$mrow[$field] = $row[$field];
+				foreach ($currentRow as $theField => $v) {
+					if (in_array($theField, $keepFields)) {
+						$mrow[$theField] = $v;
 					} else {
-						if ($row[$field] != $origRow[$field]) {
-							$mrow[$field] = $row[$field];
-						} else {
-							$mrow[$field] = ''; // needed to empty the ###FIELD_...### markers
+						// Determine whether the value of the field was changed
+						$valueChanged = !isset($row[$theField]) && isset($origRow[$theField]);
+						if (isset($row[$theField])) {
+							if (isset($origRow[$theField])) {
+								if (is_array($row[$theField]) && is_array($origRow[$theField])) {
+									$valueChanged = count(array_diff($row[$theField], $origRow[$theField])) || count(array_diff($origRow[$theField], $row[$theField]));
+								} else {
+									$valueChanged = !isset($origRow[$theField]) || ($row[$theField] != $origRow[$theField]);
+								}
+							} else {
+								$valueChanged = true;
+							}
+						}
+						if ($valueChanged) {
+							$mrow[$theField] = $v;
 						}
 					}
 				}
-			} else {
-				$mrow = $currentRow;
 			}
 			$this->marker->addAuthCodeMarker($row);
 			// If setfixed is enabled
@@ -320,11 +326,12 @@ class Email
 					$this->marker->addFileUploadMarkers($theField, $fieldConfig, $cmd, $cmdKey, $row, $viewOnly, 'email', ($emailType == 'html'));
 				}
 			}
-			$this->marker->addLabelMarkers($row, $origRow, $securedArray, $keepFields, $this->data->getRequiredFieldsArray($cmdKey), $this->data->getFieldList(), $this->data->getSpecialFieldList(), $bChangesOnly);
+			$this->marker->addLabelMarkers($row, $origRow, $securedArray, $keepFields, $this->data->getRequiredFieldsArray($cmdKey), $this->data->getFieldList(), $this->data->getSpecialFieldList(), $changesOnly);
 			foreach ($contentIndexArray as $emailType => $indexArray) {
 				$this->marker->fillInMarkerArray($mrow, $securedArray, '', false, 'FIELD_', ($emailType === 'html'));
-				$this->marker->addTcaMarkers($row, $origRow, $cmd, $cmdKey, $viewOnly, $this->data->getRequiredFieldsArray($cmdKey), 'email', $bChangesOnly, ($emailType === 'html'));
+				$this->marker->addTcaMarkers($row, $origRow, $cmd, $cmdKey, $viewOnly, $this->data->getRequiredFieldsArray($cmdKey), 'email', $changesOnly, ($emailType === 'html'));
 				foreach ($indexArray as $index) {
+					$content[$index]['rec'] = $this->marker->removeNonIncluded($content[$index]['rec'], array_keys($mrow), $cmdKey);
 					$content[$index]['rec'] = $this->marker->removeStaticInfoSubparts($content[$index]['rec'], $viewOnly);
 					$content[$index]['accum'] .= $this->marker->substituteMarkerArray($content[$index]['rec'], $this->marker->getMarkerArray());
 					if ($emailType === 'text') {

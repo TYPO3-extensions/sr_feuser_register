@@ -90,9 +90,11 @@ class CreateView extends AbstractView
 			$this->marker->fillInMarkerArray($currentArray, $securedArray, '', true);
 			$this->marker->addStaticInfoMarkers($dataArray, $isPreview);
 			$this->marker->addTcaMarkers($dataArray, $origArray, $cmd, $cmdKey, $isPreview, $requiredFileds);
-			foreach ($GLOBALS['TCA'][$this->theTable]['columns'] as $theField => $fieldConfig) {
-				if ($fieldConfig['config']['internal_type'] === 'file' && !empty($fieldConfig['config']['allowed']) && !empty($fieldConfig['config']['uploadfolder'])) {
-					$this->marker->addFileUploadMarkers($theField, $fieldConfig, $cmd, $cmdKey, $dataArray, $isPreview);
+			$fieldArray = GeneralUtility::trimExplode(',', $infoFields, true);
+			foreach ($fieldArray as $theField) {
+				$fieldConfig = $GLOBALS['TCA'][$this->theTable]['columns'][$theField];
+				if (!empty($fieldConfig) && $fieldConfig['config']['internal_type'] === 'file' && !empty($fieldConfig['config']['allowed']) && !empty($fieldConfig['config']['uploadfolder'])) {
+					$this->marker->addFileUploadMarkers($theField, $fieldConfig, $cmd, $cmdKey, $currentArray, $isPreview);
 				}
 			}
 			$this->marker->addLabelMarkers($dataArray, $origArray, $securedArray, array(), $requiredFileds, $infoFields, $this->data->getSpecialFieldList());
@@ -103,7 +105,7 @@ class CreateView extends AbstractView
 			$deleteUnusedMarkers = true;
 			$content .= $this->marker->substituteMarkerArray($templateCode, $this->marker->getMarkerArray(), '', false, $deleteUnusedMarkers);
 			if (!$isPreview && $bNeedUpdateJS) {
-				$fields = $this->data->getFieldList() . ',' . $this->data->getAdditionalUpdateFields();
+				$fields = $infoFields . ',' . $this->data->getAdditionalUpdateFields();
 				$fields = implode(',', array_intersect(explode(',', $fields), GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1)));	
 				$fields = SecuredData::getOpenFields($fields);
 				$modData = $this->data->modifyDataArrForFormUpdate($dataArray, $cmdKey);

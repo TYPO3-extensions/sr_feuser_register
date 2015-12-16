@@ -196,7 +196,7 @@ class UsergroupHooks
 	 * @param string $cmdKey: the command key
 	 * @return void
 	 */
-	protected function getAllowedValues(array $conf, $cmdKey, array &$allowedUserGroupArray, array &$allowedSubgroupArray, array &$deniedUserGroupArray)
+	public function getAllowedValues(array $conf, $cmdKey, array &$allowedUserGroupArray, array &$allowedSubgroupArray, array &$deniedUserGroupArray)
 	{
 		$allowedUserGroupArray = GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['allowedUserGroups'], true);
 		$allowedSubgroupArray = GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['allowedSubgroups'], true);

@@ -106,7 +106,7 @@ class EditActionController extends AbstractActionController
 					$key = 'EDIT' . Marker::SAVED_SUFFIX;
 					$afterSaveView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\AfterSaveView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 					$content = $afterSaveView->render($dataArray, $origArray, $securedArray, $cmd, $cmdKey, $key);
-					if ($this->conf['email.']['EDIT_SAVED'] || $this->conf['email.']['DELETE_SAVED']) {
+					if ($this->conf['email.']['EDIT_SAVED'] || $this->conf['email.']['DELETE_SAVED'] || $this->conf['notify.']['EDIT_SAVED'] || $this->conf['notify.']['DELETE_SAVED']) {
 						$this->emailField = $this->conf['email.']['field'];
 						$recipient = $dataArray[$this->emailField] ?: $origArray[$this->emailField];
 						// Send email message(s)
