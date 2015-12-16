@@ -6,7 +6,7 @@
 CREATE TABLE fe_users (
 	static_info_country char(3) DEFAULT '' NOT NULL,
 	zone varchar(45) DEFAULT '' NOT NULL,
-	language char(2) DEFAULT '' NOT NULL,
+	language char(5) DEFAULT '' NOT NULL,
 	gender int(11) unsigned DEFAULT '99' NOT NULL,
 	cnum varchar(50) DEFAULT '' NOT NULL,
 	name varchar(100) DEFAULT '' NOT NULL,

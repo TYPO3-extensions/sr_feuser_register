@@ -1,3 +1,6 @@
+2015-12-16 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix for the length of the language field on fe_users table
+
 2015-12-15 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #65270: Security issue in sr_feuser_register 3.1.3
 	* Resolves #47475: if TS Constant enableEmailOnUpdate=2 => ###TCA_INPUT_xxx### markers are not replaced
