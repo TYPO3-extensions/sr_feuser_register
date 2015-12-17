@@ -90,7 +90,6 @@ class TransmissionSecurity
 										} else {
 											// RSA auth service failed to process incoming password
 											// May happen if the key is wrong
-											// May happen if multiple instance of rsaauth on same page
 											$success = false;
 											$message = LocalizationUtility::translate('internal_rsaauth_process_incoming_password_failed', self::$extensionName);
 											GeneralUtility::sysLog($message, self::$extensionKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
@@ -141,9 +140,7 @@ class TransmissionSecurity
 				$extraHiddenFieldsArray = array();
 				list($onSubmit, $hiddenFields) = self::getPasswordEncryptionCode();
 				if ($usePasswordAgain && !empty($onSubmit)) {
-					$onSubmit = 'if (this.pass.value != this[\'FE[fe_users][password_again]\'].value) {this.password_again_failure.value = 1; this.pass.value = \'X\'; this[\'FE[fe_users][password_again]\'].value = \'\'; return true;} else { this[\'FE[fe_users][password_again]\'].value = \'\'; ' . $onSubmit . '}';
-					$extraHiddenFieldsArray[] = '<input type="hidden" name="password_again_failure" value="0">';
-					$extraHiddenFieldsArray[] = '<input type="hidden" name="tx_srfeuserregister_pi1[rsaSubmit]" value="0">';
+					$onSubmit = 'if (this.pass.value != this[\'FE[fe_users][password_again]\'].value) {this.pass.value = \'X\'; this[\'FE[fe_users][password_again]\'].value = \'\'; return true;} else { this[\'FE[fe_users][password_again]\'].value = \'\'; ' . $onSubmit . '}';
 				}
 				$markerArray['###FORM_ONSUBMIT###'] = !empty($onSubmit) ? ' onsubmit="' . $onSubmit . '"' : '';
 				if (count($extraHiddenFieldsArray)) {

@@ -61,7 +61,7 @@ class DeleteActionController extends AbstractActionController
 			$mode = AbstractView::MODE_PREVIEW;
 		}
 		$isSubmit = $this->parameters->getFeUserData('submit');
-		$isSubmit = !empty($isSubmit);		
+		$isSubmit = !empty($isSubmit) && $this->parameters->isTokenValid();		
 		$isDoNotSave = $this->parameters->getFeUserData('doNotSave');
 		$isDoNotSave = !empty($isDoNotSave);
 		if ($isDoNotSave) {
