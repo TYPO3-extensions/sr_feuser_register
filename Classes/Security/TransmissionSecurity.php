@@ -143,7 +143,6 @@ class TransmissionSecurity
 				if ($usePasswordAgain && !empty($onSubmit)) {
 					$onSubmit = 'if (this.pass.value != this[\'FE[fe_users][password_again]\'].value) {this.password_again_failure.value = 1; this.pass.value = \'X\'; this[\'FE[fe_users][password_again]\'].value = \'\'; return true;} else { this[\'FE[fe_users][password_again]\'].value = \'\'; ' . $onSubmit . '}';
 					$extraHiddenFieldsArray[] = '<input type="hidden" name="password_again_failure" value="0">';
-					$extraHiddenFieldsArray[] = '<input type="hidden" name="submit" value="0">';
 				}
 				$markerArray['###FORM_ONSUBMIT###'] = !empty($onSubmit) ? ' onsubmit="' . $onSubmit . '"' : '';
 				if (count($extraHiddenFieldsArray)) {
