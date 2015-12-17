@@ -27,6 +27,7 @@ use SJBR\SrFeuserRegister\Security\StorageSecurity;
 use SJBR\SrFeuserRegister\Security\TransmissionSecurity;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 /**
  * Frontend user session data handling
@@ -257,7 +258,11 @@ class SessionData
 		$passwordRow = self::readPassword($extensionKey);
 		$passwordDecrypted = TransmissionSecurity::decryptIncomingFields($passwordRow);
 		if ($passwordDecrypted) {
-			self::writePassword($extensionKey, $passwordRow['password'], $passwordRow['password_again']);
+			if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getNumericTypo3Version()) >= 7000000) {
+				self::writePassword($extensionKey, $passwordRow['password'], $passwordRow['password_again']);
+			} else {
+				self::writePassword($extensionKey, $passwordRow['password'], $passwordRow['password']);
+			}
 		} else if (TransmissionSecurity::getTransmissionSecurityLevel() !== 'rsa') {
 			self::writePassword($extensionKey, $passwordRow['password'], $row['password_again']);
 		}
