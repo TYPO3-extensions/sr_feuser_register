@@ -1,3 +1,6 @@
+2015-12-17 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Fix for password edition on TYPO3 CMS 6.2 and 7.6
+
 2015-12-16 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for the length of the language field on fe_users table
 	* Resolves #51278: Cannot use empty option in select field with evalValues = required

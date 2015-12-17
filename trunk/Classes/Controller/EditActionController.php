@@ -61,7 +61,7 @@ class EditActionController extends AbstractActionController
 			$mode = AbstractView::MODE_PREVIEW;
 		}
 		$isSubmit = $this->parameters->getFeUserData('submit');
-		$isSubmit = !empty($isSubmit) || $this->parameters->getFeUserData('rsaSubmit') === '1';
+		$isSubmit = !empty($dataArray) && $this->parameters->isTokenValid();
 		$isDoNotSave = $this->parameters->getFeUserData('doNotSave');
 		$isDoNotSave = !empty($isDoNotSave);
 		if ($isDoNotSave) {
@@ -94,7 +94,7 @@ class EditActionController extends AbstractActionController
 			}
 			$this->data->setUsername($dataArray, $cmdKey);
 			$this->data->setDataArray($dataArray);
-			if (!$this->data->getFailure() && $mode === AbstractView::MODE_NORMAL && $isSubmit && !$isDoNotSave && !$this->parameters->getFeUserData('rU')) {
+			if (!$this->data->getFailure() && $mode === AbstractView::MODE_NORMAL && $this->parameters->isTokenValid() && !$isDoNotSave && !$this->parameters->getFeUserData('rU')) {
 				$this->data->setPassword($dataArray, $cmdKey);
 				$newDataArray = array();
 				$theUid = $this->data->save($dataArray, $origArray, SessionData::readToken($this->extensionKey), $newDataArray, $cmd, $cmdKey, $this->parameters->getPid());
