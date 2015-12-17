@@ -54,7 +54,7 @@ class CreateActionController extends AbstractActionController
 			$mode = AbstractView::MODE_PREVIEW;
 		}
 		$isSubmit = $this->parameters->getFeUserData('submit');
-		$isSubmit = !empty($isSubmit);
+		$isSubmit = !empty($isSubmit) || $this->parameters->getFeUserData('rsaSubmit') === '1';
 		$isDoNotSave = $this->parameters->getFeUserData('doNotSave');
 		$isDoNotSave = !empty($isDoNotSave);
 		if ($isDoNotSave) {

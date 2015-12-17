@@ -143,6 +143,7 @@ class TransmissionSecurity
 				if ($usePasswordAgain && !empty($onSubmit)) {
 					$onSubmit = 'if (this.pass.value != this[\'FE[fe_users][password_again]\'].value) {this.password_again_failure.value = 1; this.pass.value = \'X\'; this[\'FE[fe_users][password_again]\'].value = \'\'; return true;} else { this[\'FE[fe_users][password_again]\'].value = \'\'; ' . $onSubmit . '}';
 					$extraHiddenFieldsArray[] = '<input type="hidden" name="password_again_failure" value="0">';
+					$extraHiddenFieldsArray[] = '<input type="hidden" name="tx_srfeuserregister_pi1[rsaSubmit]" value="0">';
 				}
 				$markerArray['###FORM_ONSUBMIT###'] = !empty($onSubmit) ? ' onsubmit="' . $onSubmit . '"' : '';
 				if (count($extraHiddenFieldsArray)) {
@@ -184,10 +185,10 @@ class TransmissionSecurity
 						$eIdUrl = GeneralUtility::quoteJSvalue($GLOBALS['TSFE']->absRefPrefix . 'index.php?eID=FrontendLoginRsaPublicKey');
 						$additionalHeader = '<script type="text/javascript">var TYPO3FrontendLoginFormRsaEncryptionPublicKeyUrl = ' . $eIdUrl . ';</script>';
 						foreach ($files as $file) {
-							$additionalHeader .= '<script type="text/javascript" src="' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $javascriptPath . $file . '"></script>';
+							$additionalHeader .= '<script type="text/javascript" src="' . GeneralUtility::createVersionNumberedFilename($javascriptPath . $file) . '"></script>';
 						}
 						// See TYPO3/CMS/rsaauth/resources/FrontendLoginFormRsaEncryption.js
-						$additionalHeader .= '<script type="text/javascript" src="' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . ExtensionManagementUtility::siteRelPath(self::$extensionKey) . 'Resources/Public/JavaScript/FormRsaEncryption.js"></script>';
+						$additionalHeader .= '<script type="text/javascript" src="' . GeneralUtility::createVersionNumberedFilename(ExtensionManagementUtility::siteRelPath(self::$extensionKey) . 'Resources/Public/JavaScript/FormRsaEncryption.js') . '"></script>';
 						$GLOBALS['TSFE']->additionalHeaderData['rsaauth_js'] = $additionalHeader;
 					}
 			}
