@@ -122,8 +122,8 @@ TYPO3FrontendLoginFormRsaEncryption = function() {
 			// Replace password value with encrypted password
 			this.userPasswordField.value = 'rsa:' + hex2b64(encryptedPassword);
 
-			// Replace password value with encrypted password
-			this.form.submit.value = '1';
+			// The default event will not be executed, and the pressed input of type submit will not be "successful"
+			this.form['tx_srfeuserregister_pi1[rsaSubmit]'].value = '1';
 
 			// Submit the form again but now with encrypted pass
 			document.createElement("form").submit.call(this.form);
