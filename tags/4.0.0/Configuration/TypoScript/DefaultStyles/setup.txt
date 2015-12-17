@@ -1,0 +1,3 @@
+# Include default styles for SrFeuserRegister
+
+page.includeCSS.tx_srfeuserregister = EXT:sr_feuser_register/Resources/Public/StyleSheets/default.css
