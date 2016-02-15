@@ -2,6 +2,7 @@
 	* Resolves #72446: Edit View never to be rendered
 	* Resolves #72541: Version number in composer.json
 	* Resolves #72814: evalValues preg doesn't work properly
+	* Resolves #72958: evalValues for gender fails
 
 2015-12-17 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for password edition on TYPO3 CMS 6.2 and 7.6

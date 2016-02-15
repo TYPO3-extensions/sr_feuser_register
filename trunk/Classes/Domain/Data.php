@@ -584,7 +584,7 @@ class Data
 			if ($theField === 'usergroup' && is_object($this->userGroupObj) && is_array($value)) {
 				$value = $this->userGroupObj->restrictToSelectableValues($value, $this->conf, $cmdKey);
 			}
-			$isMissing = empty($value);
+			$isMissing = empty($value) && !($theField === 'gender' && $value == '0');
 			if ($isMissing) {
 				$failureArray[] = $theField;
 				$this->missing[$theField] = true;
