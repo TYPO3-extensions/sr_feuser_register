@@ -1,9 +1,10 @@
 <?php
 namespace SJBR\SrFeuserRegister\Domain;
+
 /*
  *  Copyright notice
  *
- *  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2016 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -812,11 +813,7 @@ class Data
 								}
 							break;
 							case 'preg':
-								if (
-									!is_array($dataArray[$theField])
-									&& !empty($dataArray[$theField])
-									&& $dataArray[$theField] !== '0'
-								) {
+								if (!is_array($dataArray[$theField]) && !empty($dataArray[$theField]) && $dataArray[$theField] !== '0') {
 									if (isset($countArray['preg'][$theCmd])) {
 										$countArray['preg'][$theCmd]++;
 									} else {
@@ -826,13 +823,14 @@ class Data
 									$pattern = substr($pattern, 0, strlen($pattern) - 1);
 									$matches = array();
 									$test = preg_match($pattern, $dataArray[$theField], $matches);
-
-									$failureArray[] = $theField;
-									$this->inError[$theField] = true;
-									$this->evalErrors[$theField][] = $theCmd;
-									$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_' . $theCmd, $countArray['preg'][$theCmd], $cmd);
+									if (count($matches) === 0) {
+										$failureArray[] = $theField;
+										$this->inError[$theField] = true;
+										$this->evalErrors[$theField][] = $theCmd;
+										$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_' . $theCmd, $countArray['preg'][$theCmd], $cmd);
+									}
 								}
-							break;
+								break;
 							case 'hook':
 							default:
 								if (isset($countArray['hook'][$theCmd])) {
