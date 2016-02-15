@@ -4,6 +4,7 @@
 	* Resolves #72814: evalValues preg doesn't work properly
 	* Resolves #72958: evalValues for gender fails
 	* Update to the manual
+	* Update version to 4.0.1
 
 2015-12-17 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix for password edition on TYPO3 CMS 6.2 and 7.6
@@ -225,7 +226,7 @@
 	* Fix bug #46429: Empty Form after cancelling delete Form
 	* Fix issue #49426: addGlobalMarkers: wrong conditions
 	* Fix issue #37022: Empty form security token
-	* Fix issue #39069: Check pid of fe-users in function login (Thanks to Georg Schönweger)
+	* Fix issue #39069: Check pid of fe-users in function login (Thanks to Georg SchÃ¶nweger)
 	* Fix issue with confirmType in setfixed url
 	* Correct function name in tx_srfeuserregister_setfixed->computeUrl
 	* Fix issue #37046: JavaScript for updateForm() doesn't respect formFields setting
@@ -473,7 +474,7 @@
 	* Follow-up 4 to feature #34447: Move storage security to own class
 
 2012-04-03 Stanislas Rolland  <typo3(arobas)sjbr.ca>
-	* Add feature #27504: Add userGroupsPidList TS constant and TS setup property (Thanks to Georg Schönweger).
+	* Add feature #27504: Add userGroupsPidList TS constant and TS setup property (Thanks to Georg SchÃ¶nweger).
 
 2012-03-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Fix bug #14271 (old bug tracker): Password constant not respected
@@ -492,7 +493,7 @@
 	* Fix bug #11191: enableAdminReview do not work without enableEmailConfirmation
 	* Fix bug #18169 (old bug tracker): Combination: no user confirmation, adminReview + user notification not possible
 	* Fix bug #11533 (old bug tracker): Documentation is incorrect for tx_srfeuserregister_tca::addTcaMarkers
-	* Fix bug #13643 (old bug tracker): Unnecessary disclosure of username in filename (Thanks to Steffen Müller)
+	* Fix bug #13643 (old bug tracker): Unnecessary disclosure of username in filename (Thanks to Steffen MÃ¼ller)
 	* Follow-up 2 to feature #34447: Add support for saltedpasswords and rsaauth
 	* Cleanup #35292: Cleanup in ext_tables.php
 	* Fix bug #35293: Protect method tx_srfeuserregister_controldata::writeToken
@@ -529,7 +530,7 @@
 	* Fix bug #34217: Radio buttons do not respect db values in edit view (Thanks to Jan Loderhose)
 	* Fix bug #13349: Checkbox is set to "0" if not checked (Thanks to Oliver Hader)
 	* Fix #15813 (old bug tracker): Labels with variables do not get processed if fieldname contains numbers (Thanks to Joerg Winter)
-	* Add feature #6646 (old bug tracker): Possibility to disable enforcing of username field (Thanks to François Suter)
+	* Add feature #6646 (old bug tracker): Possibility to disable enforcing of username field (Thanks to FranÃ§ois Suter)
 	* Fix #15659 (old bug tracker): Field fe_cruser_id is never set (Thanks to Jens Herden)
 	* Fix #17686 (old bug tracker): Password change does not execute any validation
 	* Fix #6308 (old bug tracker): Wrong marker in template (Thanks to Bjorn T. Hallberg)
@@ -747,7 +748,7 @@
 
 2008-07-28 Franz Holzinger  <franz@fholzinger.com>
 	* Version 2.5.16:
-	* Fix bug with not working radio button ḟor tt_address gender because it has values different from 0 and 1
+	* Fix bug with not working radio button á¸or tt_address gender because it has values different from 0 and 1
 	* Fix bug to always show the registration link before the CREATE or EDIT template is displayed.
 
 2008-06-23 Franz Holzinger  <franz@fholzinger.com>

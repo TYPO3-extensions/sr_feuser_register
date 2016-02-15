@@ -6,17 +6,17 @@
 
 $EM_CONF[$_EXTKEY] = array (
 	'title' => 'Front End User Registration',
-	'description' => 'A self-registration variant of Kasper Skårhøj\'s Front End User Admin extension.',
+	'description' => 'A self-registration variant of Kasper SkÃ¥rhÃ¸j\'s Front End User Admin extension.',
 	'category' => 'plugin',
 	'state' => 'stable',
 	'uploadfolder' => 1,
 	'createDirs' => 'uploads/tx_srfeuserregister',
 	'modify_tables' => 'fe_users',
 	'clearCacheOnLoad' => 1,
-	'author' => 'Stanislas Rolland / Franz Holzinger',
+	'author' => 'Stanislas Rolland',
 	'author_email' => 'typo3@sjbr.ca',
 	'author_company' => 'SJBR',
-	'version' => '4.0.0',
+	'version' => '4.0.1',
 	'constraints' => array(
 		'depends' => array(
 			'typo3' => '6.2.4-7.6.99',
