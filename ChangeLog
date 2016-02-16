@@ -1,3 +1,6 @@
+2016-02-16 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #73494: Fatal error: Call to a member function initCountrySubdivisions() on a non-object
+
 2016-02-15 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #72446: Edit View never to be rendered
 	* Resolves #72541: Version number in composer.json

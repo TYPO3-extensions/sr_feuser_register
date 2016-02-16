@@ -880,7 +880,7 @@ class Data
 
 		if ($this->staticInfoObj !== null && $this->missing['zone']) {
 			// empty zone if there is no zone for the provided country
-			$zoneArray = $staticInfoObj->initCountrySubdivisions($dataArray['static_info_country']);
+			$zoneArray = $this->staticInfoObj->initCountrySubdivisions($dataArray['static_info_country']);
 			if (empty($zoneArray)) {
 				unset($this->missing['zone']);
 				$k = array_search('zone', $failureArray);
