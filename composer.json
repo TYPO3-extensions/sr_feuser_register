@@ -2,7 +2,7 @@
   "name": "sjbr/sr-feuser-register",
   "description": "A self-registration variant of Kasper SkÃ¥rhÃ¸js Front End User Admin extension.",
   "type": "typo3-cms-extension",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "license": "GPL-2.0+",
   "authors": [
     {
@@ -15,7 +15,8 @@
 	"issues": "https://forge.typo3.org/projects/extension-sr_feuser_register/issues"
   },
   "replace": {
-    "sr_feuser_register": "self.version",
+    "sr_feuser_register": "*",
+    "sjbr/sr_feuser_register": "*",
 	"typo3-ter/sr-feuser-register": "self.version"
   },
   "require": {
@@ -23,7 +24,7 @@
   	 "typo3/cms-felogin": ">=6.2.0,<8.0",
   	 "typo3/cms-rsaauth": ">=6.2.0,<8.0",
   	 "typo3/cms-saltedpasswords": ">=6.2.0,<8.0",
-  	 "sjbr/static-info-tables": ">=6.3.6,<6.4"
+  	 "sjbr/static-info-tables": ">=6.3.9,<6.4"
   },
   "suggest": {
   	 "sjbr/sr-freecap": "Allows to add a captcha to the registration form.",

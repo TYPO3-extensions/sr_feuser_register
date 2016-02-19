@@ -16,14 +16,14 @@ $EM_CONF[$_EXTKEY] = array (
 	'author' => 'Stanislas Rolland',
 	'author_email' => 'typo3@sjbr.ca',
 	'author_company' => 'SJBR',
-	'version' => '4.0.1',
+	'version' => '4.0.2',
 	'constraints' => array(
 		'depends' => array(
 			'typo3' => '6.2.4-7.6.99',
 			'felogin' => '6.2.0-7.6.99',
 			'rsaauth' => '6.2.0-7.6.99',
 			'saltedpasswords' => '6.2.0-7.6.99',
-			'static_info_tables' => '6.3.6-6.3.99'
+			'static_info_tables' => '6.3.9-6.3.99'
 		),
 		'conflicts' => array(
 			'germandates' => '0.0.0-99.99.99',
