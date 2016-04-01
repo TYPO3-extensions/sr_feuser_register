@@ -6,7 +6,7 @@
 
 $EM_CONF[$_EXTKEY] = array (
 	'title' => 'Front End User Registration',
-	'description' => 'A self-registration variant of Kasper SkÃ¥rhÃ¸j\'s Front End User Admin extension.',
+	'description' => 'A self-registration variant of Kasper Skårhøj\'s Front End User Admin extension.',
 	'category' => 'plugin',
 	'state' => 'stable',
 	'uploadfolder' => 1,
