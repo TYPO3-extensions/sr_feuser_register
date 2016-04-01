@@ -1,3 +1,6 @@
+2016-04-01 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #75364: PHP Runtime Deprecation in PHP 5.6
+
 2016-02-19 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Update version to 4.0.2
 

@@ -35,14 +35,14 @@ class SecuredData
 	 *
 	 * @var array
 	 */
-	static protected $securedFields = array('password', 'password_again', 'tx_srfeuserregister_password');
+	protected static $securedFields = array('password', 'password_again', 'tx_srfeuserregister_password');
 
 	/**
 	 * Gets the array of names of secured fields
 	 *
 	 * @return array names of secured fields
 	 */
-	static public function getSecuredFields()
+	public static function getSecuredFields()
 	{
 		return self::$securedFields;
 	}
@@ -53,7 +53,7 @@ class SecuredData
 	 * @param array $fields: initial list of field names
 	 * @return array new list of field names
 	 */
-	static public function getOpenFields($fields)
+	public static function getOpenFields($fields)
 	{
 		$securedFieldArray = self::getSecuredFields();
 		$fieldArray = array_unique(GeneralUtility::trimExplode(',', $fields));
@@ -73,7 +73,7 @@ class SecuredData
 	 * @param bool $htmlSpecial: whether to apply htmlspecialchars to the values
 	 * @return void
 	 */
-	public function secureInput(array &$dataArray, $htmlSpecial = true)
+	public static function secureInput(array &$dataArray, $htmlSpecial = true)
 	{
 		foreach ($dataArray as $key => $value) {
 			if (is_array($value)) {
@@ -100,7 +100,7 @@ class SecuredData
 	 * @param bool $htmlSpecial: whether to apply htmlspecialchars to the value
 	 * @return string secured value
 	 */
-	static public function getSecuredValue($field, $value, $htmlSpecial = true)
+	public static function getSecuredValue($field, $value, $htmlSpecial = true)
 	{
 		$securedValue = $value;
 		if (!in_array($field, self::$securedFields)) {
