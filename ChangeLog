@@ -1,5 +1,5 @@
 2016-04-07 Stanislas Rolland  <typo3(arobas)sjbr.ca>
-	* Resolves 75438: PHP 5.6 Runtime Deprecation Notice
+	* Resolves #75438: PHP 5.6 Runtime Deprecation Notice
 
 2016-04-01 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #75364: PHP Runtime Deprecation in PHP 5.6
