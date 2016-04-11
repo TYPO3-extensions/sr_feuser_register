@@ -1,3 +1,7 @@
+2016-04-11 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #75513: Typing error in CreateActionController.php
+	* Resolves #75512: Auto-login on create throws fatal error
+
 2016-04-07 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #75438: PHP 5.6 Runtime Deprecation Notice
 
