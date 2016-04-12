@@ -199,8 +199,8 @@ abstract class AbstractActionController
 	/**
 	 * Perform user login and redirect to configured url, if any
 	 *
-	 * @param array	$username: user name
-	 * @param array	$password: password (decrypted) 
+	 * @param string $username: user name
+	 * @param string $password: password (decrypted)
 	 * @param boolean $redirect: whether to redirect after login or not; If true, then you must immediately call exit after this call
 	 * @return boolean true, if login was successful, false otherwise
 	 */

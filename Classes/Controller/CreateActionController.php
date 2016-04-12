@@ -155,8 +155,8 @@ class CreateActionController extends AbstractActionController
 					}
 					// Auto login on create
 					if ($this->theTable === 'fe_users' && $cmd === 'create' && !$this->parameters->getSetfixedEnabled() && $this->conf['enableAutoLoginOnCreate']) {
-						$password = SessionData::readPassword();
-						$loginSuccess = $this->login($dataArray['username'], $password);
+						$password = SessionData::readPassword($this->extensionKey);
+						$loginSuccess = $this->login($dataArray['username'], $password['password']);
 						if ($loginSuccess) {
 							// Login was successful
 							exit;

@@ -1,3 +1,6 @@
+2016-04-12 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #75512: Follow-up to Auto-login on create throws fatal error
+
 2016-04-11 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #75513: Typing error in CreateActionController.php
 	* Resolves #75512: Auto-login on create throws fatal error
