@@ -1623,6 +1623,7 @@ class Marker
 									foreach ($itemArray as $key => $confArray) {
 										$value = $confArray[1];
 										$label = LocalizationUtility::translate($confArray[0], $this->extensionName);
+										$label = $label ?: $confArray[0];
 										$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 										$itemOut = '<input type="radio"'
 											. CssUtility::classParam($this->prefixId, 'radio')
