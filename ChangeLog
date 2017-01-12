@@ -4,6 +4,7 @@
 	* Resolves #77218: Site name will not be accepted
 	* Resolves #77227: plugin.tx_srfeuserregister_pi1.email.HTMLMail has no effect
 	* Resolves #78725: Field address should be placed into parseValues
+	* Update version to 4.0.3
 
 2016-04-12 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #75512: Follow-up to Auto-login on create throws fatal error
