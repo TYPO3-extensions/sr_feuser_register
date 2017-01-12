@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Utility;
 /*
  *  Copyright notice
  *
- *  (c) 2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2015-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -34,7 +34,7 @@ class HtmlUtility
 	 * @param string $content: the input content
 	 * @return string the input content with HTML comment removed
 	 */
-	public function removeHTMLComments($content)
+	public static function removeHTMLComments($content)
 	{
 		$result = preg_replace('/<!(?:--[\s\S]*?--\s*)?>[\t\v\n\r\f]*/', '', $content);
 		return $result;
@@ -46,7 +46,7 @@ class HtmlUtility
 	 * @param string $content: the input content
 	 * @return string the input content with HTML br tags replaced
 	 */
-	public function replaceHTMLBr($content)
+	public static function replaceHTMLBr($content)
 	{
 		$result = preg_replace('/<br\s?\/?>/', LF, $content);
 		return $result;
@@ -58,7 +58,7 @@ class HtmlUtility
 	 * @param string $content: the input content
 	 * @return string the input content with HTML tags removed
 	 */
-	public function removeHtmlTags($content)
+	public static function removeHtmlTags($content)
 	{
 		// Preserve <http://...> constructs
 		$result = str_replace('<http', '###http', $content);
@@ -73,7 +73,7 @@ class HtmlUtility
 	 * @param string $content: the input content
 	 * @return string the input content with superfluous fine feeds removed
 	 */
-	public function removeSuperfluousLineFeeds($content)
+	public static function removeSuperfluousLineFeeds($content)
 	{
 		$result = preg_replace('/[' . preg_quote(LF . CR) . ']{2,}/', LF, $content);
 		$result = preg_replace('/[' . preg_quote(LF) . ']{3,}/', LF, $result);
