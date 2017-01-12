@@ -171,4 +171,20 @@ $GLOBALS['TCA']['fe_users']['palettes']['2']['showitem'] = 'gender,--linebreak--
 
 $GLOBALS['TCA']['fe_users']['ctrl']['thumbnail'] = 'image';
 
+// fe_users further modified when extension direct_mail is not loaded
+if (
+	!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('direct_mail')
+) {
+	$addColumnArray = array(
+		'module_sys_dmail_html' => array(
+			'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.module_sys_dmail_html',
+			'exclude' => '1',
+			'config'=>Array(
+				'type'=>'check'
+			)
+		)
+	);
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('fe_users', $addColumnArray);
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCATypes('fe_users','--div--;HTML mail,module_sys_dmail_html');
+}
 unset($addColumnArray);

@@ -2,6 +2,7 @@
 	* Resolves #76190: static calls for HtmlUtility methods
 	* Resolves #76524: No text replacement for missing gender
 	* Resolves #77218: Site name will not be accepted
+	* Resolves #77227: plugin.tx_srfeuserregister_pi1.email.HTMLMail has no effect
 
 2016-04-12 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #75512: Follow-up to Auto-login on create throws fatal error
