@@ -1,5 +1,6 @@
 2017-01-12 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #76190: static calls for HtmlUtility methods
+	* Resolves #76524: No text replacement for missing gender
 
 2016-04-12 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #75512: Follow-up to Auto-login on create throws fatal error

@@ -1566,6 +1566,12 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 			<trans-unit id="table_not_defined_in_TCA" xml:space="preserve">
 				<source>The table "%s" is not defined in TCA.</source>
 			</trans-unit>
+			<trans-unit id="missing_gender" xml:space="preserve">
+				<source>Please enter your salutation!</source>
+			</trans-unit>
+			<trans-unit id="missing_gender_informal" xml:space="preserve">
+				<source>Please enter your salutation!</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
