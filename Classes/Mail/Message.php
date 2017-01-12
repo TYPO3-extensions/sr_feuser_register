@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Mail;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -80,7 +80,7 @@ class Message
 	{
 		if (trim($recipient) && (trim($HTMLContent) || trim($PLAINContent))) {
 			$fromName = str_replace('"', '\'', $fromName);
-			if (preg_match('#[/\(\)\\<>,;:@\.\]\[\s]#', $fromName)) {
+			if (preg_match ('/^\w[\w\-.#&\S]*$/', $fromName)) {
 				$fromName = '"' . $fromName . '"';
 			}
 			$defaultSubject = 'Front end user registration message';
