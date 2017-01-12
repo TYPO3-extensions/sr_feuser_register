@@ -198,21 +198,29 @@ plugin.tx_srfeuserregister_pi1 {
 		username = nospace,trim,alphanum_x
 		email = trim
 		password = trim
+		gender = int
 		name = trim
 		first_name = trim
 		middle_name = trim
 		last_name = trim
 		date_of_birth = date
+		address = trim
 		title = trim
 		company = trim
+		house_no = trim
 		city = trim
+		country = trim
+		static_info_country = trim
 		zip = trim
+		telephone = trim
+		fax = trim
 		image = files
 		module_sys_dmail_category = multiple
 		status = int
 		terms_acknowledged = int
 		usergroup = multiple
 		www = wwwURL
+		comments = trim
 	}
 
 	parseFromDBValues {
