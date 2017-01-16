@@ -19,10 +19,10 @@ $EM_CONF[$_EXTKEY] = array (
 	'version' => '4.0.3',
 	'constraints' => array(
 		'depends' => array(
-			'typo3' => '6.2.4-7.6.99',
-			'felogin' => '6.2.0-7.6.99',
-			'rsaauth' => '6.2.0-7.6.99',
-			'saltedpasswords' => '6.2.0-7.6.99',
+			'typo3' => '7.6.0-8.99.99',
+			'felogin' => '7.6.0-8.99.99',
+			'rsaauth' => '7.6.0-8.99.99',
+			'saltedpasswords' => '7.6.0-8.99.99',
 			'static_info_tables' => '6.3.9-6.3.99'
 		),
 		'conflicts' => array(
@@ -35,7 +35,7 @@ $EM_CONF[$_EXTKEY] = array (
 			'cc_random_image' => '0.0.0-99.99.99'
 		),
 		'suggests' => array(
-			'sr_freecap' => '2.3.0-2.3.99',
+			'sr_freecap' => '2.4.0-2.4.99',
 			'direct_mail' => '4.1.0-5.9.99'
 		)
 	)
