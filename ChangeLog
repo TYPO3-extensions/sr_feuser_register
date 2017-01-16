@@ -1,3 +1,6 @@
+2017-01-15 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Require TYPO3 CMS 7.6
+
 2017-01-12 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #76190: static calls for HtmlUtility methods
 	* Resolves #76524: No text replacement for missing gender
