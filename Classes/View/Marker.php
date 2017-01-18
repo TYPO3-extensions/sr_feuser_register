@@ -1605,7 +1605,8 @@ class Marker
 									}
 									foreach ($itemArray as $key => $value) {
 										$checked = ($startVal & (1 << $key)) ? ' checked="checked"' : '';
-										$label = LocalizationUtility::translate($itemArray[$key][0], $this->extensionName);
+										$label = LocalizationUtility::translate($value[0], $this->extensionName);
+										$label = $label ?: $value[0];
 										$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 										$colContent .= '<li><input type="checkbox"' .
 										CssUtility::classParam($this->prefixId, 'checkbox') .
@@ -1640,6 +1641,7 @@ class Marker
 									foreach ($itemArray as $key => $confArray) {
 										$value = $confArray[1];
 										$label = LocalizationUtility::translate($confArray[0], $this->extensionName);
+										$label = $label ?: $confArray[0];
 										$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 										$itemOut = '<input type="radio"'
 											. CssUtility::classParam($this->prefixId, 'radio')
