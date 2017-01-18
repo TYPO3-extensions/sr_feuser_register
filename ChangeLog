@@ -1,3 +1,6 @@
+2017-01-18 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #79381: Migrate to Doctrine
+
 2017-01-15 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Require TYPO3 CMS 7.6
 

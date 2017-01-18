@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\View;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -32,6 +32,8 @@ use SJBR\SrFeuserRegister\Utility\CssUtility;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\Utility\UrlUtility;
 use SJBR\SrFeuserRegister\View\AbstractView;
+use SJBR\StaticInfoTables\PiBaseApi;
+use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -157,7 +159,7 @@ class Marker
 	protected $urlMarkerArray = array();
 
 	/**
-	 * Marker-based template service (TYPO3 7+)
+	 * Marker-based template service
 	 *
 	 * @var \TYPO3\CMS\Core\Service\MarkerBasedTemplateService
 	 */
@@ -196,20 +198,18 @@ class Marker
 	 	$this->prefixId = $prefixId;
 	 	$this->theTable = $theTable;
 	 	$this->conf = $conf;
-	 	$this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+	 	$this->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 	 	$this->parameters = $parameters;
 	 	$this->token = SessionData::readToken($this->extensionKey);
 	 	// Static Info object
 		if (ExtensionManagementUtility::isLoaded('static_info_tables')) {
-			$this->staticInfoObj = GeneralUtility::makeInstance('SJBR\\StaticInfoTables\\PiBaseApi');
+			$this->staticInfoObj = GeneralUtility::makeInstance(PiBaseApi::class);
 			if ($this->staticInfoObj->needsInit()) {
 				$this->staticInfoObj->init();
 			}
 		}
 		// Marker-based service
-		if (class_exists('TYPO3\\CMS\\Core\\Service\\MarkerBasedTemplateService')) {
-			$this->markerBasedTemplateService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Service\\MarkerBasedTemplateService');
-		}
+		$this->markerBasedTemplateService = GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
 		// Usergroup hook object
 		if ($this->theTable === 'fe_users') {
 			$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable]['usergroup']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable]['usergroup'] : array();
@@ -1497,8 +1497,25 @@ class Marker
 										$firstValue = current($valuesArray);
 										if (!empty($firstValue) || count($valuesArray) > 1) {
 											$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
-											$where = 'uid IN (' . implode(',', $valuesArray) . ')';
-											$foreignRows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', $colConfig['foreign_table'], $where);
+											if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+												$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
+													->getQueryBuilderForTable($colConfig['foreign_table']);
+												$queryBuilder
+													->getRestrictions()
+													->removeAll();
+												$foreignRows = $queryBuilder
+													->select('*')
+													->from($colConfig['foreign_table'])
+													->where(
+														$queryBuilder->expr()->in('uid', array_map('intval', $valuesArray))
+													)
+													->execute()
+													->fetchAll();
+											} else {
+												// TYPO3 CMS 7 LTS
+												$where = 'uid IN (' . implode(',', $valuesArray) . ')';
+												$foreignRows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', $colConfig['foreign_table'], $where);
+											}
 											if (is_array($foreignRows) && count($foreignRows) > 0) {
 												for ($i = 0; $i < count($foreignRows); $i++) {
 													if ($this->theTable === 'fe_users' && $colName === 'usergroup') {
@@ -1684,37 +1701,91 @@ class Marker
 								if ($colConfig['foreign_table'] && isset($GLOBALS['TCA'][$colConfig['foreign_table']])) {
 									$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
 									$reservedValues = array();
-									$whereClause = '1=1';
-									if ($colName === 'usergroup' && is_object($this->userGroupObj)) {
-										$reservedValues = $this->userGroupObj->getReservedValues($this->conf);
-										$whereClause = $this->userGroupObj->getAllowedWhereClause($colConfig['foreign_table'], $this->parameters->getPid(), $this->conf, $cmdKey);
-									}
-									if (
-										$this->conf['useLocalization']
-										&& $GLOBALS['TCA'][$colConfig['foreign_table']]
-										&& $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['languageField']
-										&& $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['transOrigPointerField']
-									) {
-										$whereClause .= ' AND ' . $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['transOrigPointerField'] . '=0';
-									}
-
-									if (
-										$colName === 'module_sys_dmail_category'
-										&& $colConfig['foreign_table'] === 'sys_dmail_category'
-										&& $this->conf['module_sys_dmail_category_PIDLIST']
-									) {
-										$tmpArray = GeneralUtility::trimExplode(',', $this->conf['module_sys_dmail_category_PIDLIST']);
-										$pidArray = array();
-										foreach ($tmpArray as $v) {
-											if (is_numeric($v))	{
-												$pidArray[] = $v;
+									if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+										$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
+											->getQueryBuilderForTable($colConfig['foreign_table'])
+											->select('*')
+											->from($colConfig['foreign_table']);
+										$queryBuilder->setRestrictions(GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer::class));
+										if ($colName === 'usergroup' && is_object($this->userGroupObj)) {
+											$reservedValues = $this->userGroupObj->getReservedValues($this->conf);
+											$this->userGroupObj->getAllowedWhereClause($colConfig['foreign_table'], $this->parameters->getPid(), $this->conf, $cmdKey, true, $queryBuilder);
+										}
+										if (
+											$this->conf['useLocalization']
+											&& $GLOBALS['TCA'][$colConfig['foreign_table']]
+											&& $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['languageField']
+											&& $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['transOrigPointerField']
+										) {
+											if (empty($queryBuilder->getQueryPart('where'))) {
+												$queryBuilder->where($queryBuilder->expr()->eq($GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['transOrigPointerField'], $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)));
+											} else {
+												$queryBuilder->andWhere($queryBuilder->expr()->eq($GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['transOrigPointerField'], $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)));
 											}
 										}
-										$whereClause .= ' AND sys_dmail_category.pid IN (' . implode(',',$pidArray) . ')' . ($this->conf['useLocalization'] ? ' AND sys_language_uid=' . (int) $languageUid : '');
+										if (
+											$colName === 'module_sys_dmail_category'
+											&& $colConfig['foreign_table'] === 'sys_dmail_category'
+											&& $this->conf['module_sys_dmail_category_PIDLIST']
+										) {
+											$pidArray = array_map('intval', GeneralUtility::trimExplode(',', $this->conf['module_sys_dmail_category_PIDLIST']));
+											if (empty($queryBuilder->getQueryPart('where'))) {
+												$queryBuilder->where($queryBuilder->expr()->in('sys_dmail_category.pid', $pidArray));
+											} else {
+												$queryBuilder->andWhere($queryBuilder->expr()->in('sys_dmail_category.pid', $pidArray));
+											}
+											if ($this->conf['useLocalization']) {
+												$queryBuilder->andWhere($queryBuilder->expr()->eq('sys_dmail_category.sys_language_uid', $queryBuilder->createNamedParameter((int)$languageUid, \PDO::PARAM_INT)));
+											}
+										}
+										if ($GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['sortby']) {
+											$queryBuilder->sortBy($GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['sortby']);
+										}
+										$foreignWhereClause = trim($this->replaceForeignWhereMarker('',  $colName, $colConfig));
+										if ($foreignWhereClause) {
+											$foreignWhereClause = \TYPO3\CMS\Core\Database\Query\QueryHelper::stripLogicalOperatorPrefix($foreignWhereClause);
+											if (empty($queryBuilder->getQueryPart('where'))) {
+												$queryBuilder->where($foreignWhereClause);
+											} else {
+												$queryBuilder->andWhere($foreignWhereClause);
+											}
+										}
+										$rows = $queryBuilder
+											->execute()
+											->fetchAll();
+									} else {
+										// TYPO3 CMS 7 LTS
+										$whereClause = '1=1';
+										if ($colName === 'usergroup' && is_object($this->userGroupObj)) {
+											$reservedValues = $this->userGroupObj->getReservedValues($this->conf);
+											$whereClause = $this->userGroupObj->getAllowedWhereClause($colConfig['foreign_table'], $this->parameters->getPid(), $this->conf, $cmdKey);
+										}
+										if (
+											$this->conf['useLocalization']
+											&& $GLOBALS['TCA'][$colConfig['foreign_table']]
+											&& $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['languageField']
+											&& $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['transOrigPointerField']
+										) {
+											$whereClause .= ' AND ' . $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['transOrigPointerField'] . '=0';
+										}
+										if (
+											$colName === 'module_sys_dmail_category'
+											&& $colConfig['foreign_table'] === 'sys_dmail_category'
+											&& $this->conf['module_sys_dmail_category_PIDLIST']
+										) {
+											$tmpArray = GeneralUtility::trimExplode(',', $this->conf['module_sys_dmail_category_PIDLIST']);
+											$pidArray = array();
+											foreach ($tmpArray as $v) {
+												if (is_numeric($v))	{
+													$pidArray[] = $v;
+												}
+											}
+											$whereClause .= ' AND sys_dmail_category.pid IN (' . implode(',',$pidArray) . ')' . ($this->conf['useLocalization'] ? ' AND sys_language_uid=' . (int) $languageUid : '');
+										}
+										$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
+										$whereClause = $this->replaceForeignWhereMarker($whereClause,  $colName, $colConfig);
+										$rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', $colConfig['foreign_table'], $whereClause, '', $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['sortby']);
 									}
-									$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
-									$whereClause = $this->replaceForeignWhereMarker($whereClause,  $colConfig);
-									$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $colConfig['foreign_table'], $whereClause, '', $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['sortby']);
 
 									if (!in_array($colName, $requiredFields)) {
 										if ($colConfig['renderMode'] === 'checkbox' || $colContent) {
@@ -1730,8 +1801,8 @@ class Marker
 									}
 
 									$selectedValue = false;
-									while ($row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-											// Handle usergroup case
+									foreach ($rows as $row2) {
+										// Handle usergroup case
 										if ($colName === 'usergroup' && is_object($this->userGroupObj)) {
 											if (!in_array($row2['uid'], $reservedValues)) {
 												$row2 = $this->getUsergroupOverlay($row2);
@@ -1842,12 +1913,36 @@ class Marker
 			}
 
 			if (count($fieldArr)) {
-				$whereClause = 'fe_group=' . (int) $fe_groups_uid . ' ' .
-					'AND sys_language_uid=' . (int) $languageUid . ' ' .
-					$this->cObj->enableFields('fe_groups_language_overlay');
-				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(implode(',', $fieldArr), 'fe_groups_language_overlay', $whereClause);
-				if ($GLOBALS['TYPO3_DB']->sql_num_rows($res)) {
-					$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+				if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+					$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
+						->getQueryBuilderForTable('fe_groups_language_overlay');
+					$queryBuilder->setRestrictions(GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer::class));
+					$queryBuilder
+						->select(array_shift($fieldArr));
+					foreach ($fieldArr as $field) {
+						$queryBuilder
+							->addSelect($field);	
+					}
+					$rows = $queryBuilder
+						->from('fe_groups_language_overlay')
+						->where(
+							$queryBuilder->expr()->eq('fe_group', $queryBuilder->createNamedParameter((int)$fe_groups_uid, \PDO::PARAM_INT)),
+							$queryBuilder->expr()->eq('sys_language_uid', $queryBuilder->createNamedParameter((int)$languageUid, \PDO::PARAM_INT))
+						)
+						->execute()
+						->fetchAll();
+					if (is_array($rows)) {
+						$row = $rows[0];
+					}
+				} else {
+					// TYPO3 CMS 7 LTS
+					$whereClause = 'fe_group=' . (int) $fe_groups_uid . ' ' .
+						'AND sys_language_uid=' . (int) $languageUid . ' ' .
+						$this->cObj->enableFields('fe_groups_language_overlay');
+					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(implode(',', $fieldArr), 'fe_groups_language_overlay', $whereClause);
+					if ($GLOBALS['TYPO3_DB']->sql_num_rows($res)) {
+						$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+					}
 				}
 			}
 		}
@@ -1866,10 +1961,11 @@ class Marker
 	 * Replaces the markers in the foreign table where clause
 	 *
 	 * @param string $whereClause: foreign table where clause
+	 * @param string $colName: column name
 	 * @param array $colConfig: $TCA column configuration
 	 * @return string foreign table where clause with replaced markers
 	 */
-	public function replaceForeignWhereMarker($whereClause, array $colConfig)
+	protected function replaceForeignWhereMarker($whereClause, $colName, array $colConfig)
 	{
 		$foreignWhere = $colConfig['foreign_table_where'];
 		if ($foreignWhere) {
@@ -1881,7 +1977,7 @@ class Marker
 				$foreignWhere =
 					str_replace(
 						'###PAGE_TSCONFIG_IDLIST###',
-						$GLOBALS['TYPO3_DB']->cleanIntList($TSconfig['PAGE_TSCONFIG_IDLIST']),
+						implode(',', GeneralUtility::intExplode(',', $TSconfig['PAGE_TSCONFIG_IDLIST'])),
 						$foreignWhere
 					);
 			}
@@ -1896,37 +1992,21 @@ class Marker
 				}
 			}
 		}
-
 		return $whereClause;
 	}
 
 	public function getSubpart($content, $marker)
 	{
-		if (is_object($this->markerBasedTemplateService)) {
-			return $this->markerBasedTemplateService->getSubpart($content, $marker);
-		} else {
-			// In TYPO3 6.2
-			return \TYPO3\CMS\Core\Html\HtmlParser::getSubpart($content, $marker);
-		}
+		return $this->markerBasedTemplateService->getSubpart($content, $marker);
 	}
 
 	public function substituteSubpart($content, $marker, $subpartContent, $recursive = true, $keepMarker = false)
 	{
-		if (is_object($this->markerBasedTemplateService)) {
-			return $this->markerBasedTemplateService->substituteSubpart($content, $marker, $subpartContent, $recursive, $keepMarker);
-		} else {
-			// In TYPO3 6.2
-			return \TYPO3\CMS\Core\Html\HtmlParser::substituteSubpart($content, $marker, $subpartContent, $recursive, $keepMarker);
-		}
+		return $this->markerBasedTemplateService->substituteSubpart($content, $marker, $subpartContent, $recursive, $keepMarker);
 	}
 
 	public function substituteMarkerArray($content, $markContentArray, $wrap = '', $uppercase = false, $deleteUnused = false)
 	{
-		if (is_object($this->markerBasedTemplateService)) {
-			return $this->markerBasedTemplateService->substituteMarkerArray($content, $markContentArray, $wrap, $uppercase, $deleteUnused);
-		} else {
-			// In TYPO3 6.2
-			return \TYPO3\CMS\Core\Html\HtmlParser::substituteMarkerArray($content, $markContentArray, $wrap, $uppercase, $deleteUnused);
-		}
+		return $this->markerBasedTemplateService->substituteMarkerArray($content, $markContentArray, $wrap, $uppercase, $deleteUnused);
 	}
 }

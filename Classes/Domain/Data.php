@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Domain;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2016 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -638,15 +638,42 @@ class Data
 							case 'uniqueDeletedGlobal':
 							case 'uniqueLocal':
 							case 'uniqueDeletedLocal':
-								$where = $theField . '=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dataArray[$theField], $this->theTable);
-								if ($theCmd === 'uniqueLocal' || $theCmd === 'uniqueGlobal') {
-									$where .= $GLOBALS['TSFE']->sys_page->deleteClause($this->theTable);
+								if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+									$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
+										->getQueryBuilderForTable($this->theTable);
+									if ($theCmd === 'uniqueLocal' || $theCmd === 'uniqueGlobal') {
+										$queryBuilder
+											->getRestrictions()
+											->removeAll()
+											->add(GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction::class));
+									}
+									$queryBuilder
+										->select('uid', $theField)
+										->from($this->theTable)
+										->where(
+											$queryBuilder->expr()->eq($theField, $queryBuilder->createNamedParameter($dataArray[$theField]), \PDO::PARAM_STR)
+										)
+										->setMaxResults(1);
+									if ($theCmd === 'uniqueLocal' || $theCmd === 'uniqueDeletedLocal') {
+										$queryBuilder
+											->andWhere(
+												$queryBuilder->expr()->in('pid', GeneralUtility::intExplode(',', $recordTestPid, true))
+											);
+									}
+									$DBrows = $queryBuilder
+										->execute()
+										->fetchAll();
+								} else {
+									// TYPO3 CMS 7 LTS
+									$where = $theField . '=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dataArray[$theField], $this->theTable);
+									if ($theCmd === 'uniqueLocal' || $theCmd === 'uniqueGlobal') {
+										$where .= $GLOBALS['TSFE']->sys_page->deleteClause($this->theTable);
+									}
+									if ($theCmd === 'uniqueLocal' || $theCmd === 'uniqueDeletedLocal') {
+										$where .= ' AND pid IN (' . $recordTestPid.')';
+									}
+									$DBrows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid,' . $theField, $this->theTable, $where, '', '', '1');
 								}
-								if ($theCmd === 'uniqueLocal' || $theCmd === 'uniqueDeletedLocal') {
-									$where .= ' AND pid IN (' . $recordTestPid.')';
-								}
-
-								$DBrows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid,' . $theField, $this->theTable, $where, '', '', '1');
 								if (
 									!is_array($dataArray[$theField]) &&
 									trim($dataArray[$theField]) != '' &&
@@ -1151,7 +1178,7 @@ class Data
 						$newFieldArray = array_diff($newFieldArray, array('username'));
 					}
 
-					if ($aCAuth || $this->cObj->DBmayFEUserEdit($this->theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
+					if ($aCAuth || $this->DBmayFEUserEdit($this->theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 						$outGoingData = $this->parseOutgoingData($cmdKey, $pid, $dataArray, $origArray);
 						// Do not set the outgoing password if the incoming password was unset
  						if ($this->theTable === 'fe_users' && !empty($dataArray['password'])) {
@@ -1164,7 +1191,7 @@ class Data
 							// Could be set conditional to adminReview or user confirm
 							$newFieldList .= ',token';
 						}
-						$res = $this->cObj->DBgetUpdate($this->theTable, $theUid, $outGoingData, $newFieldList, true);
+						$res = $this->updateRecord($theUid, $outGoingData, $newFieldList);
 						$this->updateMMRelations($dataArray);
 						$this->setSaved(true);
 
@@ -1209,8 +1236,7 @@ class Data
 						$parsedArray['token'] = $token;
 						$newFieldList  .= ',token';
 					}
-					$res = $this->cObj->DBgetInsert($this->theTable, (int) $pid, $parsedArray, $newFieldList, true);
-					$newId = $GLOBALS['TYPO3_DB']->sql_insert_id();
+					$newId = $this->insertRecord((int)$pid, $parsedArray, $newFieldList);
 					$rc = $newId;
 					// Enable users to own themselves.
 					if ($this->theTable === 'fe_users' && $this->conf['fe_userOwnSelf']) {
@@ -1234,7 +1260,7 @@ class Data
 							$extraList .= ',' . $field;
 						}
 						if (!empty($tmpDataArray)) {
-							$res = $this->cObj->DBgetUpdate($this->theTable, $newId, $tmpDataArray, $extraList, true);
+							$res = $this->updateRecord($newId, $tmpDataArray, $extraList);
 						}
 					}
 					$dataArray['uid'] = $newId;
@@ -1277,31 +1303,193 @@ class Data
 		return $rc;
 	}
 
+    /**
+     * Checks if a frontend user is allowed to edit a certain record
+     *
+     * @param string $table The table name, found in $GLOBALS['TCA']
+     * @param array $row The record data array for the record in question
+     * @param array $feUserRow The array of the fe_user which is evaluated, typ. $GLOBALS['TSFE']->fe_user->user
+     * @param string $allowedGroups Commalist of the only fe_groups uids which may edit the record. If not set, then the usergroup field of the fe_user is used.
+     * @param bool|int $feEditSelf TRUE, if the fe_user may edit his own fe_user record.
+     * @return bool
+     */
+    public function DBmayFEUserEdit($table, $row, $feUserRow, $allowedGroups = '', $feEditSelf = 0)
+    {
+        if ($allowedGroups) {
+        	$groupList = implode(
+        		',',
+        		array_intersect(
+        			GeneralUtility::trimExplode(',', $feUserRow['usergroup'], true),
+        			GeneralUtility::trimExplode(',', $allowedGroups, true)
+                )
+            );
+        } else {
+            $groupList = $feUserRow['usergroup'];
+        }
+        $ok = 0;
+        // Points to the field that allows further editing from frontend if not set. If set the record is locked.
+        if (!$GLOBALS['TCA'][$table]['ctrl']['fe_admin_lock'] || !$row[$GLOBALS['TCA'][$table]['ctrl']['fe_admin_lock']]) {
+            // Points to the field (int) that holds the fe_users-id of the creator fe_user
+            if ($GLOBALS['TCA'][$table]['ctrl']['fe_cruser_id']) {
+                $rowFEUser = (int)$row[$GLOBALS['TCA'][$table]['ctrl']['fe_cruser_id']];
+                if ($rowFEUser && $rowFEUser === (int)$feUserRow['uid']) {
+                    $ok = 1;
+                }
+            }
+            // If $feEditSelf is set, fe_users may always edit them selves...
+            if ($feEditSelf && $table === 'fe_users' && (int)$feUserRow['uid'] === (int)$row['uid']) {
+                $ok = 1;
+            }
+            // Points to the field (int) that holds the fe_group-id of the creator fe_user's first group
+            if ($GLOBALS['TCA'][$table]['ctrl']['fe_crgroup_id']) {
+                $rowFEUser = (int)$row[$GLOBALS['TCA'][$table]['ctrl']['fe_crgroup_id']];
+                if ($rowFEUser) {
+                    if (GeneralUtility::inList($groupList, $rowFEUser)) {
+                        $ok = 1;
+                    }
+                }
+            }
+        }
+        return $ok;
+    }
+
+	/**
+	 * Insert a record
+	 * @param int $pid The PID value for the record to insert
+	 * @param array $dataArr The data array where key/value pairs are fieldnames/values for the record to insert
+	 * @param string $fieldList Comma list of fieldnames which are allowed to be set. Only values from the data record for fields in this list will be set!!
+	 * @return string The uid of the inserted record
+	 * @return void
+	 */
+	protected function insertRecord($pid, $dataArr, $fieldList)
+	{
+		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+			$extraList = 'pid';
+			if ($GLOBALS['TCA'][$this->theTable]['ctrl']['tstamp']) {
+				$field = $GLOBALS['TCA'][$this->theTable]['ctrl']['tstamp'];
+				$dataArr[$field] = $GLOBALS['EXEC_TIME'];
+				$extraList .= ',' . $field;
+			}
+			if ($GLOBALS['TCA'][$this->theTable]['ctrl']['crdate']) {
+				$field = $GLOBALS['TCA'][$this->theTable]['ctrl']['crdate'];
+				$dataArr[$field] = $GLOBALS['EXEC_TIME'];
+				$extraList .= ',' . $field;
+			}
+			if ($GLOBALS['TCA'][$this->theTable]['ctrl']['cruser_id']) {
+				$field = $GLOBALS['TCA'][$this->theTable]['ctrl']['cruser_id'];
+				$dataArr[$field] = 0;
+				$extraList .= ',' . $field;
+			}
+			if ($GLOBALS['TCA'][$this->theTable]['ctrl']['fe_cruser_id']) {
+				$field = $GLOBALS['TCA'][$this->theTable]['ctrl']['fe_cruser_id'];
+				$dataArr[$field] = (int)$this->cObj->getTypoScriptFrontendController()->fe_user->user['uid'];
+				$extraList .= ',' . $field;
+			}
+			if ($GLOBALS['TCA'][$this->theTable]['ctrl']['fe_crgroup_id']) {
+				$field = $GLOBALS['TCA'][$this->theTable]['ctrl']['fe_crgroup_id'];
+				list($dataArr[$field]) = explode(',', $this->cObj->getTypoScriptFrontendController()->fe_user->user['usergroup']);
+				$dataArr[$field] = (int)$dataArr[$field];
+				$extraList .= ',' . $field;
+			}
+			unset($dataArr['uid']);
+			if ($pid >= 0) {
+				$dataArr['pid'] = $pid;
+			}
+			$fieldList = implode(',', GeneralUtility::trimExplode(',', $fieldList . ',' . $extraList, true));
+			$insertFields = [];
+			foreach ($dataArr as $f => $v) {
+				if (GeneralUtility::inList($fieldList, $f)) {
+					$insertFields[$f] = $v;
+				}
+			}
+			$connection = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)->getConnectionForTable($this->theTable);
+			$queryBuilder = $connection->createQueryBuilder()
+				->insert($this->theTable)
+				->values($insertFields)
+				->execute();
+			return $connection->lastInsertId($this->theTable);
+		} else {
+			// TYPO3 CMS 7 LTS
+			$this->cObj->DBgetInsert($this->theTable, (int)$pid, $dataArr, $fieldList, true);
+			return $GLOBALS['TYPO3_DB']->sql_insert_id();
+		}
+	}
+
 	/**
 	 * Update a record
-	 * @param string $table The table name, should be in $GLOBALS['TCA']
+	 *
 	 * @param integer $uid The UID of the record from $table which we are going to update
 	 * @param array $dataArr The data array where key/value pairs are fieldnames/values for the record to update.
 	 * @param string $fieldList Comma list of fieldnames which are allowed to be updated. Only values from the data record for fields in this list will be updated!!
-	 * @param boolean $doExec If set, the query is executed. IT'S HIGHLY RECOMMENDED TO USE THIS FLAG to execute the query directly!!!
-	 * @return string The query, ready to execute unless $doExec was true in which case the return value is false.
-	 * @return void
+	 * @return bool false
 	 */
 	public function updateRecord($uid, array $dataArr, $fieldlist)
 	{
-		return $this->cObj->DBgetUpdate($this->theTable, $uid, $dataArr, $fieldlist, true);
+		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+			if ($uid) {
+				$fields = GeneralUtility::trimExplode(',', $fieldList, true);
+				$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)->getQueryBuilderForTable($this->theTable);
+				$queryBuilder
+					->update($this->theTable)
+					->where(
+						$queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter((int)$uid, \PDO::PARAM_INT))
+					);
+				foreach ($dataArr as $field => $value) {
+					if (in_array($field, $fields)) {
+						$queryBuilder->set($field, $value);
+					}
+				}
+				if ($GLOBALS['TCA'][$this->theTable]['ctrl']['tstamp']) {
+					$queryBuilder->set($GLOBALS['TCA'][$this->theTable]['ctrl']['tstamp'], (int)$GLOBALS['EXEC_TIME']);
+				}
+				$queryBuilder->execute();
+			}
+			return false;
+		} else {
+			// TYPO3 CMS 7 LTS
+			return $this->cObj->DBgetUpdate($this->theTable, $uid, $dataArr, $fieldlist, true);
+		}
 	}
 
 	/**
 	 * Delete a record
+	 *
 	 * @param integer $uid The UID of the record from $table which we are going to delete
-	 * @param boolean $doExec If set, the query is executed. IT'S HIGHLY RECOMMENDED TO USE THIS FLAG to execute the query directly!!!
-	 * @return string The query, ready to execute unless $doExec was true in which case the return value is false.
+	 * @return string false.
 	 * @return void
 	 */
 	public function deleteRecordByUid($uid)
 	{
-		return $this->cObj->DBgetDelete($this->theTable, $uid, true);
+		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+			$uid = (int)$uid;
+			if (!$uid) {
+				return false;
+			}
+			$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
+			if ($GLOBALS['TCA'][$this->theTable]['ctrl']['delete']) {
+				$queryBuilder = $connectionPool->getQueryBuilderForTable($this->theTable);
+				$queryBuilder
+					->update($this->theTable)
+					->where(
+						$queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT))
+					)
+					->set($GLOBALS['TCA'][$this->theTable]['ctrl']['delete'], 1);
+				if ($GLOBALS['TCA'][$this->theTable]['ctrl']['tstamp']) {
+					$queryBuilder->set($GLOBALS['TCA'][$this->theTable]['ctrl']['tstamp'], (int)$GLOBALS['EXEC_TIME']);
+				}
+				$queryBuilder->execute();
+            } else {
+            	$connectionPool->getConnectionForTable($this->theTable)
+					->delete(
+						$this->theTable,
+						['uid' => $uid]
+					);
+			}
+			return false;
+		} else {
+			// TYPO3 CMS 7 LTS
+			return $this->cObj->DBgetDelete($this->theTable, $uid, true);
+		}
 	}
 
 	/**
@@ -1309,7 +1497,7 @@ class Data
 	 *
 	 * @return void (sets $this->saved)
 	 */
-	public function deleteRecord(array &$origArray, array &$dataArray)
+	protected function deleteRecord(array &$origArray, array &$dataArray)
 	{
 		if ($this->conf['delete']) {
 			// If deleting is enabled
@@ -1318,7 +1506,7 @@ class Data
 				// Must be logged in OR be authenticated by the aC code in order to delete
 				// If the recUid selects a record.... (no check here)
 				if (is_array($origArray)) {
-					if ($aCAuth || $this->cObj->DBmayFEUserEdit($this->theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
+					if ($aCAuth || $this->DBmayFEUserEdit($this->theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 						// Delete the record and display form, if access granted.
 						// Call all beforeSaveDelete hooks BEFORE the record is deleted
 						if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['registrationProcess'])) {
@@ -1333,7 +1521,7 @@ class Data
 							// If the record is being fully deleted... then remove the images or files attached.
 							$this->deleteFilesFromRecord($this->getRecUid());
 						}
-						$res = $this->cObj->DBgetDelete($this->theTable, $this->getRecUid(), true);
+						$res = $this->deleteRecordByUid($this->getRecUid());
 						$this->deleteMMRelations($this->getRecUid(), $origArray);
 						$dataArray = $origArray;
 						$this->setSaved(true);
@@ -1358,7 +1546,7 @@ class Data
 		foreach ($GLOBALS['TCA'][$this->theTable]['columns'] as $field => $fieldConf) {
 			if ($fieldConf['config']['type'] === 'group' && $fieldConf['config']['internal_type'] === 'file') {
 				$updateFields[$field] = '';
-				$res = $this->cObj->DBgetUpdate($this->theTable, $uid, $updateFields, $field, true);
+				$res = $this->updateRecord($uid, $updateFields, $field);
 				unset($updateFields[$field]);
 				$delFileArr = explode(',', $rec[$field]);
 				foreach ($delFileArr as $n) {
@@ -1458,27 +1646,50 @@ class Data
 	public function updateMMRelations(array $row)
 	{
 		$fieldsList = array_keys($row);
+		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+			$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
+		}
 		foreach ($GLOBALS['TCA'][$this->theTable]['columns'] as $colName => $colSettings) {
 			if (in_array($colName, $fieldsList) && $colSettings['config']['type'] === 'select' && $colSettings['config']['MM']) {
 				$valuesArray = $row[$colName];
 				if (isset($valuesArray) && is_array($valuesArray)) {
-					$res =
-						$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+					if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+						$connection = $connectionPool->getConnectionForTable($colSettings['config']['MM']);
+						$connection->delete(
 							$colSettings['config']['MM'],
-							'uid_local=' . intval($row['uid'])
+							['uid_local=' => (int)$row['uid']]
 						);
-					$insertFields = array();
-					$insertFields['uid_local'] = intval($row['uid']);
-					$insertFields['tablenames'] = '';
-					$insertFields['sorting'] = 0;
-					foreach($valuesArray as $theValue) {
-						$insertFields['uid_foreign'] = intval($theValue);
-						$insertFields['sorting']++;
-						$res =
-							$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+						$insertFields = [
+							'uid_local' => (int)$row['uid'],
+							'tablenames' => '',
+							'sorting' => 0
+						];
+						foreach ($valuesArray as $theValue) {
+							$insertFields['uid_foreign'] = (int)$theValue;
+							$insertFields['sorting']++;
+							$connection->insert(
 								$colSettings['config']['MM'],
 								$insertFields
 							);
+						}
+					} else {
+						// TYPO3 CMS 7 LTS
+						$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery(
+							$colSettings['config']['MM'],
+							'uid_local=' . intval($row['uid'])
+						);
+						$insertFields = array();
+						$insertFields['uid_local'] = intval($row['uid']);
+						$insertFields['tablenames'] = '';
+						$insertFields['sorting'] = 0;
+						foreach ($valuesArray as $theValue) {
+							$insertFields['uid_foreign'] = intval($theValue);
+							$insertFields['sorting']++;
+							$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
+								$colSettings['config']['MM'],
+								$insertFields
+							);
+						}
 					}
 				}
 			}
@@ -1493,9 +1704,22 @@ class Data
 	public function deleteMMRelations($uid, array $row = array())
 	{
 		$fieldsList = array_keys($row);
+		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+			$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
+		}
 		foreach ($GLOBALS['TCA'][$this->theTable]['columns'] as $colName => $colSettings) {
-			if (in_array($colName, $fieldsList) && $colSettings['config']['type'] == 'select' && $colSettings['config']['MM']) {
-				$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery($colSettings['config']['MM'], 'uid_local=' . intval($uid));
+			if (in_array($colName, $fieldsList) && $colSettings['config']['type'] === 'select' && $colSettings['config']['MM']) {
+				if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+					$connectionPool
+						->getConnectionForTable($colSettings['config']['MM'])
+						->delete(
+							$colSettings['config']['MM'],
+							['uid_local=' => (int)$uid]
+						);
+				} else {
+					// TYPO3 CMS 7 LTS
+					$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery($colSettings['config']['MM'], 'uid_local=' . (int)$uid);
+				}
 			}
 		}
 	}
@@ -1856,16 +2080,34 @@ class Data
 	public function modifyTcaMMfields(array $dataArray, &$modArray)
 	{
 		$rcArray = $dataArray;
+		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+			$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
+		}
 		foreach ($GLOBALS['TCA'][$this->theTable]['columns'] as $colName => $colSettings) {
 			$colConfig = $colSettings['config'];
 			switch ($colConfig['type']) {
 				case 'select':
 					if ($colConfig['MM'] && $colConfig['foreign_table']) {
-						$where = 'uid_local = ' . $dataArray['uid'];
-						$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', $colConfig['MM'], $where);
-						$valueArray = array();
-						while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-							$valueArray[] = $row['uid_foreign'];
+						if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+							$queryBuilder = $connectionPool->getQueryBuilderForTable($colConfig['MM']);
+							$query = $queryBuilder
+								->select('uid_foreign')
+								->from($colConfig['MM'])
+								->where(
+									$queryBuilder->expr()->eq('uid_local', $queryBuilder->createNamedParameter((int)$dataArray['uid'], \PDO::PARAM_INT))
+								)
+								->execute();
+							while ($row = $query->fetch()) {
+								$valueArray[] = $row['uid_foreign'];
+							}
+						} else {
+							// TYPO3 CMS 7 LTS
+							$where = 'uid_local = ' . $dataArray['uid'];
+							$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', $colConfig['MM'], $where);
+							$valueArray = array();
+							while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+								$valueArray[] = $row['uid_foreign'];
+							}
 						}
 						$rcArray[$colName] = implode(',', $valueArray);
 						$modArray[$colName] = $rcArray[$colName];
@@ -1912,15 +2154,33 @@ class Data
 							// the values from the mm table are already available as an array
 						} else if ($bColumnIsCount) {
 							$valuesArray = array();
-							$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-								'uid_local,uid_foreign,sorting',
-								$colConfig['MM'],
-								'uid_local=' . intval($dataArray['uid']),
-								'',
-								'sorting'
-							);
-							while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-								$valuesArray[] = $row['uid_foreign'];
+							if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+								$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
+									->getQueryBuilderForTable($colConfig['MM']);
+								$queryBuilder->getRestrictions()->removeAll();
+								$query = $queryBuilder
+									->select('uid_local','uid_foreign', 'sorting')
+									->from($colConfig['MM'])
+									->where(
+										$queryBuilder->expr()->eq('uid_local', $queryBuilder->createNamedParameter((int)$dataArray['uid'], \PDO::PARAM_INT))
+									)
+									->orderBy('sorting')
+									->execute();
+								while ($row = $query->fetch()) {
+									$valuesArray[] = $row['uid_foreign'];
+								}
+							} else {
+								// TYPO3 CMS 7 LTS
+								$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+									'uid_local,uid_foreign,sorting',
+									$colConfig['MM'],
+									'uid_local=' . (int)$dataArray['uid'],
+									'',
+									'sorting'
+								);
+								while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+									$valuesArray[] = $row['uid_foreign'];
+								}
 							}
 							$dataArray[$colName] = $valuesArray;
 						} else {
