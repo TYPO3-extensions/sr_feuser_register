@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Utility;
 /*
  *  Copyright notice
  *
- *  (c) 2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2015-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,6 +23,7 @@ namespace SJBR\SrFeuserRegister\Utility;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
 /**
  * Hash handling for the short url feature
@@ -35,19 +36,47 @@ class HashUtility
 	 * @param array $parameterArray: the array of parameters
 	 * @return string the value of the calculated hash
 	 */
-	static public function getHashFromParameters(array $parameterArray)
+	public static function getHashFromParameters(array $parameterArray)
 	{
 		// Create a unique hash value
-		$cacheHash = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
+		$cacheHash = GeneralUtility::makeInstance(CacheHashCalculator::class);
 		$hash = $cacheHash->calculateCacheHash($parameterArray);
 		$hash = substr($hash, 0, 20);
 		// and store it with a serialized version of the array in the DB
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('md5hash', 'cache_md5params', 'md5hash=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($hash, 'cache_md5params'));
-		if (!$GLOBALS['TYPO3_DB']->sql_num_rows($res)) {
-			$insertFields = array('md5hash' => $hash, 'tstamp' => time(), 'type' => 99, 'params' => serialize($parameterArray));
-			$GLOBALS['TYPO3_DB']->exec_INSERTquery('cache_md5params', $insertFields);
+		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+			$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
+			$queryBuilder = $connectionPool->getQueryBuilderForTable('cache_md5params');
+			$queryBuilder->getRestrictions()->removeAll();
+			$count = $queryBuilder
+				->count('md5hash')
+				->from('cache_md5params')
+				->where(
+					$queryBuilder->expr()->eq('md5hash', $queryBuilder->createNamedParameter($hash,\PDO::PARAM_STR))
+				)
+				->execute()
+				->fetchColumn(0);
+			if (!$count) {
+				$connectionPool
+					->getConnectionForTable('cache_md5params')
+					->insert(
+						'cache_md5params',
+						[
+							'md5hash' => $hash,
+							'tstamp' => time(),
+							'type' => 99,
+							'params' => serialize($parameterArray)
+						]
+					);
+			}
+		} else {
+			// TYPO3 CMS 7 LTS
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('md5hash', 'cache_md5params', 'md5hash=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($hash, 'cache_md5params'));
+			if (!$GLOBALS['TYPO3_DB']->sql_num_rows($res)) {
+				$insertFields = array('md5hash' => $hash, 'tstamp' => time(), 'type' => 99, 'params' => serialize($parameterArray));
+				$GLOBALS['TYPO3_DB']->exec_INSERTquery('cache_md5params', $insertFields);
+			}
+			$GLOBALS['TYPO3_DB']->sql_free_result($res);
 		}
-		$GLOBALS['TYPO3_DB']->sql_free_result($res);
 		return $hash;
 	}
 
@@ -57,15 +86,33 @@ class HashUtility
 	 * @param string $hash: the value of the input hash
 	 * @return array the array of parameters
 	 */
-	static public function getParametersFromHash($hash)
+	public static function getParametersFromHash($hash)
 	{
 		// Get the serialised array from the DB based on the passed hash value
-		$variables = array();
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('params', 'cache_md5params', 'md5hash=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($hash, 'cache_md5params'));
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$variables = unserialize($row['params']);
+		$variables = [];
+		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+			$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
+				->getQueryBuilderForTable('cache_md5params');
+			$queryBuilder->getRestrictions()->removeAll();
+			$query = $queryBuilder
+				->select('params')
+				->from('cache_md5params')
+				->where(
+					$queryBuilder->expr()->eq('md5hash', $queryBuilder->createNamedParameter($hash, \PDO::PARAM_STR)),
+					$queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter(99, \PDO::PARAM_INT))
+				)
+				->execute();
+			while ($row = $query->fetch()) {
+				$variables = unserialize($row['params']);
+			}			
+		} else {
+			// TYPO3 CMS 7 LTS
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('params', 'cache_md5params', 'md5hash=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($hash, 'cache_md5params'));
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$variables = unserialize($row['params']);
+			}
+			$GLOBALS['TYPO3_DB']->sql_free_result($res);
 		}
-		$GLOBALS['TYPO3_DB']->sql_free_result($res);
 		// Convert the array to one that will be properly incorporated into the GET global array
 		$parameterArray = array();
 		foreach ($variables as $key => $value) {
@@ -87,10 +134,23 @@ class HashUtility
 	 * @param string $regHash: the value of the regHash
 	 * @return void
 	 */
-	static public function deleteHash($hash)
+	public static function deleteHash($hash)
 	{
 		if (!empty($hash)) {
-			$GLOBALS['TYPO3_DB']->exec_DELETEquery('cache_md5params', 'md5hash=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($hash, 'cache_md5params'));
+			if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+				GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
+					->getConnectionForTable('cache_md5params')
+					->delete(
+						'cache_md5params',
+						[
+							'md5hash' => $hash,
+							'type' => 99
+						]
+					);
+			} else {
+				// TYPO3 CMS 7 LTS
+				$GLOBALS['TYPO3_DB']->exec_DELETEquery('cache_md5params', 'md5hash=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($hash, 'cache_md5params'));
+			}
 		}
 	}
 
@@ -100,10 +160,23 @@ class HashUtility
 	 * @param array $conf: the plugin configuration
 	 * @return void
 	 */
-	static public function cleanHashCache($conf)
+	public static function cleanHashCache($conf)
 	{
-		$shortUrlLife = intval($conf['shortUrlLife']) ? intval($conf['shortUrlLife']) : 30;
+		$shortUrlLife = (int)$conf['shortUrlLife'] ? (int)$conf['shortUrlLife'] : 30;
 		$max_life = time() - (86400 * $shortUrlLife);
-		$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery('cache_md5params', 'tstamp<' . $max_life . ' AND type=99');
+		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+			$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
+				->getQueryBuilderForTable('cache_md5params');
+			$queryBuilder
+				->delete('cache_md5params')
+				->where(
+					$queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter(99, \PDO::PARAM_INT)),
+					$queryBuilder->expr()->lt('tstamp', $queryBuilder->createNamedParameter($max_life, \PDO::PARAM_INT))
+				)
+				->execute();
+		} else {
+			// TYPO3 CMS 7 LTS
+			$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery('cache_md5params', 'tstamp<' . $max_life . ' AND type=99');
+		}
 	}
 }
