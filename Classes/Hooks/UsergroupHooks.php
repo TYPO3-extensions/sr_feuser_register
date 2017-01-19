@@ -118,12 +118,13 @@ class UsergroupHooks
 		if (isset($origArray[$fieldname]) && is_array($origArray[$fieldname])) {
 			$valuesArray = $origArray[$fieldname];
 			if ($conf[$cmdKey . '.']['keepUnselectableUserGroups']) {
+				// Get usergroups that are not selectable
 				if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 					$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
 						->getQueryBuilderForTable($foreignTable)
 						->select('uid')
 						->from($foreignTable);
-					$this->getAllowedWhereClause($foreignTable, $pid, $conf, $cmdKey, true, $queryBuilder);
+					$this->getAllowedWhereClause($foreignTable, $pid, $conf, $cmdKey, false, $queryBuilder);
 					$query = $queryBuilder
 						->execute();
 					$rowArray = [];
@@ -132,7 +133,7 @@ class UsergroupHooks
 					}
 				} else {
 					// TYPO3 CMS 7 LTS
-					$whereClause = $this->getAllowedWhereClause($foreignTable, $pid, $conf, $cmdKey);
+					$whereClause = $this->getAllowedWhereClause($foreignTable, $pid, $conf, $cmdKey, false);
 					$rowArray = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid', $foreignTable, $whereClause, '', '', '', 'uid');
 				}
 				if (!empty($rowArray) && is_array($rowArray)) {
@@ -182,20 +183,19 @@ class UsergroupHooks
 			if ($bAllow) {
 				$allowedUserGroupExpression = $queryBuilder->expr()->in('uid', $allowedUserGroupArray);
 			} else {
-				$allowedUserGroupExpression = $queryBuilder->expr()->notIn('uid', $allowedUserGroupArray);				
+				$allowedUserGroupExpression = $queryBuilder->expr()->notIn('uid', $allowedUserGroupArray);
 			}
 		}
 		if (count($allowedSubgroupArray)) {
 			if ($bAllow) {
 				$allowedSubgroupExpression = $queryBuilder->expr()->in('subgroup', $allowedSubgroupArray);
 			} else {
-				$allowedSubgroupExpression = $queryBuilder->expr()->notIn('subgroup', $allowedSubgroupArray);				
+				$allowedSubgroupExpression = $queryBuilder->expr()->notIn('subgroup', $allowedSubgroupArray);
 			}
 		}
 		if ($allowedUserGroupExpression && $allowedSubgroupExpression) {
 			if ($bAllow) {
 				$allowedExpression = $queryBuilder->expr()->orX($allowedUserGroupExpression, $allowedSubgroupExpression);
-				
 			} else {
 				$allowedExpression = $queryBuilder->expr()->andX($allowedUserGroupExpression, $allowedSubgroupExpression);
 			}
@@ -205,8 +205,9 @@ class UsergroupHooks
 			}
 			if ($allowedSubgroupExpression) {
 				$allowedExpression = $allowedSubgroupExpression;
-			}		
-		}		
+			}
+		}
+		$deniedUserGroupArray = array_merge($deniedUserGroupArray, $this->getReservedValues($conf));
 		if (count($deniedUserGroupArray)) {
 			if ($bAllow) {
 				$deniedExpression = $queryBuilder->expr()->notIn('uid', $deniedUserGroupArray);
@@ -226,14 +227,14 @@ class UsergroupHooks
 			}
 			if ($deniedExpression) {
 				$expression = $deniedExpression;
-			}			
+			}
 		}
 		if ($expression) {
 			if (empty($queryBuilder->getQueryPart('where'))) {
 				$queryBuilder->where($expression);
 			} else {
 				$queryBuilder->andWhere($expression);
-			}			
+			}
 		}
 		return '';
 	}
@@ -284,6 +285,7 @@ class UsergroupHooks
 			$subgroupWhereClause .= implode(' ' . ($bAllow ? 'OR' : 'AND') . ' ', $subgroupWhereClauseArray);
 			$whereClausePart2Array[] = '( ' . $subgroupWhereClause . ' )';
 		}
+		$deniedUserGroupArray = array_merge($deniedUserGroupArray, $this->getReservedValues($conf));
 		if (count($deniedUserGroupArray)) {
 			$uidArray = $GLOBALS['TYPO3_DB']->fullQuoteArray($deniedUserGroupArray, $theTable);
 			$whereClausePart2Array[] = 'uid ' . ($bAllow ? 'NOT IN' : 'IN') . ' (' . implode(',', $uidArray) . ')';

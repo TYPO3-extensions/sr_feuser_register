@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Controller;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -30,7 +30,11 @@ use SJBR\SrFeuserRegister\Security\SessionData;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\Utility\UrlUtility;
 use SJBR\SrFeuserRegister\View\AbstractView;
+use SJBR\SrFeuserRegister\View\AfterSaveView;
+use SJBR\SrFeuserRegister\View\CreateView;
+use SJBR\SrFeuserRegister\View\EditView;
 use SJBR\SrFeuserRegister\View\Marker;
+use SJBR\SrFeuserRegister\View\PlainView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -69,7 +73,7 @@ class EditActionController extends AbstractActionController
 		}
 		if (($cmd === '' && empty($dataArray)) || $cmd === 'login') {
 			// Displaying a link to edit or a no permission to edit message
-			$createView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\CreateView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+			$createView = GeneralUtility::makeInstance(CreateView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 			$content = $createView->render($dataArray, $origArray, $securedArray, $cmd, $cmdKey, $mode);
 		} else {
 			$this->data->setName($dataArray, $cmdKey);
@@ -104,7 +108,7 @@ class EditActionController extends AbstractActionController
 				if ($this->data->getSaved()) {
 					SessionData::clearSessionData($this->extensionKey);
 					$key = 'EDIT' . Marker::SAVED_SUFFIX;
-					$afterSaveView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\AfterSaveView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+					$afterSaveView = GeneralUtility::makeInstance(AfterSaveView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 					$content = $afterSaveView->render($dataArray, $origArray, $securedArray, $cmd, $cmdKey, $key);
 					if ($this->conf['email.']['EDIT_SAVED'] || $this->conf['email.']['DELETE_SAVED'] || $this->conf['notify.']['EDIT_SAVED'] || $this->conf['notify.']['DELETE_SAVED']) {
 						$this->emailField = $this->conf['email.']['field'];
@@ -129,7 +133,7 @@ class EditActionController extends AbstractActionController
 					}
 				} else if ($this->data->getError()) {
 					// If there was an error, we return an error message
-					$errorView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\PlainView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+					$errorView = GeneralUtility::makeInstance(PlainView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 					$content = $errorView->render($this->data->getError(), $finalDataArray, $this->data->getOrigArray(), $securedArray, $cmd, $cmdKey);
 				} 
 			} else {
@@ -149,19 +153,18 @@ class EditActionController extends AbstractActionController
 				if (($this->theTable === 'fe_users' && $GLOBALS['TSFE']->loginUser) || $aCAuth || ($theCode && !strcmp($this->parameters->getAuthCode(), $theCode))) {
 					// Must be logged in OR be authenticated by the aC code in order to edit
 					// If the recUid selects a record.... (no check here)
-					$cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
-					if (!strcmp($this->parameters->getAuthCode(), $theCode) || $aCAuth || $cObj->DBmayFEUserEdit($this->theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
+					if (!strcmp($this->parameters->getAuthCode(), $theCode) || $aCAuth || $this->data->DBmayFEUserEdit($this->theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 						// Display the form, if access granted.
-						$editView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\EditView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+						$editView = GeneralUtility::makeInstance(EditView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 						$content .= $editView->render($dataArray, $origArray, $securedArray, $cmd, $cmdKey, $mode);
 					} else {
 						// Else display error, that you could not edit that particular record...
-						$plainView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\PlainView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+						$plainView = GeneralUtility::makeInstance(PlainView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 						$content.= $plainView->render('###TEMPLATE_NO_PERMISSIONS###', $dataArray, $origArray, $securedArray, $cmd, $cmdKey);
 					}
 				} else {
 					// This is if there is no login user. This must tell that you must login. Perhaps link to a page with create-user or login information.
-					$plainView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\PlainView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+					$plainView = GeneralUtility::makeInstance(PlainView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 					$content.= $plainView->render('###TEMPLATE_AUTH###', $dataArray, $origArray, $securedArray, $cmd, $cmdKey);
 				}
 			}
