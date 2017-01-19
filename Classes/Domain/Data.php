@@ -636,7 +636,7 @@ class Data
 							case 'uniqueDeletedGlobal':
 							case 'uniqueLocal':
 							case 'uniqueDeletedLocal':
-								if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+								if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 									$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
 										->getQueryBuilderForTable($this->theTable);
 									$queryBuilder
@@ -1369,7 +1369,7 @@ class Data
 	 */
 	protected function insertRecord($pid, $dataArr, $fieldList)
 	{
-		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+		if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 			$extraList = 'pid';
 			if ($GLOBALS['TCA'][$this->theTable]['ctrl']['tstamp']) {
 				$field = $GLOBALS['TCA'][$this->theTable]['ctrl']['tstamp'];
@@ -1431,7 +1431,7 @@ class Data
 	 */
 	public function updateRecord($uid, array $dataArr, $fieldlist)
 	{
-		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+		if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 			if ($uid) {
 				$fields = GeneralUtility::trimExplode(',', $fieldList, true);
 				$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)->getQueryBuilderForTable($this->theTable);
@@ -1466,7 +1466,7 @@ class Data
 	 */
 	public function deleteRecordByUid($uid)
 	{
-		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+		if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 			$uid = (int)$uid;
 			if (!$uid) {
 				return false;
@@ -1652,14 +1652,14 @@ class Data
 	public function updateMMRelations(array $row)
 	{
 		$fieldsList = array_keys($row);
-		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+		if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 			$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
 		}
 		foreach ($GLOBALS['TCA'][$this->theTable]['columns'] as $colName => $colSettings) {
 			if (in_array($colName, $fieldsList) && $colSettings['config']['type'] === 'select' && $colSettings['config']['MM']) {
 				$valuesArray = $row[$colName];
 				if (isset($valuesArray) && is_array($valuesArray)) {
-					if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+					if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 						$connection = $connectionPool->getConnectionForTable($colSettings['config']['MM']);
 						$connection->delete(
 							$colSettings['config']['MM'],
@@ -1710,12 +1710,12 @@ class Data
 	public function deleteMMRelations($uid, array $row = array())
 	{
 		$fieldsList = array_keys($row);
-		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+		if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 			$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
 		}
 		foreach ($GLOBALS['TCA'][$this->theTable]['columns'] as $colName => $colSettings) {
 			if (in_array($colName, $fieldsList) && $colSettings['config']['type'] === 'select' && $colSettings['config']['MM']) {
-				if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+				if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 					$connectionPool
 						->getConnectionForTable($colSettings['config']['MM'])
 						->delete(
@@ -2086,7 +2086,7 @@ class Data
 	public function modifyTcaMMfields(array $dataArray, &$modArray)
 	{
 		$rcArray = $dataArray;
-		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+		if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 			$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
 		}
 		foreach ($GLOBALS['TCA'][$this->theTable]['columns'] as $colName => $colSettings) {
@@ -2094,7 +2094,7 @@ class Data
 			switch ($colConfig['type']) {
 				case 'select':
 					if ($colConfig['MM'] && $colConfig['foreign_table']) {
-						if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+						if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 							$queryBuilder = $connectionPool->getQueryBuilderForTable($colConfig['MM']);
 							$query = $queryBuilder
 								->select('uid_foreign')
@@ -2160,7 +2160,7 @@ class Data
 							// the values from the mm table are already available as an array
 						} else if ($bColumnIsCount) {
 							$valuesArray = array();
-							if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+							if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 								$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
 									->getQueryBuilderForTable($colConfig['MM']);
 								$queryBuilder->getRestrictions()->removeAll();

@@ -3,6 +3,7 @@
 	* Resolves #79380: Fix double translation of radio button labels
 	* Follow-up to Resolves #79381: Migrate to Doctrine
 	* Resolves #79186: Evaluation uniqueGlobal reacts to own email address in edit mode
+	* Further follow-up to Resolves #79381: Migrate to Doctrine
 
 2017-01-15 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Require TYPO3 CMS 7.6

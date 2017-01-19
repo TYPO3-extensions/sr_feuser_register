@@ -1497,7 +1497,7 @@ class Marker
 										$firstValue = current($valuesArray);
 										if (!empty($firstValue) || count($valuesArray) > 1) {
 											$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
-											if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+											if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 												$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
 													->getQueryBuilderForTable($colConfig['foreign_table']);
 												$queryBuilder
@@ -1703,7 +1703,7 @@ class Marker
 								if ($colConfig['foreign_table'] && isset($GLOBALS['TCA'][$colConfig['foreign_table']])) {
 									$titleField = $GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['label'];
 									$reservedValues = array();
-									if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+									if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 										$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
 											->getQueryBuilderForTable($colConfig['foreign_table'])
 											->select('*')
@@ -1915,7 +1915,7 @@ class Marker
 			}
 
 			if (count($fieldArr)) {
-				if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+				if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 					$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
 						->getQueryBuilderForTable('fe_groups_language_overlay');
 					$queryBuilder->setRestrictions(GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer::class));
