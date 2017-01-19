@@ -304,7 +304,10 @@ class UsergroupHooks
 	 */
 	public function getAllowedValues(array $conf, $cmdKey, array &$allowedUserGroupArray, array &$allowedSubgroupArray, array &$deniedUserGroupArray)
 	{
-		$allowedUserGroupArray = array_map('intval', GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['allowedUserGroups'], true));
+		$allowedUserGroupArray = GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['allowedUserGroups'], true);
+		if ($allowedUserGroupArray['0'] !== 'ALL') {
+			$allowedUserGroupArray = array_map('intval', $allowedUserGroupArray);
+		}
 		$allowedSubgroupArray = array_map('intval', GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['allowedSubgroups'], true));
 		$deniedUserGroupArray = array_map('intval', GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['deniedUserGroups'], true));
 	}
