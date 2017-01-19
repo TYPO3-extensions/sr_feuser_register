@@ -595,18 +595,16 @@ class Data
 
 		// Evaluate: This evaluates for more advanced things than "required" does.
 		// But it returns the same error code, so you must let the required-message, if further evaluation has failed!
-		$bRecordExists = false;
 		if (is_array($this->conf[$cmdKey . '.']['evalValues.'])) {
 			$cmd = $this->parameters->getCmd();
 			if ($cmd === 'edit' || $cmdKey === 'edit') {
-				if ((int) $pid) {
+				if ((int)$pid) {
 					// This may be tricked if the input has the pid-field set but the edit-field list does NOT allow the pid to be edited. Then the pid may be false.
-					$recordTestPid = (int) $pid;
+					$recordTestPid = (int)$pid;
 				} else {
 					$tempRecArr = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $dataArray['uid']);
 					$recordTestPid = (int) $tempRecArr['pid'];
 				}
-				$bRecordExists = ($recordTestPid !== 0);
 			} else {
 				$thePid = $this->parameters->getPid();
 				$recordTestPid = $thePid ? $thePid : $pid;
@@ -641,11 +639,12 @@ class Data
 								if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
 									$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
 										->getQueryBuilderForTable($this->theTable);
+									$queryBuilder
+											->getRestrictions()
+											->removeAll();
 									if ($theCmd === 'uniqueLocal' || $theCmd === 'uniqueGlobal') {
 										$queryBuilder
-											->getRestrictions()
-											->removeAll()
-											->add(GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction::class));
+											->setRestrictions(GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction::class));
 									}
 									$queryBuilder
 										->select('uid', $theField)
@@ -654,6 +653,12 @@ class Data
 											$queryBuilder->expr()->eq($theField, $queryBuilder->createNamedParameter($dataArray[$theField]), \PDO::PARAM_STR)
 										)
 										->setMaxResults(1);
+									if ($dataArray['uid']) {
+										$queryBuilder
+											->andWhere(
+												$queryBuilder->expr()->neq('uid', $queryBuilder->createNamedParameter((int)$dataArray['uid']), \PDO::PARAM_INT)
+											);
+									}
 									if ($theCmd === 'uniqueLocal' || $theCmd === 'uniqueDeletedLocal') {
 										$queryBuilder
 											->andWhere(
@@ -666,6 +671,9 @@ class Data
 								} else {
 									// TYPO3 CMS 7 LTS
 									$where = $theField . '=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dataArray[$theField], $this->theTable);
+									if ($dataArray['uid']) {
+										$where .= ' AND uid != ' . (int)$dataArray['uid'];
+									}
 									if ($theCmd === 'uniqueLocal' || $theCmd === 'uniqueGlobal') {
 										$where .= $GLOBALS['TSFE']->sys_page->deleteClause($this->theTable);
 									}
@@ -682,13 +690,11 @@ class Data
 									isset($DBrows[0]) &&
 									is_array($DBrows[0])
 								) {
-									if (!$bRecordExists || $DBrows[0]['uid'] != $dataArray['uid']) {
-										// Only issue an error if the record is not existing (if new...) and if the record with the false value selected was not our self.
-										$failureArray[] = $theField;
-										$this->inError[$theField] = true;
-										$this->evalErrors[$theField][] = $theCmd;
-										$failureMsg[$theField][] = $this->getFailureText($theField, 'uniqueLocal', 'evalErrors_existed_already');
-									}
+									// Only issue an error if the record is not existing (if new...) and if the record with the false value selected was not our self.
+									$failureArray[] = $theField;
+									$this->inError[$theField] = true;
+									$this->evalErrors[$theField][] = $theCmd;
+									$failureMsg[$theField][] = $this->getFailureText($theField, 'uniqueLocal', 'evalErrors_existed_already');
 								}
 							break;
 							case 'twice':
