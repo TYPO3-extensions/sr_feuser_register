@@ -118,7 +118,7 @@ class UsergroupHooks
 		if (isset($origArray[$fieldname]) && is_array($origArray[$fieldname])) {
 			$valuesArray = $origArray[$fieldname];
 			if ($conf[$cmdKey . '.']['keepUnselectableUserGroups']) {
-				if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+				if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 					$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
 						->getQueryBuilderForTable($foreignTable)
 						->select('uid')

@@ -43,7 +43,7 @@ class HashUtility
 		$hash = $cacheHash->calculateCacheHash($parameterArray);
 		$hash = substr($hash, 0, 20);
 		// and store it with a serialized version of the array in the DB
-		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+		if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 			$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
 			$queryBuilder = $connectionPool->getQueryBuilderForTable('cache_md5params');
 			$queryBuilder->getRestrictions()->removeAll();
@@ -90,7 +90,7 @@ class HashUtility
 	{
 		// Get the serialised array from the DB based on the passed hash value
 		$variables = [];
-		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+		if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 			$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
 				->getQueryBuilderForTable('cache_md5params');
 			$queryBuilder->getRestrictions()->removeAll();
@@ -137,7 +137,7 @@ class HashUtility
 	public static function deleteHash($hash)
 	{
 		if (!empty($hash)) {
-			if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+			if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 				GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
 					->getConnectionForTable('cache_md5params')
 					->delete(
@@ -164,7 +164,7 @@ class HashUtility
 	{
 		$shortUrlLife = (int)$conf['shortUrlLife'] ? (int)$conf['shortUrlLife'] : 30;
 		$max_life = time() - (86400 * $shortUrlLife);
-		if (class_exists(\TYPO3\CMS\Core\Database\ConnectionPool::class)) {
+		if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 			$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
 				->getQueryBuilderForTable('cache_md5params');
 			$queryBuilder
