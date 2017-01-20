@@ -967,9 +967,10 @@ class Marker
 			$formName = $this->conf['formName'] ?: CssUtility::getClassName($this->prefixId, $this->theTable . '_form');
 			for ($i = 0; $i < count($filenameArray); $i++) {
 				$HTMLContent .=
-					$filenameArray[$i] . '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '" name="' . 'FE[' . $this->theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]" value="1" title="' . LocalizationUtility::translate('icon_delete', $this->extensionName) . '" alt="' . LocalizationUtility::translate('icon_delete', $this->extensionName) . '"' .
+					$filenameArray[$i] . '<input type="hidden" name="' . 'FE[' . $this->theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]" value="0">'
+					. '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '"  title="' . LocalizationUtility::translate('icon_delete', $this->extensionName) . '" alt="' . LocalizationUtility::translate('icon_delete', $this->extensionName) . '"' .
 					CssUtility::classParam($this->prefixId, 'delete-view') .
-					' onclick=\'if(confirm("' . LocalizationUtility::translate('confirm_file_delete', $this->extensionName) . '")) { var form = window.document.getElementById("' . $formName . '"); form["' . $this->prefixId . '[fileDelete]"].value = 1; return true;} else { return false;} \' />'
+					' onclick=\'if(confirm("' . LocalizationUtility::translate('confirm_file_delete', $this->extensionName) . '")) { var form = window.document.getElementById("' . $formName . '"); form["' . $this->prefixId . '[fileDelete]"].value = 1; form["FE[' . $this->theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]"].value = 1; return true;} else { return false;} \' />'
 					. '<a href="' . $dir . '/' . $filenameArray[$i] . '" ' .
 					CssUtility::classParam($this->prefixId, 'file-view') .
 					' target="_blank" title="' . LocalizationUtility::translate('file_view', $this->extensionName) . '">' .
