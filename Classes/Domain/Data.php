@@ -1114,10 +1114,8 @@ class Data
 					if (is_array($file)) {
 						if ($this->checkFilename($file['name'])) {
 							if ($file['submit_delete']) {
-								if ($cmdKey !== 'edit') {
-									if (@is_file(PATH_site . $uploadPath . '/' . $file['name'])) {
-										@unlink(PATH_site . $uploadPath . '/' . $file['name']);
-									}
+								if (@is_file(PATH_site . $uploadPath . '/' . $file['name'])) {
+									@unlink(PATH_site . $uploadPath . '/' . $file['name']);
 								}
 							} else {
 								$fileNameArray[] = $file['name'];
