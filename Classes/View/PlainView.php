@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\View;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -39,7 +39,8 @@ class PlainView extends AbstractView
 	 * @param array $dataArray: the incoming data array, if any
 	 * @return string the template with substituted parts and markers
 	 */
-	public function render($subpartMarker, array $dataArray, array $origArray, array $securedArray, $cmd, $cmdKey) {
+	public function render($subpartMarker, array $dataArray, array $origArray, array $securedArray, $cmd, $cmdKey)
+	{
 		$content = '';
 		$templateCode = $this->marker->getSubpart($this->marker->getTemplateCode(), $subpartMarker);
 		if (empty($templateCode)) {

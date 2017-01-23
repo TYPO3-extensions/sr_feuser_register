@@ -38,7 +38,6 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
 /**
  * Marker functions
@@ -930,87 +929,28 @@ class Marker
 	}
 
 	/**
-	 * Builds a file uploader
+	 * Adds additional markers to a marker array by invoking hooks
 	 *
-	 * @param string $theField: the field name
-	 * @param array $config: the field TCA config
-	 * @param array $filenames: array of uploaded file names
-	 * @return string generated HTML uploading tags
-	 */
-	protected function buildFileUploader($theField, $config, $cmd, $cmdKey, array $filenameArray, $viewOnly = false, $activity = '', $bHtml = true)
-	{
-		$HTMLContent = '';
-		$size = $config['maxitems'];
-		$cmdParts = preg_split('/\[|\]/', $this->conf[$cmdKey . '.']['evalValues.'][$theField]);
-		if (!empty($cmdParts[1])) {
-			$size = min($size, (int) $cmdParts[1]);
-		}
-		$size = $size ? $size : 1;
-		$number = $size - count($filenameArray);
-		$dir = $config['uploadfolder'];
-		if ($viewOnly) {
-			for ($i = 0; $i < count($filenameArray); $i++) {
-				$HTMLContent .= $filenameArray[$i];
-				if ($activity == 'email') {
-					if ($bHtml)	{
-						$HTMLContent .= '<br />';
-					} else {
-						$HTMLContent .= chr(13) . chr(10);
-					}
-				} else if ($bHtml) {
-					$HTMLContent .= '<a href="' . $dir . '/' . $filenameArray[$i] . '"' .
-					CssUtility::classParam($this->prefixId, 'file-view') .
-					' target="_blank" title="' . LocalizationUtility::translate('file_view', $this->extensionName) . '">' . LocalizationUtility::translate('file_view', $this->extensionName) . '</a><br />';
-				}
-			}
-		} else {
-			$formName = $this->conf['formName'] ?: CssUtility::getClassName($this->prefixId, $this->theTable . '_form');
-			for ($i = 0; $i < count($filenameArray); $i++) {
-				$HTMLContent .=
-					$filenameArray[$i] . '<input type="hidden" name="' . 'FE[' . $this->theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]" value="0">'
-					. '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($this->conf['icon_delete']) . '"  title="' . LocalizationUtility::translate('icon_delete', $this->extensionName) . '" alt="' . LocalizationUtility::translate('icon_delete', $this->extensionName) . '"' .
-					CssUtility::classParam($this->prefixId, 'delete-view') .
-					' onclick=\'if(confirm("' . LocalizationUtility::translate('confirm_file_delete', $this->extensionName) . '")) { var form = window.document.getElementById("' . $formName . '"); form["' . $this->prefixId . '[fileDelete]"].value = 1; form["FE[' . $this->theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]"].value = 1; return true;} else { return false;} \' />'
-					. '<a href="' . $dir . '/' . $filenameArray[$i] . '" ' .
-					CssUtility::classParam($this->prefixId, 'file-view') .
-					' target="_blank" title="' . LocalizationUtility::translate('file_view', $this->extensionName) . '">' .
-					LocalizationUtility::translate('file_view', $this->extensionName) . '</a><br />';
-				$HTMLContent .= '<input type="hidden" name="' . 'FE[' . $this->theTable . ']' . '[' . $theField . '][' . $i . '][name]' . '" value="' . $filenameArray[$i] . '" />';
-			}
-			for ($i = count($filenameArray); $i < $number + count($filenameArray); $i++) {
-				$HTMLContent .= '<input id="' .
-				CssUtility::getClassName($this->prefixId, $theField) .
-				'-' . ($i - count($filenameArray)) . '" name="' . 'FE[' . $this->theTable . ']' . '[' . $theField . '][' . $i . ']" title="' . LocalizationUtility::translate('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'image', $this->extensionName) . '" size="40" type="file" ' .
-				CssUtility::classParam($this->prefixId, 'uploader-view') .
-				' /><br />';
-			}
-		}
-		return $HTMLContent;
-	}
-
-	/**
-	 * Adds uploading markers to a marker array
-	 *
-	 * @param string $theField: the field name
-	 * @param array $fieldConfig: the field configuration in TCA
+	 * @param string $infoFields: the list of field names
+	 * @param string $cmd: the command CODE
+	 * @param string $cmdKey: the command key
 	 * @param array $dataArray: the record array
+	 * @param bool $viewOnly: whether the fields are presented for view only or for input/update
 	 * @return void
 	 */
-	public function addFileUploadMarkers($theField, array $fieldConfig, $cmd, $cmdKey, $dataArray = array(), $viewOnly = false, $activity = '', $bHtml = true)
+	public function addAdditionalMarkers($infoFields, $cmd, $cmdKey, $dataArray = array(), $viewOnly = false, $activity = '', $bHtml = true)
 	{
 		$markerArray = $this->getMarkerArray();
-		$filenameArray = array();
-		if ($dataArray[$theField]) {
-			$filenameArray = $dataArray[$theField];
-		}
-		$fileUploader = $this->buildFileUploader($theField, $fieldConfig['config'], $cmd, $cmdKey, $filenameArray, $viewOnly, $activity, $bHtml);
-		if ($viewOnly) {
-			$markerArray['###UPLOAD_PREVIEW_' . $theField . '###'] = $fileUploader;
-		} else {
-			$markerArray['###UPLOAD_' . $theField . '###'] = $fileUploader;
-			$max_size = $fieldConfig['config']['max_size'] * 1024;
-			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="MAX_FILE_SIZE" value="' . $max_size . '" />' . LF;
-			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId . '[fileDelete]" value="0" />' . LF;
+		$fieldArray = GeneralUtility::trimExplode(',', $infoFields, true);
+		$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model'] : array();
+		foreach ($hookClassArray as $classRef) {
+			$hookObj = GeneralUtility::makeInstance($classRef);
+			if (is_object($hookObj) && method_exists($hookObj, 'addMarkers')) {
+				foreach ($fieldArray as $theField) {
+					$additionalMarkerArray = $hookObj->addMarkers($this->theTable, $theField, $cmd, $cmdKey, $dataArray, $viewOnly, $activity, $bHtml, $this->extensionName, $this->prefixId, $this->conf);
+					$markerArray = array_merge($markerArray, $additionalMarkerArray);
+				}
+			}
 		}
 		$this->setMarkerArray($markerArray);
 	}

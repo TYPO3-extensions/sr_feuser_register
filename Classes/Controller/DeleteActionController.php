@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Controller;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -29,7 +29,10 @@ use SJBR\SrFeuserRegister\Utility\HashUtility;
 use SJBR\SrFeuserRegister\Security\SessionData;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\View\AbstractView;
+use SJBR\SrFeuserRegister\View\AfterSaveView;
+use SJBR\SrFeuserRegister\View\DeleteView;
 use SJBR\SrFeuserRegister\View\Marker;
+use SJBR\SrFeuserRegister\View\PlainView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -46,7 +49,8 @@ class DeleteActionController extends AbstractActionController
 	 * @param string $cmdKey: the command key
 	 * @return string the template with substituted markers
 	 */
-	public function doProcessing(array $dataArray, $cmd, $cmdKey) {
+	public function doProcessing(array $dataArray, $cmd, $cmdKey)
+	{
 		// If deleting is enabled
 		if (empty($this->conf['delete'])) {
 			$errorText = LocalizationUtility::translate('internal_delete_option', $this->extensionName);
@@ -72,7 +76,7 @@ class DeleteActionController extends AbstractActionController
 			$this->data->deleteRecord($origArray, $dataArray);
 			if ($this->data->getSaved()) {
 				$key =  'DELETE' . Marker::SAVED_SUFFIX;
-				$afterSaveView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\AfterSaveView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+				$afterSaveView = GeneralUtility::makeInstance(AfterSaveView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 				$content = $afterSaveView->render($dataArray, $origArray, $securedArray, $cmd, $cmdKey, $key);
 				if ($this->conf['email.']['DELETE_SAVED']) {
 					$this->emailField = $this->conf['email.']['field'];
@@ -90,13 +94,13 @@ class DeleteActionController extends AbstractActionController
 				}
 			} else if ($this->data->getError()) {
 				// If there was an error, we return an error message
-				$errorView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\PlainView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+				$errorView = GeneralUtility::makeInstance(PlainView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 				$content = $errorView->render($this->data->getError(), $finalDataArray, $this->data->getOrigArray(), $securedArray, $cmd, $cmdKey);
 			} 
 		} else {
 			// That is either preview or initial form
-			$deleteView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\DeleteView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
-			$content .= $deleteView->render($dataArray, $origArray, $securedArray, $cmd, $cmdKey);
+			$deleteView = GeneralUtility::makeInstance(DeleteView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+			$content .= $deleteView->render('', $dataArray, $origArray, $securedArray, $cmd, $cmdKey);
 		}
 		if ($this->parameters->getValidRegHash() && $mode === AbstractView::MODE_NORMAL) {
 			$regHash = $this->parameters->getRegHash();

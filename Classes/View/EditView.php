@@ -75,13 +75,7 @@ class EditView extends AbstractView
 		$this->marker->addStaticInfoMarkers($currentArray, $isPreview);
 		$this->marker->addTcaMarkers($currentArray, $origArray, $cmd, $cmdKey, $isPreview, $requiredFields);
 		$this->marker->addLabelMarkers($currentArray, $origArray, $securedArray, array(), $requiredFields, $infoFields, $this->data->getSpecialFieldList());
-		$fieldArray = GeneralUtility::trimExplode(',', $infoFields, true);
-		foreach ($fieldArray as $theField) {
-			$fieldConfig = $GLOBALS['TCA'][$this->theTable]['columns'][$theField];
-			if (!empty($fieldConfig) && $fieldConfig['config']['internal_type'] === 'file' && !empty($fieldConfig['config']['allowed']) && !empty($fieldConfig['config']['uploadfolder'])) {
-				$this->marker->addFileUploadMarkers($theField, $fieldConfig, $cmd, $cmdKey, $currentArray, $isPreview);
-			}
-		}
+		$this->marker->addAdditionalMarkers($infoFields, $cmd, $cmdKey, $currentArray, $isPreview);
 		$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $isPreview);
 		$this->marker->addEditFormHiddenFieldsMarkers($currentArray['uid'], Authentication::authCode($origArray, $this->conf, $this->conf['setfixed.']['EDIT.']['_FIELDLIST']), $cmd);
 		$this->marker->addHiddenFieldsMarkers($cmdKey, $mode, $this->conf[$cmdKey . '.']['useEmailAsUsername'], $this->conf[$cmdKey . '.']['fields'], $currentArray);

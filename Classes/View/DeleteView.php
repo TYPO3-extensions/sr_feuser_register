@@ -25,7 +25,6 @@ namespace SJBR\SrFeuserRegister\View;
 use SJBR\SrFeuserRegister\Security\Authentication;
 use SJBR\SrFeuserRegister\Utility\UrlUtility;
 use SJBR\SrFeuserRegister\View\PlainView;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Delete view rendering
@@ -38,12 +37,12 @@ class DeleteView extends PlainView
 	 *
 	 * @return string  the template with substituted markers
 	 */
-	public function render(array $dataArray, array $origArray, array $securedArray, $cmd, $cmdKey) {
+	public function render($subpartMarker, array $dataArray, array $origArray, array $securedArray, $cmd, $cmdKey)
+	{
 		$aCAuth = Authentication::aCAuth($this->parameters->getAuthCode(), $origArray, $this->conf, $this->conf['setfixed.']['DELETE.']['_FIELDLIST']);
 		if (($this->theTable === 'fe_users' && $GLOBALS['TSFE']->loginUser) || $aCAuth) {
 			// Must be logged in OR be authenticated by the aC code in order to delete
-			$cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
-			$bMayEdit = $cObj->DBmayFEUserEdit($this->theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf']);
+			$bMayEdit = $this->data->DBmayFEUserEdit($this->theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf']);
 			if ($aCAuth || $bMayEdit) {
 				// Display the form, if access granted.
 				$backUrl = $this->parameters->getBackURL() ?: UrlUtility::getTypoLink_URL($this->parameters->getPid('login') . ',' . $GLOBALS['TSFE']->type);
