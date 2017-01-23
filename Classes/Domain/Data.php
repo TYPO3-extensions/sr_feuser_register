@@ -102,13 +102,6 @@ class Data
 	protected $userGroupObj = null;
 
 	/**
-	 * The basic file functions utility object
-	 *
-	 * @var \TYPO3\CMS\Core\Utility\File\BasicFileUtility
-	 */
-	public $fileFunc = null;
-
-	/**
 	 * List of fields allowed for editing and creation
 	 *
 	 * @var string
@@ -209,7 +202,6 @@ class Data
 	 	$this->conf =& $conf;
 	 	$this->cObj = $cObj;
 	 	$this->parameters = $parameters;
-	 	$this->fileFunc = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Utility\\File\\BasicFileUtility');
 		if (ExtensionManagementUtility::isLoaded('static_info_tables')) {
 			$this->staticInfoObj = GeneralUtility::makeInstance('SJBR\\StaticInfoTables\\PiBaseApi');
 			if ($this->staticInfoObj->needsInit()) {
@@ -524,37 +516,19 @@ class Data
 	 * @param string $theField: the name of the field being validated
 	 * @param string $theRule: the name of the validation rule being evaluated
 	 * @param string $label: a default error message provided by the invoking function
-	 * @param integer $orderNo: ordered number of the rule for the field (>0 if used)
 	 * @param string $param: parameter for the error message
+	 * @param string $extensionName: name of the extension
 	 * @return string the error message to be displayed
 	 */
-	public function getFailureText($theField, $theRule, $label, $orderNo = 0, $param = '')
+	protected function getFailureText($theField, $theRule, $label, $param = '', $extensionName)
 	{
 		$failureLabel = '';
- 		if ($orderNo && $theRule && isset($this->conf['evalErrors.'][$theField . '.'][$theRule . '.'])) {
-			$count = 0;
-			foreach ($this->conf['evalErrors.'][$theField . '.'][$theRule . '.'] as $k => $v) {
-				if (MathUtility::canBeInterpretedAsInteger($k)) {
-					$count++;
-					if ($count === $orderNo) {
-						$failureLabel = $v;
-						break;
-					}
-				}
-			}
+		if ($theRule) {
+			$failureLabel = LocalizationUtility::translate('evalErrors_' . $theRule . '_' . $theField, $extensionName);
+			$failureLabel = $failureLabel ?: LocalizationUtility::translate('evalErrors_' . $theRule, $extensionName);
 		}
 		if (!$failureLabel) {
-			if ($theRule && isset($this->conf['evalErrors.'][$theField . '.'][$theRule])) {
-				$failureLabel = $this->conf['evalErrors.'][$theField . '.'][$theRule];
-			} else {
-				if ($theRule) {
-					$failureLabel = LocalizationUtility::translate('evalErrors_' . $theRule . '_' . $theField, $this->extensionName);
-					$failureLabel = $failureLabel ?: LocalizationUtility::translate('evalErrors_' . $theRule, $this->extensionName);
-				}
-				if (!$failureLabel) {
-					$failureLabel = LocalizationUtility::translate($label, $this->extensionName);
-				}
-			}
+			$failureLabel = LocalizationUtility::translate($label, $extensionName);
 		}
 		if ($param) {
 			$failureLabel = sprintf($failureLabel, $param);
@@ -609,10 +583,6 @@ class Data
 				$thePid = $this->parameters->getPid();
 				$recordTestPid = $thePid ? $thePid : $pid;
 			}
-			$countArray = array();
-			$countArray['hook'] = array();
-			$countArray['preg'] = array();
-
 			foreach ($this->conf[$cmdKey.'.']['evalValues.'] as $theField => $theValue) {
 				$this->evalErrors[$theField] = array();
 				$failureMsg[$theField] = array();
@@ -644,7 +614,8 @@ class Data
 											->removeAll();
 									if ($theCmd === 'uniqueLocal' || $theCmd === 'uniqueGlobal') {
 										$queryBuilder
-											->setRestrictions(GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction::class));
+											->getRestrictions()
+											->add(GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction::class));
 									}
 									$queryBuilder
 										->select('uid', $theField)
@@ -694,7 +665,7 @@ class Data
 									$failureArray[] = $theField;
 									$this->inError[$theField] = true;
 									$this->evalErrors[$theField][] = $theCmd;
-									$failureMsg[$theField][] = $this->getFailureText($theField, 'uniqueLocal', 'evalErrors_existed_already');
+									$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_existed_already', '', $this->extensionName);
 								}
 							break;
 							case 'twice':
@@ -704,7 +675,7 @@ class Data
 									$failureArray[] = $theField;
 									$this->inError[$theField] = true;
 									$this->evalErrors[$theField][] = $theCmd;
-									$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_same_twice');
+									$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_same_twice', '', $this->extensionName);
 								}
 							break;
 							case 'email':
@@ -712,7 +683,7 @@ class Data
 									$failureArray[] = $theField;
 									$this->inError[$theField] = true;
 									$this->evalErrors[$theField][] = $theCmd;
-									$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_valid_email');
+									$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_valid_email', '', $this->extensionName);
 								}
 							break;
 							case 'required':
@@ -724,7 +695,7 @@ class Data
 									$failureArray[] = $theField;
 									$this->inError[$theField] = true;
 									$this->evalErrors[$theField][] = $theCmd;
-									$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_required');
+									$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_required', '', $this->extensionName);
 								}
 							break;
 							case 'atLeast':
@@ -733,7 +704,7 @@ class Data
 									$failureArray[] = $theField;
 									$this->inError[$theField] = true;
 									$this->evalErrors[$theField][] = $theCmd;
-									$failureMsg[$theField][] = sprintf($this->getFailureText($theField, $theCmd, 'evalErrors_atleast_characters'), $chars);
+									$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_atleast_characters', $chars, $this->extensionName);
 								}
 							break;
 							case 'atMost':
@@ -742,7 +713,7 @@ class Data
 									$failureArray[] = $theField;
 									$this->inError[$theField] = true;
 									$this->evalErrors[$theField][] = $theCmd;
-									$failureMsg[$theField][] = sprintf($this->getFailureText($theField, $theCmd, 'evalErrors_atmost_characters'), $chars);
+									$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_atmost_characters', $chars, $this->extensionName);
 								}
 							break;
 							case 'inBranch':
@@ -758,61 +729,7 @@ class Data
 										$failureArray[] = $theField;
 										$this->inError[$theField] = true;
 										$this->evalErrors[$theField][] = $theCmd;
-										$failureMsg[$theField][] = sprintf($this->getFailureText($theField, $theCmd, 'evalErrors_unvalid_list'), $pid_list);
-									}
-								}
-							break;
-							case 'upload':
-								if ($dataArray[$theField] && is_array($GLOBALS['TCA'][$this->theTable]['columns'][$theField]['config'])) {
-									$colSettings = $GLOBALS['TCA'][$this->theTable]['columns'][$theField];
-									$colConfig = $colSettings['config'];
-									if ($colConfig['type'] === 'group' && $colConfig['internal_type'] === 'file') {
-										$uploadPath = $colConfig['uploadfolder'];
-										$allowedExtArray = GeneralUtility::trimExplode(',', $colConfig['allowed'], true);
-										$maxSize = $colConfig['max_size'];
-										$fileNameArray = $dataArray[$theField];
-										$newFileNameArray = array();
-										if (is_array($fileNameArray) && $fileNameArray[0] != '') {
-											foreach ($fileNameArray as $k => $filename) {
-												if (is_array($filename)) {
-													$filename = $filename['name'];
-												}
-												$bAllowedFilename = $this->checkFilename($filename);
-												$fI = pathinfo($filename);
-												$fileExtension = strtolower($fI['extension']);
-												$fullfilename = PATH_site . $uploadPath . '/' . $filename;
-												if ($bAllowedFilename && (!count($allowedExtArray) || in_array($fileExtension, $allowedExtArray))) {
-													if (@is_file($fullfilename)) {
-														if (!$maxSize || (filesize(PATH_site.$uploadPath.'/'.$filename) < ($maxSize * 1024))) {
-															$newFileNameArray[] = $filename;
-														} else {
-															$this->evalErrors[$theField][] = $theCmd;
-															$failureMsg[$theField][] = sprintf($this->getFailureText($theField, 'max_size', 'evalErrors_size_too_large'), $maxSize);
-															$failureArray[] = $theField;
-															$this->inError[$theField] = true;
-															if (@is_file(PATH_site.$uploadPath . '/' . $filename)) {
-																@unlink(PATH_site.$uploadPath . '/' . $filename);
-															}
-														}
-													} else {
-														$writePermissionError = isset($_FILES) && isset($_FILES['FE']['tmp_name'][$this->theTable][$theField][$k]);
-														$this->evalErrors[$theField][] = $theCmd;
-														$failureMsg[$theField][] = sprintf($this->getFailureText($theField, 'isfile', ($writePermissionError ? 'evalErrors_write_permission' : 'evalErrors_file_upload')), $filename);
-														$failureArray[] = $theField;
-													}
-												} else {
-													$this->evalErrors[$theField][] = $theCmd;
-													$failureMsg[$theField][] = sprintf($this->getFailureText($theField, 'allowed', 'evalErrors_file_extension'), $fileExtension);
-													$failureArray[] = $theField;
-													$this->inError[$theField] = true;
-													if ($bAllowedFilename && @is_file($fullfilename)) {
-														@unlink($fullfilename);
-													}
-												}
-											}
-											$dataValue = $newFileNameArray;
-											$dataArray[$theField] = $dataValue;
-										}
+										$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_unvalid_list', $pid_list, $this->extensionName);
 									}
 								}
 							break;
@@ -829,7 +746,7 @@ class Data
 										$failureArray[] = $theField;
 										$this->inError[$theField] = true;
 										$this->evalErrors[$theField][] = $theCmd;
-										$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_unvalid_url');
+										$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_unvalid_url', '', $this->extensionName);
 									}
 								}
 							break;
@@ -842,16 +759,11 @@ class Data
 									$failureArray[] = $theField;
 									$this->inError[$theField] = true;
 									$this->evalErrors[$theField][] = $theCmd;
-									$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_unvalid_date');
+									$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_unvalid_date', '', $this->extensionName);
 								}
 							break;
 							case 'preg':
 								if (!is_array($dataArray[$theField]) && !empty($dataArray[$theField]) && $dataArray[$theField] !== '0') {
-									if (isset($countArray['preg'][$theCmd])) {
-										$countArray['preg'][$theCmd]++;
-									} else {
-										$countArray['preg'][$theCmd] = 1;
-									}
 									$pattern = str_replace('preg[', '', $cmd);
 									$pattern = substr($pattern, 0, strlen($pattern) - 1);
 									$matches = array();
@@ -860,17 +772,12 @@ class Data
 										$failureArray[] = $theField;
 										$this->inError[$theField] = true;
 										$this->evalErrors[$theField][] = $theCmd;
-										$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_' . $theCmd, $countArray['preg'][$theCmd], $cmd);
+										$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_' . $theCmd, $cmd, $this->extensionName);
 									}
 								}
 								break;
 							case 'hook':
 							default:
-								if (isset($countArray['hook'][$theCmd])) {
-									$countArray['hook'][$theCmd]++;
-								} else {
-									$countArray['hook'][$theCmd] = 1;
-								}
 								$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model'] : array();
 								if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey]['captcha'])) {
 										$hookClassArray = array_merge($hookClassArray, $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey]['captcha']);
@@ -878,12 +785,19 @@ class Data
 								foreach ($hookClassArray as $classRef) {
 									$hookObj = GeneralUtility::makeInstance($classRef);
 									if (is_object($hookObj) && method_exists($hookObj, 'evalValues')) {
-										$errorField = $hookObj->evalValues($this->theTable, $dataArray, $theField, $cmdKey, $cmdParts);
-										if ($errorField !== '') {
+										$errorField = $hookObj->evalValues($this->theTable, $dataArray, $theField, $cmdKey, $cmdParts, $this->extensionName);
+										if (is_array($errorField)) {
+											if (!empty($errorField)) {
+												$failureArray[] = $theField;
+												$this->evalErrors[$theField][] = $theCmd;
+												$this->inError[$theField] = true;
+												$failureMsg[$theField] = array_merge($failureMsg[$theField], $errorField);
+											}
+										} else if ($errorField !== '') {
 											$failureArray[] = $errorField;
 											$this->evalErrors[$theField][] = $theCmd;
 											$this->inError[$theField] = true;
-											$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_' . $theCmd, $countArray['hook'][$theCmd], $cmd);
+											$failureMsg[$theField][] = $this->getFailureText($theField, $theCmd, 'evalErrors_' . $theCmd, $cmd, $this->extensionName);
 										}
 									}
 								}
@@ -984,15 +898,13 @@ class Data
 								$dataValue = substr(md5(uniqid(microtime(), 1)), 0, intval($cmdParts[1]));
 								break;
 							case 'files':
-								$fieldDataArray = array();
-								if ($dataValue) {
-									if (is_array($dataValue)) {
-										$fieldDataArray = $dataValue;
-									} else if (is_string($dataValue) && $dataValue) {
-										$fieldDataArray = GeneralUtility::trimExplode(',', $dataValue, true);
+								$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model'] : array();
+								foreach ($hookClassArray as $classRef) {
+									$hookObj = GeneralUtility::makeInstance($classRef);
+									if (is_object($hookObj) && method_exists($hookObj, 'parseValues')) {
+										$dataValue = $hookObj->parseValues($this->theTable, $dataArray, $dataValue, $theField, $cmdKey, $cmdParts);
 									}
 								}
-								$dataValue = $this->processFiles($theField, $fieldDataArray, $cmdKey);
 								break;
 							case 'multiple':
 								$fieldDataArray = array();
@@ -1079,76 +991,6 @@ class Data
 				}
 			}
 		}
-	}
-
-	/**
-	 * Checks for valid filenames
-	 *
-	 * @param string  $filename: the name of the file
-	 * @return bool true, if the filename is allowed
-	 */
-	protected function checkFilename($filename)
-	{
-		$fI = pathinfo($filename);
-		$fileExtension = strtolower($fI['extension']);
-		return !(strpos($fileExtension, 'php') !== false) && !(strpos($fileExtension, 'htaccess') !== false) && !(strpos($filename, '..') !== false);
-	}
-
-	/**
-	 * Processes uploaded files
-	 *
-	 * @param string $theField: the name of the field
-	 * @param array $fieldData: field value
-	 * @param string $cmdKe: the command key being processed
-	 * @return array file names
-	 */
-	protected function processFiles($theField, array $fieldData, $cmdKey)
-	{
-		if (is_array($GLOBALS['TCA'][$this->theTable]['columns'][$theField])) {
-			$uploadPath = $GLOBALS['TCA'][$this->theTable]['columns'][$theField]['config']['uploadfolder'];
-		}
-		$fileNameArray = array();
-		if ($uploadPath) {
-			if (count($fieldData)) {
-				foreach ($fieldData as $file) {
-					if (is_array($file)) {
-						if ($this->checkFilename($file['name'])) {
-							if ($file['submit_delete']) {
-								if (@is_file(PATH_site . $uploadPath . '/' . $file['name'])) {
-									@unlink(PATH_site . $uploadPath . '/' . $file['name']);
-								}
-							} else {
-								$fileNameArray[] = $file['name'];
-							}
-						}
-					} else {
-						if ($this->checkFilename($file)) {
-							$fileNameArray[] = $file;
-						}
-					}
-				}
-			}
-			if (is_array($_FILES['FE']['name'][$this->theTable][$theField])) {
-				foreach($_FILES['FE']['name'][$this->theTable][$theField] as $i => $filename) {
-					if (
-						$filename &&
-						$this->checkFilename($filename) &&
-						$this->evalFileError($_FILES['FE']['error'][$this->theTable][$theField][$i])
-					) {
-						$fI = pathinfo($filename);
-						if (GeneralUtility::verifyFilenameAgainstDenyPattern($fI['name'])) {
-							$tmpFilename = basename($filename, '.' . $fI['extension']) . '_' . GeneralUtility::shortmd5(uniqid($filename)) . '.' . $fI['extension'];
-							$cleanFilename = $this->fileFunc->cleanFileName($tmpFilename);
-							$theDestFile = $this->fileFunc->getUniqueName($cleanFilename, PATH_site . $uploadPath . '/');
-							$result = GeneralUtility::upload_copy_move($_FILES['FE']['tmp_name'][$this->theTable][$theField][$i], $theDestFile);
-							$fI2 = pathinfo($theDestFile);
-							$fileNameArray[] = $fI2['basename'];
-						}
-					}
-				}
-			}
-		}
-		return $fileNameArray;
 	}
 
 	/**
@@ -1501,7 +1343,7 @@ class Data
 	 *
 	 * @return void (sets $this->saved)
 	 */
-	protected function deleteRecord(array &$origArray, array &$dataArray)
+	public function deleteRecord(array &$origArray, array &$dataArray)
 	{
 		if ($this->conf['delete']) {
 			// If deleting is enabled
@@ -2000,36 +1842,10 @@ class Data
 		return $parsedArray;
 	}
 
-	/**
-	* Checks the error value from the upload $_FILES array.
-	*
-	* @param string  $error_code: the error code
-	* @return boolean  true if ok
-	*/
-	public function evalFileError ($error_code) {
-		$rc = false;
-		if ($error_code == "0") {
-			$rc = true;
-			// File upload okay
-		} elseif ($error_code == '1') {
-			$rc = false; // filesize exceeds upload_max_filesize in php.ini
-		} elseif ($error_code == '3') {
-			return false; // The file was uploaded partially
-		} elseif ($error_code == '4') {
-			$rc = true;
-			// No file was uploaded
-		} else {
-			$rc = true;
-		}
-
-		return $rc;
-	}	// evalFileError
-
-
-	public function getInError () {
+	public function getInError()
+	{
 		return $this->inError;
 	}
-
 
 	/**
 	 * Sets the index $theField of the incoming data array to empty value depending on type of $theField

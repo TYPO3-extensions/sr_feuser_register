@@ -90,13 +90,7 @@ class CreateView extends AbstractView
 			$this->marker->fillInMarkerArray($currentArray, $securedArray, '', true);
 			$this->marker->addStaticInfoMarkers($dataArray, $isPreview);
 			$this->marker->addTcaMarkers($dataArray, $origArray, $cmd, $cmdKey, $isPreview, $requiredFileds);
-			$fieldArray = GeneralUtility::trimExplode(',', $infoFields, true);
-			foreach ($fieldArray as $theField) {
-				$fieldConfig = $GLOBALS['TCA'][$this->theTable]['columns'][$theField];
-				if (!empty($fieldConfig) && $fieldConfig['config']['internal_type'] === 'file' && !empty($fieldConfig['config']['allowed']) && !empty($fieldConfig['config']['uploadfolder'])) {
-					$this->marker->addFileUploadMarkers($theField, $fieldConfig, $cmd, $cmdKey, $currentArray, $isPreview);
-				}
-			}
+			$this->marker->addAdditionalMarkers($infoFields, $cmd, $cmdKey, $currentArray, $isPreview);
 			$this->marker->addLabelMarkers($dataArray, $origArray, $securedArray, array(), $requiredFileds, $infoFields, $this->data->getSpecialFieldList());
 			$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $isPreview);
 			$this->marker->addGeneralHiddenFieldsMarkers($cmd, $this->parameters->getAuthCode(), $this->parameters->getBackURL());

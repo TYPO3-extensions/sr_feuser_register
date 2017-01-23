@@ -71,9 +71,10 @@ class Captcha implements CaptchaInterface
 	 * @param string $theField: the name of the captcha field
 	 * @param string $cmdKey: the current command key
 	 * @param array $cmdParts: parts of the 'eval' command
+	 * @param string $extensionName: name of the extension
 	 * @return string The name of the field in error or empty string
 	 */
-	public function evalValues($theTable, array $dataArray, $theField, $cmdKey, array $cmdParts)
+	public function evalValues($theTable, array $dataArray, $theField, $cmdKey, array $cmdParts, $extensionName = '')
 	{
 		$errorField = '';
 		if (trim($cmdParts[0]) === 'captcha' && $this->isLoaded() && isset($dataArray[$theField])) {

@@ -1,13 +1,12 @@
 
-# THESE create statements will NOT work if this file is piped into MySQL.
-# Rather they will be detected by the Typo3 Install Tool and through that
+# THESE create statements will be detected by the Typo3 Install Tool and through that
 # you should upgrade the tables to content these fields.
 
 CREATE TABLE fe_users (
 	static_info_country varchar(3) DEFAULT '' NOT NULL,
 	zone varchar(45) DEFAULT '' NOT NULL,
-	language char(5) DEFAULT '' NOT NULL,
-	gender int(11) unsigned DEFAULT '99' NOT NULL,
+	language varchar(5) DEFAULT '' NOT NULL,
+	gender int(11) DEFAULT '99' NOT NULL,
 	cnum varchar(50) DEFAULT '' NOT NULL,
 	name varchar(100) DEFAULT '' NOT NULL,
 	first_name varchar(50) DEFAULT '' NOT NULL,
