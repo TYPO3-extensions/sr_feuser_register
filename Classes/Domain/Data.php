@@ -857,8 +857,8 @@ class Data
 				if (in_array('setEmptyIfAbsent', $listOfCommands)) {
 					$this->setEmptyIfAbsent($theField, $dataArray);
 				}
-				$internalType = $GLOBALS['TCA'][$this->theTable]['columns'][$theField]['config']['internal_type'];
-				if (isset($dataArray[$theField]) || isset($origArray[$theField]) || $internalType === 'file') {
+				$fieldConfig = $GLOBALS['TCA'][$this->theTable]['columns'][$theField]['config'];
+				if (isset($dataArray[$theField]) || isset($origArray[$theField]) || $fieldConfig['internal_type'] === 'file' || $fieldConfig['foreign_table'] === 'sys_file_reference') {
 					foreach ($listOfCommands as $cmd) {
 						// Enable parameters after each command enclosed in brackets [..].
 						$cmdParts = preg_split('/\[|\]/', $cmd);
@@ -1111,6 +1111,13 @@ class Data
 					}
 					$dataArray['uid'] = $newId;
 					$this->updateMMRelations($dataArray);
+					$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model'] : array();
+					foreach ($hookClassArray as $classRef) {
+						$hookObj = GeneralUtility::makeInstance($classRef);
+						if (is_object($hookObj) && method_exists($hookObj, 'afterSave')) {
+							$dataArray = $hookObj->afterSave($this->theTable, $cmdKey, $dataArray);
+						}
+					}
 					$this->setSaved(true);
 
 					$newRow = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, $newId);
@@ -1269,7 +1276,7 @@ class Data
 	 * @param string $fieldList Comma list of fieldnames which are allowed to be updated. Only values from the data record for fields in this list will be updated!!
 	 * @return bool false
 	 */
-	public function updateRecord($uid, array $dataArr, $fieldlist)
+	public function updateRecord($uid, array $dataArr, $fieldList)
 	{
 		if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 			if ($uid) {
@@ -1403,6 +1410,13 @@ class Data
 						}
 					}
 				}
+			}
+		}
+		$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model'] : array();
+		foreach ($hookClassArray as $classRef) {
+			$hookObj = GeneralUtility::makeInstance($classRef);
+			if (is_object($hookObj) && method_exists($hookObj, 'deleteFileReferences')) {
+				$dataArray = $hookObj->deleteFileReferences($this->theTable, $uid);
 			}
 		}
 	}
@@ -1962,6 +1976,11 @@ class Data
 			switch ($colConfig['type']) {
 				case 'group':
 					$bMultipleValues = true;
+					break;
+				case 'inline':
+					if ($colConfig['foreign_table'] === 'sys_file_reference' && isset($dataArray[$colName]) && !is_array($dataArray[$colName])) {
+						$dataArray[$colName] = unserialize($dataArray[$colName]);
+					}
 					break;
 				case 'select':
 					$value = $dataArray[$colName];

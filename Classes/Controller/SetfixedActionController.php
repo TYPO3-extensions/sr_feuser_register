@@ -5,7 +5,7 @@ namespace SJBR\SrFeuserRegister\Controller;
  *  Copyright notice
  *
  *  (c) 1999-2003 Kasper Skårhøj <kasperYYYY@typo3.com>
- *  (c) 2004-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2004-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -29,7 +29,9 @@ use SJBR\SrFeuserRegister\Security\SessionData;
 use SJBR\SrFeuserRegister\Security\StorageSecurity;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\View\AbstractView;
+use SJBR\SrFeuserRegister\View\EditView;
 use SJBR\SrFeuserRegister\View\Marker;
+use SJBR\SrFeuserRegister\View\PlainView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -95,7 +97,7 @@ class SetfixedActionController extends AbstractActionController
 		if (!strcmp($this->parameters->getAuthCode(), $theCode) && !($sFK === 'APPROVE' && $origArray['disable'] == '0')) {
 			if ($sFK === 'EDIT') {
 				$this->marker->addGeneralHiddenFieldsMarkers('edit', $this->parameters->getAuthCode(), $this->parameters->getBackURL());
-				$editView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\EditView', $this->extendionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+				$editView = GeneralUtility::makeInstance(EditView::class, $this->extendionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 				$content = $editView->render(
 					$dataArray,
 					$origArray,
@@ -186,7 +188,7 @@ class SetfixedActionController extends AbstractActionController
 					// Auto login
 					$loginSuccess = $this->login($currArr['username'], $currArr['password'], false);
 					if ($loginSuccess) {
-						$editView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\EditView', $this->extendionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+						$editView = GeneralUtility::makeInstance(EditView::class, $this->extendionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 						$content = $editView->render(
 							$dataArray,
 							$origArray,
@@ -197,7 +199,7 @@ class SetfixedActionController extends AbstractActionController
 						);
 					} else {
 						// Login failed
-						$plainView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\PlainView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+						$plainView = GeneralUtility::makeInstance(PlainView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 						$content = $plainView->render('###TEMPLATE_SETFIXED_FAILED###', $row, $origArray, $securedArray, $cmd, $cmdKey);
 					}
 				}
@@ -206,7 +208,7 @@ class SetfixedActionController extends AbstractActionController
 					$setfixedSuffix .= '_REVIEW';
 				}
 				if (!$content) {
-					$plainView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\PlainView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+					$plainView = GeneralUtility::makeInstance(PlainView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 					try {
 						$subpartMarker = '###TEMPLATE_' . Marker::SETFIXED_PREFIX . 'OK_' . $setfixedSuffix . '###';
 						$content = $plainView->render($subpartMarker, $row, $origArray, $securedArray, $cmd, $cmdKey);
@@ -251,14 +253,14 @@ class SetfixedActionController extends AbstractActionController
 							exit;
 						} else {
 							// Login failed
-							$plainView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\PlainView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+							$plainView = GeneralUtility::makeInstance(PlainView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 							$content = $plainView->render('###TEMPLATE_SETFIXED_FAILED###', array(), $origArray, $securedArray, $cmd, $cmdKey);
 						}
 					}
 				}
 			}
 		} else {
-			$plainView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\PlainView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+			$plainView = GeneralUtility::makeInstance(PlainView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 			$content = $plainView->render('###TEMPLATE_SETFIXED_FAILED###', array(), $origArray, $securedArray, $cmd, $cmdKey);
 		}
 		return $content;

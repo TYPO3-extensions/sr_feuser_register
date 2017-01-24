@@ -102,16 +102,18 @@ class FileUploadHooks
 								} else {
 									$failureMsg[] = $this->getFailureText($theField, 'max_size', 'evalErrors_size_too_large', $maxSize, $extensionName);
 									$this->deleteFile($file, $theTable, $theField, $dataArray['uid']);
+									unset($fileArray[$k]);
 								}
 							}
 						} else {
 							$failureMsg[] = $this->getFailureText($theField, 'allowed', 'evalErrors_file_extension', $fileExtension, $extensionName);
 							$this->deleteFile($file, $theTable, $theField, $dataArray['uid']);
+							unset($fileArray[$k]);
 						}
 					}
 					$fieldConfig = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config'];
 					if ($fieldConfig['type'] === 'inline' && $fieldConfig['foreign_table'] === 'sys_file_reference') {
-						$dataArray[$theField] = count($fileNameArray);
+						$dataArray[$theField] = $dataArray['uid'] ? count($fileNameArray) : $fileArray;
 					} else {
 						$dataArray[$theField] = $fileNameArray;
 					}
@@ -230,41 +232,45 @@ class FileUploadHooks
 				  $newFileName,
 				  DuplicationBehavior::RENAME
 			);
-			$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
-			// Get the record from the table in use
-			$connectionTheTable = $connectionPool->getConnectionForTable($theTable);
-			$row = $connectionTheTable
-				->select(
-					['uid', 'pid', $theField],
-					$theTable,
-					['uid' => (int)$uid]
-				)
-				->fetch();
-			// Create the file reference
-			$connectionFileReference = $connectionPool->getConnectionForTable('sys_file_reference');
-			$connectionFileReference
-				->insert(
-					'sys_file_reference',
-					[
-						'pid' => (int)$row['pid'],
-						'table_local' => 'sys_file',
-						'uid_local' => (int)$fileObject->getUid(),
-						'tablenames' => $theTable,
-						'uid_foreign' => (int)$uid,
-						'fieldname' => $theField
-					]
-				);
-			$fileReferenceUid = $connectionFileReference->lastInsertId('sys_file_reference');
-			$fileRepository = GeneralUtility::makeInstance(FileRepository::class);
-			$fileReference = $fileRepository->findFileReferenceByUid((int)$fileReferenceUid);
-			// Update the inline count
-			$connectionTheTable
-				->update(
-					$theTable,
-					[$theField => (int)$row[$theField]+1],
-					['uid' => (int)$uid]
-				);
-			return is_object($fileReference) ? ['name' => $fileReference->getName(), 'uid' => $fileReference->getUid(), 'size' => $fileReference->getSize()] : false;			
+			if ($uid) {
+				$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
+				// Get the record from the table in use
+				$connectionTheTable = $connectionPool->getConnectionForTable($theTable);
+				$row = $connectionTheTable
+					->select(
+						['uid', 'pid', $theField],
+						$theTable,
+						['uid' => (int)$uid]
+					)
+					->fetch();
+				// Create the file reference
+				$connectionFileReference = $connectionPool->getConnectionForTable('sys_file_reference');
+				$connectionFileReference
+					->insert(
+						'sys_file_reference',
+						[
+							'pid' => (int)$row['pid'],
+							'table_local' => 'sys_file',
+							'uid_local' => (int)$fileObject->getUid(),
+							'tablenames' => $theTable,
+							'uid_foreign' => (int)$uid,
+							'fieldname' => $theField
+						]
+					);
+				$fileReferenceUid = $connectionFileReference->lastInsertId('sys_file_reference');
+				$fileRepository = GeneralUtility::makeInstance(FileRepository::class);
+				$fileReference = $fileRepository->findFileReferenceByUid((int)$fileReferenceUid);
+				// Update the inline count
+				$connectionTheTable
+					->update(
+						$theTable,
+						[$theField => (int)$row[$theField]+1],
+						['uid' => (int)$uid]
+					);
+				return is_object($fileReference) ? ['name' => $fileReference->getName(), 'uid' => $fileReference->getUid(), 'size' => $fileReference->getSize()] : false;
+			} else {
+				return ['name' => $fileObject->getName(), 'uid' => $fileObject->getUid(), 'size' => $fileObject->getSize(), 'table' => 'sys_file'];
+			}
 		} else {
 			$fileUtility = GeneralUtility::makeInstance(BasicFileUtility::class);
 			$fI = pathinfo($fileName);
@@ -290,8 +296,12 @@ class FileUploadHooks
 		$fieldConfig = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config'];
 		if ($fieldConfig['type'] === 'inline' && $fieldConfig['foreign_table'] === 'sys_file_reference') {
 			$fileRepository = GeneralUtility::makeInstance(FileRepository::class);
-			$fileReference = $fileRepository->findFileReferenceByUid((int)$file['uid']);
-			return is_object($fileReference);		
+			try {
+				$fileReference = $fileRepository->findFileReferenceByUid((int)$file['uid']);
+			} catch (\TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException $e) {
+				$fileReference = $fileRepository->findByUid((int)$file['uid']);
+			}
+			return is_object($fileReference);
 		} else {
 			$uploadPath = $fieldConfig['uploadfolder'];
 			$uploadPath = $uploadPath ?: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['uploadfolder'];
@@ -312,7 +322,8 @@ class FileUploadHooks
 	{
 		$fieldConfig = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config'];
 		if ($fieldConfig['type'] === 'inline' && $fieldConfig['foreign_table'] === 'sys_file_reference') {
-			if ($file['submit_delete'] && $file['uid']) {
+			if ($uid && $file['submit_delete'] && $file['uid']) {
+				// If in create mode, there is no file reference to delete
 				// Delete the file reference
 				$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
 				$connectionPool->getConnectionForTable('sys_file_reference')
@@ -387,6 +398,82 @@ class FileUploadHooks
 	}
 
 	/**
+	 * On creation, create file references and set file reference count
+	 *
+	 * @param string $theTable: the name of the table in use
+	 * @param string $cmdKey: the command key
+	 * @param array $dataArray: the saved record
+	 * @return array the modified record
+	 */
+	public function afterSave($theTable, $cmdKey, array $dataArray)
+	{
+		if ($cmdKey === 'create') {
+			$columns = $GLOBALS['TCA'][$theTable]['columns'];
+			foreach ($columns as $theField => $config) {
+				$fieldConfig = $config['config'];
+				if ($fieldConfig['type'] === 'inline' && $fieldConfig['foreign_table'] === 'sys_file_reference') {
+					if (is_array($dataArray[$theField])) {
+						$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
+						$connectionFileReference = $connectionPool->getConnectionForTable('sys_file_reference');
+						foreach ($dataArray[$theField] as $file) {
+							if ($file['table'] === 'sys_file') {
+								// Create the file reference
+								$connectionFileReference
+									->insert(
+										'sys_file_reference',
+										[
+											'pid' => (int)$dataArray['pid'],
+											'table_local' => 'sys_file',
+											'uid_local' => (int)$file['uid'],
+											'tablenames' => $theTable,
+											'uid_foreign' => (int)$dataArray['uid'],
+											'fieldname' => $theField
+										]
+									);
+							}
+						}
+						// Update the inline count
+						$dataArray[$theField] = count($dataArray[$theField]);
+						$connectionPool->getConnectionForTable($theTable)
+							->update(
+								$theTable,
+								[$theField => $dataArray[$theField]],
+								['uid' => (int)$dataArray['uid']]
+							);
+					}
+				}
+			}
+		}
+		return $dataArray;
+	}
+
+	/**
+	 * On creation, create file references and set file reference count
+	 *
+	 * @param string $theTable: the name of the table in use
+	 * @param int $uid: uid of the current record
+	 * @return void
+	 */
+	public function deleteFileReferences($theTable, $uid)
+	{
+		$fileRepository = GeneralUtility::makeInstance(FileRepository::class);
+		foreach ($GLOBALS['TCA'][$theTable]['columns'] as $theField => $fieldConf) {
+			if ($fieldConf['config']['type'] === 'inline' && $fieldConf['config']['foreign_table'] === 'sys_file_reference') {
+				$fileReferences = $fileRepository->findByRelation($theTable, $theField, (int)$uid);
+				foreach ($fileReferences as $fileReference) {
+					$file = [
+						'name' => $fileReference->getName(),
+						'uid' => $fileReference->getUid(),
+						'type' => 'sys_file_reference',
+						'submit_delete' => 1
+					];
+					$this->deleteFile($file, $theTable, $theField, $uid);
+				}
+			}
+		}
+	}
+
+	/**
 	 * Adds uploading markers to a marker array
 	 *
 	 * @param string $theTable: the name of the table in use
@@ -415,8 +502,21 @@ class FileUploadHooks
 					$filenameArray[] = [
 						'name' => $fileReference->getName(),
 						'uid' => $fileReference->getUid(),
-						'url' => $fileReference->getPublicUrl()
+						'url' => $fileReference->getPublicUrl(),
+						'type' => 'sys_file_reference'
 					];
+				}
+			} else {
+				if (is_array($dataArray[$theField])) {
+					foreach ($dataArray[$theField] as $file) {
+						$fileReference = $fileRepository->findByUid($file['uid']);
+						$filenameArray[] = [
+							'name' => $fileReference->getName(),
+							'uid' => $fileReference->getUid(),
+							'url' => $fileReference->getPublicUrl(),
+							'type' => 'sys_file'
+						];
+					}
 				}
 			}
 			$fileUploader = $this->buildFileUploader($theTable, $theField, $cmd, $cmdKey, $filenameArray, $viewOnly, $activity, $bHtml, $extensionName, $prefixId, $conf);
@@ -520,9 +620,10 @@ class FileUploadHooks
 			for ($i = 0; $i < count($filenameArray); $i++) {
 				$HTMLContent .=
 					$filenameArray[$i]['name']
-					 . '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][name]" value="' . htmlspecialchars($filenameArray[$i]['name']) . '">'
+					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][name]" value="' . htmlspecialchars($filenameArray[$i]['name']) . '">'
 					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]" value="0">'
-					 . '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][uid]" value="' . $filenameArray[$i]['uid'] . '">'
+					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][uid]" value="' . $filenameArray[$i]['uid'] . '">'
+					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][type]" value="' . $filenameArray[$i]['type'] . '">'
 					. '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($conf['icon_delete']) . '"  title="' . LocalizationUtility::translate('icon_delete', $extensionName) . '" alt="' . LocalizationUtility::translate('icon_delete', $extensionName) . '"' .
 					CssUtility::classParam($prefixId, 'delete-view') .
 					' onclick=\'if(confirm("' . LocalizationUtility::translate('confirm_file_delete', $extensionName) . '")) { var form = window.document.getElementById("' . $formName . '"); form["' . $prefixId . '[fileDelete]"].value = 1; form["FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]"].value = 1; return true;} else { return false;} \' />'

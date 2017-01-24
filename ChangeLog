@@ -1,3 +1,6 @@
+2017-01-23 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Follow-up to Resolves ##79423: Migrate upload fields (image) to FAL
+
 2017-01-22 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves ##79423: Migrate upload fields (image) to FAL
 

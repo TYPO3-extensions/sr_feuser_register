@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Controller;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,7 +28,10 @@ use SJBR\SrFeuserRegister\Utility\HashUtility;
 use SJBR\SrFeuserRegister\Security\SessionData;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\View\AbstractView;
+use SJBR\SrFeuserRegister\View\AfterSaveView;
+use SJBR\SrFeuserRegister\View\CreateView;
 use SJBR\SrFeuserRegister\View\Marker;
+use SJBR\SrFeuserRegister\View\PlainView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -65,7 +68,7 @@ class CreateActionController extends AbstractActionController
 			// Displaying an empty form
 			$finalDataArray = $this->data->defaultValues($cmdKey);
 			$this->marker->setNoError($cmdKey);
-			$createView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\CreateView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+			$createView = GeneralUtility::makeInstance(CreateView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 			$content = $createView->render($finalDataArray, $origArray, $securedArray, $cmd, $cmdKey, $mode);
 		} else {
 			$this->data->setName($finalDataArray, $cmdKey);
@@ -125,7 +128,7 @@ class CreateActionController extends AbstractActionController
 					} else {
 						$key = 'CREATE' . Marker::SAVED_SUFFIX;
 					}
-					$afterSaveView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\AfterSaveView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+					$afterSaveView = GeneralUtility::makeInstance(AfterSaveView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 					$content = $afterSaveView->render($finalDataArray, $origArray, $securedArray, $cmd, $cmdKey, $key);
 					if ($this->conf['enableAdminReview'] && !$isCustomerConfirmsMode) {
 						// Send admin the confirmation email
@@ -168,13 +171,13 @@ class CreateActionController extends AbstractActionController
 					}
 				} else if ($this->data->getError()) {
 					// If there was an error, we return an error message
-					$errorView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\PlainView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+					$errorView = GeneralUtility::makeInstance(PlainView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 					$content = $errorView->render($this->data->getError(), $finalDataArray, $origArray, $securedArray, $cmd, $cmdKey);
-				} 
+				}
 			} else {
 				// There has been no attempt to save.
 				// That is either preview or displaying a not correctly filled form
-				$createView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\CreateView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+				$createView = GeneralUtility::makeInstance(CreateView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 				$content = $createView->render($finalDataArray, $origArray, $securedArray, $cmd === 'invite' ? $cmd : 'create', $cmdKey, $mode);
 			}
 		}

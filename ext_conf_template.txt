@@ -1,6 +1,6 @@
 
-  # cat=basic; type=string; label=Image upload folder: Specify the name of the image upload folder. Default is 2:/tx_srfeuserregister/.
-uploadFolder = 2:/tx_srfeuserregister/
+  # cat=basic; type=string; label=Image upload folder: Specify the name of the image upload folder. Default is 2:/tx_srfeuserregister/ in TYPO3 CMS 8 LTS and uploads/tx_srfeuserregister in TYPO3 CMS 7 LTS.
+uploadFolder = 
 
   # cat=basic; type=string; label=Allowed image types: Specify the list of acceptable file extensions for the front end user images. Default is gif,jpg,jpeg,tif,tiff,bmp,pcx,tga,png,ai,svg.
 imageTypes = gif,jpg,jpeg,tif,tiff,bmp,pcx,tga,png,ai,svg
