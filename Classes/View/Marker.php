@@ -1041,7 +1041,12 @@ class Marker
 			foreach ($fieldArray as $theField) {
 				$value = $dataArray[$theField];
 				if (is_array($value)) {
-					$value = implode (',', $value);
+					$fieldConfig = $GLOBALS['TCA'][$this->theTable]['columns'][$theField]['config']; 
+					if ($fieldConfig['type'] === 'inline' && $fieldConfig['foreign_table'] === 'sys_file_reference') {
+						$value = htmlspecialchars(serialize($value));
+					} else {
+						$value = implode(',', $value);
+					}
 				} else {
 					$value = htmlspecialchars($dataArray[$theField]);
 				}
