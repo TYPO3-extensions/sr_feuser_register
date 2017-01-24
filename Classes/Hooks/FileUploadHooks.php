@@ -495,11 +495,11 @@ class FileUploadHooks
 		$fieldConfig = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config'];
 		if ($fieldConfig['type'] === 'inline' && $fieldConfig['foreign_table'] === 'sys_file_reference') {
 			$fileRepository = GeneralUtility::makeInstance(FileRepository::class);
-			$filenameArray = [];
+			$fileNameArray = [];
 			if ($dataArray['uid']) {
 				$fileReferences = $fileRepository->findByRelation($theTable, $theField, $dataArray['uid']);
 				foreach ($fileReferences as $fileReference) {
-					$filenameArray[] = [
+					$fileNameArray[] = [
 						'name' => $fileReference->getName(),
 						'uid' => $fileReference->getUid(),
 						'url' => $fileReference->getPublicUrl(),
@@ -510,7 +510,7 @@ class FileUploadHooks
 				if (is_array($dataArray[$theField])) {
 					foreach ($dataArray[$theField] as $file) {
 						$fileReference = $fileRepository->findByUid($file['uid']);
-						$filenameArray[] = [
+						$fileNameArray[] = [
 							'name' => $fileReference->getName(),
 							'uid' => $fileReference->getUid(),
 							'url' => $fileReference->getPublicUrl(),
@@ -519,7 +519,7 @@ class FileUploadHooks
 					}
 				}
 			}
-			$fileUploader = $this->buildFileUploader($theTable, $theField, $cmd, $cmdKey, $filenameArray, $viewOnly, $activity, $bHtml, $extensionName, $prefixId, $conf);
+			$fileUploader = $this->buildFileUploader($theTable, $theField, $cmd, $cmdKey, $fileNameArray, $viewOnly, $activity, $bHtml, $extensionName, $prefixId, $conf);
 			if ($viewOnly) {
 				$markerArray['###UPLOAD_PREVIEW_' . $theField . '###'] = $fileUploader;
 			} else {
@@ -558,8 +558,8 @@ class FileUploadHooks
 		$markerArray = [];
 		$fieldConfig = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config'];
 		if ($fieldConfig['type'] === 'group' && $fieldConfig['internal_type'] === 'file' && !empty($fieldConfig['uploadfolder'])) {
-			$filenameArray = is_array($dataArray[$theField]) ? $dataArray[$theField] : [];
-			$fileUploader = $this->buildCompatibleFileUploader($theTable, $theField, $cmd, $cmdKey, $filenameArray, $viewOnly, $activity, $bHtml, $extensionName, $prefixId, $conf);
+			$fileNameArray = is_array($dataArray[$theField]) ? $dataArray[$theField] : [];
+			$fileUploader = $this->buildCompatibleFileUploader($theTable, $theField, $cmd, $cmdKey, $fileNameArray, $viewOnly, $activity, $bHtml, $extensionName, $prefixId, $conf);
 			if ($viewOnly) {
 				$markerArray['###UPLOAD_PREVIEW_' . $theField . '###'] = $fileUploader;
 			} else {
@@ -579,7 +579,7 @@ class FileUploadHooks
 	 * @param string $theField: the field name
 	 * @param string $cmd: the command CODE
 	 * @param string $cmdKey: the command key
-	 * @param array $filenameArray: array of uploaded file names
+	 * @param array $fileArray: array of uploaded files
 	 * @param boolean $viewOnly: whether the fields are presented for view only or for input/update
 	 * @param string $activity: 'preview', 'input' or 'email': parameter of stdWrap configuration
 	 * @param bool $bHtml: wheter HTML or plain text should be generated
@@ -588,54 +588,52 @@ class FileUploadHooks
 	 * @param array $conf: the plugin configuration
 	 * @return string generated HTML uploading tags
 	 */
-	protected function buildFileUploader($theTable, $theField, $cmd, $cmdKey, array $filenameArray, $viewOnly = false, $activity = '', $bHtml = true, $extensionName, $prefixId, array $conf)
+	protected function buildFileUploader($theTable, $theField, $cmd, $cmdKey, array $fileArray, $viewOnly = false, $activity = '', $bHtml = true, $extensionName, $prefixId, array $conf)
 	{
 		$HTMLContent = '';
-		$fieldConfig = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config'];
-		$size = $fieldConfig['maxitems'];
+		$size = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config']['maxitems'];
 		$cmdParts = preg_split('/\[|\]/', $conf[$cmdKey . '.']['evalValues.'][$theField]);
 		if (!empty($cmdParts[1])) {
 			$size = min($size, (int) $cmdParts[1]);
 		}
-		$size = $size ? $size : 1;
-		$number = $size - count($filenameArray);
-		$dir = $config['uploadfolder'];
+		$size = $size ?: 1;
+		$number = $size - count($fileArray);
 		if ($viewOnly) {
-			for ($i = 0; $i < count($filenameArray); $i++) {
-				$HTMLContent .= $filenameArray[$i]['name'];
-				if ($activity == 'email') {
+			foreach ($fileArray as $file) {
+				$HTMLContent .= $file['name'];
+				if ($activity === 'email') {
 					if ($bHtml)	{
 						$HTMLContent .= '<br />';
 					} else {
-						$HTMLContent .= chr(13) . chr(10);
+						$HTMLContent .= CR . LF;
 					}
 				} else if ($bHtml) {
-					$HTMLContent .= '<a href="' . $filenameArray[$i]['url'] . '"' .
+					$HTMLContent .= '<a href="' . $file['url'] . '"' .
 					CssUtility::classParam($prefixId, 'file-view') .
 					' target="_blank" title="' . LocalizationUtility::translate('file_view', $extensionName) . '">' . LocalizationUtility::translate('file_view', $extensionName) . '</a><br />';
 				}
 			}
 		} else {
-			$formName = $this->conf['formName'] ?: CssUtility::getClassName($prefixId, $theTable . '_form');
-			for ($i = 0; $i < count($filenameArray); $i++) {
+			$formName = $conf['formName'] ?: CssUtility::getClassName($prefixId, $theTable . '_form');
+			foreach ($fileArray as $i => $file) {
 				$HTMLContent .=
-					$filenameArray[$i]['name']
-					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][name]" value="' . htmlspecialchars($filenameArray[$i]['name']) . '">'
+					$file['name']
+					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][name]" value="' . htmlspecialchars($file['name']) . '">'
 					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]" value="0">'
-					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][uid]" value="' . $filenameArray[$i]['uid'] . '">'
-					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][type]" value="' . $filenameArray[$i]['type'] . '">'
+					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][uid]" value="' . $file['uid'] . '">'
+					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][type]" value="' . $file['type'] . '">'
 					. '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($conf['icon_delete']) . '"  title="' . LocalizationUtility::translate('icon_delete', $extensionName) . '" alt="' . LocalizationUtility::translate('icon_delete', $extensionName) . '"' .
 					CssUtility::classParam($prefixId, 'delete-view') .
 					' onclick=\'if(confirm("' . LocalizationUtility::translate('confirm_file_delete', $extensionName) . '")) { var form = window.document.getElementById("' . $formName . '"); form["' . $prefixId . '[fileDelete]"].value = 1; form["FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]"].value = 1; return true;} else { return false;} \' />'
-					. '<a href="' . $filenameArray[$i]['url'] . '" ' .
+					. '<a href="' . $file['url'] . '" ' .
 					CssUtility::classParam($prefixId, 'file-view') .
 					' target="_blank" title="' . LocalizationUtility::translate('file_view', $extensionName) . '">' .
 					LocalizationUtility::translate('file_view', $extensionName) . '</a><br />';
 			}
-			for ($i = count($filenameArray); $i < $number + count($filenameArray); $i++) {
+			for ($i = count($fileArray); $i < $number + count($fileArray); $i++) {
 				$HTMLContent .= '<input id="' .
 				CssUtility::getClassName($prefixId, $theField) .
-				'-' . ($i - count($filenameArray)) . '" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . ']" title="' . LocalizationUtility::translate('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'image', $extensionName) . '" size="40" type="file" ' .
+				'-' . ($i - count($fileArray)) . '" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . ']" title="' . LocalizationUtility::translate('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'image', $extensionName) . '" size="40" type="file" ' .
 				CssUtility::classParam($prefixId, 'uploader-view') .
 				' /><br />';
 			}
@@ -652,7 +650,7 @@ class FileUploadHooks
 	 * @param string $theField: the field name
 	 * @param string $cmd: the command CODE
 	 * @param string $cmdKey: the command key
-	 * @param array $filenameArray: array of uploaded file names
+	 * @param array $fileNameArray: array of uploaded file names
 	 * @param boolean $viewOnly: whether the fields are presented for view only or for input/update
 	 * @param string $activity: 'preview', 'input' or 'email': parameter of stdWrap configuration
 	 * @param bool $bHtml: wheter HTML or plain text should be generated
@@ -661,52 +659,52 @@ class FileUploadHooks
 	 * @param array $conf: the plugin configuration
 	 * @return string generated HTML uploading tags
 	 */
-	protected function buildCompatibleFileUploader($theTable, $theField, $cmd, $cmdKey, array $filenameArray, $viewOnly = false, $activity = '', $bHtml = true, $extensionName, $prefixId, array $conf)
+	protected function buildCompatibleFileUploader($theTable, $theField, $cmd, $cmdKey, array $fileNameArray, $viewOnly = false, $activity = '', $bHtml = true, $extensionName, $prefixId, array $conf)
 	{
 		$HTMLContent = '';
-		$config = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config'];
-		$size = $config['maxitems'];
+		$fieldConfig = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config'];
+		$size = $fieldConfig['maxitems'];
 		$cmdParts = preg_split('/\[|\]/', $conf[$cmdKey . '.']['evalValues.'][$theField]);
 		if (!empty($cmdParts[1])) {
 			$size = min($size, (int) $cmdParts[1]);
 		}
-		$size = $size ? $size : 1;
-		$number = $size - count($filenameArray);
-		$dir = $config['uploadfolder'];
+		$size = $size ?: 1;
+		$number = $size - count($fileNameArray);
+		$dir = $fieldConfig['uploadfolder'];
 		if ($viewOnly) {
-			for ($i = 0; $i < count($filenameArray); $i++) {
-				$HTMLContent .= $filenameArray[$i];
-				if ($activity == 'email') {
+			foreach ($fileNameArray as $fileName) {
+				$HTMLContent .= $fileName;
+				if ($activity === 'email') {
 					if ($bHtml)	{
 						$HTMLContent .= '<br />';
 					} else {
-						$HTMLContent .= chr(13) . chr(10);
+						$HTMLContent .= CR . LF;
 					}
 				} else if ($bHtml) {
-					$HTMLContent .= '<a href="' . $dir . '/' . $filenameArray[$i] . '"' .
-					CssUtility::classParam($prefixId, 'file-view') .
-					' target="_blank" title="' . LocalizationUtility::translate('file_view', $extensionName) . '">' . LocalizationUtility::translate('file_view', $extensionName) . '</a><br />';
+					$HTMLContent .= '<a href="' . $dir . '/' . $fileName . '"'
+					. CssUtility::classParam($prefixId, 'file-view')
+					. ' target="_blank" title="' . LocalizationUtility::translate('file_view', $extensionName) . '">' . LocalizationUtility::translate('file_view', $extensionName) . '</a><br />';
 				}
 			}
 		} else {
-			$formName = $this->conf['formName'] ?: CssUtility::getClassName($prefixId, $theTable . '_form');
-			for ($i = 0; $i < count($filenameArray); $i++) {
+			$formName = $conf['formName'] ?: CssUtility::getClassName($prefixId, $theTable . '_form');
+			foreach ($fileNameArray as $i => $fileName) {
 				$HTMLContent .=
-					$filenameArray[$i]
-					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][name]" value="' . htmlspecialchars($filenameArray[$i]) . '">'
+					$fileName
+					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][name]" value="' . htmlspecialchars($fileName) . '">'
 					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]" value="0">'
 					. '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($conf['icon_delete']) . '"  title="' . LocalizationUtility::translate('icon_delete', $extensionName) . '" alt="' . LocalizationUtility::translate('icon_delete', $extensionName) . '"' .
 					CssUtility::classParam($prefixId, 'delete-view') .
 					' onclick=\'if(confirm("' . LocalizationUtility::translate('confirm_file_delete', $extensionName) . '")) { var form = window.document.getElementById("' . $formName . '"); form["' . $prefixId . '[fileDelete]"].value = 1; form["FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]"].value = 1; return true;} else { return false;} \' />'
-					. '<a href="' . $dir . '/' . $filenameArray[$i] . '" ' .
+					. '<a href="' . $dir . '/' . $fileName . '" ' .
 					CssUtility::classParam($prefixId, 'file-view') .
 					' target="_blank" title="' . LocalizationUtility::translate('file_view', $extensionName) . '">' .
 					LocalizationUtility::translate('file_view', $extensionName) . '</a><br />';
 			}
-			for ($i = count($filenameArray); $i < $number + count($filenameArray); $i++) {
+			for ($i = count($fileNameArray); $i < $number + count($fileNameArray); $i++) {
 				$HTMLContent .= '<input id="' .
 				CssUtility::getClassName($prefixId, $theField) .
-				'-' . ($i - count($filenameArray)) . '" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . ']" title="' . LocalizationUtility::translate('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'image', $extensionName) . '" size="40" type="file" ' .
+				'-' . ($i - count($fileNameArray)) . '" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . ']" title="' . LocalizationUtility::translate('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'image', $extensionName) . '" size="40" type="file" ' .
 				CssUtility::classParam($prefixId, 'uploader-view') .
 				' /><br />';
 			}

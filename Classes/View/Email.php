@@ -318,12 +318,12 @@ class Email
 				$this->marker->addSetfixedUrlMarkers($setfixedUrls);
 			}
 			$this->marker->addStaticInfoMarkers($row, $viewOnly);
-			$infoFields = implode(',', $GLOBALS['TCA'][$this->theTable]['columns']);
-			$this->marker->addAdditionalMarkers($infoFields, $cmd, $cmdKey, $row, $viewOnly, 'email', ($emailType == 'html'));
 			$this->marker->addLabelMarkers($row, $origRow, $securedArray, $keepFields, $this->data->getRequiredFieldsArray($cmdKey), $this->data->getFieldList(), $this->data->getSpecialFieldList(), $changesOnly);
+			$infoFields = implode(',', array_keys($row));
 			foreach ($contentIndexArray as $emailType => $indexArray) {
 				$this->marker->fillInMarkerArray($mrow, $securedArray, '', false, 'FIELD_', ($emailType === 'html'));
 				$this->marker->addTcaMarkers($row, $origRow, $cmd, $cmdKey, $viewOnly, $this->data->getRequiredFieldsArray($cmdKey), 'email', $changesOnly, ($emailType === 'html'));
+				$this->marker->addAdditionalMarkers($infoFields, $cmd, $cmdKey, $row, $viewOnly, 'email', ($emailType === 'html'));
 				foreach ($indexArray as $index) {
 					$content[$index]['rec'] = $this->marker->removeNonIncluded($content[$index]['rec'], array_keys($mrow), $cmdKey);
 					$content[$index]['rec'] = $this->marker->removeStaticInfoSubparts($content[$index]['rec'], $viewOnly);
