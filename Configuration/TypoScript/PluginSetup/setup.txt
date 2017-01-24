@@ -80,7 +80,7 @@ plugin.tx_srfeuserregister_pi1 {
 
 		evalValues {
 			password = twice, atLeast[{$plugin.tx_srfeuserregister_pi1.passwordAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.passwordAtMost}]
-			username = uniqueLocal, alphanum, atLeast[{$plugin.tx_srfeuserregister_pi1.usernameAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.usernameAtMost}]
+			username = uniqueLocal, atLeast[{$plugin.tx_srfeuserregister_pi1.usernameAtLeast}], atMost[{$plugin.tx_srfeuserregister_pi1.usernameAtMost}]
 			email = email,atMost[255],uniqueLocal
 			gender =
 			name = atMost[{$plugin.tx_srfeuserregister_pi1.nameAtMost}]
@@ -195,7 +195,7 @@ plugin.tx_srfeuserregister_pi1 {
 	forceFileDelete = {$plugin.tx_srfeuserregister_pi1.forceFileDelete}
 
 	parseValues {
-		username = nospace,trim,alphanum_x
+		username = nospace,trim
 		email = trim
 		password = trim
 		gender = int
