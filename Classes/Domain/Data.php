@@ -1300,7 +1300,7 @@ class Data
 			return false;
 		} else {
 			// TYPO3 CMS 7 LTS
-			return $this->cObj->DBgetUpdate($this->theTable, $uid, $dataArr, $fieldlist, true);
+			return $this->cObj->DBgetUpdate($this->theTable, $uid, $dataArr, $fieldList, true);
 		}
 	}
 
