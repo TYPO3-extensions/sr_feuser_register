@@ -1527,11 +1527,11 @@ class Data
 							'uid_' . $side => (int)$row['uid'],
 							'tablenames' => $tablenames ?: '',					
 							'fieldname' => $fieldname ?: '',
-							'sorting_' . $side => 0
+							'sorting' . ($side === 'foreign' ? '_' . $side : '') => 0
 						];
 						foreach ($valuesArray as $theValue) {
 							$insertFields['uid_' . $oppositeSide] = (int)$theValue;
-							$insertFields['sorting_' . $side]++;
+							$insertFields['sorting' . ($side === 'foreign' ? '_' . $side : '')]++;
 							$connection->insert(
 								$colSettings['config']['MM'],
 								$insertFields
@@ -1549,11 +1549,11 @@ class Data
 							'uid_' . $side => (int)$row['uid'],
 							'tablenames' => $tablenames ?: '',					
 							'fieldname' => $fieldname ?: '',
-							'sorting_' . $side => 0
+							'sorting' . ($side === 'foreign' ? '_' . $side : '') => 0
 						];
 						foreach ($valuesArray as $theValue) {
 							$insertFields['uid_' . $oppositeSide] = (int)$theValue;
-							$insertFields['sorting_' . $side]++;
+							$insertFields['sorting' . ($side === 'foreign' ? '_' . $side : '')]++;
 							$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
 								$colSettings['config']['MM'],
 								$insertFields
@@ -1935,25 +1935,27 @@ class Data
 			switch ($colConfig['type']) {
 				case 'select':
 					if ($colConfig['MM'] && $colConfig['foreign_table']) {
+						$side = isset($colConfig['MM_opposite_field']) ? 'foreign' : 'local';
+						$oppositeSide = ($side === 'foreign') ?  'local' : 'foreign';
+						$valueArray = [];
 						if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 							$queryBuilder = $connectionPool->getQueryBuilderForTable($colConfig['MM']);
 							$query = $queryBuilder
-								->select('uid_foreign')
+								->select('uid_' . $oppositeSide)
 								->from($colConfig['MM'])
 								->where(
-									$queryBuilder->expr()->eq('uid_local', $queryBuilder->createNamedParameter((int)$dataArray['uid'], \PDO::PARAM_INT))
+									$queryBuilder->expr()->eq('uid_' . $side, $queryBuilder->createNamedParameter((int)$dataArray['uid'], \PDO::PARAM_INT))
 								)
 								->execute();
 							while ($row = $query->fetch()) {
-								$valueArray[] = $row['uid_foreign'];
+								$valueArray[] = $row['uid_' . $oppositeSide];
 							}
 						} else {
 							// TYPO3 CMS 7 LTS
-							$where = 'uid_local = ' . $dataArray['uid'];
-							$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', $colConfig['MM'], $where);
-							$valueArray = array();
+							$where = 'uid_' . $side . ' = ' . (int)$dataArray['uid'];
+							$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_' . $oppositeSide, $colConfig['MM'], $where);
 							while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-								$valueArray[] = $row['uid_foreign'];
+								$valueArray[] = $row['uid_' . $oppositeSide];
 							}
 						}
 						$rcArray[$colName] = implode(',', $valueArray);
@@ -2005,33 +2007,35 @@ class Data
 						if ($value == '' || is_array($value)) {
 							// the values from the mm table are already available as an array
 						} else if ($bColumnIsCount) {
-							$valuesArray = array();
+							$side = isset($colConfig['MM_opposite_field']) ? 'foreign' : 'local';
+							$oppositeSide = ($side === 'foreign') ?  'local' : 'foreign';
+							$valuesArray = [];
 							if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
 								$queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
 									->getQueryBuilderForTable($colConfig['MM']);
 								$queryBuilder->getRestrictions()->removeAll();
 								$query = $queryBuilder
-									->select('uid_local','uid_foreign', 'sorting')
+									->select('uid_local','uid_foreign', 'sorting' . ($side === 'foreign' ? '_' . $side : ''))
 									->from($colConfig['MM'])
 									->where(
-										$queryBuilder->expr()->eq('uid_local', $queryBuilder->createNamedParameter((int)$dataArray['uid'], \PDO::PARAM_INT))
+										$queryBuilder->expr()->eq('uid_' . $side, $queryBuilder->createNamedParameter((int)$dataArray['uid'], \PDO::PARAM_INT))
 									)
-									->orderBy('sorting')
+									->orderBy('sorting' . ($side === 'foreign' ? '_' . $side : ''))
 									->execute();
 								while ($row = $query->fetch()) {
-									$valuesArray[] = $row['uid_foreign'];
+									$valuesArray[] = $row['uid_' . $oppositeSide];
 								}
 							} else {
 								// TYPO3 CMS 7 LTS
 								$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-									'uid_local,uid_foreign,sorting',
+									'uid_local,uid_foreign,sorting' . ($side === 'foreign' ? '_' . $side : ''),
 									$colConfig['MM'],
-									'uid_local=' . (int)$dataArray['uid'],
+									'uid_' . $side . '=' . (int)$dataArray['uid'],
 									'',
-									'sorting'
+									'sorting' . ($side === 'foreign' ? '_' . $side : '')
 								);
 								while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-									$valuesArray[] = $row['uid_foreign'];
+									$valuesArray[] = $row['uid_' . $oppositeSide];
 								}
 							}
 							$dataArray[$colName] = $valuesArray;
