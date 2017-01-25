@@ -1,3 +1,6 @@
+2017-01-25 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Code cleanup
+
 2017-01-24 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up to Resolves ##79423: Migrate upload fields (image) to FAL
 	* Resolves #79449: Allow special characters in username in default configuration

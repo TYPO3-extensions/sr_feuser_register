@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Captcha;
 /*
  *  Copyright notice
  *
- *  (c) 2012-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2012-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,6 +23,7 @@ namespace SJBR\SrFeuserRegister\Captcha;
  */
 
 use SJBR\SrFeuserRegister\Captcha\CaptchaInterface;
+use SJBR\SrFreecap\PiBaseApi;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -34,7 +35,7 @@ class Freecap implements CaptchaInterface
 	/**
 	 * SrFreecap object
 	 *
-	 * @var \SJBR\SrFreecap\PiBaseApi
+	 * @var PiBaseApi
 	 */
 	protected $srFreecap = null;
 
@@ -114,7 +115,7 @@ class Freecap implements CaptchaInterface
 	protected function initialize()
 	{
 		if ($this->srFreecap === null && $this->isLoaded()) {
-			$this->srFreecap = GeneralUtility::makeInstance('SJBR\\SrFreecap\\PiBaseApi');
+			$this->srFreecap = GeneralUtility::makeInstance(PiBaseApi::class);
 		}
 		return $this->srFreecap;
 	}

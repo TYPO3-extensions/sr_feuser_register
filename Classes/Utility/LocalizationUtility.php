@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Utility;
 /*
  *  Copyright notice
  *
- *  (c) 2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2015-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,6 +24,7 @@ namespace SJBR\SrFeuserRegister\Utility;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Translate a key from locallang. The files are loaded from the folder "Resources/Private/Language/".
@@ -41,7 +42,7 @@ class LocalizationUtility
 	static protected $suffix = null;
 
 	/**
-	 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+	 * @var ConfigurationManager
 	 */
 	static protected $configurationManager = null;
 
@@ -120,14 +121,14 @@ class LocalizationUtility
 	/**
 	 * Returns instance of the configuration manager
 	 *
-	 * @return \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+	 * @return ConfigurationManager
 	 */
 	static protected function getConfigurationManager() {
 		if (!is_null(static::$configurationManager)) {
 			return static::$configurationManager;
 		}
-		$objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-		$configurationManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManagerInterface');
+		$objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+		$configurationManager = $objectManager->get(ConfigurationManager::class);
 		static::$configurationManager = $configurationManager;
 		return $configurationManager;
 	}

@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Controller;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,6 +27,7 @@ use SJBR\SrFeuserRegister\Controller\AbstractActionController;
 use SJBR\SrFeuserRegister\Utility\HashUtility;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\View\Marker;
+use SJBR\SrFeuserRegister\View\PlainView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -72,13 +73,13 @@ class InfomailActionController extends AbstractActionController
 			}
 			$subpartKey = '###TEMPLATE_' . Marker::INFOMAIL_PREFIX . 'SENT###';
 			$this->marker->addGeneralHiddenFieldsMarkers($cmd, $this->parameters->getAuthCode(), $this->parameters->getBackURL());
-			$plainView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\PlainView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+			$plainView = GeneralUtility::makeInstance(PlainView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 			$content = $plainView->render($subpartKey, is_array($DBrows) ? $DBrows[0] : (is_array($fetchArray) ? $fetchArray[0] : array()), $origArray, $securedArray, $cmd, $cmdKey);
 		} else {
 			$subpartKey = '###TEMPLATE_INFOMAIL###';
 			$markerArray['###FIELD_email###'] = empty($fetch) ? '' : htmlspecialchars($fetch);
 			$this->marker->addGeneralHiddenFieldsMarkers($cmd, $this->parameters->getAuthCode(), $this->parameters->getBackURL());
-			$plainView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\PlainView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+			$plainView = GeneralUtility::makeInstance(PlainView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 			$content.= $plainView->render($subpartKey, array(), $origArray, $securedArray, $cmd, $cmdKey);
 		}
 		if ($this->parameters->getValidRegHash()) {

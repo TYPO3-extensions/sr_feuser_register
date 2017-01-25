@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Configuration;
 /*
  *  Copyright notice
  *
- *  (c) 2004-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2004-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -123,7 +123,7 @@ class ConfigurationCheck
 		$content = '';
 		$messages = array();
 		$extensionName = GeneralUtility::underscoredToUpperCamelCase($extensionKey);
-		$cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+		$cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 		$templateCode = $cObj->fileResource($conf['templateFile']);
 		// These changes apply only to sr_feuser_register
 		if ($extensionKey === 'sr_feuser_register') {
@@ -137,7 +137,7 @@ class ConfigurationCheck
 				'###TEMPLATE_INFOMAIL_SENT###',
 				'###EMAIL_TEMPLATE_INFOMAIL###',
 			);
-			$removeMarkerMessage = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('LLL:EXT:' . $extensionKey . '/Resources/Private/Language/locallang.xlf:internal_remove_deprecated_marker', $extensionName);
+			$removeMarkerMessage = LocalizationUtility::translate('LLL:EXT:' . $extensionKey . '/Resources/Private/Language/locallang.xlf:internal_remove_deprecated_marker', $extensionName);
 			foreach ($removeMarkers as $marker) {
 				if (strpos($templateCode, $marker) !== FALSE) {
 					$messages[] = sprintf($removeMarkerMessage, $marker, $fileName);
@@ -164,7 +164,7 @@ class ConfigurationCheck
 					'replacement' => '###LABEL_V_REGISTRATION_INFOMAIL_MESSAGE1A_INFORMAL###',
 				),
 			);
-			$replaceMarkerMessage = \SJBR\SrFeuserRegister\Utility\LocalizationUtility::translate('LLL:EXT:' . $extensionKey . '/Resources/Private/Language/locallang.xlf:internal_replace_deprecated_marker', $extensionName);
+			$replaceMarkerMessage = LocalizationUtility::translate('LLL:EXT:' . $extensionKey . '/Resources/Private/Language/locallang.xlf:internal_replace_deprecated_marker', $extensionName);
 			foreach ($replaceMarkers as $replaceMarker) {
 				if (strpos($templateCode, $replaceMarker['marker']) !== false) {
 					$messages[] = sprintf($replaceMarkerMessage, $replaceMarker['marker'], $replaceMarker['replacement'], $fileName);
