@@ -1512,21 +1512,26 @@ class Data
 		foreach ($GLOBALS['TCA'][$this->theTable]['columns'] as $colName => $colSettings) {
 			if (in_array($colName, $fieldsList) && $colSettings['config']['type'] === 'select' && $colSettings['config']['MM']) {
 				$valuesArray = $row[$colName];
+				$side = isset($colSettings['config']['MM_opposite_field']) ? 'foreign' : 'local';
+				$oppositeSide = ($side === 'foreign') ?  'local' : 'foreign';
 				if (isset($valuesArray) && is_array($valuesArray)) {
-					if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
+					if (is_object($connectionPool)) {
 						$connection = $connectionPool->getConnectionForTable($colSettings['config']['MM']);
 						$connection->delete(
 							$colSettings['config']['MM'],
-							['uid_local=' => (int)$row['uid']]
+							['uid_' . $side => (int)$row['uid']]
 						);
+						$tablenames = $colSettings['config']['MM_match_fields']['tablenames'];
+						$fieldname = $colSettings['config']['MM_match_fields']['fieldname'];
 						$insertFields = [
-							'uid_local' => (int)$row['uid'],
-							'tablenames' => '',
-							'sorting' => 0
+							'uid_' . $side => (int)$row['uid'],
+							'tablenames' => $tablenames ?: '',					
+							'fieldname' => $fieldname ?: '',
+							'sorting_' . $side => 0
 						];
 						foreach ($valuesArray as $theValue) {
-							$insertFields['uid_foreign'] = (int)$theValue;
-							$insertFields['sorting']++;
+							$insertFields['uid_' . $oppositeSide] = (int)$theValue;
+							$insertFields['sorting_' . $side]++;
 							$connection->insert(
 								$colSettings['config']['MM'],
 								$insertFields
@@ -1536,15 +1541,19 @@ class Data
 						// TYPO3 CMS 7 LTS
 						$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery(
 							$colSettings['config']['MM'],
-							'uid_local=' . intval($row['uid'])
+							'uid_' . $side . '=' . (int)$row['uid']
 						);
-						$insertFields = array();
-						$insertFields['uid_local'] = intval($row['uid']);
-						$insertFields['tablenames'] = '';
-						$insertFields['sorting'] = 0;
+						$tablenames = $colSettings['config']['MM_match_fields']['tablenames'];
+						$fieldname = $colSettings['config']['MM_match_fields']['fieldname'];
+						$insertFields = [
+							'uid_' . $side => (int)$row['uid'],
+							'tablenames' => $tablenames ?: '',					
+							'fieldname' => $fieldname ?: '',
+							'sorting_' . $side => 0
+						];
 						foreach ($valuesArray as $theValue) {
-							$insertFields['uid_foreign'] = intval($theValue);
-							$insertFields['sorting']++;
+							$insertFields['uid_' . $oppositeSide] = (int)$theValue;
+							$insertFields['sorting_' . $side]++;
 							$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
 								$colSettings['config']['MM'],
 								$insertFields
@@ -1569,16 +1578,20 @@ class Data
 		}
 		foreach ($GLOBALS['TCA'][$this->theTable]['columns'] as $colName => $colSettings) {
 			if (in_array($colName, $fieldsList) && $colSettings['config']['type'] === 'select' && $colSettings['config']['MM']) {
-				if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
+				$side = isset($colSettings['config']['MM_opposite_field']) ? 'foreign' : 'local';
+				if (is_object($connectionPool)) {
 					$connectionPool
 						->getConnectionForTable($colSettings['config']['MM'])
 						->delete(
 							$colSettings['config']['MM'],
-							['uid_local=' => (int)$uid]
+							['uid_' . $side => (int)$uid]
 						);
 				} else {
 					// TYPO3 CMS 7 LTS
-					$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery($colSettings['config']['MM'], 'uid_local=' . (int)$uid);
+					$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery(
+						$colSettings['config']['MM'],
+						'uid_' . $side . '=' . (int)$uid
+					);
 				}
 			}
 		}
