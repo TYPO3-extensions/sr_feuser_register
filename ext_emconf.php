@@ -36,7 +36,7 @@ $EM_CONF[$_EXTKEY] = array (
 		),
 		'suggests' => array(
 			'sr_freecap' => '2.4.0-2.4.99',
-			'direct_mail' => '4.1.0-5.9.99'
+			'direct_mail' => '5.1.0-5.9.99'
 		)
 	)
 );

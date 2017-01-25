@@ -1525,7 +1525,7 @@ class Data
 						$fieldname = $colSettings['config']['MM_match_fields']['fieldname'];
 						$insertFields = [
 							'uid_' . $side => (int)$row['uid'],
-							'tablenames' => $tablenames ?: '',					
+							'tablenames' => $tablenames ?: '',
 							'fieldname' => $fieldname ?: '',
 							'sorting' . ($side === 'foreign' ? '_' . $side : '') => 0
 						];
@@ -1547,7 +1547,7 @@ class Data
 						$fieldname = $colSettings['config']['MM_match_fields']['fieldname'];
 						$insertFields = [
 							'uid_' . $side => (int)$row['uid'],
-							'tablenames' => $tablenames ?: '',					
+							'tablenames' => $tablenames ?: '',
 							'fieldname' => $fieldname ?: '',
 							'sorting' . ($side === 'foreign' ? '_' . $side : '') => 0
 						];
