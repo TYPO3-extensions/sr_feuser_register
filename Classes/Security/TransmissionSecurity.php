@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Security;
 /*
  *  Copyright notice
  *
- *  (c) 2012-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2012-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -154,6 +154,7 @@ class TransmissionSecurity
 				break;
 		}
 	}
+
 	/**
 	 * Provide additional code for FE password encryption
 	 *
@@ -164,31 +165,8 @@ class TransmissionSecurity
 	{
 		$result = array(0 => '', 1 => '');
 		if (trim($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel']) === 'rsa') {
-			if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getNumericTypo3Version()) >= 7000000) {
-				$frontendLoginHook = GeneralUtility::makeInstance('TYPO3\\CMS\\Rsaauth\\Hook\\FrontendLoginHook');
-				$result = $frontendLoginHook->loginFormHook();
-			} else {
-					$backend = BackendFactory::getBackend();
-					if ($backend) {
-						$result[0] = 'return TYPO3FrontendLoginFormRsaEncryption.submitForm(this, TYPO3FrontendLoginFormRsaEncryptionPublicKeyUrl);';
-						$javascriptPath = ExtensionManagementUtility::siteRelPath('rsaauth') . 'resources/';
-						$files = array(
-							'jsbn/jsbn.js',
-							'jsbn/prng4.js',
-							'jsbn/rng.js',
-							'jsbn/rsa.js',
-							'jsbn/base64.js'
-						);
-						$eIdUrl = GeneralUtility::quoteJSvalue($GLOBALS['TSFE']->absRefPrefix . 'index.php?eID=FrontendLoginRsaPublicKey');
-						$additionalHeader = '<script type="text/javascript">var TYPO3FrontendLoginFormRsaEncryptionPublicKeyUrl = ' . $eIdUrl . ';</script>';
-						foreach ($files as $file) {
-							$additionalHeader .= '<script type="text/javascript" src="' . GeneralUtility::createVersionNumberedFilename($javascriptPath . $file) . '"></script>';
-						}
-						// See TYPO3/CMS/rsaauth/resources/FrontendLoginFormRsaEncryption.js
-						$additionalHeader .= '<script type="text/javascript" src="' . GeneralUtility::createVersionNumberedFilename(ExtensionManagementUtility::siteRelPath(self::$extensionKey) . 'Resources/Public/JavaScript/FormRsaEncryption.js') . '"></script>';
-						$GLOBALS['TSFE']->additionalHeaderData['rsaauth_js'] = $additionalHeader;
-					}
-			}
+			$frontendLoginHook = GeneralUtility::makeInstance(FrontendLoginHook::class);
+			$result = $frontendLoginHook->loginFormHook();
 		}
 		return $result;
 	}

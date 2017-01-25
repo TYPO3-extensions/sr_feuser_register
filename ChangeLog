@@ -4,6 +4,7 @@
 	* Update version to 5.0.0
 	* Resolves #76292: mm-relation: foreing uid is saved in uid_local and vice versa
 	* Resolves #79454: Use mb_strtoupper in Marker.php
+	* Resolves #79456: Remove deprecated code from TransmissionSecurity.php
 
 2017-01-23 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up to Resolves ##79423: Migrate upload fields (image) to FAL
