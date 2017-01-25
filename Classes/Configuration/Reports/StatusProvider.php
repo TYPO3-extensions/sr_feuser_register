@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Configuration\Reports;
 /*
  *  Copyright notice
  *
- *  (c) 2012-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2012-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -82,7 +82,7 @@ class StatusProvider implements StatusProviderInterface
 			$message = '';
 			$status = Status::OK;
 		}
-		return GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status', $title, $value, $message, $status);
+		return GeneralUtility::makeInstance(Status::class, $title, $value, $message, $status);
 	}
 
 	/**
@@ -110,7 +110,7 @@ class StatusProvider implements StatusProviderInterface
 			$message = '';
 			$status = Status::OK;
 		}
-		return GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status', $title, $value, $message, $status);
+		return GeneralUtility::makeInstance(Status::class, $title, $value, $message, $status);
 	}
 
 	/**
@@ -131,7 +131,7 @@ class StatusProvider implements StatusProviderInterface
 			$message = '';
 			$status = Status::OK;
 		}
-		return GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status', $title, $value, $message, $status);
+		return GeneralUtility::makeInstance(Status::class, $title, $value, $message, $status);
 	}
 
 	/**
@@ -151,6 +151,6 @@ class StatusProvider implements StatusProviderInterface
 			$message = '';
 			$status = Status::OK;
 		}
-		return GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status', $title, $value, $message, $status);
+		return GeneralUtility::makeInstance(Status::class, $title, $value, $message, $status);
 	}
 }

@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Security;
 /*
  *  Copyright notice
  *
- *  (c) 2015-2016 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2015-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,7 +27,6 @@ use SJBR\SrFeuserRegister\Security\StorageSecurity;
 use SJBR\SrFeuserRegister\Security\TransmissionSecurity;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 /**
  * Frontend user session data handling
@@ -259,11 +258,7 @@ class SessionData
 		$passwordRow = self::readPassword($extensionKey);
 		$passwordDecrypted = TransmissionSecurity::decryptIncomingFields($passwordRow);
 		if ($passwordDecrypted) {
-			if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getNumericTypo3Version()) >= 7000000) {
-				self::writePassword($extensionKey, $passwordRow['password'], $passwordRow['password_again']);
-			} else {
-				self::writePassword($extensionKey, $passwordRow['password'], $passwordRow['password']);
-			}
+			self::writePassword($extensionKey, $passwordRow['password'], $passwordRow['password_again']);
 		} else if (TransmissionSecurity::getTransmissionSecurityLevel() !== 'rsa') {
 			self::writePassword($extensionKey, $passwordRow['password'], $row['password_again']);
 		}

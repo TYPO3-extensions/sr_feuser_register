@@ -25,7 +25,6 @@ namespace SJBR\SrFeuserRegister\Security;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Rsaauth\Backend\BackendFactory;
 use TYPO3\CMS\Rsaauth\Hook\FrontendLoginHook;
 use TYPO3\CMS\Rsaauth\Storage\StorageFactory;

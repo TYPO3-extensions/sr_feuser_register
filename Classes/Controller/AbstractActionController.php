@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Controller;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -133,7 +133,7 @@ abstract class AbstractActionController
 	 	$this->marker = $marker;
 
 		$this->marker->generateURLMarkers($this->data->getRecUid());
-		$this->email = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\Email', $this->extKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+		$this->email = GeneralUtility::makeInstance(Email::class, $this->extKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 	}
 
 	/**
