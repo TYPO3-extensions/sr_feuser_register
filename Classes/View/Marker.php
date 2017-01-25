@@ -455,7 +455,7 @@ class Marker
 		$requiredArray = array_merge($requiredArray, $specialFieldArray);
 
 		foreach ($infoFieldArray as $theField) {
-			$markerkey = $this->cObj->caseshift($theField, 'upper');
+			$markerkey = mb_strtoupper($theField, 'utf-8');
 			// Determine whether the value of the field was changed
 			$valueChanged = !isset($row[$theField]) && isset($origArray[$theField]);
 			if (isset($row[$theField])) {
@@ -486,7 +486,7 @@ class Marker
 			$markerArray['###TOOLTIP_INVITATION_' . $markerkey . '###'] = $label;
 			$colConfig = $tcaColumns[$theField]['config'];
 
-			if ($colConfig['type'] == 'select' && $colConfig['items']) {
+			if ($colConfig['type'] === 'select' && $colConfig['items']) {
 				$colContent = '';
 				$markerArray['###FIELD_' . $markerkey . '_CHECKED###'] = '';
 				$markerArray['###LABEL_' . $markerkey . '_CHECKED###'] = '';
@@ -602,7 +602,7 @@ class Marker
 			$vDear = 'v_dear_female';
 		}
 		$genderLabelArray['v_dear'] = $vDear;
-		foreach($otherLabels as $value) {
+		foreach ($otherLabels as $value) {
 			if (isset($genderLabelArray[$value])) {
 				$labelName = $genderLabelArray[$value];
 			} else {
@@ -613,7 +613,7 @@ class Marker
 			// $this->origArray is used by replaceVariables
 			$this->origArray = $origArray;
 			$label = preg_replace_callback('/{([a-z_]+):([a-zA-Z0-9_]+)}/', array($this, 'replaceVariables'), $label);
-			$markerkey = $this->cObj->caseshift($value, 'upper');
+			$markerkey = mb_strtoupper($value, 'utf-8');
 			$markerArray['###LABEL_' . $markerkey . '###'] = $label;
 		}
 		$this->setMarkerArray($markerArray);
@@ -731,7 +731,7 @@ class Marker
 	public function addSetfixedUrlMarkers(array $setfixedUrls)
 	{
 		foreach ($setfixedUrls as $key => $url) {
-			$marker = '###SETFIXED_' . $this->cObj->caseshift($key, 'upper') . '_URL###';
+			$marker = '###SETFIXED_' . mb_strtoupper($key, 'utf-8') . '_URL###';
 			$isAbsoluteURL = ((strncmp($url, 'http://', 7) == 0) || (strncmp($url, 'https://', 8) == 0));
 			$url = ($isAbsoluteURL ? '' : UrlUtility::getSiteUrl()) . ltrim($url, '/');
 			$this->markerArray[$marker] = str_replace(array('[',']'), array('%5B', '%5D'), $url);
@@ -1385,15 +1385,13 @@ class Marker
 								if ($mrow[$colName] != '') {
 									$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',', $mrow[$colName]);
 									$textSchema = $this->theTable . '.' . $colName . '.I.';
-									$itemArray = LocalizationUtility::getItemsLL($textSchema, $this->extensionName);
-
+									$itemArray = LocalizationUtility::getItemsLL($textSchema, $this->extensionName, $valuesArray);
 									if (!count($itemArray)) {
 										if ($colConfig['itemsProcFunc']) {
 											$itemArray = GeneralUtility::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this, '');
 										}
 										$itemArray = $colConfig['items'];
 									}
-
 									if (is_array($itemArray)) {
 										$itemKeyArray = $this->getItemKeyArray($itemArray);
 
@@ -1511,7 +1509,7 @@ class Marker
 						switch ($type) {
 							case 'input':
 								$colContent = '<input type="input" name="FE[' . $this->theTable . '][' . $colName . ']"' .
-									' title="###TOOLTIP_' . (($cmd == 'invite') ? 'INVITATION_' : '') . $this->cObj->caseshift($colName, 'upper') . '###"' .
+									' title="###TOOLTIP_' . (($cmd == 'invite') ? 'INVITATION_' : '') . mb_strtoupper($colName, 'utf-8') . '###"' .
 									' size="' . ($colConfig['size'] ? $colConfig['size'] : 30) . '"';
 								if ($colConfig['max']) {
 									$colContent .= ' maxlength="' . $colConfig['max'] . '"';
@@ -1528,7 +1526,7 @@ class Marker
 								$label = LocalizationUtility::translate($colConfig['default'], $this->extensionName);
 								$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 								$colContent = '<textarea id="' .  CssUtility::getClassName($this->prefixId, $colName) . '" name="FE[' . $this->theTable . '][' . $colName . ']"' .
-									' title="###TOOLTIP_' . (($cmd == 'invite') ? 'INVITATION_':'') . $this->cObj->caseshift($colName, 'upper') . '###"' .
+									' title="###TOOLTIP_' . (($cmd == 'invite') ? 'INVITATION_':'') . mb_strtoupper($colName, 'utf-8') . '###"' .
 									' cols="' . ($colConfig['cols'] ? $colConfig['cols'] : 30) . '"' .
 									' rows="' . ($colConfig['rows'] ? $colConfig['rows'] : 5) . '"' .
 									'>' . ($colConfig['default'] ? $label : '') . '</textarea>';
@@ -1619,12 +1617,12 @@ class Marker
 									$colContent .= '
 										<dl class="' .
 										CssUtility::getClassName($this->prefixId, 'multiple-checkboxes') .
-										'" title="###TOOLTIP_' . (($cmd == 'invite') ? 'INVITATION_' : '') . $this->cObj->caseshift($colName,'upper') . '###">';
+										'" title="###TOOLTIP_' . (($cmd == 'invite') ? 'INVITATION_' : '') . mb_strtoupper($colName, 'utf-8') . '###">';
 								} else {
 									$colContent .= '<select class="'.
 									CssUtility::getClassName($this->prefixId, 'multiple-checkboxes') .
 									'" id="' . CssUtility::getClassName($this->prefixId, $colName) .
-									'" name="FE[' . $this->theTable . '][' . $colName . ']' . $multiple . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName, 'upper') . '###">';
+									'" name="FE[' . $this->theTable . '][' . $colName . ']' . $multiple . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . mb_strtoupper($colName, 'utf-8') . '###">';
 								}
 
 								if (is_array($itemArray)) {

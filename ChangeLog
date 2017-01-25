@@ -3,6 +3,7 @@
 	* Resolves #79449: Allow special characters in username in default configuration
 	* Update version to 5.0.0
 	* Resolves #76292: mm-relation: foreing uid is saved in uid_local and vice versa
+	* Resolves #79454: Use mb_strtoupper in Marker.php
 
 2017-01-23 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Follow-up to Resolves ##79423: Migrate upload fields (image) to FAL
