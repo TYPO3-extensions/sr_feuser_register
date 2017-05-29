@@ -1,3 +1,9 @@
+2017-05-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #81365: Missing button labels in labels list
+
+2017-03-26 Oliver Klee
+	* Resolves #80286: Make the DB definition MySQL strict compatible
+
 2017-01-25 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Code cleanup
 	* Follow-up to Resolves #76292: mm-relation: foreing uid is saved in uid_local and vice versa

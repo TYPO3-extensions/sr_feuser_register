@@ -234,7 +234,7 @@ class Marker
 		if ($buttonLabelsList) {
 			$this->buttonLabelsList = $buttonLabelsList;
 		} else {
-			$this->buttonLabelsList = 'register,confirm_register,back_to_form,update,confirm_update,enter,confirm_delete,cancel_delete,update_and_more,password_forgotten';
+			$this->buttonLabelsList = 'register,confirm_register,send_invitation,send_invitation_now,back_to_form,update,confirm_update,enter,confirm_delete,cancel_delete,update_and_more,password_forgotten';
 		}
 	}
 
