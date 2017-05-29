@@ -42,6 +42,8 @@ function updateForm(formId,fieldname,value)	{
 		switch(type)	{
 			case "text":
 			case "textarea":
+			case "email":
+			case "number":
 			case "hidden":
 				fObj.value = htmlSpecialChars_decode(value);
 				break;
