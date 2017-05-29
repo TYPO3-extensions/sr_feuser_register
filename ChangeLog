@@ -3,6 +3,7 @@
 	* Resolves #81367: Call to incorrect query builder function
 	* Resolves #81369: Unsubscribe link from Direct Mail fails
 	* Resolves #81370: Input fields of type number or email not handled correctly
+	* Resolves #81371: Infomail form is missing hidden fields
 
 2017-03-26 Oliver Klee
 	* Resolves #80286: Make the DB definition MySQL strict compatible

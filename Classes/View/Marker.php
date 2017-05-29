@@ -883,8 +883,6 @@ class Marker
 						$titleLanguage,
 						$where
 					);
-			}
-			if (!$viewOnly) {
 				$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId . '[countryChange]" value="0" />' . LF;
 			}
 		}
@@ -948,7 +946,9 @@ class Marker
 			if (is_object($hookObj) && method_exists($hookObj, 'addMarkers')) {
 				foreach ($fieldArray as $theField) {
 					$additionalMarkerArray = $hookObj->addMarkers($this->theTable, $theField, $cmd, $cmdKey, $dataArray, $viewOnly, $activity, $bHtml, $this->extensionName, $this->prefixId, $this->conf);
+					$hiddenFieldsMarker = $markerArray['###HIDDENFIELDS###'];
 					$markerArray = array_merge($markerArray, $additionalMarkerArray);
+					$markerArray['###HIDDENFIELDS###'] = $hiddenFieldsMarker . $additionalMarkerArray['###HIDDENFIELDS###'];
 				}
 			}
 		}
@@ -990,13 +990,17 @@ class Marker
 	 * @param string $authCode: the authcode
 	 * @return void
 	 */
-	public function addEditFormHiddenFieldsMarkers($uid, $authCode, $cmd = 'edit')
+	public function addEditFormHiddenFieldsMarkers($uid, $authCode, $cmd = 'edit', $pid = 0)
 	{
 		$markerArray = $this->getMarkerArray();
 		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE[' . $this->theTable . '][uid]" value="' . $uid . '" />' . LF;
 		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId . '[cmd]" value="' . $cmd . '" />' . LF;
+		if ($pid) {
+			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE[' . $this->theTable . '][pid]" value="' . $pid . '" />' . LF;
+		}
 		$this->addFormToken($markerArray);
-		if ($this->theTable !== 'fe_users') {
+		// Deletion of user is allowed when authentified by authCode
+		if ($this->theTable !== 'fe_users' || ($authCode && $cmd === 'delete')) {
 			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId . '[aC]" value="' . $authCode . '" />' . LF;
 		}
 		$this->setMarkerArray($markerArray);
