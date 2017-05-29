@@ -1685,7 +1685,7 @@ class Marker
 											}
 										}
 										if ($GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['sortby']) {
-											$queryBuilder->sortBy($GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['sortby']);
+											$queryBuilder->orderBy($GLOBALS['TCA'][$colConfig['foreign_table']]['ctrl']['sortby']);
 										}
 										$foreignWhereClause = trim($this->replaceForeignWhereMarker('',  $colName, $colConfig));
 										if ($foreignWhereClause) {
