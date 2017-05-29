@@ -1,6 +1,7 @@
 2017-05-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #81365: Missing button labels in labels list
 	* Resolves #81367: Call to incorrect query builder function
+	* Resolves #81369: Unsubscribe link from Direct Mail fails
 
 2017-03-26 Oliver Klee
 	* Resolves #80286: Make the DB definition MySQL strict compatible

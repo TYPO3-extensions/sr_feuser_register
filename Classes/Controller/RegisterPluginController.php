@@ -27,6 +27,7 @@ use SJBR\SrFeuserRegister\Exception;
 use SJBR\SrFeuserRegister\Configuration\ConfigurationCheck;
 use SJBR\SrFeuserRegister\Domain\Data;
 use SJBR\SrFeuserRegister\Request\Parameters;
+use SJBR\SrFeuserRegister\Security\Authentication;
 use SJBR\SrFeuserRegister\Security\SessionData;
 use SJBR\SrFeuserRegister\Utility\CssUtility;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
@@ -342,12 +343,15 @@ class RegisterPluginController extends AbstractPlugin
 		$securedArray = array();
 		$uid = $this->data->getRecUid();
 
-		// Check if the login user is the right one
 		if (
 			(
+				// Check if the login user is the right one
 				$this->theTable === 'fe_users'
 				&& (!$GLOBALS['TSFE']->loginUser || ($uid > 0 && $GLOBALS['TSFE']->fe_user->user['uid'] != $uid))
+				// Or no login is_a required for this command
 				&& !in_array($cmd, $this->noLoginCommands)
+				// this is a unsubscribe link from Direct Mail
+				&& !($cmd === 'delete' && Authentication::aCAuth($this->parameters->getAuthCode(), $origArray, $this->conf, $this->conf['setfixed.']['DELETE.']['_FIELDLIST']))
 			)
 		) {
 			$origArray = array();
