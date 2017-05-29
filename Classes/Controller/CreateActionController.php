@@ -74,7 +74,7 @@ class CreateActionController extends AbstractActionController
 			$this->data->setName($finalDataArray, $cmdKey);
 			$this->data->parseValues($finalDataArray, $origArray, $cmdKey);
 			$this->data->overrideValues($finalDataArray, $cmdKey);
-			$evalErrors = $this->data->evalValues($finalDataArray, $origArray, $this->marker, $cmdKey);
+			$evalErrors = $this->data->evalValues($finalDataArray, $origArray, $this->marker, $cmdKey, $mode);
 			// If the two password fields are not equal, clear session data
 			if (is_array($evalErrors['password']) && in_array('twice', $evalErrors['password'])) {
 				SessionData::clearSessionData($this->extensionKey);

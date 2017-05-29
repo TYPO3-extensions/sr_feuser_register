@@ -29,6 +29,7 @@ use SJBR\SrFeuserRegister\Security\SecuredData;
 use SJBR\SrFeuserRegister\Security\SessionData;
 use SJBR\SrFeuserRegister\Security\StorageSecurity;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
+use SJBR\SrFeuserRegister\View\AbstractView;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -541,9 +542,10 @@ class Data
 	 *
 	 * @param array $dataArray: the incoming data array
 	 * @param string $cmdKey: the command being processed
+	 * @param string $mode: the current mode (normal or preview)	 
 	 * @return void on return, the parameters failure will contain the list of fields which were not ok
 	 */
-	public function evalValues(array &$dataArray, array $origArray, $markerObj, $cmdKey) {
+	public function evalValues(array &$dataArray, array $origArray, $markerObj, $cmdKey, $mode = AbstractView::MODE_NORMAL) {
 		$failureArray = array();
 		$failureMsg = array();
 		$markerArray = array();
@@ -779,7 +781,8 @@ class Data
 							case 'hook':
 							default:
 								$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model'] : array();
-								if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey]['captcha'])) {
+								// The captcha cannot be checked twice
+								if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey]['captcha']) && ($mode == AbstractView::MODE_PREVIEW || !$this->conf[$cmdKey . '.']['preview'])) {
 										$hookClassArray = array_merge($hookClassArray, $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey]['captcha']);
 								}
 								foreach ($hookClassArray as $classRef) {

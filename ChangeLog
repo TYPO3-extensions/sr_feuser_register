@@ -4,7 +4,8 @@
 	* Resolves #81369: Unsubscribe link from Direct Mail fails
 	* Resolves #81370: Input fields of type number or email not handled correctly
 	* Resolves #81371: Infomail form is missing hidden fields
-	* Resolves #81372: Account deletion may fail	
+	* Resolves #81372: Account deletion may fail
+	* Resolves #81373: The freeCap word hash should not be checked more than once
 
 2017-03-26 Oliver Klee
 	* Resolves #80286: Make the DB definition MySQL strict compatible

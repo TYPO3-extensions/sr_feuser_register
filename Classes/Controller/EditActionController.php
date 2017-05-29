@@ -79,7 +79,7 @@ class EditActionController extends AbstractActionController
 			$this->data->setName($dataArray, $cmdKey);
 			$this->data->parseValues($dataArray, $origArray, $cmdKey);
 			$this->data->overrideValues($dataArray, $cmdKey);
-			$evalErrors = $this->data->evalValues($dataArray, $origArray, $this->marker, $cmdKey);
+			$evalErrors = $this->data->evalValues($dataArray, $origArray, $this->marker, $cmdKey, $mode);
 			// If the two password fields are not equal, clear session data
 			if (is_array($evalErrors['password']) && in_array('twice', $evalErrors['password'])) {
 				SessionData::clearSessionData($this->extentionKey);

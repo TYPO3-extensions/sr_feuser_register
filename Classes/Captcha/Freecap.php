@@ -87,23 +87,10 @@ class Freecap implements CaptchaInterface
 	{
 		$errorField = '';
 		if (trim($cmdParts[0]) === 'freecap' && isset($dataArray[$theField]) && $this->initialize() !== null) {
-			$sessionNameSpace = '';
-			if (isset($GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['sr_freecap_EidDispatcher'])) {
-				$sessionNameSpace = 'tx_srfreecap';
-			}
-			// Save the sr_freecap word_hash
-			// sr_freecap will invalidate the word_hash after calling checkWord
-			$sessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', $sessionNameSpace);
+			// The word hash may be checked only once.
+			// sr_freecap will invalidate the word_hash after calling checkWord()
 			if (!$this->srFreecap->checkWord($dataArray[$theField])) {
 				$errorField = $theField;
-			} else {
-				// Restore sr_freecap word_hash
-				$GLOBALS['TSFE']->fe_user->setKey(
-					'ses',
-					$sessionNameSpace,
-					$sessionData
-				);
-				$GLOBALS['TSFE']->storeSessionData();
 			}
 		}
 		return $errorField;
