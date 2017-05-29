@@ -47,7 +47,7 @@ class DeleteView extends PlainView
 				// Display the form, if access granted.
 				$backUrl = $this->parameters->getBackURL() ?: UrlUtility::getTypoLink_URL($this->parameters->getPid('login') . ',' . $GLOBALS['TSFE']->type);
 				$this->marker->addBackUrlMarker($backUrl);
-				$this->marker->addGeneralHiddenFieldsMarkers('delete');
+				$this->marker->addEditFormHiddenFieldsMarkers($origArray['uid'], $this->parameters->getAuthCode(), 'delete', $origArray['pid']);
 				$content = parent::render('###TEMPLATE_DELETE_PREVIEW###', $origArray, $origArray, $securedArray, $cmd, $cmdKey);
 			} else {
 				// Else display error, that you could not edit that particular record...
