@@ -29,19 +29,21 @@ return array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:fe_groups',
 			'config' => array(
-				'type' => 'select',	
+				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'foreign_table' => 'fe_groups'
 			)
 		),
-		'sys_language_uid' => array(
+		'sys_language_uid' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
-			'config' => array(
+			'config' => [
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'foreign_table' => 'sys_language',
 				'foreign_table_where' => 'ORDER BY sys_language.title'
-			)
-		),
+			]
+		],
 		'title' => array(		
 			'exclude' => 0,		
 			'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_groups_language_overlay.title',

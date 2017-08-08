@@ -1,3 +1,6 @@
+2017-08-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #81963: renderType missing on fe_users status and fe_groups_language_overlay select fields
+
 2017-05-29 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #81365: Missing button labels in labels list
 	* Resolves #81367: Call to incorrect query builder function

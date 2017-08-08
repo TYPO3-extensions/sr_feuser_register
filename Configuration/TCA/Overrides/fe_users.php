@@ -97,6 +97,7 @@ $addColumnArray = array(
 		'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.status',
 		'config' => array(
 			'type' => 'select',
+			'renderType' => 'selectSingle',
 			'items' => array(
 				array('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.status.I.0', '0'),
 				array('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.status.I.1', '1'),
