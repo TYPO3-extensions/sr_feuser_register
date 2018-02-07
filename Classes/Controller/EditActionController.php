@@ -65,7 +65,7 @@ class EditActionController extends AbstractActionController
 			$mode = AbstractView::MODE_PREVIEW;
 		}
 		$isSubmit = $this->parameters->getFeUserData('submit');
-		$isSubmit = !empty($isSubmit) && !empty($dataArray) && $this->parameters->isTokenValid();
+		$isSubmit = ((!empty($isSubmit) && !empty($dataArray)) || $cmd === 'password') && $this->parameters->isTokenValid();
 		$isDoNotSave = $this->parameters->getFeUserData('doNotSave');
 		$isDoNotSave = !empty($isDoNotSave);
 		if ($isDoNotSave) {

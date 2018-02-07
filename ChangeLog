@@ -1,3 +1,6 @@
+2018-02-07 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #83799: Remove unused hidden fields from password editing form
+
 2017-08-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #81963: renderType missing on fe_users status and fe_groups_language_overlay select fields
 

@@ -72,10 +72,14 @@ class EditView extends AbstractView
 		$this->marker->addPasswordTransmissionMarkers($this->getUsePassword(), $this->getUsePasswordAgain());
 		$templateCode = $this->marker->removeRequired($templateCode, $this->data->getFailure(), $requiredFields, $infoFields, $this->data->getSpecialFieldList(), $cmdKey, $isPreview);
 		$this->marker->fillInMarkerArray($currentArray, $securedArray, '', true);
-		$this->marker->addStaticInfoMarkers($currentArray, $isPreview);
+		if ($cmdKey !== 'password') {
+			$this->marker->addStaticInfoMarkers($currentArray, $isPreview);
+		}
 		$this->marker->addTcaMarkers($currentArray, $origArray, $cmd, $cmdKey, $isPreview, $requiredFields);
 		$this->marker->addLabelMarkers($currentArray, $origArray, $securedArray, array(), $requiredFields, $infoFields, $this->data->getSpecialFieldList());
-		$this->marker->addAdditionalMarkers($infoFields, $cmd, $cmdKey, $currentArray, $isPreview);
+		if ($cmdKey !== 'password') {
+			$this->marker->addAdditionalMarkers($infoFields, $cmd, $cmdKey, $currentArray, $isPreview);
+		}
 		$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $isPreview);
 		$this->marker->addEditFormHiddenFieldsMarkers($currentArray['uid'], Authentication::authCode($origArray, $this->conf, $this->conf['setfixed.']['EDIT.']['_FIELDLIST']), $cmd);
 		$this->marker->addHiddenFieldsMarkers($cmdKey, $mode, $this->conf[$cmdKey . '.']['useEmailAsUsername'], $this->conf[$cmdKey . '.']['fields'], $currentArray);
