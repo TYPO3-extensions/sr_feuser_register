@@ -81,8 +81,8 @@ class HtmlUtility
 	 */
 	public static function removeSuperfluousLineFeeds($content)
 	{
-		$result = preg_replace('/[' . preg_quote(LF . CR) . ']{2,}/', LF, $content);
-		$result = preg_replace('/[' . preg_quote(LF) . ']{3,}/', LF, $result);
+		$result = preg_replace('/' . preg_quote(CR . LF) . '/', LF, $content);
+		$result = preg_replace('/[' . preg_quote(LF) . ']{3,}/', LF . LF, $result);
 		return $result;
 	}
 }
