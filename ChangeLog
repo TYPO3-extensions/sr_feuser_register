@@ -5,6 +5,7 @@
 	* Resolves #82614: Custom field radio button label in preview and emails empty
 	* Resolves #81844: HTML email gets HTML conditional comments for Outlook removed
 	* Resolves #81843: HTML email has same images embedded multiple times
+	* Resolves #81443: overrideValues has no effect if field is not in the HTML form
 
 2017-08-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #81963: renderType missing on fe_users status and fe_groups_language_overlay select fields

@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Domain;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -1075,8 +1075,11 @@ class Data
 			break;
 			default:
 				if (is_array($this->conf[$cmdKey.'.'])) {
-					$newFieldList = implode(',', array_intersect(explode(',', $this->getFieldList()), GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], true)));
-					$newFieldList = implode(',', array_unique( array_merge (explode(',', $newFieldList), explode(',', $this->getAdminFieldList()))));
+					// Allow to override values for fields that are not on the form
+					$newFieldArray = array_merge(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], true), array_keys($this->conf[$cmdKey . '.']['overrideValues.']));
+					$newFieldArray = array_intersect(explode(',', $this->getFieldList()), $newFieldArray);
+					$newFieldArray = array_unique(array_merge($newFieldArray, explode(',', $this->getAdminFieldList())));
+					$newFieldList = implode(',', $newFieldArray);
 					$parsedArray = $this->parseOutgoingData($cmdKey, $pid, $dataArray, $origArray);
 					if ($this->theTable === 'fe_users') {
 						$parsedArray['password'] = SessionData::readPasswordForStorage($this->extensionKey);
