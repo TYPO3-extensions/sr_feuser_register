@@ -348,7 +348,7 @@ class Email
 		if ($content['userhtml']['all']) {
 			$content['userhtml']['final'] = $this->marker->substituteSubpart($content['userhtml']['all'], '###SUB_RECORD###', CssUtility::wrapInBaseClass($this->prefixId, $content['userhtml']['accum']));
 			// Remove HTML comments
-			$content['userhtml']['final'] = HtmlUtility::removeHTMLComments($content['userhtml']['final']);
+			$content['userhtml']['final'] = HtmlUtility::removeHTMLComments($content['userhtml']['final'], true);
 			// Remove erroneous \n from locallang file
 			$content['userhtml']['final'] = str_replace('\n', '', $content['userhtml']['final']);
 		}
@@ -365,7 +365,7 @@ class Email
 		if ($content['adminhtml']['all']) {
 			$content['adminhtml']['final'] = $this->marker->substituteSubpart($content['adminhtml']['all'], '###SUB_RECORD###', CssUtility::wrapInBaseClass($this->prefixId, $content['adminhtml']['accum']));
 			// Remove HTML comments
-			$content['adminhtml']['final'] = HtmlUtility::removeHTMLComments($content['adminhtml']['final']);
+			$content['adminhtml']['final'] = HtmlUtility::removeHTMLComments($content['adminhtml']['final'], true);
 			// Remove erroneous \n from locallang file
 			$content['adminhtml']['final'] = str_replace('\n', '', $content['adminhtml']['final']);
 		}

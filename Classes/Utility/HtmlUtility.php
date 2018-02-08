@@ -32,11 +32,17 @@ class HtmlUtility
 	 * Removes HTML comments contained in input content string
 	 *
 	 * @param string $content: the input content
+	 * @param boolean $preserveSpecialComments: if set, special comments are preserved
 	 * @return string the input content with HTML comment removed
 	 */
-	public static function removeHTMLComments($content)
+	public static function removeHTMLComments($content, $preserveSpecialComments = false)
 	{
-		$result = preg_replace('/<!(?:--[\s\S]*?--\s*)?>[\t\v\n\r\f]*/', '', $content);
+		if ($preserveSpecialComments) {
+			// Preserve Outlook conditional comments: <!--[if mso]> ... <![endif]-->
+			$result = preg_replace('/<!(?:--[^\[][\s\S]*?--\s*)?>[\t\v\n\r\f]*/', '', $content);
+		} else {
+			$result = preg_replace('/<!(?:--[\s\S]*?--\s*)?>[\t\v\n\r\f]*/', '', $content);
+		}
 		return $result;
 	}
 
