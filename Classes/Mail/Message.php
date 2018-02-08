@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Mail;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -140,14 +140,17 @@ class Message
 			$dummy = preg_match('/[^>]*/', $codepieces[$i], $reg);
 			// Fetches the attributes for the tag
 			$attributes = self::getTagAttributes($reg[0]);
-			if ($attributes['src']) {
-				$media[] = $attributes['src'];
+			// Adds each unique src to media only once
+			$src_uid = md5($attributes['src']);
+			if ($attributes['src'] && !isset($media[$src_uid])) {
+				$media[$src_uid]['src'] = $attributes['src'];
+				$media[$src_uid]['cid'] = $mail->embed(\Swift_Image::fromPath($attributes['src']));
 			}
 		}
-		foreach ($media as $key => $source) {
+		foreach ($media as $embeddedMedia) {
 			$substitutedHtmlContent = str_replace(
-				'"' . $source . '"',
-				'"' . $mail->embed(\Swift_Image::fromPath($source)) . '"',
+				'"' . $embeddedMedia['src'] . '"',
+				'"' . $embeddedMedia['cid'] . '"',
 				$substitutedHtmlContent);
 		}
 		return $substitutedHtmlContent;
