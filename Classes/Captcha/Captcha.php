@@ -25,6 +25,7 @@ namespace SJBR\SrFeuserRegister\Captcha;
 
 use SJBR\SrFeuserRegister\Captcha\CaptchaInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Hook for captcha image marker when extension 'captcha' is used
@@ -57,7 +58,9 @@ class Captcha implements CaptchaInterface
 	public function addGlobalMarkers(array &$markerArray, $cmdKey, array $conf)
 	{
 		if ($this->isLoaded() && $conf[$cmdKey . '.']['evalValues.']['captcha_response'] === 'captcha') {
-			$markerArray['###CAPTCHA_IMAGE###'] = '<img src="' . ExtensionManagementUtility::siteRelPath('captcha') . 'captcha/captcha.php" alt="" />';
+			$formId = md5('SrFeuserRegister' . mt_rand());
+			$markerArray['###CAPTCHA_IMAGE###'] = '<img src="' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . 'index.php?eID=captcha&formId=' . $formId . '" alt="Captcha" />';
+			$markerArray['###CAPTCHA_IMAGE###'] .= '<input type="hidden" name="captchaFormId" value="' . $formId . '">';
 		} else {
 			$markerArray['###CAPTCHA_IMAGE###'] = '';
 		}
@@ -78,16 +81,8 @@ class Captcha implements CaptchaInterface
 	{
 		$errorField = '';
 		if (trim($cmdParts[0]) === 'captcha' && $this->isLoaded() && isset($dataArray[$theField])) {
-			$captchaString = '';
-			$started = session_start();
-			if (isset($_SESSION['tx_captcha_string'])) {
-				$captchaString = $_SESSION['tx_captcha_string'];
-				if (empty($captchaString) || $dataArray['captcha_response'] !== $captchaString) {
-					$errorField = $theField;
-				} else {
-					$_SESSION['tx_captcha_string'] = '';
-				}
-			} else {
+			$formId = GeneralUtility::_GP('captchaFormId');
+			if (!\ThinkopenAt\Captcha\Utility::checkCaptcha($dataArray[$theField], $formId)) {
 				$errorField = $theField;
 			}
 		}

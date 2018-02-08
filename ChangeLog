@@ -1,6 +1,7 @@
 2018-02-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #76119: Profile or password editing fails
 	* Resolves #80409: Error in updateMMRelations with direct mail categories
+	* Resolves #36192: When using captcha extension, captcha evaluation always fails
 
 2018-02-07 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #83799: Remove unused hidden fields from password editing form
