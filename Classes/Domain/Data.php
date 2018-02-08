@@ -1527,14 +1527,20 @@ class Data
 							$colSettings['config']['MM'],
 							['uid_' . $side => (int)$row['uid']]
 						);
-						$tablenames = $colSettings['config']['MM_match_fields']['tablenames'];
-						$fieldname = $colSettings['config']['MM_match_fields']['fieldname'];
+						if (isset($colSettings['config']['MM_match_fields'])) {
+							$tablenames = $colSettings['config']['MM_match_fields']['tablenames'];
+							$fieldname = $colSettings['config']['MM_match_fields']['fieldname'];
+						}
 						$insertFields = [
 							'uid_' . $side => (int)$row['uid'],
-							'tablenames' => $tablenames ?: '',
-							'fieldname' => $fieldname ?: '',
 							'sorting' . ($side === 'foreign' ? '_' . $side : '') => 0
 						];
+						if (isset($tablenames)) {
+							$insertFields['tablenames'] = $tablenames ?: '';
+						}
+						if (isset($fieldname)) {
+							$insertFields['fieldname'] = $fieldname ?: '';
+						}
 						foreach ($valuesArray as $theValue) {
 							$insertFields['uid_' . $oppositeSide] = (int)$theValue;
 							$insertFields['sorting' . ($side === 'foreign' ? '_' . $side : '')]++;
@@ -1549,14 +1555,20 @@ class Data
 							$colSettings['config']['MM'],
 							'uid_' . $side . '=' . (int)$row['uid']
 						);
-						$tablenames = $colSettings['config']['MM_match_fields']['tablenames'];
-						$fieldname = $colSettings['config']['MM_match_fields']['fieldname'];
+						if (isset($colSettings['config']['MM_match_fields'])) {
+							$tablenames = $colSettings['config']['MM_match_fields']['tablenames'];
+							$fieldname = $colSettings['config']['MM_match_fields']['fieldname'];
+						}
 						$insertFields = [
 							'uid_' . $side => (int)$row['uid'],
-							'tablenames' => $tablenames ?: '',
-							'fieldname' => $fieldname ?: '',
 							'sorting' . ($side === 'foreign' ? '_' . $side : '') => 0
 						];
+						if (isset($tablenames)) {
+							$insertFields['tablenames'] = $tablenames ?: '';
+						}
+						if (isset($fieldname)) {
+							$insertFields['fieldname'] = $fieldname ?: '';
+						}
 						foreach ($valuesArray as $theValue) {
 							$insertFields['uid_' . $oppositeSide] = (int)$theValue;
 							$insertFields['sorting' . ($side === 'foreign' ? '_' . $side : '')]++;
