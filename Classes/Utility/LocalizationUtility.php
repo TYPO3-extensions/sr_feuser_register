@@ -70,35 +70,6 @@ class LocalizationUtility
 	}
 
 	/**
-	 * Get the item array for a select
-	 *
-	 * @param string $textSchema: text of language label reference
-	 * @param string $extensionName The name of the extension
-	 * @param array $valuesArray Array of values of the select field
-	 * @return array array of selectable items
-	 */
-	static public function getItemsLL($textSchema, $extensionName, $valuesArray = array())
-	{
-		$value = array();
-		if (empty($valuesArray)) {
-			for ($i = 0; $i < 999; ++$i) {
-				$text = self::translate($textSchema . $i, $extensionName);
-				if ($text !== null) {
-					$value[] = array($text, $i);
-				}
-			}
-		} else {
-			foreach ($valuesArray as $k => $i) {
-				$text = self::translate($textSchema . $i, $extensionName);
-				if ($text !== null) {
-					$value[] = array($text, $i);
-				}
-			}
-		}
-		return $value;
-	}
-
-	/**
 	 * Initializes the suffix
 	 *
 	 * @param string $extensionName

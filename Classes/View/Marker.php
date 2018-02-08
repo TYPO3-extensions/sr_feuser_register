@@ -1386,25 +1386,22 @@ class Marker
 								}
 								break;
 							case 'radio':
-								if ($mrow[$colName] != '') {
+								if ($mrow[$colName] !== '') {
 									$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',', $mrow[$colName]);
-									$textSchema = $this->theTable . '.' . $colName . '.I.';
-									$itemArray = LocalizationUtility::getItemsLL($textSchema, $this->extensionName, $valuesArray);
-									if (!count($itemArray)) {
-										if ($colConfig['itemsProcFunc']) {
-											$itemArray = GeneralUtility::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this, '');
-										}
-										$itemArray = $colConfig['items'];
+									if ($colConfig['itemsProcFunc']) {
+										$itemArray = GeneralUtility::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this, '');
 									}
+									$itemArray = $colConfig['items'];
 									if (is_array($itemArray)) {
 										$itemKeyArray = $this->getItemKeyArray($itemArray);
-
 										if (!$bStdWrap) {
 											$stdWrap['wrap'] = '| ';
 										}
-
-										for ($i = 0; $i < count ($valuesArray); $i++) {
-											$label = LocalizationUtility::translate($itemKeyArray[$valuesArray[$i]][0], $this->extensionName);
+										for ($i = 0; $i < count($valuesArray); $i++) {
+											$item = $itemKeyArray[$valuesArray[$i]][0] ?: $itemKeyArray[(int)$valuesArray[$i]][0];
+											$label = LocalizationUtility::translate(substr(strrchr($item, ':'), 1), $this->extensionName);
+											$label = $label ?: LocalizationUtility::translate($item, $this->extensionName);
+											$label = $label ?: $item;
 											if ($HSC) {
 												$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 											}
@@ -1416,21 +1413,19 @@ class Marker
 							case 'select':
 								if ($mrow[$colName] != '') {
 									$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',', $mrow[$colName]);
-									$textSchema = $this->theTable . '.' . $colName . '.I.';
-									$itemArray = LocalizationUtility::getItemsLL($textSchema, $this->extensionName);
-									if (empty($itemArray)) {
-										if ($colConfig['itemsProcFunc']) {
-											$itemArray = GeneralUtility::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this, '');
-										}
-										$itemArray = $colConfig['items'];
+									if ($colConfig['itemsProcFunc']) {
+										$itemArray = GeneralUtility::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this, '');
 									}
+									$itemArray = $colConfig['items'];
 									if (!$bStdWrap) {
 										$stdWrap['wrap'] = '|<br />';
 									}
 									if (is_array($itemArray)) {
 										$itemKeyArray = $this->getItemKeyArray($itemArray);
 										for ($i = 0; $i < count($valuesArray); $i++) {
-											$label = LocalizationUtility::translate($itemKeyArray[$valuesArray[$i]][0], $this->extensionName);
+											$label = LocalizationUtility::translate(substr(strrchr($itemKeyArray[$valuesArray[$i]][0], ':'), 1), $this->extensionName);
+											$label = $label ?: LocalizationUtility::translate($itemKeyArray[$valuesArray[$i]][0], $this->extensionName);
+											$label = $label ?: $itemKeyArray[$valuesArray[$i]][0];
 											if ($HSC) {
 												$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 											}
@@ -1499,16 +1494,10 @@ class Marker
 								if (!$valuesArray[0] && $colConfig['default']) {
 									$valuesArray[] = $colConfig['default'];
 								}
-								$textSchema = $this->theTable . '.' . $colName . '.I.';
-								$itemArray = LocalizationUtility::getItemsLL($textSchema, $this->extensionName);
-								$bUseTCA = false;
-								if (!count($itemArray))	{
-									if (in_array($type, array('radio', 'select')) && $colConfig['itemsProcFunc']) {
-										$itemArray = GeneralUtility::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this, '');
-									}
-									$itemArray = $colConfig['items'];
-									$bUseTCA = true;
+								if (in_array($type, array('radio', 'select')) && $colConfig['itemsProcFunc']) {
+									$itemArray = GeneralUtility::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this, '');
 								}
+								$itemArray = $colConfig['items'];
 						}
 						switch ($type) {
 							case 'input':
@@ -1553,7 +1542,8 @@ class Marker
 									}
 									foreach ($itemArray as $key => $value) {
 										$checked = ($startVal & (1 << $key)) ? ' checked="checked"' : '';
-										$label = LocalizationUtility::translate($value[0], $this->extensionName);
+										$label = LocalizationUtility::translate(substr(strrchr($value[0], ':'), 1), $this->extensionName);
+										$label = $label ?: LocalizationUtility::translate($value[0], $this->extensionName);
 										$label = $label ?: $value[0];
 										$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 										$colContent .= '<li><input type="checkbox"' .
@@ -1588,7 +1578,8 @@ class Marker
 									$i = 0;
 									foreach ($itemArray as $key => $confArray) {
 										$value = $confArray[1];
-										$label = LocalizationUtility::translate($confArray[0], $this->extensionName);
+										$label = LocalizationUtility::translate(substr(strrchr($confArray[0], ':'), 1), $this->extensionName);
+										$label = $label ?: LocalizationUtility::translate($confArray[0], $this->extensionName);
 										$label = $label ?: $confArray[0];
 										$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 										$itemOut = '<input type="radio"'
@@ -1633,6 +1624,7 @@ class Marker
 									$itemArray = $this->getItemKeyArray($itemArray);
 									$i = 0;
 									foreach ($itemArray as $k => $item)	{
+										$label = LocalizationUtility::translate(substr(strrchr($item[0], ':'), 1), $this->extensionName);
 										$label = LocalizationUtility::translate($item[0], $this->extensionName);
 										$label = $label ?: $item[0];
 										$label = $label ? htmlspecialchars($label, ENT_QUOTES, $charset) : '';
@@ -1742,7 +1734,8 @@ class Marker
 											// nothing
 										} else {
 											if (!empty($itemArray)) {
-												$label = LocalizationUtility::translate($itemArray[0][0], $this->extensionName);
+												$label = LocalizationUtility::translate(substr(strrchr($itemArray[0][0], ':'), 1), $this->extensionName);
+												$label = $label ?: LocalizationUtility::translate($itemArray[0][0], $this->extensionName);
 												$label = $label ?: $itemArray[0][0];
 											}
 											$label = $label ? htmlspecialchars($label, ENT_QUOTES, $charset) : '';
