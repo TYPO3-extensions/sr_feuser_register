@@ -969,6 +969,7 @@ class Marker
 		$markerArray['###HIDDENFIELDS###'] .= ($cmd ? '<input type="hidden" name="' . $this->prefixId . '[cmd]" value="' . $cmd . '" />' . LF : '');
 		$markerArray['###HIDDENFIELDS###'] .= ($authCode ? '<input type="hidden" name="' . $this->prefixId . '[aC]" value="' . $authCode . '" />' . LF : '');
 		$markerArray['###HIDDENFIELDS###'] .= ($backUrl ? '<input type="hidden" name="' . $this->prefixId . '[backURL]" value="' . htmlspecialchars($backUrl) . '" />' . LF : '');
+		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId . '[submit]" value="1" />' . LF;
 		$this->addFormToken($markerArray, $this->prefixId);
 		$this->setMarkerArray($markerArray);
 	}
@@ -995,6 +996,7 @@ class Marker
 		$markerArray = $this->getMarkerArray();
 		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE[' . $this->theTable . '][uid]" value="' . $uid . '" />' . LF;
 		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId . '[cmd]" value="' . $cmd . '" />' . LF;
+		$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $this->prefixId . '[submit]" value="1" />' . LF;
 		if ($pid) {
 			$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="FE[' . $this->theTable . '][pid]" value="' . $pid . '" />' . LF;
 		}

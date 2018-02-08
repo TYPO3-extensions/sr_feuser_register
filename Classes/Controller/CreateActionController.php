@@ -56,8 +56,7 @@ class CreateActionController extends AbstractActionController
 		if ($this->conf[$cmdKey . '.']['preview'] && (int) $this->parameters->getFeUserData('preview')) {
 			$mode = AbstractView::MODE_PREVIEW;
 		}
-		$isSubmit = $this->parameters->getFeUserData('submit');
-		$isSubmit = !empty($finalDataArray) && $this->parameters->isTokenValid();
+		$isSubmit = $this->parameters->getFeUserData('submit') && !empty($finalDataArray) && $this->parameters->isTokenValid();
 		$isDoNotSave = $this->parameters->getFeUserData('doNotSave');
 		$isDoNotSave = !empty($isDoNotSave);
 		if ($isDoNotSave) {
