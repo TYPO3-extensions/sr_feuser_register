@@ -1,3 +1,6 @@
+2018-02-09 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #83833: Salutation does not match in registration and response for "Ms" and "Mrs"
+
 2018-02-08 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #76119: Profile or password editing fails
 	* Resolves #80409: Error in updateMMRelations with direct mail categories

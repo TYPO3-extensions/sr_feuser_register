@@ -67,10 +67,10 @@
 				<source>Salutation</source>
 			</trans-unit>
 			<trans-unit id="fe_users.gender.I.0" xml:space="preserve">
-				<source>Mr</source>
+				<source>Mr.</source>
 			</trans-unit>
 			<trans-unit id="fe_users.gender.I.1" xml:space="preserve">
-				<source>Ms</source>
+				<source>Ms.</source>
 			</trans-unit>
 			<trans-unit id="fe_users.gender.I.99" xml:space="preserve">
 				<source>None</source>

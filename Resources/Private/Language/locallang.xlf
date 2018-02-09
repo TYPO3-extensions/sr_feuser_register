@@ -901,13 +901,13 @@
 				<source>Dear Mr. %3$s,</source>
 			</trans-unit>
 			<trans-unit id="v_dear_female" xml:space="preserve">
-				<source>Dear Mrs. %3$s,</source>
+				<source>Dear Ms. %3$s,</source>
 			</trans-unit>
 			<trans-unit id="v_infomail_dear" xml:space="preserve">
-				<source>Dear Mrs./Sir,</source>
+				<source>Dear Ms./Sir,</source>
 			</trans-unit>
 			<trans-unit id="v_infomail_dear_informal" xml:space="preserve">
-				<source>Dear Mrs./Sir,</source>
+				<source>Dear Ms./Sir,</source>
 			</trans-unit>
 			<trans-unit id="v_infomail_lost_password" xml:space="preserve">
 				<source>Enter the email address under which you are registered.</source>
