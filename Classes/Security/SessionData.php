@@ -217,18 +217,11 @@ class SessionData
 	 * @param string $password: the password
 	 * @return void
 	 */
-	public static function writePassword($extensionKey, $password, $passwordAgain = '')
+	public static function writePassword($extensionKey, $password = '', $passwordAgain = '')
 	{
 		$sessionData = self::readSessionData($extensionKey);
-		if ($password === '') {
-			$sessionData['password'] = '__UNSET';
-			$sessionData['password_again'] = '__UNSET';
-		} else {
-			$sessionData['password'] = $password;
-			if ($passwordAgain !== '') {
-				$sessionData['password_again'] = $passwordAgain;
-			}
-		}
+		$sessionData['password'] = empty($password) ? '__UNSET' : $password;
+		$sessionData['password_again'] = empty($passwordAgain) ? '__UNSET' : $passwordAgain;
 		self::writeSessionData($extensionKey, $sessionData);
 	}
 

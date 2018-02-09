@@ -79,11 +79,11 @@ class EditActionController extends AbstractActionController
 			$this->data->parseValues($dataArray, $origArray, $cmdKey);
 			$this->data->overrideValues($dataArray, $cmdKey);
 			$evalErrors = $this->data->evalValues($dataArray, $origArray, $this->marker, $cmdKey, $mode);
-			// If the two password fields are not equal, clear session data
-			if (is_array($evalErrors['password']) && in_array('twice', $evalErrors['password'])) {
+			// If there is an error on password, clear session data
+			if (!empty($evalErrors['password'])) {
 				SessionData::clearSessionData($this->extentionKey);
 			}
-			// No preview flag if a evaluation failure has occured
+			// No preview flag if an evaluation failure has occured
 			if ($this->data->getFailure()) {
 				$mode = AbstractView::MODE_NORMAL;
 			}

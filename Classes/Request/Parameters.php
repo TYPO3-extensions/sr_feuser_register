@@ -215,8 +215,9 @@ class Parameters
 	{
 		if ($this->theTable === 'fe_users' && isset($this->conf['create.']['evalValues.']['password'])) {
 			// Establish compatibility with the extension Felogin
-			$password = GeneralUtility::_GP('pass');
+			$password = '';
 			$password_again = '';
+			$password = GeneralUtility::_GP('pass');
 			$fe = GeneralUtility::_POST('FE');
 			if (isset($fe) && is_array($fe)) {
 				$feDataArray = $fe[$this->theTable];
@@ -224,7 +225,7 @@ class Parameters
 					$password_again = $feDataArray['password_again'];
 				}
 			}
-			if (isset($password)) {
+			if (!empty($password) || !empty($password_again)) {
 				SessionData::writePassword($this->extensionKey, $password, $password_again);
 			}
 		}

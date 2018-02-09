@@ -240,7 +240,7 @@ class Data
 				SecuredData::secureInput($feDataArray, false);
 				$this->modifyRow($feDataArray, false);
 				SessionData::securePassword($this->extensionKey, $feDataArray);
-				unset($feDataArray['password_again']);
+				$feDataArray = array_merge($feDataArray, SessionData::readPassword($this->extensionKey));
 				$this->setDataArray($feDataArray);
 			}
 		}
