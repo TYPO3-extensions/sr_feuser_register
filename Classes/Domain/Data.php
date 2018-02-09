@@ -855,6 +855,7 @@ class Data
 	public function parseValues(array &$dataArray, array $origArray, $cmdKey)
 	{
 		if (is_array($this->conf['parseValues.'])) {
+			$parsedOrigArray = $this->parseIncomingData($origArray);
 			foreach ($this->conf['parseValues.'] as $theField => $theValue) {
 				$listOfCommands = GeneralUtility::trimExplode(',', $theValue, true);
 				if (in_array('setEmptyIfAbsent', $listOfCommands)) {
@@ -870,7 +871,7 @@ class Data
 						if (($theField === 'password' || $theField === 'password_again') && !isset($dataArray[$theField])) {
 							$bValueAssigned = false;
 						}
-						$dataValue = (isset($dataArray[$theField]) ? $dataArray[$theField] : $origArray[$theField]);
+						$dataValue = (isset($dataArray[$theField]) ? $dataArray[$theField] : $parsedOrigArray[$theField]);
 						switch ($theCmd) {
 							case 'int':
 								$dataValue = (int) $dataValue;
@@ -984,7 +985,6 @@ class Data
 								}
 								break;
 							default:
-								$bValueAssigned = false;
 								break;
 						}
 						if ($bValueAssigned) {
