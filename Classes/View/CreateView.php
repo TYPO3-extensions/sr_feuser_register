@@ -87,7 +87,7 @@ class CreateView extends AbstractView
 			$requiredFileds = $this->data->getRequiredFieldsArray($cmdKey);
 			$infoFields = $this->data->getFieldList();
 			$templateCode = $this->marker->removeRequired($templateCode, $this->data->getFailure(), $requiredFileds, $infoFields, $this->data->getSpecialFieldList(), $cmdKey, $isPreview);
-			$this->marker->fillInMarkerArray($currentArray, $securedArray, '', true);
+			$this->marker->fillInMarkerArray($currentArray, $securedArray, '', true, 'FIELD_', true, $isPreview);
 			$this->marker->addStaticInfoMarkers($dataArray, $isPreview);
 			$this->marker->addTcaMarkers($dataArray, $origArray, $cmd, $cmdKey, $isPreview, $requiredFileds);
 			$this->marker->addAdditionalMarkers($infoFields, $cmd, $cmdKey, $currentArray, $isPreview);

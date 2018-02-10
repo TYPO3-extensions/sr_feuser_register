@@ -1077,12 +1077,13 @@ class Marker
 	 *
 	 * @param array An array with keys found in the $fieldList (typically a record) which values should be moved to the $markContentArray
 	 * @param string A list of fields from the $row array to add to the $markContentArray array. If empty all fields from $row will be added (unless they are integers)
-	 * @param boolean If set, all values added to $markContentArray will be nl2br()'ed
+	 * @param bool If set, all values added to $markContentArray will be nl2br()'ed
 	 * @param string Prefix string to the fieldname before it is added as a key in the $markContentArray. Notice that the keys added to the $markContentArray always start and end with "###"
-	 * @param boolean If set, all values are passed through htmlspecialchars() - RECOMMENDED to avoid most obvious XSS and maintain XHTML compliance.
+	 * @param bool If set, all values are passed through htmlspecialchars() - RECOMMENDED to avoid most obvious XSS and maintain XHTML compliance.
+	 * @param bool $viewOnly: whether this is rendering for view only or for form input fields
 	 * @return array The modified $markContentArray
 	 */
-	public function fillInMarkerArray(array $row, array $securedArray, $fieldList = '', $nl2br = true, $prefix = 'FIELD_', $hsc = true) {
+	public function fillInMarkerArray(array $row, array $securedArray, $fieldList = '', $nl2br = true, $prefix = 'FIELD_', $hsc = true, $viewOnly = true) {
 		$markerArray = $this->getMarkerArray();
 		if (is_array($securedArray)) {
 			foreach ($securedArray as $field => $value) {
@@ -1092,6 +1093,9 @@ class Marker
 		if (!empty($fieldList)) {
 			$fieldArray = GeneralUtility::trimExplode(',', $fieldList, true);
 			foreach ($fieldArray as $field) {
+				if ($viewOnly && $GLOBALS['TCA'][$this->theTable]['columns'][$field]['config']['eval'] === 'date') {
+					$row[$field] = $this->formatDateForViewOnly($row[$field]);
+				}
 				$markerArray['###' . $prefix . $field . '###'] = $nl2br ? nl2br($row[$field]) : $row[$field];
 			}
 		} else {
@@ -1101,6 +1105,9 @@ class Marker
 				}
 				if ($hsc) {
 					$value = htmlspecialchars($value);
+				}
+				if ($viewOnly && $GLOBALS['TCA'][$this->theTable]['columns'][$field]['config']['eval'] === 'date') {
+					$value = $this->formatDateForViewOnly($value);
 				}
 				$markerArray['###' . $prefix . $field . '###'] = $nl2br ? nl2br($value) : $value;
 			}
@@ -1124,6 +1131,19 @@ class Marker
 			}
 		}
 		$this->setMarkerArray($markerArray);
+	}
+
+	/**
+	 * Format date for display
+	 *
+	 * @param string $date: date in format yyyy-mm-dd
+	 * @return string date formated according to localized date format
+	 */
+	public function formatDateForViewOnly($date)
+	{
+		$dateFormat = LocalizationUtility::translate('dateFormat', $this->extensionName);
+		$timestamp = mktime(0, 0, 0, (int)substr($date, 5, 2), (int)substr($date, 8, 2), (int)substr($date, 0, 4));
+		return strftime($dateFormat, $timestamp);
 	}
 
 	/**

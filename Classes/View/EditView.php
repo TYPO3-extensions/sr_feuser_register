@@ -71,7 +71,7 @@ class EditView extends AbstractView
 		$requiredFields = $this->data->getRequiredFieldsArray($cmdKey);
 		$this->marker->addPasswordTransmissionMarkers($this->getUsePassword(), $this->getUsePasswordAgain());
 		$templateCode = $this->marker->removeRequired($templateCode, $this->data->getFailure(), $requiredFields, $infoFields, $this->data->getSpecialFieldList(), $cmdKey, $isPreview);
-		$this->marker->fillInMarkerArray($currentArray, $securedArray, '', true);
+		$this->marker->fillInMarkerArray($currentArray, $securedArray, '', true, 'FIELD_', true, $isPreview);
 		if ($cmdKey !== 'password') {
 			$this->marker->addStaticInfoMarkers($currentArray, $isPreview);
 		}

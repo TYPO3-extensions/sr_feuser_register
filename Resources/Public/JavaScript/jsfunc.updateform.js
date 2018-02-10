@@ -37,16 +37,9 @@ function updateForm(formId,fieldname,value)	{
 		var fObj = formObj[fieldname];
 		var type=fObj.type;
 		if (!fObj.type)	{
-			type="radio";
+			type="text";
 		}
-		switch(type)	{
-			case "text":
-			case "textarea":
-			case "email":
-			case "number":
-			case "hidden":
-				fObj.value = htmlSpecialChars_decode(value);
-				break;
+		switch(type) {
 			case "password":
 				fObj.value = value;
 				break;
@@ -64,7 +57,7 @@ function updateForm(formId,fieldname,value)	{
 			case "select-multiple":
 				var l=fObj.length;
 				for (a=0;a<l;a++)	{
-					if (fObj.options[a].value == value)	{
+					if (fObj.options[a].value == value) {
 						fObj.options[a].selected = 1;
 					}
 				}
@@ -72,12 +65,13 @@ function updateForm(formId,fieldname,value)	{
 			case "radio":
 				var l=fObj.length;
 				for (a=0; a<l;a++)	{
-					if (fObj[a].value==value)	{
+					if (fObj[a].value==value) {
 						fObj[a].checked = 1;
 					}
 				}
 			break;
 			default:
+				fObj.value = htmlSpecialChars_decode(value);
 		}
 	}
 }

@@ -28,8 +28,6 @@ plugin.tx_srfeuserregister_pi1 {
 	shortUrlLife = {$plugin.tx_srfeuserregister_pi1.shortUrlLife}
 	useLocalization = {$plugin.tx_srfeuserregister_pi1.useLocalization}
 	useLocalCountry = {$plugin.tx_srfeuserregister_pi1.useLocalCountry}
-	dateFormat = {$plugin.tx_srfeuserregister_pi1.dateFormat}
-	dateSplit = {$plugin.tx_srfeuserregister_pi1.dateSplit}
 
 	onChangeCountryAttribute = {$plugin.tx_srfeuserregister_pi1.onChangeCountryAttribute}
 

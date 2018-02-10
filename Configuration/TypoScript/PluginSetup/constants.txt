@@ -233,10 +233,4 @@ plugin.tx_srfeuserregister_pi1 {
 
     # cat=plugin.tx_srfeuserregister_pi1/enable; type=boolean; label= Local country: If set, the country names are shown in their local languages
   useLocalCountry = 0
-
-    # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Date Format (d-m-y)
-  dateFormat = d-m-Y
-
-    # cat=plugin.tx_srfeuserregister_pi1//; type=string; label= Split char for Date Format (-)
-  dateSplit = -
 }

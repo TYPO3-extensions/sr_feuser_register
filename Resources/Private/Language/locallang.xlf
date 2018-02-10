@@ -229,13 +229,13 @@
 				<source>Select in the list the status that corresponds to the status of the invited person.</source>
 			</trans-unit>
 			<trans-unit id="date_of_birth" xml:space="preserve">
-				<source>Date of birth (dd-mm-yyyy)</source>
+				<source>Date of birth</source>
 			</trans-unit>
 			<trans-unit id="tooltip_date_of_birth" xml:space="preserve">
-				<source>Enter your date of birth in the format day-month-year.</source>
+				<source>Enter your date of birth.</source>
 			</trans-unit>
 			<trans-unit id="tooltip_date_of_birth_informal" xml:space="preserve">
-				<source>Enter your date of birth in the format day-month-year.</source>
+				<source>Enter your date of birth.</source>
 			</trans-unit>
 			<trans-unit id="tooltip_invitation_date_of_birth" xml:space="preserve">
 				<source>Enter the date of birth of the invited person.</source>
@@ -707,6 +707,12 @@
 			</trans-unit>
 			<trans-unit id="button_confirm_register" xml:space="preserve">
 				<source>Create account now!</source>
+			</trans-unit>
+			<trans-unit id="button_send_invitation" xml:space="preserve">
+				<source>Send invitation</source>
+			</trans-unit>
+			<trans-unit id="button_send_invitation_now" xml:space="preserve">
+				<source>Send invitation now!</source>
 			</trans-unit>
 			<trans-unit id="button_back_to_form" xml:space="preserve">
 				<source>Back to form</source>
@@ -1375,10 +1381,10 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 				<source>The entered letters did not correspond to the letters in the image.</source>
 			</trans-unit>
 			<trans-unit id="evalErrors_date" xml:space="preserve">
-				<source>Please enter a valid date in format dd-mm-yyyy!</source>
+				<source>Please enter a valid date!</source>
 			</trans-unit>
 			<trans-unit id="evalErrors_date_informal" xml:space="preserve">
-				<source>Please enter a valid date in format dd-mm-yyyy!</source>
+				<source>Please enter a valid date!</source>
 			</trans-unit>
 			<trans-unit id="evalErrors_email" xml:space="preserve">
 				<source>Please enter a valid e-mail address.</source>
@@ -1571,6 +1577,9 @@ If you wish to accept our invitation and confirm your registration in &lt;b&gt;%
 			</trans-unit>
 			<trans-unit id="missing_gender_informal" xml:space="preserve">
 				<source>Please enter your salutation!</source>
+			</trans-unit>
+			<trans-unit id="dateFormat" xml:space="preserve">
+				<source>%B %e, %Y</source>
 			</trans-unit>
 		</body>
 	</file>

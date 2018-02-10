@@ -756,7 +756,7 @@ class Data
 								if (
 									!is_array($dataArray[$theField])
 									&& $dataArray[$theField]
-									&& !$this->evalDate($dataArray[$theField], $this->conf['dateFormat'])
+									&& !$this->evalDate($dataArray[$theField])
 								) {
 									$failureArray[] = $theField;
 									$this->inError[$theField] = true;
@@ -966,8 +966,8 @@ class Data
 								}
 								break;
 							case 'date':
-								if ($dataValue && $this->evalDate($dataValue, $this->conf['dateFormat'])) {
-									$dateArray = $this->fetchDate($dataValue, $this->conf['dateFormat']);
+								if ($dataValue && $this->evalDate($dataValue)) {
+									$dateArray = $this->fetchDate($dataValue);
 									$dataValue = $dateArray['y'] . '-' . $dateArray['m'] . '-'.$dateArray['d'];
 									$translateArray = array(
 										'd' => ($dateArray['d'] < 10 ? '0'.$dateArray['d'] : $dateArray['d']),
@@ -979,7 +979,7 @@ class Data
 									);
 									$searchArray = array_keys($translateArray);
 									$replaceArray = array_values($translateArray);
-									$dataValue = str_replace($searchArray, $replaceArray, $this->conf['dateFormat']);
+									$dataValue = str_replace($searchArray, $replaceArray, 'Y-m-d');
 								} else if (!isset($dataArray[$theField])) {
 									$bValueAssigned = false;
 								}
@@ -1430,15 +1430,11 @@ class Data
 	/**
 	 * Check if the value is a correct date in format yyyy-mm-dd
 	 */
-	public function fetchDate($value, $dateFormat) {
-
+	protected function fetchDate($value, $dateFormat = 'Y-m-d')
+	{
 		$rcArray = array('m' => '', 'd' => '', 'y' => '');
 		$dateValue = trim($value);
-		$split = $this->conf['dateSplit'];
-		if (!$split) {
-			$split = '-';
-		}
-		$split = '/' . $split . '/';
+		$split = '/-/';
 		$dateFormatArray = preg_split($split, $dateFormat);
 		$dateValueArray = preg_split($split, $dateValue);
 
@@ -1489,11 +1485,11 @@ class Data
 	 *
 	 *  Check if the value is a correct date in format yyyy-mm-dd
 	 */
-	public function evalDate($value, $dateFormat) {
+	protected function evalDate($value, $dateFormat = 'Y-m-d') {
 		if( !$value) {
 			return false;
 		}
-		$dateArray = $this->fetchDate($value, $dateFormat);
+		$dateArray = $this->fetchDate($value);
 
 		if(is_numeric($dateArray['y']) && is_numeric($dateArray['m']) && is_numeric($dateArray['d'])) {
 			$rc = checkdate($dateArray['m'], $dateArray['d'], $dateArray['y']);
@@ -1768,7 +1764,7 @@ class Data
 							case 'date':
 							case 'adodb_date':
 								if ($origArray[$theField]) {
-									$parsedArray[$theField] = date($this->conf['dateFormat'], $origArray[$theField]);
+									$parsedArray[$theField] = date('Y-m-d', $origArray[$theField]);
 								}
 								if (!$parsedArray[$theField]) {
 									if ($bUnsetZero) {
@@ -1811,7 +1807,7 @@ class Data
 						} else {
 							$parsedArray[$theField] = $dataArray[$theField];
 						}
-						$dateArray = $this->fetchDate($parsedArray[$theField], $this->conf['dateFormat']);
+						$dateArray = $this->fetchDate($parsedArray[$theField]);
 					}
 					switch ($theCmd) {
 						case 'date':
