@@ -112,7 +112,8 @@ class Message
 			// PLAIN
 			$mail->addPart($PLAINContent, 'text/plain');
 			// SET Headers and Content
-			$mail->setTo(array($recipient));
+			$recipient = \explode(',', $recipient);
+			$mail->setTo($recipient);
 			$mail->send();
 		}
 	}
