@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Utility;
 /*
  *  Copyright notice
  *
- *  (c) 2015-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2015-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,7 +23,7 @@ namespace SJBR\SrFeuserRegister\Utility;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
@@ -81,7 +81,7 @@ class LocalizationUtility
 			return;
 		}
 		$configurationManager = static::getConfigurationManager();
-		$settings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $extensionName);
+		$settings = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, $extensionName);
 		if (isset($settings['salutation']) && in_array($settings['salutation'], self::$allowedSuffixes, true)) {
 			self::$suffix = ($settings['salutation'] === 'formal' ? '' : $settings['salutation']);
 		} else {
@@ -99,7 +99,7 @@ class LocalizationUtility
 			return static::$configurationManager;
 		}
 		$objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-		$configurationManager = $objectManager->get(ConfigurationManager::class);
+		$configurationManager = $objectManager->get(ConfigurationManagerInterface::class);
 		static::$configurationManager = $configurationManager;
 		return $configurationManager;
 	}

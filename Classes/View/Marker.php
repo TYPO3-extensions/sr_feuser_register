@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\View;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -1647,7 +1647,7 @@ class Marker
 									$i = 0;
 									foreach ($itemArray as $k => $item)	{
 										$label = LocalizationUtility::translate(substr(strrchr($item[0], ':'), 1), $this->extensionName);
-										$label = LocalizationUtility::translate($item[0], $this->extensionName);
+										$label = $label ?: LocalizationUtility::translate($item[0], $this->extensionName);
 										$label = $label ?: $item[0];
 										$label = $label ? htmlspecialchars($label, ENT_QUOTES, $charset) : '';
 										if ($colConfig['renderMode'] === 'checkbox') {
