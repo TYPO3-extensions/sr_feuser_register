@@ -67,6 +67,9 @@ class EditView extends AbstractView
 		if (!$this->conf['linkToPID'] || !$this->conf['linkToPIDAddButton'] || !$isPreview) {
 			$templateCode = $this->marker->substituteSubpart($templateCode, '###SUB_LINKTOPID_ADD_BUTTON###', '');
 		}
+		if (!$this->conf['delete']) {
+			$templateCode = $this->marker->substituteSubpart($templateCode, '###SUB_LINK_TO_DELETE###', '');
+		}
 		$infoFields = $this->data->getFieldList();
 		$requiredFields = $this->data->getRequiredFieldsArray($cmdKey);
 		$this->marker->addPasswordTransmissionMarkers($this->getUsePassword(), $this->getUsePasswordAgain());

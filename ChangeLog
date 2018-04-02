@@ -1,3 +1,6 @@
+2018-04-02 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #84076: Honour TS setup delete = 0
+
 2018-02-09 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #83833: Salutation does not match in registration and response for "Ms" and "Mrs"
 	* Resolves #77055: Password again may be entered alone without error being raised
