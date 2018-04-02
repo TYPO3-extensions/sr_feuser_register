@@ -545,7 +545,8 @@ class Data
 	 * @param string $mode: the current mode (normal or preview)	 
 	 * @return void on return, the parameters failure will contain the list of fields which were not ok
 	 */
-	public function evalValues(array &$dataArray, array $origArray, $markerObj, $cmdKey, $mode = AbstractView::MODE_NORMAL) {
+	public function evalValues(array &$dataArray, array $origArray, $markerObj, $cmdKey, $mode = AbstractView::MODE_NORMAL)
+	{
 		$failureArray = array();
 		$failureMsg = array();
 		$markerArray = array();
@@ -560,13 +561,21 @@ class Data
 			if ($theField === 'usergroup' && is_object($this->userGroupObj) && is_array($value)) {
 				$value = $this->userGroupObj->restrictToSelectableValues($value, $this->conf, $cmdKey);
 			}
-			$isMissing = empty($value) && !($theField === 'gender' && $value == '0');
+			$isMissing = empty($value);
+			$fieldConfig = $GLOBALS['TCA'][$this->theTable]['columns'][$theField]['config'];
+			if ($isMissing && $fieldConfig['type'] === 'radio') {
+				foreach ($fieldConfig['items'] as $k => $item) {
+					if ($value == $item[1]) {
+						$isMissing = false;
+						break;
+					}
+				}
+			}
 			if ($isMissing) {
 				$failureArray[] = $theField;
 				$this->missing[$theField] = true;
 			}
 		}
-
 		$pid = $dataArray['pid'];
 
 		// Evaluate: This evaluates for more advanced things than "required" does.
