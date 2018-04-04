@@ -300,6 +300,7 @@ class Parameters
 			}
 		}
 		if (!$pid) {
+			$pids = [];
 			if ($this->cObj->data['pages']) {
 				$pids = explode(',', $this->cObj->data['pages']);
 			}
