@@ -681,7 +681,7 @@ class FileUploadHooks
 						$HTMLContent .= CR . LF;
 					}
 				} else if ($bHtml) {
-					$HTMLContent .= '<a href="' . $dir . '/' . $fileName . '"'
+					$HTMLContent .= '<a href="' . ($GLOBALS['TSFE']->config['config']['absRefPrefix'] ?: '') . $dir . '/' . $fileName . '"'
 					. CssUtility::classParam($prefixId, 'file-view')
 					. ' target="_blank" title="' . LocalizationUtility::translate('file_view', $extensionName) . '">' . LocalizationUtility::translate('file_view', $extensionName) . '</a><br />';
 				}
