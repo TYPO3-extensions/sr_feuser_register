@@ -1,3 +1,6 @@
+2018-10-23 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #85925: PHP codeinspection returns errors
+
 2018-04-04 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #84605: PHP Warning: count() in SJBR\SrFeuserRegister\Request\Parameters
 

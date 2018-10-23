@@ -34,6 +34,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Data store functions
@@ -369,7 +370,7 @@ class Data
 			$adminFieldList = 'username,password,name,disable,usergroup,by_invitation,tx_srfeuserregister_password';
 		}
 		if (trim($this->conf['addAdminFieldList'])) {
-			$adminFieldList .= ',' . trim($conf['addAdminFieldList']);
+			$adminFieldList .= ',' . trim($this->conf['addAdminFieldList']);
 		}
 		// Honour Address List (tt_address) configuration settings
 		if ($this->theTable === 'tt_address' && ExtensionManagementUtility::isLoaded('tt_address')) {
@@ -1250,12 +1251,12 @@ class Data
 			}
 			if ($GLOBALS['TCA'][$this->theTable]['ctrl']['fe_cruser_id']) {
 				$field = $GLOBALS['TCA'][$this->theTable]['ctrl']['fe_cruser_id'];
-				$dataArr[$field] = (int)$this->cObj->getTypoScriptFrontendController()->fe_user->user['uid'];
+				$dataArr[$field] = (int)$this->getTypoScriptFrontendController()->fe_user->user['uid'];
 				$extraList .= ',' . $field;
 			}
 			if ($GLOBALS['TCA'][$this->theTable]['ctrl']['fe_crgroup_id']) {
 				$field = $GLOBALS['TCA'][$this->theTable]['ctrl']['fe_crgroup_id'];
-				list($dataArr[$field]) = explode(',', $this->cObj->getTypoScriptFrontendController()->fe_user->user['usergroup']);
+				list($dataArr[$field]) = explode(',', $this->getTypoScriptFrontendController()->fe_user->user['usergroup']);
 				$dataArr[$field] = (int)$dataArr[$field];
 				$extraList .= ',' . $field;
 			}
@@ -2135,4 +2136,12 @@ class Data
 	{
 		return $this->theTable;
 	}
+
+    /**
+     * @return TypoScriptFrontendController
+     */
+    protected function getTypoScriptFrontendController()
+    {
+        return $GLOBALS['TSFE'];
+    }
 }
