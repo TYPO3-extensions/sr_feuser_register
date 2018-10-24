@@ -350,10 +350,25 @@ class FileUploadHooks
 				}
 			}
 		} else {
-			$uploadPath = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config']['uploadfolder'];
-			$uploadPath = $uploadPath ?: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['uploadfolder'];
-			if (@is_file(PATH_site . $uploadPath . '/' . $file['name'])) {
-				@unlink(PATH_site . $uploadPath . '/' . $file['name']);
+			if ($fieldConf['config']['type'] === 'group' && $fieldConf['config']['internal_type'] === 'file') {
+				// TYPO3 7 LTS
+				$uploadPath = $fieldConf['uploadfolder'];
+				$uploadPath = $uploadPath ?: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['uploadfolder'];
+				$record = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, (int)$uid);
+				if (is_array($rec)) {
+					$fileArray = explode(',', $record[$theField]);
+					foreach ($fileArray as $index => $fileItem) {
+						if ($fileItem == $file['name']) {
+							unset($fileArray[$index]]);
+						}
+					}
+					$updateFields = [];
+					$updateFields[$theField] = implode(',', $fileArray);
+					$res = $GLOBALS['TSFE']->cObj->DBgetUpdate($theTable, (int)$uid, $updateFields, $theField, true);
+				}
+				if (@is_file(PATH_site . $uploadPath . '/' . $file['name'])) {
+					@unlink(PATH_site . $uploadPath . '/' . $file['name']);
+				}
 			}
 		}
 	}
