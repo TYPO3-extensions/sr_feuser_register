@@ -2,6 +2,7 @@
 	* Resolves #85925: PHP codeinspection returns errors
 	* Resolves #84694: Backslash missing in user image preview link path
 	* Resolves #84569: Misleading frontend output while deleting images in EDIT mode
+	* Resolves #86726: usergroup field is required when allowUserGroupSelection is set
 
 2018-04-04 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #84605: PHP Warning: count() in SJBR\SrFeuserRegister\Request\Parameters

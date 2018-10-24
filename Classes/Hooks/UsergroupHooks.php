@@ -40,12 +40,11 @@ class UsergroupHooks
 	 */
 	public function modifyConf(array &$conf, $cmdKey)
 	{
-		// Add usergroup to the list of fields and required fields if the user is allowed to select user groups
+		// Add usergroup to the list of fields if the user is allowed to select user groups
 		// Except when only updating password
 		if ($cmdKey !== 'password') {
 			if ($conf[$cmdKey . '.']['allowUserGroupSelection']) {
 				$conf[$cmdKey . '.']['fields'] = implode(',', array_unique(GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['fields'] . ',usergroup', true)));
-				$conf[$cmdKey . '.']['required'] = implode(',', array_unique(GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['required'] . ',usergroup', true)));
 			} else {
 				// Remove usergroup from the list of fields and required fields if the user is not allowed to select user groups
 				$conf[$cmdKey . '.']['fields'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $conf[$cmdKey . '.']['fields'], true), array('usergroup')));
