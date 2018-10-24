@@ -1,3 +1,6 @@
+2018-10-24 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #86736: Removing all selectable user groups was not possible
+
 2018-10-23 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #85925: PHP codeinspection returns errors
 	* Resolves #84694: Backslash missing in user image preview link path

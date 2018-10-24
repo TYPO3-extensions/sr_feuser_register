@@ -42,7 +42,14 @@ class CreateView extends AbstractView
 	 */
 	public function render(array $dataArray, array $origArray, array $securedArray, $cmd, $cmdKey, $mode) {
 		$content = '';
-		$currentArray = array_merge($origArray, $dataArray);
+		$currentArray = $origArray;
+		if (isset($dataArray) && is_array($dataArray)) {
+			foreach ($dataArray as $key => $value) {
+				if (!is_array($value) || $mode === self::MODE_PREVIEW || $this->parameters->getFeUserData('doNotSave')) {
+					$currentArray[$key] = $value;
+				}
+			}
+		}
 
 		if ($this->theTable === 'fe_users') {
 			if ($this->getUsePassword() && !isset($currentArray['password'])) {

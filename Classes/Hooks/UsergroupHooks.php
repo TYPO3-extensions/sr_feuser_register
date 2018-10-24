@@ -116,6 +116,7 @@ class UsergroupHooks
 		$valuesArray = array();
 		if (isset($origArray[$fieldname]) && is_array($origArray[$fieldname])) {
 			$valuesArray = $origArray[$fieldname];
+			$keepValues = [];
 			if ($conf[$cmdKey . '.']['keepUnselectableUserGroups']) {
 				// Get usergroups that are not selectable
 				if (class_exists('TYPO3\\CMS\\Core\\Database\\ConnectionPool')) {
@@ -138,9 +139,8 @@ class UsergroupHooks
 				if (!empty($rowArray) && is_array($rowArray)) {
 					$keepValues = array_keys($rowArray);
 				}
-			} else {
-				$keepValues = $this->getReservedValues($conf);
 			}
+			$keepValues = array_unique(array_merge($keepValues, $this->getReservedValues($conf)));
 			$valuesArray = array_intersect($valuesArray, $keepValues);
 		}
 		if (isset($dataArray[$fieldname]) && is_array($dataArray[$fieldname])) {

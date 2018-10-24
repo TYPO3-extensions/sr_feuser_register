@@ -47,7 +47,7 @@ class EditView extends AbstractView
 		$currentArray = $origArray;
 		if (isset($dataArray) && is_array($dataArray)) {
 			foreach ($dataArray as $key => $value) {
-				if (!is_array($value) || !empty($value)) {
+				if (!is_array($value) || $mode === self::MODE_PREVIEW || $this->parameters->getFeUserData('doNotSave')) {
 					$currentArray[$key] = $value;
 				}
 			}

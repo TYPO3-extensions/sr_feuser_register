@@ -921,8 +921,8 @@ class Data
 								}
 								break;
 							case 'multiple':
-								$fieldDataArray = array();
-								if (!empty($dataValue)) {
+								$fieldDataArray = [];
+								if (!empty($dataArray[$theField]) && !empty($dataValue)) {
 									if (is_array($dataValue)) {
 										$fieldDataArray = $dataValue;
 									} else if (is_string($dataValue)) {
