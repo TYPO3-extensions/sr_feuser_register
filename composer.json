@@ -2,7 +2,7 @@
   "name": "sjbr/sr-feuser-register",
   "description": "A self-registration variant of Kasper Skårhøj's Front End User Admin extension.",
   "type": "typo3-cms-extension",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "license": "GPL-2.0+",
   "authors": [
     {
