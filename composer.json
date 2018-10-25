@@ -2,33 +2,39 @@
   "name": "sjbr/sr-feuser-register",
   "description": "A self-registration variant of Kasper Skårhøj's Front End User Admin extension.",
   "type": "typo3-cms-extension",
-  "version": "5.1.1",
+  "version": "6.0.0",
   "license": "GPL-2.0+",
+  "keywords": [
+    "TYPO3",
+    "user",
+    "registration",
+    "frontend",
+    "fe_users"
+  ],
   "authors": [
     {
-      "name": "Stanislas Rolland",
-      "role": "Developer"
+    "name": "Stanislas Rolland",
+    "homepage": "http://www.sjbr.ca",
+    "role": "Developer"
     }
   ],
   "homepage": "https://forge.typo3.org/projects/extension-sr_feuser_register",
   "support": {
-	"issues": "https://forge.typo3.org/projects/extension-sr_feuser_register/issues"
+    "issues": "https://forge.typo3.org/projects/extension-sr_feuser_register/issues"
   },
   "replace": {
-    "sr_feuser_register": "*",
-    "sjbr/sr_feuser_register": "*",
+    "sr_feuser_register": "self.version",
 	"typo3-ter/sr-feuser-register": "self.version"
   },
   "require": {
-  	 "typo3/cms-core": ">=7.6.0,<9.0",
-  	 "typo3/cms-felogin": ">=7.6.0,<9.0",
-  	 "typo3/cms-rsaauth": ">=7.6.0,<9.0",
-  	 "typo3/cms-saltedpasswords": ">=7.6.0,<9.0",
-  	 "sjbr/static-info-tables": ">=6.4.2,<6.6"
+    "typo3/cms-core": ">=9.5.0, <10.0",
+    "typo3/cms-felogin": ">=9.5.0, <10.0",
+    "typo3/cms-rsaauth": ">=9.5.0, <10.0",
+    "sjbr/static-info-tables": ">=6.7.1, <6.8"
   },
   "suggest": {
-  	 "sjbr/sr-freecap": "Allows to add a captcha to the registration form.",
-  	 "directmailteam/direct-mail" : "Allows to send newsletters to registered users."
+    "sjbr/sr-freecap": "Allows to add a captcha to the registration form.",
+    "directmailteam/direct-mail" : "Allows to send newsletters to registered users."
   },
   "autoload": {
     "psr-4": {

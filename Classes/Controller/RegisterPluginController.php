@@ -5,7 +5,7 @@ namespace SJBR\SrFeuserRegister\Controller;
  *  Copyright notice
  *
  *  (c) 1999-2003 Kasper Skårhøj <kasperYYYY@typo3.com>
- *  (c) 2004-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2004-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,6 +25,11 @@ namespace SJBR\SrFeuserRegister\Controller;
 
 use SJBR\SrFeuserRegister\Exception;
 use SJBR\SrFeuserRegister\Configuration\ConfigurationCheck;
+use SJBR\SrFeuserRegister\Controller\CreateActionController;
+use SJBR\SrFeuserRegister\Controller\DeleteActionController;
+use SJBR\SrFeuserRegister\Controller\EditActionController;
+use SJBR\SrFeuserRegister\Controller\InfomailActionController;
+use SJBR\SrFeuserRegister\Controller\SetfixedActionController;
 use SJBR\SrFeuserRegister\Domain\Data;
 use SJBR\SrFeuserRegister\Request\Parameters;
 use SJBR\SrFeuserRegister\Security\Authentication;
@@ -32,10 +37,13 @@ use SJBR\SrFeuserRegister\Security\SessionData;
 use SJBR\SrFeuserRegister\Utility\CssUtility;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\View\Marker;
+use SJBR\SrFeuserRegister\View\PlainView;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
 /**
@@ -131,7 +139,7 @@ class RegisterPluginController extends AbstractPlugin
 	 * Commands that may be processed when no user is logged in
 	 * @var array
 	 */
-	protected $noLoginCommands = array('create', 'invite', 'setfixed', 'infomail');
+	protected $noLoginCommands = ['create', 'invite', 'setfixed', 'infomail'];
 
 	/**
 	 * Plugin entry script
@@ -149,8 +157,6 @@ class RegisterPluginController extends AbstractPlugin
 		$content = ConfigurationCheck::checkRequirements($this->extKey);
 		// Check installation security settings
 		$content .= ConfigurationCheck::checkSecuritySettings($this->extKey);
-		// Check presence of deprecated markers
-		$content .= ConfigurationCheck::checkDeprecatedMarkers($this->extKey, $this->conf);
 		// The table may be configured
 		if (isset($this->conf['table.']) && is_array($this->conf['table.']) && $this->conf['table.']['name']) {
 			$this->theTable  = $this->conf['table.']['name'];
@@ -164,23 +170,23 @@ class RegisterPluginController extends AbstractPlugin
 		// If no error content, proceed
 		if (!$content) {
 			// Validate the token and initialize request parameters
-			$this->parameters = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\Request\\Parameters', $this->extKey, $this->prefixId, $this->theTable, $this->conf, $this->piVars, $this);
+			$this->parameters = GeneralUtility::makeInstance(Parameters::class, $this->extKey, $this->prefixId, $this->theTable, $this->conf, $this->piVars, $this);
 			// Initialize the incoming and original data
-			$this->data = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\Domain\\Data', $this->extKey, $this->prefixId, $this->theTable, $this->conf, $this->cObj, $this->parameters, $this->adminFieldList);
+			$this->data = GeneralUtility::makeInstance(Data::class, $this->extKey, $this->prefixId, $this->theTable, $this->conf, $this->cObj, $this->parameters, $this->adminFieldList);
 			// Initialize the controller
 			$this->initialize();
 			// Initialize marker class
-			$this->marker = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\Marker', $this->extKey, $this->prefixId, $this->theTable, $this->conf, $this->parameters, $this->buttonLabelsList, $this->otherLabelsList);
+			$this->marker = GeneralUtility::makeInstance(Marker::class, $this->extKey, $this->prefixId, $this->theTable, $this->conf, $this->parameters, $this->buttonLabelsList, $this->otherLabelsList);
 			if ($this->parameters->isTokenValid() || ($this->parameters->getCmd() !== 'setfixed' && $this->parameters->getCmd() !== 'infomail')) {
 				// Process the request
 				$content = $this->doProcessing($this->parameters->getCmd(), $this->parameters->getCmdKey(), $this->data->getOrigArray(), $this->data->getDataArray());
 			} else {
 				$this->marker->generateURLMarkers();
-				$plainView = GeneralUtility::makeInstance('SJBR\\SrFeuserRegister\\View\\PlainView', $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+				$plainView = GeneralUtility::makeInstance(PlainView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 				if ($this->parameters->getCmd() === 'setfixed') {
-					$content = $plainView->render('###TEMPLATE_SETFIXED_FAILED###', array(), array(), array(), '', '');
+					$content = $plainView->render('###TEMPLATE_SETFIXED_FAILED###', [], [], a[], '', '');
 				} else {
-					$content = $plainView->render('###TEMPLATE_INVALID_TOKEN###', array(), array(), array(), '', '');
+					$content = $plainView->render('###TEMPLATE_INVALID_TOKEN###', [], [], [], '', '');
 				}
 			}
 		}
@@ -192,14 +198,14 @@ class RegisterPluginController extends AbstractPlugin
 	 */
 	protected function initialize()
 	{
-		$origArray = array();
+		$origArray = [];
 		$cmd = $this->parameters->getCmd();
 		$dataArray = $this->data->getDataArray();
 		$feUserdata = $this->parameters->getFeUserData();
-		$uid = $dataArray['uid'] ? $dataArray['uid'] : ($feUserdata['rU'] ? $feUserdata['rU'] : (!in_array($cmd, $this->noLoginCommands) ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0));
+		$uid = $dataArray['uid'] ? $dataArray['uid'] : ($feUserdata['rU'] ? $feUserdata['rU'] : (!in_array($cmd, $this->noLoginCommands) ? GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('frontend.user', 'id') : 0));
 		if ($uid) {
 			$this->data->setRecUid((int) $uid);
-			$newOrigArray = $GLOBALS['TSFE']->sys_page->getRawRecord($this->theTable, (int) $uid);
+			$newOrigArray = $this->getTypoScriptFrontendController()->sys_page->getRawRecord($this->theTable, (int)$uid);
 			if (isset($newOrigArray) && is_array($newOrigArray)) {
 				$this->data->modifyRow($newOrigArray, true);
 				$origArray = $newOrigArray;
@@ -226,7 +232,7 @@ class RegisterPluginController extends AbstractPlugin
 		if ($cmd === 'edit' || $cmd === 'invite' || $cmd === 'password' || $cmd === 'infomail') {
 			$cmdKey = $cmd;
 		} else {
-			if (($cmd === '' || $cmd === 'setfixed') && (($this->theTable !== 'fe_users' || $uid == $GLOBALS['TSFE']->fe_user->user['uid']) && $nonEmptyRecord)) {
+			if (($cmd === '' || $cmd === 'setfixed') && (($this->theTable !== 'fe_users' || $uid == GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('frontend.user', 'id')) && $nonEmptyRecord)) {
 				$cmdKey = 'edit';
 			} else {
 				$cmdKey = 'create';
@@ -244,11 +250,11 @@ class RegisterPluginController extends AbstractPlugin
 	protected function processSettings($cmdKey)
 	{
 		if (!ExtensionManagementUtility::isLoaded('direct_mail')) {
-			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), array('module_sys_dmail_category,module_sys_dmail_newsletter')));
-			$this->conf[$cmdKey . '.']['required'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['required'], 1), array('module_sys_dmail_category, module_sys_dmail_newsletter')));
+			$this->conf[$cmdKey.'.']['fields'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), ['module_sys_dmail_category,module_sys_dmail_newsletter']));
+			$this->conf[$cmdKey . '.']['required'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['required'], 1), ['module_sys_dmail_category, module_sys_dmail_newsletter']));
 		}
 		// Make lists ready for GeneralUtility::inList which does not yet allow blanks
-		$fieldConfArray = array('fields', 'required');
+		$fieldConfArray = ['fields', 'required'];
 		foreach ($fieldConfArray as $k => $v) {
 			$this->conf[$cmdKey . '.'][$v] = implode(',',  array_unique(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.'][$v], true)));
 		}
@@ -262,25 +268,25 @@ class RegisterPluginController extends AbstractPlugin
 			}
 			// When in edit mode, remove password from required fields
 			if ($cmdKey === 'edit') {
-				$this->conf[$cmdKey . '.']['required'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['required'], 1), array('password')));
+				$this->conf[$cmdKey . '.']['required'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['required'], 1), ['password']));
 			}
 			if ($this->conf[$cmdKey . '.']['generateUsername'] || $cmdKey == 'password') {
-				$this->conf[$cmdKey . '.']['fields'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), array('username')));
+				$this->conf[$cmdKey . '.']['fields'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), ['username']));
 			}
 			if ($cmdKey === 'invite') {
-				$this->conf[$cmdKey . '.']['fields'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), array('password')));
-				$this->conf[$cmdKey . '.']['required'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['required'], 1), array('password')));
+				$this->conf[$cmdKey . '.']['fields'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), ['password']));
+				$this->conf[$cmdKey . '.']['required'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['required'], 1), ['password']));
 				// Do not evaluate any password when inviting
 				unset($this->conf[$cmdKey . '.']['evalValues.']['password']);
 			}
 			if ($this->conf[$cmdKey . '.']['useEmailAsUsername']) {
-				$this->conf[$cmdKey . '.']['fields'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), array('username')));
+				$this->conf[$cmdKey . '.']['fields'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), ['username']));
 				if ($cmdKey === 'create' || $cmdKey === 'invite') {
 					$this->conf[$cmdKey . '.']['fields'] = implode(',', GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'] . ',email', 1));
 					$this->conf[$cmdKey . '.']['required'] = implode(',', GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['required'] . ',email', 1));
 				}
 				if (($cmdKey === 'edit' || $cmdKey === 'password') && ($this->conf['enableEmailConfirmation'] || $this->conf['enableAdminReview'] || $this->conf['setfixed'])) {
-					$this->conf[$cmdKey . '.']['fields'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), array('email')));
+					$this->conf[$cmdKey . '.']['fields'] = implode(',', array_diff(GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], 1), ['email']));
 				}
 			}
 			// Do not evaluate the username if it is generated or if email is used
@@ -288,7 +294,7 @@ class RegisterPluginController extends AbstractPlugin
 				unset($this->conf[$cmdKey . '.']['evalValues.']['username']);
 			}
 			// Invoke hooks that may modify the configuration
-			$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['configuration']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['configuration'] : array();
+			$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['configuration']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['configuration'] : [];
 			foreach ($hookClassArray as $classRef) {
 				$hookObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($classRef);
 				if (is_object($hookObject) && method_exists($hookObject, 'modifyConf')) {
@@ -339,22 +345,22 @@ class RegisterPluginController extends AbstractPlugin
 	 * @return string text to display
 	 */
 	public function doProcessing($cmd, $cmdKey, array $origArray, array $dataArray) {
-		$finalDataArray = array();
-		$securedArray = array();
+		$finalDataArray = [];
+		$securedArray = [];
 		$uid = $this->data->getRecUid();
-
+		$context = GeneralUtility::makeInstance(Context::class);
 		if (
 			(
 				// Check if the login user is the right one
 				$this->theTable === 'fe_users'
-				&& (!$GLOBALS['TSFE']->loginUser || ($uid > 0 && $GLOBALS['TSFE']->fe_user->user['uid'] != $uid))
+				&& (!$context->getPropertyFromAspect('frontend.user', 'isLoggedIn') || ($uid > 0 && $context->getPropertyFromAspect('frontend.user', 'id') != $uid))
 				// Or no login is_a required for this command
 				&& !in_array($cmd, $this->noLoginCommands)
 				// this is a unsubscribe link from Direct Mail
 				&& !($cmd === 'delete' && Authentication::aCAuth($this->parameters->getAuthCode(), $origArray, $this->conf, $this->conf['setfixed.']['DELETE.']['_FIELDLIST']))
 			)
 		) {
-			$origArray = array();
+			$origArray = [];
 			$this->data->setOrigArray($origArray);
 			$this->data->resetDataArray();
 			$finalDataArray = $dataArray;
@@ -370,38 +376,46 @@ class RegisterPluginController extends AbstractPlugin
 		switch ($cmd) {
 			case 'create':
 			case 'invite':
-				$controllerClass = 'SJBR\\SrFeuserRegister\\Controller\\CreateActionController';
+				$controllerClass = CreateActionController::class;
 				break;
 			case 'edit':
 			case 'password':
 			case 'login':
-				$controllerClass = 'SJBR\\SrFeuserRegister\\Controller\\EditActionController';
+				$controllerClass = EditActionController::class;
 				break;
 			case 'delete':
-				$controllerClass = 'SJBR\\SrFeuserRegister\\Controller\\DeleteActionController';
+				$controllerClass = DeleteActionController::class;
 				break;
 			case 'setfixed':
-				$controllerClass = 'SJBR\\SrFeuserRegister\\Controller\\SetfixedActionController';
+				$controllerClass = SetfixedActionController::class;
 				break;
 			case 'infomail':
-				$controllerClass = 'SJBR\\SrFeuserRegister\\Controller\\InfomailActionController';
+				$controllerClass = InfomailActionController::class;
 				break;
 			case '':
 				switch ($cmdKey) {
 					case 'edit':
-						$controllerClass = 'SJBR\\SrFeuserRegister\\Controller\\EditActionController';
+						$controllerClass = EditActionController::class;
 						break;
 					case 'create':
 					default:
-						$controllerClass = 'SJBR\\SrFeuserRegister\\Controller\\CreateActionController';
+						$controllerClass = CreateActionController::class;
 						break;
 				}
 				break;
 			default:
-				$controllerClass = 'SJBR\\SrFeuserRegister\\Controller\\CreateActionController';
+				$controllerClass = CreateActionController::class;
 		}
 		$actionController = GeneralUtility::makeInstance($controllerClass, $this->extKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 		$content = $actionController->doProcessing($finalDataArray, $cmd, $cmdKey);
 		return $content;
 	}
+
+    /**
+     * @return TypoScriptFrontendController
+     */
+    protected static function getTypoScriptFrontendController()
+    {
+        return $GLOBALS['TSFE'];
+    }
 }

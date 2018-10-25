@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\View;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -33,6 +33,7 @@ use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\View\Marker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Frontend\Resource\FilePathSanitizer;
 
 /**
  * Email functions
@@ -160,7 +161,7 @@ class Email
 		$cmd,
 		$cmdKey
 	) {
-		$missingSubpartArray = array();
+		$missingSubpartArray = [];
 		$userSubpartsFound = 0;
 		$adminSubpartsFound = 0;
 		$bHTMLMailEnabled = $this->isHTMLMailEnabled();
@@ -179,14 +180,14 @@ class Email
 
 		$viewOnly = true;
 		$requiredFields = $this->data->getRequiredFieldsArray($cmdKey);
-		$content = array('user' => array(), 'userhtml' => array(), 'admin' => array(), 'adminhtml' => array(), 'mail' => array());
+		$content = ['user' => [], 'userhtml' => [], 'admin' => [], 'adminhtml' => [], 'mail' => []];
 		$content['mail'] = '';
 		$content['user']['all'] = '';
 		$content['userhtml']['all'] = '';
 		$content['admin']['all'] = '';
 		$content['adminhtml']['all'] = '';
-		$setfixedArray = array('SETFIXED_CREATE', 'SETFIXED_CREATE_REVIEW', 'SETFIXED_INVITE', 'SETFIXED_REVIEW');
-		$infomailArray = array('INFOMAIL', 'INFOMAIL_NORECORD');
+		$setfixedArray = ['SETFIXED_CREATE', 'SETFIXED_CREATE_REVIEW', 'SETFIXED_INVITE', 'SETFIXED_REVIEW'];
+		$infomailArray = ['INFOMAIL', 'INFOMAIL_NORECORD'];
 		if (
 			(isset($this->conf['email.'][$key]) && $this->conf['email.'][$key] != '0') ||
 			($this->conf['enableEmailConfirmation'] && in_array($key, $setfixedArray)) ||
@@ -241,9 +242,9 @@ class Email
 			}
 		}
 
-		$contentIndexArray = array();
-		$contentIndexArray['text'] = array();
-		$contentIndexArray['html'] = array();
+		$contentIndexArray = [];
+		$contentIndexArray['text'] = [];
+		$contentIndexArray['html'] = [];
 
 		if ($content['user']['all']) {
 			$content['user']['rec'] = $this->marker->getSubpart($content['user']['all'], '###SUB_RECORD###');
@@ -262,7 +263,7 @@ class Email
 			$contentIndexArray['html'][] = 'adminhtml';
 		}
 		$changesOnly = (($this->conf['email.']['EDIT_SAVED'] == '2' || $this->conf['notify.']['EDIT_SAVED'] == '2') && $cmd == 'edit');
-		$keepFields = $changesOnly ? array('uid', 'pid', 'tstamp', 'name', 'username') : array();
+		$keepFields = $changesOnly ? ['uid', 'pid', 'tstamp', 'name', 'username'] : [];
 		$this->marker->fillInMarkerArray($DBrows[0], $securedArray, '', false);
 		$this->marker->addLabelMarkers($DBrows[0], $origRows[0], $securedArray, $keepFields, $requiredFields, $this->data->getFieldList(), $this->data->getSpecialFieldList(), $changesOnly);
 		$content['user']['all'] = $this->marker->substituteMarkerArray($content['user']['all'], $this->marker->getMarkerArray());
@@ -283,7 +284,7 @@ class Email
 			}
 			$mrow = $currentRow;
 			if ($changesOnly) {
-				$mrow = array();
+				$mrow = [];
 				foreach ($currentRow as $theField => $v) {
 					if (in_array($theField, $keepFields)) {
 						$mrow[$theField] = $v;
@@ -381,7 +382,8 @@ class Email
 			&& $this->conf['addAttachment.']['cmd'] === $cmd
 			&& $this->conf['addAttachment.']['sFK'] === $this->parameters->getFeUserData('sFK')
 		) {
-			$file = ($this->conf['addAttachment.']['file'] ? $GLOBALS['TSFE']->tmpl->getFileName($this->conf['addAttachment.']['file']) : '');
+			$filePathSanitizer = GeneralUtility::makeInstance(FilePathSanitizer::class);
+			$file = $this->conf['addAttachment.']['file'] ? $filePathSanitizer->sanitize($this->conf['addAttachment.']['file']) : '';
 		}
 		// SETFIXED_REVIEW will be sent to user only if the admin part is present
 		if (($userSubpartsFound + $adminSubpartsFound >= 1) && ($adminSubpartsFound >= 1 || $key !== 'SETFIXED_REVIEW')) {

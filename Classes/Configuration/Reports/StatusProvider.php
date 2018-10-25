@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Configuration\Reports;
 /*
  *  Copyright notice
  *
- *  (c) 2012-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2012-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,7 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
-use TYPO3\CMS\Saltedpasswords\Utility\SaltedPasswordsUtility;
 
 /**
  * Hook into the backend module "Reports" checking the configuration required for sr_feuser_register
@@ -47,12 +46,11 @@ class StatusProvider implements StatusProviderInterface
 	 */
 	public function getStatus()
 	{
-		$reports = array(
+		$reports = [
 			'requiredExtensionsAreInstalled' => $this->checkIfRequiredExtensionsAreInstalled(),
 			'noConflictingExtensionIsInstalled' => $this->checkIfNoConflictingExtensionIsInstalled(),
-			'frontEndLoginSecurityLevelIsCorrectlySet' => $this->checkIfFrontEndLoginSecurityLevelIsCorrectlySet(),
-			'saltedPasswordsAreEnabledInFrontEnd' => $this->checkIfSaltedPasswordsAreEnabledInFrontEnd()
-		);
+			'frontEndLoginSecurityLevelIsCorrectlySet' => $this->checkIfFrontEndLoginSecurityLevelIsCorrectlySet()
+		];
 		return $reports;
 	}
 
@@ -128,26 +126,6 @@ class StatusProvider implements StatusProviderInterface
 			$status = Status::ERROR;
 		} else {
 			$value = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
-			$message = '';
-			$status = Status::OK;
-		}
-		return GeneralUtility::makeInstance(Status::class, $title, $value, $message, $status);
-	}
-
-	/**
-	 * Check whether salted passwords are enabled in front end
-	 *
-	 * @return	Status
-	 */
-	protected function checkIfSaltedPasswordsAreEnabledInFrontEnd()
-	{
-		$title = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:Salted_passwords_in_front_end', $this->extensionName);
-		if (!ExtensionManagementUtility::isLoaded('saltedpasswords') || !SaltedPasswordsUtility::isUsageEnabled('FE')) {
-			$value = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:disabled', $this->extensionName);
-			$message = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:salted_passwords_must_be_enabled', $this->extensionName);
-			$status = Status::ERROR;
-		} else {
-			$value = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:enabled', $this->extensionName);
 			$message = '';
 			$status = Status::OK;
 		}

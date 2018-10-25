@@ -34,7 +34,7 @@ class LocalizationUtility
 	/**
 	 * @var array List of allowed suffixes
 	 */
-	static protected $allowedSuffixes = array('formal', 'informal');
+	static protected $allowedSuffixes = ['formal', 'informal'];
 
 	/**
 	 * @var string Configured suffix
@@ -42,7 +42,7 @@ class LocalizationUtility
 	static protected $suffix = null;
 
 	/**
-	 * @var ConfigurationManager
+	 * @var ConfigurationManagerInterface
 	 */
 	static protected $configurationManager = null;
 
@@ -94,7 +94,8 @@ class LocalizationUtility
 	 *
 	 * @return ConfigurationManager
 	 */
-	static protected function getConfigurationManager() {
+	static protected function getConfigurationManager()
+	{
 		if (!is_null(static::$configurationManager)) {
 			return static::$configurationManager;
 		}

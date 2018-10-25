@@ -5,7 +5,7 @@ namespace SJBR\SrFeuserRegister\Request;
  *  Copyright notice
  *
  *  (c) 2007-2012 Franz Holzinger <franz@ttproducts.de>
- *  (c) 2012-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2012-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,6 +23,8 @@ namespace SJBR\SrFeuserRegister\Request;
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use SJBR\SrFeuserRegister\Security\Authentication;
 use SJBR\SrFeuserRegister\Security\SecuredData;
 use SJBR\SrFeuserRegister\Security\SessionData;
@@ -35,8 +37,10 @@ use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 /**
  * Request parameters
  */
-class Parameters
+class Parameters implements LoggerAwareInterface
 {
+	use LoggerAwareTrait;
+
 	/**
 	 * Extension key
 	 *
@@ -84,7 +88,7 @@ class Parameters
 	 *
 	 * @var array
 	 */
-	protected $feUserData = array();
+	protected $feUserData = [];
 
 	/**
 	 * The regHash if available among GET parameters (after validation)
@@ -98,10 +102,10 @@ class Parameters
 	 *
 	 * @var array
 	 */
-	protected $setFixedVars = array();
+	protected $setFixedVars = [];
 
 	/**
-	 * The input command 
+	 * The input command
 	 *
 	 * @var string
 	 */
@@ -119,7 +123,7 @@ class Parameters
 	 *
 	 * @var array
 	 */
-	protected $pid = array();
+	protected $pid = [];
 
 	/**
 	 * Whether the token was found valid
@@ -238,7 +242,7 @@ class Parameters
 	 */
 	protected function setPids()
 	{
-		$pidTypeArray = array('login', 'register', 'edit', 'infomail', 'confirm', 'confirmInvitation');
+		$pidTypeArray = ['login', 'register', 'edit', 'infomail', 'confirm', 'confirmInvitation'];
 		foreach ($pidTypeArray as $type) {
 			$this->setPid($type, $this->conf[$type . 'PID']);
 		}
@@ -268,7 +272,7 @@ class Parameters
 					$pid = $this->getPid('confirm');
 					break;
 				default:
-					$pidArray = array();
+					$pidArray = [];
 					$tmpArray = GeneralUtility::trimExplode(',', $this->conf['pid'], true);
 					if (count($tmpArray)) {
 						foreach ($tmpArray as $value) {
@@ -301,20 +305,20 @@ class Parameters
 		}
 		if (!$pid) {
 			$pids = [];
-			if ($this->cObj->data['pages']) {
-				$pids = explode(',', $this->cObj->data['pages']);
+			if ($this->pibaseObj->cObj->data['pages']) {
+				$pids = explode(',', $this->pibaseObj->cObj->data['pages']);
 			}
 			if (count($pids)) {
-				$pid = $type ? $pids['0'] : $pids;
+				$pid = $type ? $pids['0'] : implode(',', $pids);
 			}
 			if (empty($pid)) {
-				$pidArray = array();
+				$pidArray = [];
 				$tmpArray = GeneralUtility::trimExplode(',', $this->conf['pid'], true);
 				if (count($tmpArray)) {
 					foreach ($tmpArray as $value) {
 						$valueIsInt = MathUtility::canBeInterpretedAsInteger($value);
 						if ($valueIsInt) {
-							$pidArray[] = (int) $value;
+							$pidArray[] = (int)$value;
 						}
 					}
 				}
@@ -333,10 +337,8 @@ class Parameters
 	 */
 	protected function setPidTitle()
 	{
-		$pidRecord = GeneralUtility::makeInstance(PageRepository::class);
-		$pidRecord->init(0);
-		$pidRecord->sys_language_uid = (int) $GLOBALS['TSFE']->config['config']['sys_language_uid'];
-		$row = $pidRecord->getPage((int) $this->getPid());
+		$pageRepository = GeneralUtility::makeInstance(PageRepository::class);
+		$row = $pageRepository->getPage_noCheck((int)$this->getPid());
 		$this->pidTitle = $this->conf['pidTitleOverride'] ?: $row['title'];
 	}
 
@@ -368,8 +370,8 @@ class Parameters
 			$getHashVars = HashUtility::getParametersFromHash($this->feUserData['regHash']);
 			if (!empty($getHashVars) && is_array($getHashVars)) {
 				$this->setRegHash($this->feUserData['regHash']);
-				$keepFieldArray = array('sFK', 'cmd', 'submit', 'fetch', 'regHash', 'preview');
-				$keepFeuserData = array();
+				$keepFieldArray = ['sFK', 'cmd', 'submit', 'fetch', 'regHash', 'preview'];
+				$keepFeuserData = [];
 				// Copy the original values which must not be overridden by the regHash stored values
 				foreach ($keepFieldArray as $keepField) {
 					if (isset($feUserData[$keepField])) {
@@ -378,7 +380,7 @@ class Parameters
 				}
 				// Restore former GET values from the url
 				foreach ($getHashVars as $k => $v) {
-					GeneralUtility::_GETset($v, $k);
+					$this->GETset($v, $k);
 				}
 				// Overlay the $this->feUserData with the hashed values if rU is the same in both
 				$hashedFeUserData = $getHashVars[$this->prefixId];
@@ -398,7 +400,7 @@ class Parameters
 			}
 		}
 		// Establishing compatibility with Direct Mail
-		$piVarArray = array('rU', 'aC', 'sFK');
+		$piVarArray = ['rU', 'aC', 'sFK'];
 		foreach ($piVarArray as $pivar) {
 			$value = htmlspecialchars(GeneralUtility::_GP($pivar));
 			if (!empty($value)) {
@@ -416,7 +418,7 @@ class Parameters
 	 */
 	protected function resetFeUserData()
 	{
-		$this->feUserData = array();
+		$this->feUserData = [];
 	}
 
 	/**
@@ -569,7 +571,7 @@ class Parameters
 					$codeLength = strlen($this->getAuthCode());
 					$sFK = $this->getFeUserData('sFK');
 					// Let's try with a code length of 8 in case this link is coming from direct mail
-					if ($codeLength === 8 && in_array($sFK, array('DELETE', 'EDIT', 'UNSUBSCRIBE'))) {
+					if ($codeLength === 8 && in_array($sFK, ['DELETE', 'EDIT', 'UNSUBSCRIBE'])) {
 						$authCode = Authentication::setfixedHash($setFixedArray, $this->conf, $fieldList, $codeLength);
 					} else {
 						$authCode = Authentication::setfixedHash($setFixedArray, $this->conf, $fieldList);
@@ -583,7 +585,7 @@ class Parameters
 					// aC parameter from URL does not match the hash calculated from the given user record data
 					if ($token === '' && (!isset($this->setFixedVars) || !is_array($this->setFixedVars))) {
 						$message = 'The submitted authcode does not match the one from the given user record, perhaps due to missing fD[_FIELDLIST] parameter.';
-						GeneralUtility::sysLog($message, $this->extensionKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
+						$this->logger->error(GeneralUtility::underscoredToUpperCamelCase($this->extensionKey) . ': ' . $message);
 					}
 				}
 			}
@@ -672,4 +674,40 @@ class Parameters
 			|| ($this->conf['infomail'] && ($this->getCmd() === 'setfixed' || $this->getCmd() === 'infomail'))
 		);
 	}
+
+    /**
+     * Writes input value to $_GET.
+     *
+     * @param mixed $inputGet
+     * @param string $key
+     * @see TYPO3 v9 LTS TYPO3\CMS\Core\Utility\GeneralUtility.
+     */
+    protected function GETset($inputGet, $key = '')
+    {
+        if ($key != '') {
+            if (strpos($key, '|') !== false) {
+                $pieces = explode('|', $key);
+                $newGet = [];
+                $pointer = &$newGet;
+                foreach ($pieces as $piece) {
+                    $pointer = &$pointer[$piece];
+                }
+                $pointer = $inputGet;
+                $mergedGet = $_GET;
+                ArrayUtility::mergeRecursiveWithOverrule($mergedGet, $newGet);
+                $_GET = $mergedGet;
+                $GLOBALS['HTTP_GET_VARS'] = $mergedGet;
+            } else {
+                $_GET[$key] = $inputGet;
+                $GLOBALS['HTTP_GET_VARS'][$key] = $inputGet;
+            }
+        }
+        /*elseif (is_array($inputGet)) {
+            $_GET = $inputGet;
+            $GLOBALS['HTTP_GET_VARS'] = $inputGet;
+            if (isset($GLOBALS['TYPO3_REQUEST']) && $GLOBALS['TYPO3_REQUEST'] instanceof ServerRequestInterface) {
+                $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withQueryParams($inputGet);
+            }
+        }*/
+    }
 }

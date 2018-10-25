@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Utility;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -129,7 +129,7 @@ class UrlUtility
 	static protected function initializeUrlUtility()
 	{
 		if (self::$cObj === null) {
-			self::$cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+			self::$cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 		}
 	}
 
@@ -140,7 +140,7 @@ class UrlUtility
 	 */
 	static public function getSiteUrl()
 	{
-		$siteUrl = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
+		$siteUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
 		if ($GLOBALS['TSFE']->absRefPrefix) {
 			if(strpos($GLOBALS['TSFE']->absRefPrefix, 'http://') === 0 || strpos($GLOBALS['TSFE']->absRefPrefix, 'https://') === 0) {
 				$siteUrl = $GLOBALS['TSFE']->absRefPrefix;

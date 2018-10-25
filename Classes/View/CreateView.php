@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\View;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,6 +28,7 @@ use SJBR\SrFeuserRegister\Utility\CssUtility;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\View\AbstractView;
 use SJBR\SrFeuserRegister\View\Marker;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -42,6 +43,7 @@ class CreateView extends AbstractView
 	 */
 	public function render(array $dataArray, array $origArray, array $securedArray, $cmd, $cmdKey, $mode) {
 		$content = '';
+
 		$currentArray = $origArray;
 		if (isset($dataArray) && is_array($dataArray)) {
 			foreach ($dataArray as $key => $value) {
@@ -78,7 +80,7 @@ class CreateView extends AbstractView
 				$this->marker->addPasswordTransmissionMarkers($this->getUsePassword(), $this->getUsePasswordAgain());
 			} else {
 				$bNeedUpdateJS = false;
-				if ($GLOBALS['TSFE']->loginUser) {
+				if (GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('frontend.user', 'isLoggedIn')) {
 					$subpartMarker = '###TEMPLATE_CREATE_LOGIN###';
 				} else {
 					$subpartMarker = '###TEMPLATE_AUTH###';

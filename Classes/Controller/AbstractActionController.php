@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Controller;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,6 +22,8 @@ namespace SJBR\SrFeuserRegister\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use SJBR\SrFeuserRegister\Domain\Data;
 use SJBR\SrFeuserRegister\Request\Parameters;
 use SJBR\SrFeuserRegister\Security\SessionData;
@@ -30,14 +32,20 @@ use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\Utility\UrlUtility;
 use SJBR\SrFeuserRegister\View\Email;
 use SJBR\SrFeuserRegister\View\Marker;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryHelper;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Action functions
  */
 
-abstract class AbstractActionController
+abstract class AbstractActionController implements LoggerAwareInterface
 {
+	use LoggerAwareTrait;
 
 	/**
 	 * Extension key
@@ -209,49 +217,50 @@ abstract class AbstractActionController
 		$success = true;
 		$message = '';
 		// Log the user in
-		$loginData = array(
+		$loginData = [
 			'uname' => $username,
 			'uident' => $password,
 			'uident_text' => $password,
 			'status' => 'login',
-		);
+		];
 		// Check against configured pid (defaulting to current page)
-		$GLOBALS['TSFE']->fe_user->checkPid = true;
-		$GLOBALS['TSFE']->fe_user->checkPid_value = (int) $this->parameters->getPid();
+		$tsfe = $this->getTypoScriptFrontendController();
+		$tsfe->fe_user->checkPid = true;
+		$tsfe->fe_user->checkPid_value = (int)$this->parameters->getPid();
 		// Get authentication info array
-		$authInfo = $GLOBALS['TSFE']->fe_user->getAuthInfoArray();
-		// Get user info
-		$user = $GLOBALS['TSFE']->fe_user->fetchUserRecord($authInfo['db_user'], $loginData['uname']);
-		if (is_array($user)) {
-			// Get the appropriate authentication service
-			$authServiceObj = GeneralUtility::makeInstanceService('auth', 'authUserFE');
-			// Check authentication
-			if (is_object($authServiceObj)) {
-				$ok = $authServiceObj->compareUident($user, $loginData);
-				if ($ok) {
-					// Login successfull: create user session
-					$GLOBALS['TSFE']->fe_user->createUserSession($user);
-					$GLOBALS['TSFE']->initUserGroups();
-					$GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession();
-					$GLOBALS['TSFE']->loginUser = 1;
+		$authInfo = $tsfe->fe_user->getAuthInfoArray();
+		// Get the appropriate authentication service
+		$authServiceObj = GeneralUtility::makeInstanceService('auth', 'authUserFE');
+		if (is_object($authServiceObj)) {
+			$authServiceObj->initAuth('processLoginDataFE', $loginData, $authInfo, $tsfe->fe_user);
+			// Get user info
+			$user = $authServiceObj->getUser();
+			if (is_array($user)) {
+				// Check authentication
+					$ok = $authServiceObj->authUser($user);
+					if ($ok) {
+						// Login successfull: create user session
+						$tsfe->fe_user->createUserSession($user);
+						$tsfe->initUserGroups();
+						$tsfe->fe_user->user = $tsfe->fe_user->fetchUserSession();
+					} else {
+						// Login failed...
+						SessionData::clearSessionData($this->extensionKey, false);
+						$message = LocalizationUtility::translate('internal_auto_login_failed', $this->extensionName);
+						$success = false;
+					}
 				} else {
-					// Login failed...
-					SessionData::clearSessionData($this->extensionKey, false);
-					$message = LocalizationUtility::translate('internal_auto_login_failed', $this->extensionName);
-					$success = false;
-				}
-			} else {
-				// Required authentication service not available
-				$message = LocalizationUtility::translate('internal_required_authentication_service_not_available', $this->extensionName);
-				GeneralUtility::sysLog($message, $this->extensionKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
+				// No enabled user of the given name
+				$message = sprintf(LocalizationUtility::translate('internal_no_enabled_user', $this->extensionName), $loginData['uname']);
 				SessionData::clearSessionData($this->extensionKey, false);
 				$success = false;
 			}
 		} else {
-			// No enabled user of the given name
-			$message = sprintf(LocalizationUtility::translate('internal_no_enabled_user', $this->extensionName), $loginData['uname']);
-			SessionData::clearSessionData($this->extensionKey, false);
-			$success = false;
+				// Required authentication service not available
+				$message = LocalizationUtility::translate('internal_required_authentication_service_not_available', $this->extensionName);
+				$this->logger->error($this->extensionName . ': ' . $message);
+				SessionData::clearSessionData($this->extensionKey, false);
+				$success = false;
 		}
 		// Delete regHash
 		if ($this->parameters->getValidRegHash()) {
@@ -261,7 +270,7 @@ abstract class AbstractActionController
 		if (!$success) {
 			SessionData::clearSessionData($this->extensionKey, false);
 		   if ($message !== '') {
-			   GeneralUtility::sysLog($message, $this->extensionKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
+			   	$this->logger->error($this->extensionName . ': ' . $message);
 		   }
         }
 		if ($redirect) {
@@ -272,7 +281,7 @@ abstract class AbstractActionController
 			}
 			if (!$redirectUrl) {
 				if ((int) $this->conf['loginPID']) {
-					$redirectUrl = UrlUtility::get($this->prefixId, '', (int) $this->conf['loginPID'], array(), array(), false);
+					$redirectUrl = UrlUtility::get($this->prefixId, '', (int) $this->conf['loginPID'], [], [], false);
 				} else {
 					$redirectUrl = UrlUtility::getSiteUrl();
 				}
@@ -281,4 +290,12 @@ abstract class AbstractActionController
 		}
 		return $success;
 	}
+
+    /**
+     * @return TypoScriptFrontendController
+     */
+    protected static function getTypoScriptFrontendController()
+    {
+        return $GLOBALS['TSFE'];
+    }
 }

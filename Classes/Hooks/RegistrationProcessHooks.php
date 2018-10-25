@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Hooks;
 /*
  *  Copyright notice
  *
- *  (c) 2005-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2005-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,9 @@ namespace SJBR\SrFeuserRegister\Hooks;
 
 use SJBR\SrFeuserRegister\Domain\Data;
 use SJBR\SrFeuserRegister\Request\Parameters;
+use SJBR\SrFeuserRegister\Utility\DataUtility;
 use SJBR\SrFeuserRegister\View\Marker;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Example of hooks for extension Front End User Registration (sr_feuser_register)
@@ -49,16 +51,16 @@ class RegistrationProcessHooks
 			$lastName = trim($recordArray['last_name']);
 			$name = trim($recordArray['name']);
 			if ((!$firstName || !$lastName) && $name) {
-				$nameArray = t3lib_div::trimExplode(' ', $name);
+				$nameArray = GeneralUtility::trimExplode(' ', $name);
 				$firstName = ($firstName ? $firstName : $nameArray[0]);
 				$lastName = ($lastName ? $lastName : $nameArray[1]);
 			}
 			$recordArray['username'] = substr(strtolower($firstName), 0, 5) . substr(strtolower($lastName), 0, 5);
-			$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($theTable, 'username', $recordArray['username'], 'LIMIT 1');
+			$DBrows = DataUtility::getRecordsByField($theTable, 'username', $recordArray['username'], '', '', '', '1');
 			$counter = 0;
-			while($DBrows) {
+			while ($DBrows) {
 				$counter = $counter + 1;
-				$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($theTable, 'username', $recordArray['username'] . $counter, 'LIMIT 1');
+				$DBrows = DataUtility::getRecordsByField($theTable, 'username', $recordArray['username'] . $counter, '', '', '', '1');
 			}
 			if ($counter) {
 				$recordArray['username'] = $recordArray['username'] . $counter;

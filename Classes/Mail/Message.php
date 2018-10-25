@@ -93,7 +93,7 @@ class Message
 				$subject = trim($parts[0]) ? trim($parts[0]) : $defaultSubject;
 				$PLAINContent = trim($parts[1]);
 			}
-			$mail = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Mail\\MailMessage');
+			$mail = GeneralUtility::makeInstance(MailMessage::class);
 			$mail->setSubject($subject);
 			$mail->setFrom(array($fromEmail => $fromName));
 			$mail->setSender($fromEmail);

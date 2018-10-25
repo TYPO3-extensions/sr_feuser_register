@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Controller;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -35,6 +35,7 @@ use SJBR\SrFeuserRegister\View\CreateView;
 use SJBR\SrFeuserRegister\View\EditView;
 use SJBR\SrFeuserRegister\View\Marker;
 use SJBR\SrFeuserRegister\View\PlainView;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -149,10 +150,11 @@ class EditActionController extends AbstractActionController
 				}
 				$origArray = $this->data->parseIncomingData($origArray);
 				$aCAuth = Authentication::aCAuth($this->parameters->getAuthCode(), $origArray, $this->conf, $this->conf['setfixed.']['EDIT.']['_FIELDLIST']);
-				if (($this->theTable === 'fe_users' && $GLOBALS['TSFE']->loginUser) || $aCAuth || ($theCode && !strcmp($this->parameters->getAuthCode(), $theCode))) {
+				if (($this->theTable === 'fe_users' && GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('frontend.user', 'isLoggedIn')) || $aCAuth || ($theCode && !strcmp($this->parameters->getAuthCode(), $theCode))) {
 					// Must be logged in OR be authenticated by the aC code in order to edit
 					// If the recUid selects a record.... (no check here)
-					if (!strcmp($this->parameters->getAuthCode(), $theCode) || $aCAuth || $this->data->DBmayFEUserEdit($this->theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
+					$userAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
+					if (!strcmp($this->parameters->getAuthCode(), $theCode) || $aCAuth || $this->data->DBmayFEUserEdit($this->theTable, $origArray, ['uid' => $userAspect->get('id'), 'usergroup' => $userAspect->get('groupIds')], $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 						// Display the form, if access granted.
 						$editView = GeneralUtility::makeInstance(EditView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 						$content .= $editView->render($dataArray, $origArray, $securedArray, $cmd, $cmdKey, $mode);

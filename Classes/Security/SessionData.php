@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Security;
 /*
  *  Copyright notice
  *
- *  (c) 2015-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2015-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,6 +27,7 @@ use SJBR\SrFeuserRegister\Security\StorageSecurity;
 use SJBR\SrFeuserRegister\Security\TransmissionSecurity;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Frontend user session data handling
@@ -42,8 +43,8 @@ class SessionData
 	 */
 	protected static function readSessionData($extensionKey, $readAll = false)
 	{
-		$sessionData = array();
-		$allSessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', 'feuser');
+		$sessionData = [];
+		$allSessionData = static::getTypoScriptFrontendController()->fe_user->getKey('ses', 'feuser');
 		if (isset($allSessionData) && is_array($allSessionData)) {
 			if ($readAll) {
 				$sessionData = $allSessionData;
@@ -88,12 +89,12 @@ class SessionData
 				}
 			}
 		} else {
-			$allSessionData[$extensionKey] = array();
+			$allSessionData[$extensionKey] = [];
 		}
 		ArrayUtility::mergeRecursiveWithOverrule($allSessionData[$extensionKey], $data);
-		$GLOBALS['TSFE']->fe_user->setKey('ses', 'feuser', $allSessionData);
+		static::getTypoScriptFrontendController()->fe_user->setKey('ses', 'feuser', $allSessionData);
 		// The feuser session data shall not get lost when coming back from external scripts
-		$GLOBALS['TSFE']->fe_user->storeSessionData($extensionKey);
+		static::getTypoScriptFrontendController()->fe_user->storeSessionData($extensionKey);
 	}
 
 	/**
@@ -105,7 +106,7 @@ class SessionData
 	 */
 	public static function clearSessionData($keepRedirectUrl = true)
 	{
-		$data = array();
+		$data = [];
 		$keepToken  = true;
 		self::writeSessionData($extensionKey, $data, $keepToken, $keepRedirectUrl);
 	}
@@ -170,7 +171,7 @@ class SessionData
 	{
 		$redirectUrl = GeneralUtility::_GET('redirect_url');
 		if ($redirectUrl != '') {
-			$data = array();
+			$data = [];
 			$data['redirect_url'] = $redirectUrl;
 			self::writeSessionData($extensionKey, $data);
 		}
@@ -184,7 +185,7 @@ class SessionData
 	 */
 	public static function readSecuredArray($extensionKey)
 	{
-		$securedArray = array();
+		$securedArray = [];
 		$sessionData = self::readSessionData($extensionKey);
 		$fields = SecuredData::getSecuredFields();
 		foreach ($fields as $securedField) {
@@ -271,4 +272,12 @@ class SessionData
 		$dataArray['password_again'] = $generatedPassword;
 		self::writePassword($extensionKey, $generatedPassword, $generatedPassword);
 	}
+
+    /**
+     * @return TypoScriptFrontendController
+     */
+    protected static function getTypoScriptFrontendController()
+    {
+        return $GLOBALS['TSFE'];
+    }
 }

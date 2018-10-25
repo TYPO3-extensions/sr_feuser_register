@@ -15,6 +15,7 @@
 							<label>LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:tt_content.pi1_flexform.display_mode</label>
 							<config>
 								<type>select</type>
+								<renderType>selectSingle</renderType>
 								<items>
 									<numindex index="1">
 										<numindex index="0">LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:tt_content.pi1_flexform.display_mode.1</numindex>

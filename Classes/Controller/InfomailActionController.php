@@ -24,6 +24,7 @@ namespace SJBR\SrFeuserRegister\Controller;
 
 use SJBR\SrFeuserRegister\Exception;
 use SJBR\SrFeuserRegister\Controller\AbstractActionController;
+use SJBR\SrFeuserRegister\Utility\DataUtility;
 use SJBR\SrFeuserRegister\Utility\HashUtility;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\View\Marker;
@@ -64,7 +65,7 @@ class InfomailActionController extends AbstractActionController
 		if (!empty($fetch) && empty($failure)) {
 			$pidLock = 'AND pid IN (\'' . implode('\',\'', GeneralUtility::trimExplode(',', $this->parameters->getPid(), true)) . '\')';
 			$enable = $GLOBALS['TSFE']->sys_page->enableFields($this->theTable);
-			$DBrows = $GLOBALS['TSFE']->sys_page->getRecordsByField($this->theTable, $this->conf['email.']['field'], $fetch, $pidLock . $enable, '', '', '100');
+			$DBrows = DataUtility::getRecordsByField($this->theTable, $this->conf['email.']['field'], $fetch, $pidLock . $enable, '', '', '100');
 			if (is_array($DBrows)) {
 				$recipient = $DBrows[0][$this->conf['email.']['field']];
 				$this->data->setDataArray($DBrows[0]);

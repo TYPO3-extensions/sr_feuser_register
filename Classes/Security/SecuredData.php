@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Security;
 /*
  *  Copyright notice
  *
- *  (c) 2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2015-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -35,7 +35,7 @@ class SecuredData
 	 *
 	 * @var array
 	 */
-	protected static $securedFields = array('password', 'password_again', 'tx_srfeuserregister_password');
+	protected static $securedFields = ['password', 'password_again', 'tx_srfeuserregister_password'];
 
 	/**
 	 * Gets the array of names of secured fields

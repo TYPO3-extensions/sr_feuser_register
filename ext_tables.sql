@@ -28,18 +28,3 @@ CREATE TABLE fe_users (
 	token varchar(32) DEFAULT '' NOT NULL,
 	tx_srfeuserregister_password blob
 );
-
-
-CREATE TABLE fe_groups_language_overlay (
-	uid int(11) DEFAULT '0' NOT NULL auto_increment,
-	pid int(11) DEFAULT '0' NOT NULL,
-	deleted smallint(6) DEFAULT '0' NOT NULL,
-	hidden smallint(6) DEFAULT '0' NOT NULL,
-	sorting int(11) DEFAULT '0' NOT NULL,
-	fe_group int(11) DEFAULT '0' NOT NULL,
-	sys_language_uid int(11) DEFAULT '0' NOT NULL,
-	title text NOT NULL,
-
-	PRIMARY KEY (uid),
-	KEY parent (pid)
-);

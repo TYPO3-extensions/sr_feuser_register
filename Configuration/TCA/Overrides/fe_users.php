@@ -18,10 +18,8 @@ $GLOBALS['TCA']['fe_users']['columns']['fax']['config']['max'] = '25';
 
 $GLOBALS['TCA']['fe_users']['columns']['image']['config']['max_size'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['imageMaxSize'];
 $GLOBALS['TCA']['fe_users']['columns']['image']['config']['filter'][0]['parameters']['allowedFileExtensions'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['imageTypes'];
-if (\TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(\TYPO3\CMS\Core\Utility\VersionNumberUtility::getNumericTypo3Version()) < 8000000) {
-	$GLOBALS['TCA']['fe_users']['columns']['image']['config']['allowed'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['imageTypes'];
-	$GLOBALS['TCA']['fe_users']['columns']['image']['config']['uploadfolder'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['uploadfolder'];
-}
+
+$GLOBALS['TCA']['fe_users']['columns']['usergroup']['config']['foreign_table_where'] = ' AND fe_groups.sys_language_uid IN (-1,0) ORDER BY fe_groups.title';
 
 $addColumnArray = array(
 	'cnum' => array(
@@ -73,11 +71,10 @@ $addColumnArray = array(
 		'label' => 'LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_db.xlf:fe_users.date_of_birth',
 		'config' => array(
 			'type' => 'input',
+			'renderType' => 'inputDateTime',
 			'size' => '10',
-			'max' => '20',
 			'eval' => 'date',
-			'checkbox' => '0',
-			'default' => ''
+			'default' => 0
 		)
 	),
 	'gender' => array(

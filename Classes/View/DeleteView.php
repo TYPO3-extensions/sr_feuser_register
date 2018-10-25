@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\View;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,6 +25,8 @@ namespace SJBR\SrFeuserRegister\View;
 use SJBR\SrFeuserRegister\Security\Authentication;
 use SJBR\SrFeuserRegister\Utility\UrlUtility;
 use SJBR\SrFeuserRegister\View\PlainView;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Delete view rendering
@@ -40,9 +42,10 @@ class DeleteView extends PlainView
 	public function render($subpartMarker, array $dataArray, array $origArray, array $securedArray, $cmd, $cmdKey)
 	{
 		$aCAuth = Authentication::aCAuth($this->parameters->getAuthCode(), $origArray, $this->conf, $this->conf['setfixed.']['DELETE.']['_FIELDLIST']);
-		if (($this->theTable === 'fe_users' && $GLOBALS['TSFE']->loginUser) || $aCAuth) {
+		$userAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
+		if (($this->theTable === 'fe_users' && $userAspect->get('isLoggedIn')) || $aCAuth) {
 			// Must be logged in OR be authenticated by the aC code in order to delete
-			$bMayEdit = $this->data->DBmayFEUserEdit($this->theTable, $origArray, $GLOBALS['TSFE']->fe_user->user, $this->conf['allowedGroups'], $this->conf['fe_userEditSelf']);
+			$bMayEdit = $this->data->DBmayFEUserEdit($this->theTable, $origArray, ['uid' => $userAspect->get('id'), 'usergroup' => $userAspect->get('groupIds')], $this->conf['allowedGroups'], $this->conf['fe_userEditSelf']);
 			if ($aCAuth || $bMayEdit) {
 				// Display the form, if access granted.
 				$backUrl = $this->parameters->getBackURL() ?: UrlUtility::getTypoLink_URL($this->parameters->getPid('login') . ',' . $GLOBALS['TSFE']->type);

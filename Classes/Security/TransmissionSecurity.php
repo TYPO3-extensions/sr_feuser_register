@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Security;
 /*
  *  Copyright notice
  *
- *  (c) 2012-2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2012-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,7 +22,9 @@ namespace SJBR\SrFeuserRegister\Security;
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
 
+use Psr\Log\LoggerInterface;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Rsaauth\Backend\BackendFactory;
@@ -40,13 +42,6 @@ class TransmissionSecurity
 	 * @var string
 	 */
 	static protected $extensionName = 'SrFeuserRegister';
-
-	/**
-	 * Extension key
-	 *
-	 * @var string
-	 */
-	static protected $extensionKey = 'sr_feuser_register';
 
 	/**
 	 * Gets the transmission security level
@@ -91,7 +86,7 @@ class TransmissionSecurity
 											// May happen if the key is wrong
 											$success = false;
 											$message = LocalizationUtility::translate('internal_rsaauth_process_incoming_password_failed', self::$extensionName);
-											GeneralUtility::sysLog($message, self::$extensionKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
+											static::getLogger()->error(self::$extensionName . ': ' . $message);
 										}
 									}
 								}
@@ -103,14 +98,14 @@ class TransmissionSecurity
 							// May happen if the key was already removed
 							$success = false;
 							$message = LocalizationUtility::translate('internal_rsaauth_retrieve_private_key_failed', self::$extensionName);
-							GeneralUtility::sysLog($message, self::$extensionKey, GeneralUtility::SYSLOG_SEVERITY_WARNING);
+							static::getLogger()->warning(self::$extensionName . ': ' . $message);
 						}
 					} else {
 						// Required RSA auth backend not available
 						// Should not happen
 						$success = false;
 						$message = LocalizationUtility::translate('internal_rsaauth_backend_not_available', self::$extensionName);
-						GeneralUtility::sysLog($message, self::$extensionKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
+						static::getLogger()->error(self::$extensionName . ': ' . $message);
 					}
 					break;
 				case 'normal':
@@ -169,4 +164,12 @@ class TransmissionSecurity
 		}
 		return $result;
 	}
+
+    /**
+     * @return LoggerInterface
+     */
+    protected static function getLogger()
+    {
+        return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+    }
 }

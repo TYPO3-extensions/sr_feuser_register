@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Hooks;
 /*
  *  Copyright notice
  *
- *  (c) 2017 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2017-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,13 +24,14 @@ namespace SJBR\SrFeuserRegister\Hooks;
 
 use SJBR\SrFeuserRegister\Utility\CssUtility;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\DuplicationBehavior;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Core\Utility\File\BasicFileUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
+use TYPO3\CMS\Frontend\Resource\FilePathSanitizer;
 
 /**
  * Hooks for file upload fields
@@ -114,8 +115,6 @@ class FileUploadHooks
 					$fieldConfig = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config'];
 					if ($fieldConfig['type'] === 'inline' && $fieldConfig['foreign_table'] === 'sys_file_reference') {
 						$dataArray[$theField] = $dataArray['uid'] ? count($fileNameArray) : $fileArray;
-					} else {
-						$dataArray[$theField] = $fileNameArray;
 					}
 				}
 			}
@@ -179,7 +178,7 @@ class FileUploadHooks
 						}
 					} else {
 						if ($fieldConfig['type'] === 'group' && $fieldConfig['internal_type'] === 'file') {
-							$fileArray[] = ['name' => $file, 'size' => filesize(PATH_site . $uploadPath . '/' . $file)];
+							$fileArray[] = ['name' => $file, 'size' => filesize(Environment::getPublicPath() . '/' . $uploadPath . '/' . $file)];
 						}
 					}
 				}
@@ -233,7 +232,7 @@ class FileUploadHooks
 				  DuplicationBehavior::RENAME
 			);
 			if ($uid) {
-				$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
+				$connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
 				// Get the record from the table in use
 				$connectionTheTable = $connectionPool->getConnectionForTable($theTable);
 				$row = $connectionTheTable
@@ -271,15 +270,6 @@ class FileUploadHooks
 			} else {
 				return ['name' => $fileObject->getName(), 'uid' => $fileObject->getUid(), 'size' => $fileObject->getSize(), 'table' => 'sys_file'];
 			}
-		} else {
-			$fileUtility = GeneralUtility::makeInstance(BasicFileUtility::class);
-			$fI = pathinfo($fileName);
-			$tempFileName = basename($fileName, '.' . $fI['extension']) . '_' . GeneralUtility::shortmd5(uniqid($fileName)) . '.' . $fI['extension'];
-			$cleanFileName = $fileUtility->cleanFileName($tempFileName);
-			$theDestFile = $fileUtility->getUniqueName($cleanFileName, PATH_site . $uploadPath . '/');
-			$fI = pathinfo($theDestFile);
-			GeneralUtility::upload_copy_move($uploadedFileName, $theDestFile);
-			return ['name' => $fI['basename'], 'size' => filesize(PATH_site . $uploadPath . '/' . $fI['basename'])];
 		}
 	}
 
@@ -302,10 +292,6 @@ class FileUploadHooks
 				$fileReference = $fileRepository->findByUid((int)$file['uid']);
 			}
 			return is_object($fileReference);
-		} else {
-			$uploadPath = $fieldConfig['uploadfolder'];
-			$uploadPath = $uploadPath ?: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['uploadfolder'];
-			return @is_file(PATH_site . $uploadPath . '/' . $file['name']);
 		}
 	}
 
@@ -325,7 +311,7 @@ class FileUploadHooks
 			if ($uid && $file['submit_delete'] && $file['uid']) {
 				// If in create mode, there is no file reference to delete
 				// Delete the file reference
-				$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
+				$connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
 				$connectionPool->getConnectionForTable('sys_file_reference')
 					->delete(
 						'sys_file_reference',
@@ -347,27 +333,6 @@ class FileUploadHooks
 							[$theField => (int)$row[$theField]-1],
 							['uid' => (int)$uid]
 						);
-				}
-			}
-		} else {
-			if ($fieldConf['config']['type'] === 'group' && $fieldConf['config']['internal_type'] === 'file') {
-				// TYPO3 7 LTS
-				$uploadPath = $fieldConf['uploadfolder'];
-				$uploadPath = $uploadPath ?: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['uploadfolder'];
-				$record = $GLOBALS['TSFE']->sys_page->getRawRecord($theTable, (int)$uid);
-				if (is_array($rec)) {
-					$fileArray = explode(',', $record[$theField]);
-					foreach ($fileArray as $index => $fileItem) {
-						if ($fileItem == $file['name']) {
-							unset($fileArray[$index]]);
-						}
-					}
-					$updateFields = [];
-					$updateFields[$theField] = implode(',', $fileArray);
-					$res = $GLOBALS['TSFE']->cObj->DBgetUpdate($theTable, (int)$uid, $updateFields, $theField, true);
-				}
-				if (@is_file(PATH_site . $uploadPath . '/' . $file['name'])) {
-					@unlink(PATH_site . $uploadPath . '/' . $file['name']);
 				}
 			}
 		}
@@ -428,7 +393,7 @@ class FileUploadHooks
 				$fieldConfig = $config['config'];
 				if ($fieldConfig['type'] === 'inline' && $fieldConfig['foreign_table'] === 'sys_file_reference') {
 					if (is_array($dataArray[$theField])) {
-						$connectionPool = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class);
+						$connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
 						$connectionFileReference = $connectionPool->getConnectionForTable('sys_file_reference');
 						foreach ($dataArray[$theField] as $file) {
 							if ($file['table'] === 'sys_file') {
@@ -543,46 +508,6 @@ class FileUploadHooks
 				$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="MAX_FILE_SIZE" value="' . $max_size . '" />' . LF;
 				$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $prefixId . '[fileDelete]" value="0" />' . LF;
 			}
-		} else {
-			// TYPO3 CMS 7 LTS
-			$markerArray = $this->addCompatibleMarkers($theTable, $theField, $cmd, $cmdKey, $dataArray, $viewOnly, $activity, $bHtml, $extensionName, $prefixId, $conf);
-		}
-		return $markerArray;
-	}
-
-	/**
-	 * TYPO3 CMS 7 LTS
-	 *
-	 * Adds uploading markers to a marker array
-	 *
-	 * @param string $theTable: the name of the table in use
-	 * @param string $theField: the field name
-	 * @param string $cmd: the command CODE
-	 * @param string $cmdKey: the command key
-	 * @param array $dataArray: the record array
-	 * @param bool $viewOnly: whether the fields are presented for view only or for input/update
-	 * @param string $activity: 'preview', 'input' or 'email': parameter of stdWrap configuration
-	 * @param bool $bHtml: wheter HTML or plain text should be generated
-	 * @param string $extensionName: name of the extension
-	 * @param string $prefixId: the prefixId
-	 * @param array $conf: the plugin configuration
-	 * @return void
-	 */
-	public function addCompatibleMarkers($theTable, $theField, $cmd, $cmdKey, $dataArray = array(), $viewOnly = false, $activity = '', $bHtml = true, $extensionName, $prefixId, array $conf)
-	{
-		$markerArray = [];
-		$fieldConfig = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config'];
-		if ($fieldConfig['type'] === 'group' && $fieldConfig['internal_type'] === 'file' && !empty($fieldConfig['uploadfolder'])) {
-			$fileNameArray = is_array($dataArray[$theField]) ? $dataArray[$theField] : [];
-			$fileUploader = $this->buildCompatibleFileUploader($theTable, $theField, $cmd, $cmdKey, $fileNameArray, $viewOnly, $activity, $bHtml, $extensionName, $prefixId, $conf);
-			if ($viewOnly) {
-				$markerArray['###UPLOAD_PREVIEW_' . $theField . '###'] = $fileUploader;
-			} else {
-				$markerArray['###UPLOAD_' . $theField . '###'] = $fileUploader;
-				$max_size = $fieldConfig['max_size'] * 1024;
-				$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="MAX_FILE_SIZE" value="' . $max_size . '" />' . LF;
-				$markerArray['###HIDDENFIELDS###'] .= '<input type="hidden" name="' . $prefixId . '[fileDelete]" value="0" />' . LF;
-			}
 		}
 		return $markerArray;
 	}
@@ -630,6 +555,7 @@ class FileUploadHooks
 			}
 		} else {
 			$formName = $conf['formName'] ?: CssUtility::getClassName($prefixId, $theTable . '_form');
+			$filePathSanitizer = GeneralUtility::makeInstance(FilePathSanitizer::class);
 			foreach ($fileArray as $i => $file) {
 				$HTMLContent .=
 					$file['name']
@@ -637,7 +563,7 @@ class FileUploadHooks
 					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]" value="0">'
 					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][uid]" value="' . $file['uid'] . '">'
 					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][type]" value="' . $file['type'] . '">'
-					. '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($conf['icon_delete']) . '"  title="' . LocalizationUtility::translate('icon_delete', $extensionName) . '" alt="' . LocalizationUtility::translate('icon_delete', $extensionName) . '"' .
+					. '<input type="image" src="' . $filePathSanitizer->sanitize($conf['icon_delete']) . '"  title="' . LocalizationUtility::translate('icon_delete', $extensionName) . '" alt="' . LocalizationUtility::translate('icon_delete', $extensionName) . '"' .
 					CssUtility::classParam($prefixId, 'delete-view') .
 					' onclick=\'if(confirm("' . LocalizationUtility::translate('confirm_file_delete', $extensionName) . '")) { var form = window.document.getElementById("' . $formName . '"); form["' . $prefixId . '[fileDelete]"].value = 1; form["FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]"].value = 1; return true;} else { return false;} \' />'
 					. '<a href="' . $file['url'] . '" ' .
@@ -649,77 +575,6 @@ class FileUploadHooks
 				$HTMLContent .= '<input id="' .
 				CssUtility::getClassName($prefixId, $theField) .
 				'-' . ($i - count($fileArray)) . '" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . ']" title="' . LocalizationUtility::translate('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'image', $extensionName) . '" size="40" type="file" ' .
-				CssUtility::classParam($prefixId, 'uploader-view') .
-				' /><br />';
-			}
-		}
-		return $HTMLContent;
-	}
-
-	/**
-	 * TYPO3 CMS 7 LTS
-	 *
-	 * Builds a file uploader
-	 *
-	 * @param string $theTable: the name of the table in use
-	 * @param string $theField: the field name
-	 * @param string $cmd: the command CODE
-	 * @param string $cmdKey: the command key
-	 * @param array $fileNameArray: array of uploaded file names
-	 * @param boolean $viewOnly: whether the fields are presented for view only or for input/update
-	 * @param string $activity: 'preview', 'input' or 'email': parameter of stdWrap configuration
-	 * @param bool $bHtml: wheter HTML or plain text should be generated
-	 * @param string $extensionName: name of the extension
-	 * @param string $prefixId: the prefixId
-	 * @param array $conf: the plugin configuration
-	 * @return string generated HTML uploading tags
-	 */
-	protected function buildCompatibleFileUploader($theTable, $theField, $cmd, $cmdKey, array $fileNameArray, $viewOnly = false, $activity = '', $bHtml = true, $extensionName, $prefixId, array $conf)
-	{
-		$HTMLContent = '';
-		$fieldConfig = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config'];
-		$size = $fieldConfig['maxitems'];
-		$cmdParts = preg_split('/\[|\]/', $conf[$cmdKey . '.']['evalValues.'][$theField]);
-		if (!empty($cmdParts[1])) {
-			$size = min($size, (int) $cmdParts[1]);
-		}
-		$size = $size ?: 1;
-		$number = $size - count($fileNameArray);
-		$dir = $fieldConfig['uploadfolder'];
-		if ($viewOnly) {
-			foreach ($fileNameArray as $fileName) {
-				$HTMLContent .= $fileName;
-				if ($activity === 'email') {
-					if ($bHtml)	{
-						$HTMLContent .= '<br />';
-					} else {
-						$HTMLContent .= CR . LF;
-					}
-				} else if ($bHtml) {
-					$HTMLContent .= '<a href="' . ($GLOBALS['TSFE']->config['config']['absRefPrefix'] ?: '') . $dir . '/' . $fileName . '"'
-					. CssUtility::classParam($prefixId, 'file-view')
-					. ' target="_blank" title="' . LocalizationUtility::translate('file_view', $extensionName) . '">' . LocalizationUtility::translate('file_view', $extensionName) . '</a><br />';
-				}
-			}
-		} else {
-			$formName = $conf['formName'] ?: CssUtility::getClassName($prefixId, $theTable . '_form');
-			foreach ($fileNameArray as $i => $fileName) {
-				$HTMLContent .=
-					$fileName
-					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][name]" value="' . htmlspecialchars($fileName) . '">'
-					. '<input type="hidden" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]" value="0">'
-					. '<input type="image" src="' . $GLOBALS['TSFE']->tmpl->getFileName($conf['icon_delete']) . '"  title="' . LocalizationUtility::translate('icon_delete', $extensionName) . '" alt="' . LocalizationUtility::translate('icon_delete', $extensionName) . '"' .
-					CssUtility::classParam($prefixId, 'delete-view') .
-					' onclick=\'if(confirm("' . LocalizationUtility::translate('confirm_file_delete', $extensionName) . '")) { var form = window.document.getElementById("' . $formName . '"); form["' . $prefixId . '[fileDelete]"].value = 1; form["FE[' . $theTable . ']' . '[' . $theField . '][' . $i . '][submit_delete]"].value = 1; return true;} else { return false;} \' />'
-					. '<a href="' . $dir . '/' . $fileName . '" ' .
-					CssUtility::classParam($prefixId, 'file-view') .
-					' target="_blank" title="' . LocalizationUtility::translate('file_view', $extensionName) . '">' .
-					LocalizationUtility::translate('file_view', $extensionName) . '</a><br />';
-			}
-			for ($i = count($fileNameArray); $i < $number + count($fileNameArray); $i++) {
-				$HTMLContent .= '<input id="' .
-				CssUtility::getClassName($prefixId, $theField) .
-				'-' . ($i - count($fileNameArray)) . '" name="' . 'FE[' . $theTable . ']' . '[' . $theField . '][' . $i . ']" title="' . LocalizationUtility::translate('tooltip_' . (($cmd == 'invite') ? 'invitation_' : '')  . 'image', $extensionName) . '" size="40" type="file" ' .
 				CssUtility::classParam($prefixId, 'uploader-view') .
 				' /><br />';
 			}

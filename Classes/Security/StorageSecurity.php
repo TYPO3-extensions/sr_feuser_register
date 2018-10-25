@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Security;
 /*
  *  Copyright notice
  *
- *  (c) 2012-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2012-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,11 +22,12 @@ namespace SJBR\SrFeuserRegister\Security;
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
 
+use Psr\Log\LoggerInterface;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
+use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Rsaauth\Backend\BackendFactory;
-use TYPO3\CMS\Saltedpasswords\Salt\SaltFactory;
-use TYPO3\CMS\Saltedpasswords\Utility\SaltedPasswordsUtility;
 
 /**
  * Storage security functions
@@ -39,21 +40,6 @@ class StorageSecurity
 	static protected $extensionName = 'SrFeuserRegister';
 
 	/**
-	 * @var string Extension key
-	 */
-	static protected $extensionKey = 'sr_feuser_register';
-
-	/**
-	 * Gets the storage security level
-	 *
-	 * @return string the storage security level
-	 */
-	static protected function getStorageSecurityLevel()
-	{
-		return SaltedPasswordsUtility::isUsageEnabled('FE') ? 'salted' : 'normal';
-	}
-
-	/**
 	 * Encrypts the password for secure storage
 	 *
 	 * @param string $password: password to encrypt
@@ -63,21 +49,13 @@ class StorageSecurity
 	{
 		$encryptedPassword = $password;
 		if ($password != '') {
-			switch (self::getStorageSecurityLevel()) {
-				case 'salted':
-					$objSalt = SaltFactory::getSaltingInstance(null);
-					if (is_object($objSalt)) {
-						$encryptedPassword = $objSalt->getHashedPassword($password);
-					} else {
-						$encryptedPassword = false;
-						// Could not get a salting instance from saltedpasswords
-						// Should not happen
-					}
-					break;
-				case 'normal':
-				default:
-					// No encryption!
-					break;
+			$objSalt = PasswordHashFactory::getDefaultHashInstance('FE');
+			if (is_object($objSalt)) {
+				$encryptedPassword = $objSalt->getHashedPassword($password);
+			} else {
+				$encryptedPassword = false;
+				// Could not get a salting instance
+				// Should not happen
 			}
 		}
 		return $encryptedPassword;
@@ -160,7 +138,7 @@ class StorageSecurity
 						} else {
 							// Failed to decrypt auto login password
 							$message = LocalizationUtility::translate('internal_decrypt_auto_login_failed', self::$extensionName);
-							GeneralUtility::sysLog($message, self::$extensionKey, GeneralUtility::SYSLOG_SEVERITY_ERROR);
+							static::getLogger()->error(self::$extensionName . ': ' . $message);
 						}
 					} else {
 						// Required RSA auth backend not available
@@ -170,4 +148,12 @@ class StorageSecurity
 			}
 		}
 	}
+
+    /**
+     * @return LoggerInterface
+     */
+    protected static function getLogger()
+    {
+        return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+    }
 }
