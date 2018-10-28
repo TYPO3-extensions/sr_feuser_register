@@ -1,3 +1,6 @@
+2018-10-28 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #86784: Error during installation when extension filemetadata is not installed
+
 2018-10-24 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #86736: Removing all selectable user groups was not possible
 	* Update version to 5.1.1
