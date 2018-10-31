@@ -359,7 +359,7 @@ class FileUploadHooks
 					$fileArray = explode(',', $record[$theField]);
 					foreach ($fileArray as $index => $fileItem) {
 						if ($fileItem == $file['name']) {
-							unset($fileArray[$index]]);
+							unset($fileArray[$index]);
 						}
 					}
 					$updateFields = [];

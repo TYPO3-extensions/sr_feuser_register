@@ -1,3 +1,7 @@
+2018-10-31 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #86817: Fatal error in /Classes/Hooks/FileUploadHooks.php
+	* Update version to 5.1.2
+
 2018-10-24 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #86736: Removing all selectable user groups was not possible
 	* Update version to 5.1.1
