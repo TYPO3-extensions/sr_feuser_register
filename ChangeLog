@@ -1,3 +1,7 @@
+2018-11-03 Stanislas Rolland  <typo3(arobas)sjbr.ca>
+	* Resolves #86832: Table 'cache_md5params' doesn't exist
+	* Update version to 6.0.1
+
 2018-10-28 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #86784: Error during installation when extension filemetadata is not installed
 
