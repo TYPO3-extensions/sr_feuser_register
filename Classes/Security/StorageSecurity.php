@@ -27,6 +27,7 @@ use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Rsaauth\Backend\BackendFactory;
 
 /**
@@ -49,7 +50,9 @@ class StorageSecurity
 	{
 		$encryptedPassword = $password;
 		if ($password != '') {
-			$objSalt = PasswordHashFactory::getDefaultHashInstance('FE');
+			$objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+			$hashFactory = $objectManager->get(PasswordHashFactory::class);
+			$objSalt = $hashFactory->getDefaultHashInstance('FE');
 			if (is_object($objSalt)) {
 				$encryptedPassword = $objSalt->getHashedPassword($password);
 			} else {
