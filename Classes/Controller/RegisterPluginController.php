@@ -5,7 +5,7 @@ namespace SJBR\SrFeuserRegister\Controller;
  *  Copyright notice
  *
  *  (c) 1999-2003 Kasper Skårhøj <kasperYYYY@typo3.com>
- *  (c) 2004-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2004-2020 Stanislas Rolland <typo32020(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -155,8 +155,6 @@ class RegisterPluginController extends AbstractPlugin
 		$this->conf =& $conf;
 		// Check extension requirements
 		$content = ConfigurationCheck::checkRequirements($this->extKey);
-		// Check installation security settings
-		$content .= ConfigurationCheck::checkSecuritySettings($this->extKey);
 		// The table may be configured
 		if (isset($this->conf['table.']) && is_array($this->conf['table.']) && $this->conf['table.']['name']) {
 			$this->theTable  = $this->conf['table.']['name'];

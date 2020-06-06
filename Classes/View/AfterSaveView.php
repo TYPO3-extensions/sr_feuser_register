@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\View;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2020 Stanislas Rolland <typo32020(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -64,9 +64,6 @@ class AfterSaveView extends AbstractView
 			$this->marker->addStaticInfoMarkers($dataArray, $viewOnly);
 			$this->marker->addTcaMarkers($dataArray, $origArray, $cmd, $cmdKey, $viewOnly, $requiredFields);
 			$this->marker->addLabelMarkers($dataArray, $origArray, $securedArray, array(), $requiredFields, $this->data->getFieldList(), $this->data->getSpecialFieldList());
-			if ($cmdKey === 'create' && !$this->conf['enableEmailConfirmation'] && !$this->conf['enableAutoLoginOnCreate']) {
-				$this->marker->addPasswordTransmissionMarkers($this->getUsePassword(), false);
-			}
 			$templateCode = $this->marker->removeStaticInfoSubparts($templateCode, $viewOnly);
 			$uppercase = false;
 			$deleteUnusedMarkers = true;

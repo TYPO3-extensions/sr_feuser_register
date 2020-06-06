@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\View;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2020 Stanislas Rolland <typo32020(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -77,7 +77,6 @@ class CreateView extends AbstractView
 			$bNeedUpdateJS = true;
 			if ($cmd === 'create' || $cmd === 'invite') {
 				$subpartMarker = '###TEMPLATE_' . $key . ($mode ? Marker::PREVIEW_SUFFIX : '') . '###';
-				$this->marker->addPasswordTransmissionMarkers($this->getUsePassword(), $this->getUsePasswordAgain());
 			} else {
 				$bNeedUpdateJS = false;
 				if (GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('frontend.user', 'isLoggedIn')) {

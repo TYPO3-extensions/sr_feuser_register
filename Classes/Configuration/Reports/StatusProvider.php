@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Configuration\Reports;
 /*
  *  Copyright notice
  *
- *  (c) 2012-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2012-2020 Stanislas Rolland <typo32020(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -48,8 +48,7 @@ class StatusProvider implements StatusProviderInterface
 	{
 		$reports = [
 			'requiredExtensionsAreInstalled' => $this->checkIfRequiredExtensionsAreInstalled(),
-			'noConflictingExtensionIsInstalled' => $this->checkIfNoConflictingExtensionIsInstalled(),
-			'frontEndLoginSecurityLevelIsCorrectlySet' => $this->checkIfFrontEndLoginSecurityLevelIsCorrectlySet()
+			'noConflictingExtensionIsInstalled' => $this->checkIfNoConflictingExtensionIsInstalled()
 		];
 		return $reports;
 	}
@@ -105,27 +104,6 @@ class StatusProvider implements StatusProviderInterface
 			$status = Status::ERROR;
 		} else {
 			$value = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:none', $this->extensionName);
-			$message = '';
-			$status = Status::OK;
-		}
-		return GeneralUtility::makeInstance(Status::class, $title, $value, $message, $status);
-	}
-
-	/**
-	 * Check whether frontend login security level is correctly set
-	 *
-	 * @return	Status
-	 */
-	protected function checkIfFrontEndLoginSecurityLevelIsCorrectlySet()
-	{
-		$title = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:Front_end_login_security_level', $this->extensionName);
-		$supportedTransmissionSecurityLevels = array('normal', 'rsa');
-		if (!in_array($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'], $supportedTransmissionSecurityLevels)) {
-			$value = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
-			$message = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:must_be_normal_or_rsa', $this->extensionName);
-			$status = Status::ERROR;
-		} else {
-			$value = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
 			$message = '';
 			$status = Status::OK;
 		}

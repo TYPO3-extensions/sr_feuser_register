@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\View;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2020 Stanislas Rolland <typo32020(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,7 +27,6 @@ use SJBR\SrFeuserRegister\Request\Parameters;
 use SJBR\SrFeuserRegister\Security\Authentication;
 use SJBR\SrFeuserRegister\Security\SecuredData;
 use SJBR\SrFeuserRegister\Security\SessionData;
-use SJBR\SrFeuserRegister\Security\TransmissionSecurity;
 use SJBR\SrFeuserRegister\Utility\CssUtility;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use SJBR\SrFeuserRegister\Utility\UrlUtility;
@@ -429,13 +428,7 @@ class Marker
 	 */
 	public function getFieldName($theField)
 	{
-		if ($theField === 'password') {
-			// See FrontendLoginFormRsaEncryption.js
-			$fieldName = 'pass';
-		} else {
-			$fieldName = 'FE[' . $this->theTable . '][' . $theField . ']';
-		}
-		return $fieldName;
+		return 'FE[' . $this->theTable . '][' . $theField . ']';
 	}
 
 	/**
@@ -665,7 +658,6 @@ class Marker
 		$vars['rU'] = $uid;
 		$vars['preview'] = '1';
 		$markerArray['###DELETE_URL###'] = UrlUtility::get($this->prefixId, '', $this->parameters->getPid('edit') . ',' . $GLOBALS['TSFE']->type, $vars, $unsetVars);
-
 		$unsetVarsList = 'mode,pointer,sort,sword,backURL,submit,rU,aC,sFK,doNotSave,preview,countryChange,fileDelete,key,regHash';
 		$unsetVars = GeneralUtility::trimExplode(',', $unsetVarsList);
 		$vars['cmd'] = 'create';
@@ -917,22 +909,6 @@ class Marker
 			}
 		}
 		return $templateCode;
-	}
-
-	/**
-	 * Adds password transmission markers
-	 *
-	 * @param boolean $usePassword: whether the password field is configured	
-	 * @param boolean $usePasswordAgain: whether the password again field is configured
-	 * @return void
-	 */
-	public function addPasswordTransmissionMarkers($usePassword, $usePasswordAgain)
-	{
-		$markerArray = $this->getMarkerArray();
- 		if ($usePassword) {
- 			TransmissionSecurity::getMarkers($markerArray, $usePasswordAgain);
- 		}
- 		$this->setMarkerArray($markerArray);
 	}
 
 	/**

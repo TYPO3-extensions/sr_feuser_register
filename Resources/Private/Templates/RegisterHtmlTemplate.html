@@ -14,7 +14,7 @@
 
 <p><em>Form for the registration of a frontend user:</em></p>
 <!-- ###TEMPLATE_CREATE### begin -->
-<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" >
 <fieldset>
 <legend>###LABEL_ENTER_ACCOUNT_INFO###</legend>
 <p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
@@ -45,14 +45,14 @@
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="###MAXLENGTH_password###" title="###TOOLTIP_PASSWORD###" name="###NAME_PASSWORD###" data-rsa-encryption="" value="" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
+		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="###MAXLENGTH_password###" title="###TOOLTIP_PASSWORD###" name="###NAME_PASSWORD###" value="" class="tx-srfeuserregister-pi1-password" />
 	</dd>
 
 	<dt>
 		<label for="tx-srfeuserregister-pi1-password_again" class="tx-srfeuserregister-pi1-password-again">###LABEL_PASSWORD_AGAIN### ###REQUIRED_PASSWORD###</label>
 	</dt>
 	<dd>
-		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="###MAXLENGTH_password###" title="###LABEL_TOOLTIP_PASSWORD_AGAIN###" name="###NAME_PASSWORD_AGAIN###" data-rsa-encryption="" value="" class="tx-srfeuserregister-pi1-password" />
+		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="###MAXLENGTH_password###" title="###LABEL_TOOLTIP_PASSWORD_AGAIN###" name="###NAME_PASSWORD_AGAIN###" value="" class="tx-srfeuserregister-pi1-password" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_password### -->
 
@@ -683,14 +683,14 @@
 <p>###LABEL_V_REGISTRATION_CREATED_MESSAGE1###</p>
 <p>###LABEL_V_REGISTRATION_CREATED_MESSAGE2###</p>
 <p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
-<form id="###FORM_NAME###" method="post" action="###LOGIN_FORM###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###LOGIN_FORM###" enctype="multipart/form-data" >
 <fieldset>
 <dl>
 	<dt>###LABEL_USERNAME###</dt>
 	<dd><input type="text" class="tx-srfeuserregister-pi1-text" name="user" value="###FIELD_username###"  size="40" maxlength="###MAXLENGTH_username###" /></dd>
 
 	<dt>###LABEL_PASSWORD###</dt>
-	<dd><input type="password" name="###NAME_PASSWORD###" data-rsa-encryption="" value="" size="10" maxlength="###MAXLENGTH_password###" ###PASSWORD_ONCHANGE### /></dd>
+	<dd><input type="password" name="pass" value="" size="10" maxlength="###MAXLENGTH_password###" /></dd>
 
 	<dt>&nbsp;</dt>
 	<dd>
@@ -748,7 +748,7 @@ The user is informed that a message has been sent to his email address and that 
 
 <p style="margin-top: 20px"><em>Form for the registration of an invited frontend user:</em></p>
 <!-- ###TEMPLATE_INVITE### begin -->
-<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" >
 <fieldset>
 <legend>###LABEL_ENTER_INVITATION_ACCOUNT_INFO###</legend>
 <p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
@@ -1350,7 +1350,7 @@ The user is informed that a message has been sent to the email address and that 
 
 <p style="margin-top: 20px"><em>Form for editing of a fe_users record:</em></p>
 <!-- ###TEMPLATE_EDIT### begin -->
-<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" >
 <fieldset>
 <legend>###LABEL_V_DEAR###<br />###LABEL_V_EDIT_YOUR_ACCOUNT###</legend>
 	<p class="tx-srfeuserregister-pi1-notice">###LABEL_REQUIRED_INFO_NOTICE###</p>
@@ -1369,13 +1369,13 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="###MAXLENGTH_password###" title="###TOOLTIP_PASSWORD###" name="###NAME_PASSWORD###" data-rsa-encryption="" value="" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
+		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="###MAXLENGTH_password###" title="###TOOLTIP_PASSWORD###" name="###NAME_PASSWORD###" value="" class="tx-srfeuserregister-pi1-password" />
 	</dd>
 	<dt>
 		<label for="tx-srfeuserregister-pi1-password_again">###LABEL_PASSWORD_AGAIN###</label>
 	</dt>
 	<dd>
-		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="###MAXLENGTH_password###" title="###LABEL_TOOLTIP_PASSWORD_AGAIN###" name="###NAME_PASSWORD_AGAIN###" data-rsa-encryption="" value="" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
+		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="###MAXLENGTH_password###" title="###LABEL_TOOLTIP_PASSWORD_AGAIN###" name="###NAME_PASSWORD_AGAIN###" value="" class="tx-srfeuserregister-pi1-password" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_password### -->
 
@@ -2034,14 +2034,14 @@ The user is informed that a message has been sent to the email address and that 
 <p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE1###</p>
 <p>###LABEL_V_REGISTRATION_CONFIRMED_MESSAGE2###</p>
 <p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
-<form id="###FORM_NAME###" method="post" action="###LOGIN_FORM###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###LOGIN_FORM###" enctype="multipart/form-data" >
 <fieldset>
 <dl>
 	<dt><label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME###</label></dt>
 	<dd> <input type="text" class="tx-srfeuserregister-pi1-text" id="tx-srfeuserregister-pi1-username" size="40" maxlength="###MAXLENGTH_username###" title="###LABEL_TOOLTIP_LOGIN_USERNAME###" name="user" value="###FIELD_username###" /> </dd>
 
 	<dt><label for="tx-srfeuserregister-pi1-pass">###LABEL_PASSWORD###</label></dt>
-	<dd> <input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="###NAME_PASSWORD###" data-rsa-encryption="" value="" size="10" maxlength="###MAXLENGTH_password###" ###PASSWORD_ONCHANGE### /> </dd>
+	<dd> <input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="pass" value="" size="10" maxlength="###MAXLENGTH_password###" /> </dd>
 
 	<dt>&nbsp;</dt>
 	<dd>
@@ -2089,13 +2089,13 @@ The user is informed that a message has been sent to the email address and that 
 <p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE1###</p>
 <p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE2###</p>
 <p>###LABEL_V_NOW_ENTER_YOUR_USERNAME###</p>
-<form id="###FORM_NAME###" method="post" action="###LOGIN_FORM###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###LOGIN_FORM###" enctype="multipart/form-data" >
 <dl>
 	<dt><label for="tx-srfeuserregister-pi1-username">###LABEL_USERNAME###</label></dt>
 	<dd><input type="text" class="tx-srfeuserregister-pi1-text" id="tx-srfeuserregister-pi1-username" size="40" maxlength="###MAXLENGTH_username###" title="###LABEL_TOOLTIP_LOGIN_USERNAME###" name="user" value="###FIELD_username###" /></dd>
 
 	<dt><label for="tx-srfeuserregister-pi1-pass">###LABEL_PASSWORD###</label></dt>
-	<dd><input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="###NAME_PASSWORD###" data-rsa-encryption="" value="" size="10" maxlength="###MAXLENGTH_password###" ###PASSWORD_ONCHANGE### /></dd>
+	<dd><input type="password" id="tx-srfeuserregister-pi1-pass" title="###LABEL_TOOLTIP_LOGIN_PASSWORD###" name="pass" value="" size="10" maxlength="###MAXLENGTH_password###" /></dd>
 
 	<dt>&nbsp;</dt>
 	<dd>
@@ -2116,7 +2116,7 @@ The user is informed that a message has been sent to the email address and that 
 <p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE1###</p>
 <p>###LABEL_V_REGISTRATION_ENTERED_MESSAGE2###</p>
 <p>###LABEL_V_NOW_CHOOSE_PASSWORD###</p>
-<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" ###FORM_ONSUBMIT###>
+<form id="###FORM_NAME###" method="post" action="###FORM_URL###" enctype="multipart/form-data" >
 <fieldset>
 <dl>
 	<!-- ###SUB_INCLUDED_FIELD_password### -->
@@ -2130,13 +2130,13 @@ The user is informed that a message has been sent to the email address and that 
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
 		<p class="tx-srfeuserregister-pi1-error">###MISSING_PASSWORD###</p>
 		<!-- ###SUB_REQUIRED_FIELD_password### -->
-		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="###MAXLENGTH_password###" title="###TOOLTIP_PASSWORD###" name="###NAME_PASSWORD###" data-rsa-encryption="" value="" class="tx-srfeuserregister-pi1-password" ###PASSWORD_ONCHANGE### />
+		<input id="tx-srfeuserregister-pi1-password" type="password" size="10" maxlength="###MAXLENGTH_password###" title="###TOOLTIP_PASSWORD###" name="###NAME_PASSWORD###" value="" class="tx-srfeuserregister-pi1-password" />
 	</dd>
 	<dt>
 		<label for="tx-srfeuserregister-pi1-password_again" class="tx-srfeuserregister-pi1-password-again">###LABEL_PASSWORD_AGAIN###</label>
 	</dt>
 	<dd>
-		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="###MAXLENGTH_password###" title="###LABEL_TOOLTIP_PASSWORD_AGAIN###" name="###NAME_PASSWORD_AGAIN###"  data-rsa-encryption="" value="" class="tx-srfeuserregister-pi1-password" />
+		<input id="tx-srfeuserregister-pi1-password_again" type="password" size="10" maxlength="###MAXLENGTH_password###" title="###LABEL_TOOLTIP_PASSWORD_AGAIN###" name="###NAME_PASSWORD_AGAIN###" value="" class="tx-srfeuserregister-pi1-password" />
 	</dd>
 	<!-- ###SUB_INCLUDED_FIELD_password### -->
 

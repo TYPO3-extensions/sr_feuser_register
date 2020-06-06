@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Security;
 /*
  *  Copyright notice
  *
- *  (c) 2015-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2015-2020 Stanislas Rolland <typo32020(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,6 @@ namespace SJBR\SrFeuserRegister\Security;
 
 use SJBR\SrFeuserRegister\Security\SecuredData;
 use SJBR\SrFeuserRegister\Security\StorageSecurity;
-use SJBR\SrFeuserRegister\Security\TransmissionSecurity;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -237,25 +236,6 @@ class SessionData
 		$password = self::readPassword($extensionKey);
 		$result = StorageSecurity::encryptPasswordForStorage($password['password']);
 		return $result;
-	}
-
-	/**
-	 * Writes the password to FE user session data
-	 *
-	 * @param string $extensionKey: the extension key
-	 * @param array $row: data array that may contain password values
-	 * @return void
-	 */
-	public static function securePassword($extensionKey, array $row)
-	{
-		// Decrypt incoming password
-		$passwordRow = self::readPassword($extensionKey);
-		$passwordDecrypted = TransmissionSecurity::decryptIncomingFields($passwordRow);
-		if ($passwordDecrypted) {
-			self::writePassword($extensionKey, $passwordRow['password'], $passwordRow['password_again']);
-		} else if (TransmissionSecurity::getTransmissionSecurityLevel() !== 'rsa') {
-			self::writePassword($extensionKey, $passwordRow['password'], $row['password_again']);
-		}
 	}
 
 	/**

@@ -16,8 +16,6 @@ call_user_func(
 		$emConf = $emConfUtility->includeEmConf(['key' => $extKey, 'siteRelPath' =>  \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($extKey))]);
 		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['version'] = $emConf[$extKey]['version'];
 		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['constraints'] = $emConf[$extKey]['constraints'];
-		// Set possible login security levels
-		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['loginSecurityLevels'] = array('normal', 'rsa');
 		// Configure captcha hooks
 		if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['captcha'])) {
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extKey]['captcha'] = [];

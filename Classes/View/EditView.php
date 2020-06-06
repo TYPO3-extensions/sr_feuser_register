@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\View;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2020 Stanislas Rolland <typo32020(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -72,7 +72,6 @@ class EditView extends AbstractView
 		}
 		$infoFields = $this->data->getFieldList();
 		$requiredFields = $this->data->getRequiredFieldsArray($cmdKey);
-		$this->marker->addPasswordTransmissionMarkers($this->getUsePassword(), $this->getUsePasswordAgain());
 		$templateCode = $this->marker->removeRequired($templateCode, $this->data->getFailure(), $requiredFields, $infoFields, $this->data->getSpecialFieldList(), $cmdKey, $isPreview);
 		$this->marker->fillInMarkerArray($currentArray, $securedArray, '', true, 'FIELD_', true, $isPreview);
 		if ($cmdKey !== 'password') {

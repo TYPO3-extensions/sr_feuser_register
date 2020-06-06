@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Configuration;
 /*
  *  Copyright notice
  *
- *  (c) 2004-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2004-2020 Stanislas Rolland <typo32020(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,8 +27,6 @@ use Psr\Log\LoggerAwareTrait;
 use SJBR\SrFeuserRegister\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Rsaauth\Backend\BackendFactory;
-use TYPO3\CMS\Rsaauth\Storage\StorageFactory;
 
 /**
  * Validate the extension configuration
@@ -55,40 +53,6 @@ class ConfigurationCheck implements LoggerAwareInterface
 					$message = sprintf(LocalizationUtility::translate('internal_required_extension_missing', $extensionName), $requiredExtension);
 					$this->logger->error($extensionName . ': ' . $message);
 					$content .= sprintf(LocalizationUtility::translate('internal_check_requirements_frontend', $extensionName), $message);
-				}
-			}
-		}
-		return $content;
-	}
-
-	/**
-	 * Checks security settings
-	 *
-	 * @param string $extensionKey the extension key
-	 * @return string Error message, if error found, empty string otherwise
-	 */
-	static public function checkSecuritySettings($extensionKey)
-	{
-		$content = '';
-		$extensionName = GeneralUtility::underscoredToUpperCamelCase($extensionKey);
-		if ($extensionKey === 'sr_feuser_register') {
-			// Check if front end login security level is correctly set
-			$supportedTransmissionSecurityLevels = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey]['loginSecurityLevels'];
-			if (!in_array($GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'], $supportedTransmissionSecurityLevels)) {
-				$message = LocalizationUtility::translate('internal_login_security_level', $extensionName);
-				$this->logger->error($extensionName . ': ' . $message);
-				$content .= sprintf(LocalizationUtility::translate('internal_check_requirements_frontend', $extensionName), $message);
-			} else {
-				// Check if we can get a backend from rsaauth
-				if (ExtensionManagementUtility::isLoaded('rsaauth')) {
-					$backend = BackendFactory::getBackend();
-					$storage = StorageFactory::getStorage();
-					if (!is_object($backend) || !$backend->isAvailable() || !is_object($storage)) {
-						// Required RSA auth backend not available
-						$message = LocalizationUtility::translate('internal_rsaauth_backend_not_available', $extensionName);
-						$this->logger->error($extensionName . ': ' . $message);
-						$content .= sprintf(LocalizationUtility::translate('internal_check_requirements_frontend', $extensionName), $message);
-					}
 				}
 			}
 		}

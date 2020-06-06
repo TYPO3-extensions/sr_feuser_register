@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Domain;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2020 Stanislas Rolland <typo32020(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -242,7 +242,6 @@ class Data
 				$feDataArray = $fe[$this->theTable];
 				SecuredData::secureInput($feDataArray, false);
 				$this->modifyRow($feDataArray, false);
-				SessionData::securePassword($this->extensionKey, $feDataArray);
 				$feDataArray = array_merge($feDataArray, SessionData::readPassword($this->extensionKey));
 				$this->setDataArray($feDataArray);
 			}
@@ -811,7 +810,7 @@ class Data
 						if ($markerArray['###EVAL_ERROR_saved###']) {
 							$markerArray['###EVAL_ERROR_saved###'] .= '<br />';
 						}
-						$errorMsg = implode($failureMsg[$theField], '<br />');
+						$errorMsg = implode('<br />', $failureMsg[$theField]);
 						$markerArray['###EVAL_ERROR_saved###'] .= $errorMsg;
 					} else {
 						$errorMsg = '';
@@ -835,7 +834,7 @@ class Data
 			}
 		}
 
-		$failure = implode($failureArray, ',');
+		$failure = implode(',', $failureArray);
 		$this->setFailure($failure);
 		$markerObj->addEvalValuesMarkers($markerArray);
 		return $this->evalErrors;

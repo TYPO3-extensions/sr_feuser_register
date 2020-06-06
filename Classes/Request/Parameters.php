@@ -5,7 +5,7 @@ namespace SJBR\SrFeuserRegister\Request;
  *  Copyright notice
  *
  *  (c) 2007-2012 Franz Holzinger <franz@ttproducts.de>
- *  (c) 2012-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2012-2020 Stanislas Rolland <typo320(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -218,13 +218,14 @@ class Parameters implements LoggerAwareInterface
 	protected function setPassword()
 	{
 		if ($this->theTable === 'fe_users' && isset($this->conf['create.']['evalValues.']['password'])) {
-			// Establish compatibility with the extension Felogin
 			$password = '';
 			$password_again = '';
-			$password = GeneralUtility::_GP('pass');
 			$fe = GeneralUtility::_POST('FE');
 			if (isset($fe) && is_array($fe)) {
 				$feDataArray = $fe[$this->theTable];
+				if (isset($feDataArray['password'])) {
+					$password = $feDataArray['password'];
+				}
 				if (isset($feDataArray['password_again'])) {
 					$password_again = $feDataArray['password_again'];
 				}
