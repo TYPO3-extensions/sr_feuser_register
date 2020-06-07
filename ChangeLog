@@ -2,6 +2,7 @@
 	* Resolves #91601: Remove dependency on EXT:rsaauth
 	* Resolves #91602: Migrate configuration from EXTCONF to EXTENSIONS
 	* Resolves #91603: Add Zurb Foundation default template
+	* Resolves #91604: Cleanup composer.json and ext_emconf.php
 
 2018-11-03 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #86942: New subscription fails with exception in getDefaultHashInstance

@@ -20,17 +20,11 @@ $EM_CONF[$_EXTKEY] = [
 	'constraints' => [
 		'depends' => [
 			'typo3' => '9.5.0-9.5.99',
-			'rdct' => '1.0.0-1.0.99',
+			'rdct' => '2.0.0-2.0.99',
 			'felogin' => '9.5.0-9.5.99',
-			'static_info_tables' => '6.7.1-6.7.99'
+			'static_info_tables' => '6.7.1-6.8.99'
 		],
 		'conflicts' => [
-			'germandates' => '0.0.0-99.99.99',
-			'rlmp_language_detection' => '0.0.0-99.99.99',
-			'newloginbox' => '0.0.0-99.99.99',
-			'kb_md5fepw' => '0.0.0-99.99.99',
-			'patch1822' => '0.0.0-99.99.99',
-			'cc_random_image' => '0.0.0-99.99.99'
 		],
 		'suggests' => [
 			'sr_freecap' => '2.5.1-2.5.99'
