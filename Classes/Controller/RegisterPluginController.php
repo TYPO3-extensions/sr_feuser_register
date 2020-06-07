@@ -292,7 +292,7 @@ class RegisterPluginController extends AbstractPlugin
 				unset($this->conf[$cmdKey . '.']['evalValues.']['username']);
 			}
 			// Invoke hooks that may modify the configuration
-			$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['configuration']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey][$this->prefixId]['configuration'] : [];
+			$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey][$this->prefixId]['configuration']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey][$this->prefixId]['configuration'] : [];
 			foreach ($hookClassArray as $classRef) {
 				$hookObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($classRef);
 				if (is_object($hookObject) && method_exists($hookObject, 'modifyConf')) {

@@ -1,5 +1,6 @@
 2020-06-06 Stanislas Rolland  <typo32020(arobas)sjbr.ca>
 	* Resolves #91601: Remove dependency on EXT:rsaauth
+	* Resolves #91602: Migrate configuration from EXTCONF to EXTENSIONS
 
 2018-11-03 Stanislas Rolland  <typo3(arobas)sjbr.ca>
 	* Resolves #86942: New subscription fails with exception in getDefaultHashInstance

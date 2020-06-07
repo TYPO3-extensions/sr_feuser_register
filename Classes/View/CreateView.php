@@ -64,8 +64,8 @@ class CreateView extends AbstractView
 
 		if ($this->conf['create']) {
 			// Call all beforeConfirmCreate hooks before the record has been shown and confirmed
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['registrationProcess'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['registrationProcess'] as $classRef) {
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['registrationProcess'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['registrationProcess'] as $classRef) {
 					$hookObj= GeneralUtility::makeInstance($classRef);
 					if (method_exists($hookObj,'registrationProcess_beforeConfirmCreate')) {
 						$hookObj->registrationProcess_beforeConfirmCreate($this->theTable, $dataArray, $this->parameters, $cmdKey, $this->conf);

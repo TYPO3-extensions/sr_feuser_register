@@ -22,7 +22,6 @@ $EM_CONF[$_EXTKEY] = [
 			'typo3' => '9.5.0-9.5.99',
 			'rdct' => '1.0.0-1.0.99',
 			'felogin' => '9.5.0-9.5.99',
-			'rsaauth' => '9.5.0-9.5.99',
 			'static_info_tables' => '6.7.1-6.7.99'
 		],
 		'conflicts' => [

@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Captcha;
 /*
  *  Copyright notice
  *
- *  (c) 2012-2015 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2012-2020 Stanislas Rolland <typo32020(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -41,12 +41,12 @@ class CaptchaManager
 	static public function useCaptcha($cmdKey, array $conf, $extensionKey)
 	{
 		$useCaptcha = false;
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey]['captcha'])
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$extensionKey]['captcha'])
 			&& GeneralUtility::inList($conf[$cmdKey . '.']['fields'], 'captcha_response')
 			&& is_array($conf[$cmdKey . '.'])
 			&& is_array($conf[$cmdKey . '.']['evalValues.'])
 		) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey]['captcha'] as $classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$extensionKey]['captcha'] as $classRef) {
 				$captchaObj = GeneralUtility::makeInstance($classRef);
 				if ($conf[$cmdKey . '.']['evalValues.']['captcha_response'] === $captchaObj->getEvalRule()) {
 					$useCaptcha = true;
@@ -65,8 +65,8 @@ class CaptchaManager
 	static public function isLoaded($extensionKey)
 	{
 		$isLoaded = false;
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey]['captcha'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey]['captcha'] as $classRef) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$extensionKey]['captcha'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$extensionKey]['captcha'] as $classRef) {
 				$captchaObj = GeneralUtility::makeInstance($classRef);
 				$isLoaded = $captchaObj->isLoaded();
 				if ($isLoaded) {

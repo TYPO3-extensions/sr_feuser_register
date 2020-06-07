@@ -213,7 +213,7 @@ class Marker
 		$this->markerBasedTemplateService = GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
 		// Usergroup hook object
 		if ($this->theTable === 'fe_users') {
-			$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable]['usergroup']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable]['usergroup'] : array();
+			$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId][$this->theTable]['usergroup']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId][$this->theTable]['usergroup'] : array();
 			foreach ($hookClassArray as $classRef) {
 				$this->userGroupObj = GeneralUtility::makeInstance($classRef);
 				if (is_object($this->userGroupObj)) {
@@ -925,7 +925,7 @@ class Marker
 	{
 		$markerArray = $this->getMarkerArray();
 		$fieldArray = GeneralUtility::trimExplode(',', $infoFields, true);
-		$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model'] : array();
+		$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['model'] : array();
 		foreach ($hookClassArray as $classRef) {
 			$hookObj = GeneralUtility::makeInstance($classRef);
 			if (is_object($hookObj) && method_exists($hookObj, 'addMarkers')) {
@@ -1098,8 +1098,8 @@ class Marker
 			}
 		}
 		// Add global markers
-		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['registrationProcess'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['registrationProcess'] as $classRef) {
+		if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['registrationProcess'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['registrationProcess'] as $classRef) {
 				$hookObj= GeneralUtility::makeInstance($classRef);
 				if (method_exists($hookObj, 'addGlobalMarkers')) {
 					$hookObj->addGlobalMarkers($markerArray, $this, $this->parameters->getCmdKey(), $this->conf);
@@ -1108,8 +1108,8 @@ class Marker
 		}
 		// Add captcha markers
 		if (CaptchaManager::useCaptcha($this->parameters->getCmdKey(), $this->conf, $this->extensionKey)) {
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey]['captcha'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey]['captcha'] as $classRef) {
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey]['captcha'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey]['captcha'] as $classRef) {
 					$hookObj = GeneralUtility::makeInstance($classRef);
 					$hookObj->addGlobalMarkers($markerArray, $this->parameters->getCmdKey(), $this->conf);
 				}

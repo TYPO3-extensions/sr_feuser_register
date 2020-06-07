@@ -129,8 +129,8 @@ class SetfixedActionController extends AbstractActionController
 				}
 				// Hook: first we initialize the hooks
 				$hookObjectsArr = array();
-				if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['confirmRegistrationClass'])) {
-					foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['confirmRegistrationClass'] as $classRef) {
+				if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['confirmRegistrationClass'])) {
+					foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['confirmRegistrationClass'] as $classRef) {
 						$hookObjectsArr[] = GeneralUtility::makeInstance($classRef);
 					}
 				}

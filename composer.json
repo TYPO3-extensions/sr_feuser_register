@@ -30,7 +30,6 @@
     "typo3/cms-core": ">=9.5.0, <10.0",
     "friendsoftypo3/rdct": ">=1.0.0, <1.1",
     "typo3/cms-felogin": ">=9.5.0, <10.0",
-    "typo3/cms-rsaauth": ">=9.5.0, <10.0",
     "sjbr/static-info-tables": ">=6.7.1, <6.8"
   },
   "suggest": {

@@ -16,8 +16,8 @@ $GLOBALS['TCA']['fe_users']['columns']['email']['config']['max'] = '255';
 $GLOBALS['TCA']['fe_users']['columns']['telephone']['config']['max'] = '25';
 $GLOBALS['TCA']['fe_users']['columns']['fax']['config']['max'] = '25';
 
-$GLOBALS['TCA']['fe_users']['columns']['image']['config']['max_size'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['imageMaxSize'];
-$GLOBALS['TCA']['fe_users']['columns']['image']['config']['filter'][0]['parameters']['allowedFileExtensions'] = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['imageTypes'];
+$GLOBALS['TCA']['fe_users']['columns']['image']['config']['max_size'] = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['sr_feuser_register']['imageMaxSize'];
+$GLOBALS['TCA']['fe_users']['columns']['image']['config']['filter'][0]['parameters']['allowedFileExtensions'] = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['sr_feuser_register']['imageTypes'];
 
 $GLOBALS['TCA']['fe_users']['columns']['usergroup']['config']['foreign_table_where'] = ' AND fe_groups.sys_language_uid IN (-1,0) ORDER BY fe_groups.title';
 

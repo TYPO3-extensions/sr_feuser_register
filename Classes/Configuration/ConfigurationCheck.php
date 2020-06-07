@@ -46,8 +46,8 @@ class ConfigurationCheck implements LoggerAwareInterface
 		$content = '';
 		$extensionName = GeneralUtility::underscoredToUpperCamelCase($extensionKey);
 		// Check if all required extensions are available
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey]['constraints']['depends'])) {
-			$requiredExtensions = array_diff(array_keys($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey]['constraints']['depends']), array('php', 'typo3'));
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$extensionKey]['constraints']['depends'])) {
+			$requiredExtensions = array_diff(array_keys($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$extensionKey]['constraints']['depends']), array('php', 'typo3'));
 			foreach ($requiredExtensions as $requiredExtension) {
 				if (!ExtensionManagementUtility::isLoaded($requiredExtension)) {
 					$message = sprintf(LocalizationUtility::translate('internal_required_extension_missing', $extensionName), $requiredExtension);

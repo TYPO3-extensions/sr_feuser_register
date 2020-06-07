@@ -214,7 +214,7 @@ class Data
 		}
 		// Usergroup hook object
 		if ($this->theTable === 'fe_users') {
-			$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable]['usergroup']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable]['usergroup'] : [];
+			$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId][$this->theTable]['usergroup']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId][$this->theTable]['usergroup'] : [];
 			foreach ($hookClassArray as $classRef) {
 				$this->userGroupObj = GeneralUtility::makeInstance($classRef);
 				if (is_object($this->userGroupObj)) {
@@ -776,10 +776,10 @@ class Data
 								break;
 							case 'hook':
 							default:
-								$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model'] : [];
+								$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['model'] : [];
 								// The captcha cannot be checked twice
-								if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey]['captcha']) && ($mode == AbstractView::MODE_PREVIEW || !$this->conf[$cmdKey . '.']['preview'])) {
-										$hookClassArray = array_merge($hookClassArray, $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey]['captcha']);
+								if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey]['captcha']) && ($mode == AbstractView::MODE_PREVIEW || !$this->conf[$cmdKey . '.']['preview'])) {
+										$hookClassArray = array_merge($hookClassArray, $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey]['captcha']);
 								}
 								foreach ($hookClassArray as $classRef) {
 									$hookObj = GeneralUtility::makeInstance($classRef);
@@ -898,7 +898,7 @@ class Data
 								$dataValue = substr(md5(uniqid(microtime(), 1)), 0, intval($cmdParts[1]));
 								break;
 							case 'files':
-								$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model'] : [];
+								$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['model'] : [];
 								foreach ($hookClassArray as $classRef) {
 									$hookObj = GeneralUtility::makeInstance($classRef);
 									if (is_object($hookObj) && method_exists($hookObj, 'parseValues')) {
@@ -1045,8 +1045,8 @@ class Data
 						$this->modifyRow($newRow, true);
 
 						// Call all afterSaveEdit hooks after the record has been edited and saved
-						if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['registrationProcess'])) {
-							foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['registrationProcess'] as $classRef) {
+						if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['registrationProcess'])) {
+							foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['registrationProcess'] as $classRef) {
 								$hookObj = GeneralUtility::makeInstance($classRef);
 								if (method_exists($hookObj, 'registrationProcess_afterSaveEdit')) {
 									$hookObj->registrationProcess_afterSaveEdit(
@@ -1113,7 +1113,7 @@ class Data
 					}
 					$dataArray['uid'] = $newId;
 					$this->updateMMRelations($dataArray);
-					$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model'] : [];
+					$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['model'] : [];
 					foreach ($hookClassArray as $classRef) {
 						$hookObj = GeneralUtility::makeInstance($classRef);
 						if (is_object($hookObj) && method_exists($hookObj, 'afterSave')) {
@@ -1127,8 +1127,8 @@ class Data
 						$newRow = $this->parseIncomingData($newRow);
 						$this->modifyRow($newRow, true);
 						// Call all afterSaveCreate hooks after the record has been created and saved
-						if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['registrationProcess'])) {
-							foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['registrationProcess'] as $classRef) {
+						if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['registrationProcess'])) {
+							foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['registrationProcess'] as $classRef) {
 								$hookObj = GeneralUtility::makeInstance($classRef);
 								if (method_exists($hookObj, 'registrationProcess_afterSaveCreate')) {
 									$hookObj->registrationProcess_afterSaveCreate(
@@ -1350,8 +1350,8 @@ class Data
 					if ($aCAuth || $this->DBmayFEUserEdit($this->theTable, $origArray, ['uid' => $userAspect->get('id'), 'usergroup' => $userAspect->get('groupIds')], $this->conf['allowedGroups'], $this->conf['fe_userEditSelf'])) {
 						// Delete the record and display form, if access granted.
 						// Call all beforeSaveDelete hooks BEFORE the record is deleted
-						if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['registrationProcess'])) {
-							foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['registrationProcess'] as $classRef) {
+						if (is_array ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['registrationProcess'])) {
+							foreach  ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['registrationProcess'] as $classRef) {
 								$hookObj = GeneralUtility::makeInstance($classRef);
 								if (method_exists($hookObj, 'registrationProcess_beforeSaveDelete')) {
 									$hookObj->registrationProcess_beforeSaveDelete($origArray, $this);
@@ -1400,7 +1400,7 @@ class Data
 				}
 			}
 		}
-		$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId]['model'] : [];
+		$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['model']) ? $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId]['model'] : [];
 		foreach ($hookClassArray as $classRef) {
 			$hookObj = GeneralUtility::makeInstance($classRef);
 			if (is_object($hookObj) && method_exists($hookObj, 'deleteFileReferences')) {
@@ -1792,7 +1792,7 @@ class Data
 		foreach ($GLOBALS['TCA'][$this->theTable]['columns'] as $colName => $colSettings) {
 			if (isset($parsedArray[$colName]) || isset($origArray[$colName])) {
 				$foreignTable = $GLOBALS['TCA'][$this->theTable]['columns'][$colName]['config']['foreign_table'] ?: '';
-				$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable][$colName]) ? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extensionKey][$this->prefixId][$this->theTable][$colName] : [];
+				$hookClassArray = is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId][$this->theTable][$colName]) ? $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extensionKey][$this->prefixId][$this->theTable][$colName] : [];
 				foreach ($hookClassArray as $classRef) {
 					$hookObject = GeneralUtility::makeInstance($classRef);
 					if (is_object($hookObject) && method_exists($hookObject, 'parseOutgoingData')) {

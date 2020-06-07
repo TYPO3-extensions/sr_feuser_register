@@ -62,8 +62,8 @@ class StatusProvider implements StatusProviderInterface
 	{
 		$title = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:Required_extensions_not_installed', $this->extensionName);
 		$missingExtensions = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['constraints']['depends'])) {
-			$requiredExtensions = array_diff(array_keys($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['constraints']['depends']), array('php', 'typo3'));
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['sr_feuser_register']['constraints']['depends'])) {
+			$requiredExtensions = array_diff(array_keys($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['sr_feuser_register']['constraints']['depends']), array('php', 'typo3'));
 			foreach ($requiredExtensions as $extensionKey) {
 				if (!ExtensionManagementUtility::isLoaded($extensionKey)) {
 					$missingExtensions[] = $extensionKey;
@@ -91,8 +91,8 @@ class StatusProvider implements StatusProviderInterface
 	{
 		$title = LocalizationUtility::translate('LLL:EXT:sr_feuser_register/Resources/Private/Language/locallang_statusreport.xlf:Conflicting_extensions_installed', $this->extensionName);
 		$conflictingExtensions = array();
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['constraints']['conflicts'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['sr_feuser_register']['constraints']['conflicts'] as $extensionKey => $version) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['sr_feuser_register']['constraints']['conflicts'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['sr_feuser_register']['constraints']['conflicts'] as $extensionKey => $version) {
 				if (ExtensionManagementUtility::isLoaded($extensionKey)) {
 					$conflictingExtensions[] = $extensionKey;
 				}
