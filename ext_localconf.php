@@ -21,8 +21,10 @@ call_user_func(
 			$GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$extKey]['tx_srfeuserregister_pi1']['model'] = [];
 		}
         // Make the extension version and constraints available
+        $typo3Version = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Information\Typo3Version::class);
+		$typo3Branch = $typo3Version->getBranch();
         $emConfUtility = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extensionmanager\Utility\EmConfUtility::class);
-        if (version_compare(TYPO3_branch, '10.4', '>=')) {
+		if (version_compare($typo3Branch, '10.4', '>=')) {
             $emConf =
                 $emConfUtility->includeEmConf(
                     $extKey,

@@ -475,7 +475,7 @@ class Marker
 				if (empty($label)) {
 					$label = LocalizationUtility::translate($theField, $this->extensionName);
 				}
-				$label = (empty($label) ? LocalizationUtility::translate($tcaColumns[$theField]['label'], $this->extensionName) : $label);
+				$label = ((empty($label) && $tcaColumns[$theField]['label']) ? LocalizationUtility::translate($tcaColumns[$theField]['label'], $this->extensionName) : $label);
 				$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 			} else {
 				$label = '';
@@ -552,32 +552,13 @@ class Marker
 			}
 		}
 		// Assemble the name to be substituted in the labels
-		$name = '';
 		if ($this->conf['salutation'] === 'informal' && !empty($row['first_name'])) {
 			$name = $row['first_name'];
 		} else {
-			// Honour Address List (tt_address) configuration settings
-			if ($this->theTable === 'tt_address' && ExtensionManagementUtility::isLoaded('tt_address')) {
-				$settings = \TYPO3\TtAddress\Utility\SettingsUtility::getSettings();
-				$nameFormat = '';
-				if ($settings->isStoreBackwardsCompatName() && !empty($row['name'])) {
-					$name = $row['name'];
-				} else {
-					$nameFormat = $settings->getBackwardsCompatFormat();
-					if (!empty($nameFormat)) {
-						$name = sprintf($nameFormat, $row['first_name'], $row['middle_name'], $row['last_name']);
-					}
-				}
-			}
-			if (empty($name) && isset($row['name'])) {
-				$name = trim($row['name']);
-			}
-			if (empty($name)) {
-				$name = ((isset($row['first_name']) && trim($row['first_name'])) ? trim($row['first_name']) : '') .
-					((isset($row['middle_name']) && trim($row['middle_name'])) ? ' ' . trim($row['middle_name']) : '') .
-					((isset($row['last_name']) && trim($row['last_name'])) ? ' ' . trim($row['last_name']) : '');
-				$name = trim($name);
-			}
+			$name = ((isset($row['first_name']) && trim($row['first_name'])) ? trim($row['first_name']) : '') .
+				((isset($row['middle_name']) && trim($row['middle_name'])) ? ' ' . trim($row['middle_name']) : '') .
+				((isset($row['last_name']) && trim($row['last_name'])) ? ' ' . trim($row['last_name']) : '');
+			$name = trim($name);
 			if (empty($name)) {
 				$name = 'id(' . $row['uid'] . ')';
 			}
@@ -1171,10 +1152,7 @@ class Marker
 		}
 		// Honour Address List (tt_address) configuration setting
 		if ($this->theTable === 'tt_address' && ExtensionManagementUtility::isLoaded('tt_address')) {
-			$settings = \TYPO3\TtAddress\Utility\SettingsUtility::getSettings();
-				if (!$settings->isStoreBackwardsCompatName()) {
-				$templateCode = $this->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_name###', '');
-			}
+			$templateCode = $this->substituteSubpart($templateCode, '###SUB_INCLUDED_FIELD_name###', '');
 		}
 		foreach ($infoFields as $k => $theField) {
 			// Remove field required subpart, if field is not missing
@@ -1519,13 +1497,13 @@ class Marker
 								$markerArray['###MAXLENGTH_' . $colName . '###'] = $colConfig['max'] ?: ($colConfig['size'] ?: 20);
 								break;
 							case 'text':
-								$label = LocalizationUtility::translate($colConfig['default'], $this->extensionName);
+								$label = $colConfig['default'] ? LocalizationUtility::translate($colConfig['default'], $this->extensionName) : '';
 								$label = htmlspecialchars($label, ENT_QUOTES, $charset);
 								$colContent = '<textarea id="' .  CssUtility::getClassName($this->prefixId, $colName) . '" name="FE[' . $this->theTable . '][' . $colName . ']"' .
 									' title="###TOOLTIP_' . (($cmd == 'invite') ? 'INVITATION_':'') . mb_strtoupper($colName, 'utf-8') . '###"' .
 									' cols="' . ($colConfig['cols'] ? $colConfig['cols'] : 30) . '"' .
 									' rows="' . ($colConfig['rows'] ? $colConfig['rows'] : 5) . '"' .
-									'>' . ($colConfig['default'] ? $label : '') . '</textarea>';
+									'>' . $label . '</textarea>';
 								$markerArray['###MAXLENGTH_' . $colName . '###'] = $colConfig['max'] ?: ($colConfig['cols'] ? $colConfig['cols'] : 30)*($colConfig['rows'] ? $colConfig['rows'] : 5);
 								break;
 							case 'check':

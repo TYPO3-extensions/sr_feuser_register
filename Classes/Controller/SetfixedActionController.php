@@ -142,7 +142,7 @@ class SetfixedActionController extends AbstractActionController
 				}
 				$newFieldList = implode(',', array_intersect(
 					GeneralUtility::trimExplode(',', $this->data->getFieldList(), 1),
-					GeneralUtility::trimExplode(',', implode($fieldArr, ','), 1)
+					GeneralUtility::trimExplode(',', implode(',', $fieldArr), 1)
 				));
 
 				if ($sFK === 'UNSUBSCRIBE') {

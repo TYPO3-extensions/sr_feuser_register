@@ -29,9 +29,9 @@ use SJBR\SrFeuserRegister\Security\Authentication;
 use SJBR\SrFeuserRegister\Security\SecuredData;
 use SJBR\SrFeuserRegister\Security\SessionData;
 use SJBR\SrFeuserRegister\Utility\HashUtility;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
 /**
@@ -338,7 +338,13 @@ class Parameters implements LoggerAwareInterface
 	 */
 	protected function setPidTitle()
 	{
-		$pageRepository = GeneralUtility::makeInstance(PageRepository::class);
+		$typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+		$typo3Branch = $typo3Version->getBranch();
+		if (version_compare($typo3Branch, '10.4', '>=')) {
+			$pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Domain\Repository\PageRepository::class);
+		} else {
+			$pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+		}
 		$row = $pageRepository->getPage_noCheck((int)$this->getPid());
 		$this->pidTitle = $this->conf['pidTitleOverride'] ?: $row['title'];
 	}
@@ -703,12 +709,5 @@ class Parameters implements LoggerAwareInterface
                 $GLOBALS['HTTP_GET_VARS'][$key] = $inputGet;
             }
         }
-        /*elseif (is_array($inputGet)) {
-            $_GET = $inputGet;
-            $GLOBALS['HTTP_GET_VARS'] = $inputGet;
-            if (isset($GLOBALS['TYPO3_REQUEST']) && $GLOBALS['TYPO3_REQUEST'] instanceof ServerRequestInterface) {
-                $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withQueryParams($inputGet);
-            }
-        }*/
     }
 }

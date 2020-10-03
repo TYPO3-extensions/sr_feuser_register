@@ -373,14 +373,6 @@ class Data
 		if (trim($this->conf['addAdminFieldList'])) {
 			$adminFieldList .= ',' . trim($this->conf['addAdminFieldList']);
 		}
-		// Honour Address List (tt_address) configuration settings
-		if ($this->theTable === 'tt_address' && ExtensionManagementUtility::isLoaded('tt_address')) {
-			$settings = \TYPO3\TtAddress\Utility\SettingsUtility::getSettings();
-			if (!$settings->isStoreBackwardsCompatName()) {
-				// Remove name from adminFieldList
-				$adminFieldList = GeneralUtility::rmFromList('name', $adminFieldList);
-			}
-		}
 		$this->adminFieldList = implode(',', array_intersect(explode(',', $this->getFieldList()), GeneralUtility::trimExplode(',', $adminFieldList, true)));
 	}
 
@@ -1632,19 +1624,9 @@ class Data
 			&& in_array('first_name', GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], true))
 			&& in_array('last_name', GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], true))
 		) {
-			// Honour Address List (tt_address) configuration settings
-			$nameFormat = '';
-			if ($this->theTable === 'tt_address' && ExtensionManagementUtility::isLoaded('tt_address')) {
-				$settings = \TYPO3\TtAddress\Utility\SettingsUtility::getSettings();
-				$nameFormat = $settings->getBackwardsCompatFormat();
-			}
-			if (!empty($nameFormat)) {
-				$dataArray['name'] = sprintf($nameFormat, $dataArray['first_name'], $dataArray['middle_name'], $dataArray['last_name']);
-			} else {
-				$dataArray['name'] = trim(trim($dataArray['first_name'])
-					. ((in_array('middle_name', GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], true)) && trim($dataArray['middle_name']) != '') ? ' ' . trim($dataArray['middle_name']) : '' )
-					. ' ' . trim($dataArray['last_name']));
-			}
+			$dataArray['name'] = trim(trim($dataArray['first_name'])
+				. ((in_array('middle_name', GeneralUtility::trimExplode(',', $this->conf[$cmdKey . '.']['fields'], true)) && trim($dataArray['middle_name']) != '') ? ' ' . trim($dataArray['middle_name']) : '' )
+				. ' ' . trim($dataArray['last_name']));
 		}
 	}
 
