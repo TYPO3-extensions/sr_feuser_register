@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Mail;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2020 Stanislas Rolland <typo3(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,6 +22,7 @@ namespace SJBR\SrFeuserRegister\Mail;
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
 
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -94,25 +95,46 @@ class Message
 				$PLAINContent = trim($parts[1]);
 			}
 			$mail = GeneralUtility::makeInstance(MailMessage::class);
-			$mail->setSubject($subject);
-			$mail->setFrom(array($fromEmail => $fromName));
-			$mail->setSender($fromEmail);
+			$typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+			$typo3Branch = $typo3Version->getBranch();
+			if (version_compare($typo3Branch, '10.4', '>=')) {
+                $mail->subject($subject)
+					->from(new \Symfony\Component\Mime\Address($fromEmail, $fromName))
+					->sender(new \Symfony\Component\Mime\Address($fromEmail))
+					->replyTo($replyTo ? new \Symfony\Component\Mime\Address($replyTo) : new \Symfony\Component\Mime\Address($fromEmail, $fromName))
+					->priority(\Symfony\Component\Mime\Email::PRIORITY_NORMAL)
+					->to(new \Symfony\Component\Mime\Address($recipient))
+					->text($PLAINContent);
+				// ATTACHMENT
+				if ($fileAttachment && file_exists($fileAttachment)) {
+					$mail->attachFromPath($fileAttachment);
+				}
+				// HTML
+				if (trim($HTMLContent)) {
+					$HTMLContent = self::embedMedia($mail, $HTMLContent);
+					$mail->html($HTMLContent);
+				}
+			} else {
+				// Prior to TYPO3 10.4
+				$mail->setSubject($subject);
+				$mail->setFrom(array($fromEmail => $fromName));
+				$mail->setSender($fromEmail);
+				$mail->setReplyTo($replyTo ? array($replyTo => '') : array($fromEmail => $fromName));
+				$mail->setPriority(3);
+				$mail->setTo([$recipient]);
+				// PLAIN
+				$mail->addPart($PLAINContent, 'text/plain');
+				// ATTACHMENT
+				if ($fileAttachment && file_exists($fileAttachment)) {
+					$mail->attach(\Swift_Attachment::fromPath($fileAttachment));
+				}
+				// HTML
+				if (trim($HTMLContent)) {
+					$HTMLContent = self::embedMedia($mail, $HTMLContent);
+					$mail->setBody($HTMLContent, 'text/html');
+				}
+			}
 			$mail->setReturnPath($fromEmail);
-			$mail->setReplyTo($replyTo ? array($replyTo => '') : array($fromEmail => $fromName));
-			$mail->setPriority(3);
-			// ATTACHMENT
-			if ($fileAttachment && file_exists($fileAttachment)) {
-				$mail->attach(\Swift_Attachment::fromPath($fileAttachment));
-			}
-			// HTML
-			if (trim($HTMLContent)) {
-				$HTMLContent = self::embedMedia($mail, $HTMLContent);
-				$mail->setBody($HTMLContent, 'text/html');
-			}
-			// PLAIN
-			$mail->addPart($PLAINContent, 'text/plain');
-			// SET Headers and Content
-			$mail->setTo(array($recipient));
 			$mail->send();
 		}
 	}
@@ -126,14 +148,16 @@ class Message
 	 */
 	static protected function embedMedia(MailMessage $mail, $htmlContent)
 	{
+		$typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+		$typo3Branch = $typo3Version->getBranch();
 		$substitutedHtmlContent = $htmlContent;
-		$media = array();
+		$media = [];
 		$attribRegex = self::makeTagRegex(array('img', 'embed', 'audio', 'video'));
 		// Split the document by the beginning of the above tags
 		$codepieces = preg_split($attribRegex, $htmlContent);
 		$len = strlen($codepieces[0]);
 		$pieces = count($codepieces);
-		$reg = array();
+		$reg = [];
 		for ($i = 1; $i < $pieces; $i++) {
 			$tag = strtolower(strtok(substr($htmlContent, $len + 1, 10), ' '));
 			$len += strlen($tag) + strlen($codepieces[$i]) + 2;
@@ -144,7 +168,12 @@ class Message
 			$src_uid = md5($attributes['src']);
 			if ($attributes['src'] && !isset($media[$src_uid])) {
 				$media[$src_uid]['src'] = $attributes['src'];
-				$media[$src_uid]['cid'] = $mail->embed(\Swift_Image::fromPath($attributes['src']));
+				if (version_compare($typo3Branch, '10.4', '>=')) {
+					$mail->embedFromPath($attributes['src'], $src_uid);
+					$media[$src_uid]['cid'] = 'cid:' . $src_uid;
+				} else {
+					$media[$src_uid]['cid'] = $mail->embed(\Swift_Image::fromPath($attributes['src']));
+				}
 			}
 		}
 		foreach ($media as $embeddedMedia) {

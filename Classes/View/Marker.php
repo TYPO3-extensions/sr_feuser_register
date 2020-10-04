@@ -499,7 +499,7 @@ class Marker
 						$fieldArray = GeneralUtility::trimExplode(',', $row[$theField]);
 					}
 					foreach ($fieldArray as $key => $value) {
-						$label = LocalizationUtility::translate($colConfig['items'][$value][0], $this->extensionName);
+						$label = LocalizationUtility::translate($colConfig['items'][(int)$value][0], $this->extensionName);
 						$markerArray['###FIELD_' . $markerkey . '_CHECKED###'] .= '- ' . $label . '<br />';
 						$markerArray['###LABEL_' . $markerkey . '_CHECKED###'] .= '- ' . $label . '<br />';
 						$markerArray['###POSTVARS_' . $markerkey.'###'] .= chr(10) . '	<input type="hidden" name="FE[fe_users][' . $theField . '][' . $key . ']" value ="' . $value . '" />';

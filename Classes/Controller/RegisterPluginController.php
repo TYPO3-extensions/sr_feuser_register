@@ -182,7 +182,7 @@ class RegisterPluginController extends AbstractPlugin
 				$this->marker->generateURLMarkers();
 				$plainView = GeneralUtility::makeInstance(PlainView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 				if ($this->parameters->getCmd() === 'setfixed') {
-					$content = $plainView->render('###TEMPLATE_SETFIXED_FAILED###', [], [], a[], '', '');
+					$content = $plainView->render('###TEMPLATE_SETFIXED_FAILED###', [], [], [], '', '');
 				} else {
 					$content = $plainView->render('###TEMPLATE_INVALID_TOKEN###', [], [], [], '', '');
 				}
