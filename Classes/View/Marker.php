@@ -634,7 +634,6 @@ class Marker
 			$vars['aC'] = $ac;
 		}	
 		$vars['token'] = $this->token;
-		$vars['backURL'] = rawurlencode($formUrl);
 		$vars['cmd'] = 'delete';
 		$vars['rU'] = $uid;
 		$vars['preview'] = '1';

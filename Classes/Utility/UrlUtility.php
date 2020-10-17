@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Utility;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2020 Stanislas Rolland <typo32020(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -68,10 +68,9 @@ class UrlUtility
 		}
 		$piVars = array();
 		foreach ($vars as $key => $val) {
-			$piVars[$prefixId . '%5B' . $key . '%5D'] = $val;
+			$piVars[$prefixId . '[' . $key . ']'] = $val;
 		}
 		$url = $tag ? self::$cObj->getTypoLink($tag, $id, $piVars) : self::$cObj->getTypoLink_URL($id, $piVars);
-		$url = htmlspecialchars(str_replace(array('[',']'), array('%5B', '%5D'), $url));
 		return $url;
 	}
 

@@ -1,3 +1,8 @@
+2020-10-17 Stanislas Rolland  <typo32020(arobas)sjbr.ca>
+	* Resolves #92322: TYPO3 10.4 Support
+	* Update documentation
+	* Update version to 7.0.0
+
 2020-10-04 Stanislas Rolland  <typo32020(arobas)sjbr.ca>
 	* Resolves #92322: TYPO3 10.4 Mailer Support
 

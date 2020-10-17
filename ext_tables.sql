@@ -18,3 +18,15 @@ CREATE TABLE fe_users (
 	token varchar(32) DEFAULT '' NOT NULL,
 	tx_srfeuserregister_password blob
 );
+
+#
+# Table structure for table 'cache_md5params'
+#
+CREATE TABLE cache_md5params (
+	md5hash varchar(20) DEFAULT '' NOT NULL,
+	tstamp int(11) DEFAULT '0' NOT NULL,
+	type tinyint(3) DEFAULT '0' NOT NULL,
+	params text,
+
+	PRIMARY KEY (md5hash)
+);
