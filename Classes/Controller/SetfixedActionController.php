@@ -97,7 +97,7 @@ class SetfixedActionController extends AbstractActionController
 		if (!strcmp($this->parameters->getAuthCode(), $theCode) && !($sFK === 'APPROVE' && $origArray['disable'] == '0')) {
 			if ($sFK === 'EDIT') {
 				$this->marker->addGeneralHiddenFieldsMarkers('edit', $this->parameters->getAuthCode(), $this->parameters->getBackURL());
-				$editView = GeneralUtility::makeInstance(EditView::class, $this->extendionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+				$editView = GeneralUtility::makeInstance(EditView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 				$content = $editView->render(
 					$dataArray,
 					$origArray,
