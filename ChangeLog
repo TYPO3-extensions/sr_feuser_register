@@ -1,5 +1,6 @@
 2020-10-19 Stanislas Rolland  <typo32020(arobas)sjbr.ca>
 	* Resolves #92600: Typo in SetfixedActionController
+	* Update version to 7.0.2
 
 2020-10-17 Stanislas Rolland  <typo32020(arobas)sjbr.ca>
 	* Resolves #92322: TYPO3 10.4 Support
