@@ -187,7 +187,7 @@ class SetfixedActionController extends AbstractActionController
 					// Auto login
 					$loginSuccess = $this->login($currArr['username'], $currArr['password'], false);
 					if ($loginSuccess) {
-						$editView = GeneralUtility::makeInstance(EditView::class, $this->extendionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
+						$editView = GeneralUtility::makeInstance(EditView::class, $this->extensionKey, $this->prefixId, $this->theTable, $this->conf, $this->data, $this->parameters, $this->marker);
 						$content = $editView->render(
 							$dataArray,
 							$origArray,
