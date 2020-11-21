@@ -1,3 +1,6 @@
+2020-11-21 Stanislas Rolland  <typo32020(arobas)sjbr.ca>
+	* Resolves #92774: Reference to deprecated TCA renderMode=checkbox
+
 2020-10-20 Stanislas Rolland  <typo32020(arobas)sjbr.ca>
 	* Resolves #92606: Typos in SetfixedActionController
 

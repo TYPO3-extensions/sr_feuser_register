@@ -632,7 +632,7 @@ class Marker
 		$ac = $this->parameters->getFeUserData('aC');
 		if ($ac) {
 			$vars['aC'] = $ac;
-		}	
+		}
 		$vars['token'] = $this->token;
 		$vars['cmd'] = 'delete';
 		$vars['rU'] = $uid;
@@ -673,7 +673,7 @@ class Marker
 		$markerArray['###TERMS_URL###'] = UrlUtility::get($this->prefixId, '', $termsUrlParam, array(), array(), false);
 
 		$formUrlMarkerArray = $this->generateFormURLMarkers();
-		$markerArray = array_merge($markerArray, $formUrlMarkerArray);	
+		$markerArray = array_merge($markerArray, $formUrlMarkerArray);
 		$this->setUrlMarkerArray($markerArray);
 		$this->setMarkerArray(array_merge($this->getMarkerArray(), $markerArray));
 	}
@@ -1012,7 +1012,7 @@ class Marker
 			foreach ($fieldArray as $theField) {
 				$value = $dataArray[$theField];
 				if (is_array($value)) {
-					$fieldConfig = $GLOBALS['TCA'][$this->theTable]['columns'][$theField]['config']; 
+					$fieldConfig = $GLOBALS['TCA'][$this->theTable]['columns'][$theField]['config'];
 					if ($fieldConfig['type'] === 'inline' && $fieldConfig['foreign_table'] === 'sys_file_reference') {
 						$value = htmlspecialchars(serialize($value));
 					} else {
@@ -1585,7 +1585,7 @@ class Marker
 									$multiple = '';
 								}
 
-								if ($colConfig['renderMode'] === 'checkbox') {
+								if ($colConfig['renderMode'] === 'checkbox' || $colConfig['renderMode'] === 'selectCheckBox') {
 									$colContent .= '
 										<input id="' . CssUtility::getClassName($this->prefixId, $colName) .
 										'" name="FE[' . $this->theTable . '][' . $colName . ']" value="" type="hidden" />';
@@ -1608,7 +1608,7 @@ class Marker
 										$label = $label ?: LocalizationUtility::translate($item[0], $this->extensionName);
 										$label = $label ?: $item[0];
 										$label = $label ? htmlspecialchars($label, ENT_QUOTES, $charset) : '';
-										if ($colConfig['renderMode'] === 'checkbox') {
+										if ($colConfig['renderMode'] === 'checkbox' || $colConfig['renderMode'] === 'selectCheckBox') {
 											$colContent .= '<dt><input class="' .
 											CssUtility::getClassName($this->prefixId, 'checkbox-checkboxes') .
 											 '" id="' . CssUtility::getClassName($this->prefixId, $colName) . '-' . $i . '" name="FE[' . $this->theTable . '][' . $colName . '][' . $k . ']" value="' . $k . '" type="checkbox"  ' . (in_array($k, $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
@@ -1676,7 +1676,7 @@ class Marker
 										->fetchAll();
 
 									if (!in_array($colName, $requiredFields)) {
-										if ($colConfig['renderMode'] === 'checkbox' || $colContent) {
+										if ($colConfig['renderMode'] === 'checkbox' || $colConfig['renderMode'] === 'selectCheckBox' || $colContent) {
 											// nothing
 										} else {
 											if (!empty($itemArray)) {
@@ -1703,7 +1703,7 @@ class Marker
 													$selected = '';
 												}
 												$selectedValue = ($selected ? true: $selectedValue);
-												if ($colConfig['renderMode'] === 'checkbox') {
+												if ($colConfig['renderMode'] === 'checkbox' || $colConfig['renderMode'] === 'selectCheckBox') {
 													$colContent .= '<dt><input  class="' .
 													CssUtility::getClassName($this->prefixId, 'checkbox') .
 													'" id="'. CssUtility::getClassName($this->prefixId, $colName) . '-' . $row2['uid'] . '" name="FE[' . $this->theTable . '][' . $colName . '][' . $row2['uid'] . ']" value="'.$row2['uid'] . '" type="checkbox"' . ($selected ? ' checked="checked"':'') . ' /></dt>
@@ -1718,7 +1718,7 @@ class Marker
 											}
 											$titleText = htmlspecialchars($row2[$titleField], ENT_QUOTES, $charset);
 
-											if ($colConfig['renderMode'] === 'checkbox') {
+											if ($colConfig['renderMode'] === 'checkbox' || $colConfig['renderMode'] === 'selectCheckBox') {
 												$colContent .= '<dt><input class="' .
 												CssUtility::getClassName($this->prefixId, 'checkbox') .
 												'" id="'. CssUtility::getClassName($this->prefixId, $colName) . '-' . $row2['uid'] . '" name="FE[' . $this->theTable . '][' . $colName . '][' . $row2['uid'] . ']" value="' . $row2['uid'] . '" type="checkbox"' . (in_array($row2['uid'],  $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
@@ -1731,7 +1731,7 @@ class Marker
 									}
 								}
 
-								if ($colConfig['renderMode'] === 'checkbox') {
+								if ($colConfig['renderMode'] === 'checkbox' || $colConfig['renderMode'] === 'selectCheckBox') {
 									$colContent .= '</dl>';
 								} else {
 									$colContent .= '</select>';
@@ -1787,7 +1787,7 @@ class Marker
 	{
 		$foreignWhere = $colConfig['foreign_table_where'];
 		if ($foreignWhere) {
-			$pageTSConfig = $GLOBALS['TSFE']->getPagesTSconfig();	
+			$pageTSConfig = $GLOBALS['TSFE']->getPagesTSconfig();
 			$TSconfig = $pageTSConfig['TCEFORM.'][$this->theTable . '.'][$colName . '.'];
 			if ($TSconfig) {
 				// substitute whereClause
