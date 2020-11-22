@@ -1374,7 +1374,7 @@ class Marker
 								}
 								break;
 							case 'radio':
-								if ($mrow[$colName] !== '') {
+								if ($mrow[$colName] !== '' && $mrow[$colName] !== null) {
 									$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',', $mrow[$colName]);
 									if ($colConfig['itemsProcFunc']) {
 										$itemArray = GeneralUtility::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this);
@@ -1399,7 +1399,7 @@ class Marker
 								}
 								break;
 							case 'select':
-								if ($mrow[$colName] != '') {
+								if ($mrow[$colName] !== '' && $mrow[$colName] !== null) {
 									$valuesArray = is_array($mrow[$colName]) ? $mrow[$colName] : explode(',', $mrow[$colName]);
 									if ($colConfig['itemsProcFunc']) {
 										$itemArray = GeneralUtility::callUserFunction($colConfig['itemsProcFunc'], $colConfig, $this);
