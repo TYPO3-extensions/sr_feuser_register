@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\View;
 /*
  *  Copyright notice
  *
- *  (c) 2007-2018 Stanislas Rolland <typo3(arobas)sjbr.ca>
+ *  (c) 2007-2020 Stanislas Rolland <typo3AAAA(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -81,7 +81,7 @@ abstract class AbstractView
 	 *
 	 * @var Data
 	 */
-	protected $ata;
+	protected $data;
 
 	/**
 	 * The request parameters object
@@ -104,7 +104,7 @@ abstract class AbstractView
 	 * @param string $prefixId: the prefixId
 	 * @param string $theTable: the name of the table in use
 	 * @param array $conf: the plugin configuration
-	 * @param Data $ata: the data object
+	 * @param Data $data: the data object
 	 * @param Parameters $parameters: the request parameters object
 	 * @param Marker $marker: the marker object
 	 * @return void
