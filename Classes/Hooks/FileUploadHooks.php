@@ -4,7 +4,7 @@ namespace SJBR\SrFeuserRegister\Hooks;
 /*
  *  Copyright notice
  *
- *  (c) 2017-2020 Stanislas Rolland <typo32020(arobas)sjbr.ca>
+ *  (c) 2017-2020 Stanislas Rolland <typo3AAAA(arobas)sjbr.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -86,7 +86,7 @@ class FileUploadHooks
 				}
 			}
 			$uploadPath = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config']['uploadfolder'];
-			$uploadPath = $uploadPath ?: $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['sr_feuser_register']['uploadfolder'];
+			$uploadPath = $uploadPath ?: $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['sr_feuser_register']['uploadFolder'];
 			if (isset($dataArray[$theField]) && $uploadPath) {
 				$maxSize = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['sr_feuser_register']['imageMaxSize'];
 				$allowedExtArray = GeneralUtility::trimExplode(',', $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['sr_feuser_register']['imageTypes'], true);
@@ -163,7 +163,7 @@ class FileUploadHooks
 	{
 		$fieldConfig = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config'];
 		$uploadPath = $fieldConfig['uploadfolder'];
-		$uploadPath = $uploadPath ?: $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['sr_feuser_register']['uploadfolder'];
+		$uploadPath = $uploadPath ?: $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['sr_feuser_register']['uploadFolder'];
 		$fileArray = [];
 		if ($uploadPath) {
 			if (count($fieldData)) {
@@ -219,7 +219,7 @@ class FileUploadHooks
 	{
 		$fieldConfig = $GLOBALS['TCA'][$theTable]['columns'][$theField]['config'];
 		$uploadPath = $fieldConfig['uploadfolder'];
-		$uploadPath = $uploadPath ?: $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['sr_feuser_register']['uploadfolder'];
+		$uploadPath = $uploadPath ?: $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['sr_feuser_register']['uploadFolder'];
 		if ($fieldConfig['type'] === 'inline' && $fieldConfig['foreign_table'] === 'sys_file_reference') {
 			// Create the file
 			$fI = pathinfo($fileName);

@@ -1,3 +1,6 @@
+2020-12-26 Stanislas Rolland  <typo3AAAA(arobas)sjbr.ca>
+	* Resolves #93067: Uploading an image in the frontend is not possible
+
 2020-11-22 Stanislas Rolland  <typo32020(arobas)sjbr.ca>
 	* Resolves #92901: Avoid exception with LocalizationUtility
 	* Update version to 7.0.3
